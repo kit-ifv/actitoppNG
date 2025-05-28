@@ -63,6 +63,8 @@ class RNGHelper private constructor(
     }
 }
 
+
+
 fun RNGHelper.getRandomValues(amount: Int): List<Double> {
     return (0..<amount).map{
         randomValue

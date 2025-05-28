@@ -218,13 +218,15 @@ class Coordinator @JvmOverloads constructor(
         executeStep7DC("7I", ActivityType.TRANSPORT, randomNumbers[8])
         executeStep7WRD("7J", ActivityType.TRANSPORT, randomNumbers[9])
 
+        repeat(24) {
+           rngCopy.randomValue
+        }
+        val mobilityPlan =
+            patternStructure.toPlan(personWithRoutine, StandardCommuteDurations.STANDARD_ASSIGNMENT, output)
 
-//        val mobilityPlan =
-//            patternStructure.toPlan(personWithRoutine, StandardCommuteDurations.STANDARD_ASSIGNMENT, output)
-//
-//        mobilityPlan?.assignFirstMainActivities(StandardStep8B(rngCopy, LEAD))
-//        mobilityPlan?.assignSecondaryMainActivities(StandardStep8B(rngCopy, MAJOR))
-//        mobilityPlan?.assignMinorActivities(AssignMinorActivityDuration(rngCopy))
+        mobilityPlan?.assignFirstMainActivities(StandardStep8B(rngCopy, LEAD))
+        mobilityPlan?.assignSecondaryMainActivities(StandardStep8B(rngCopy, MAJOR))
+        mobilityPlan?.assignMinorActivities(AssignMinorActivityDuration(rngCopy))
 
 
         executeStep8A("8A") // This step only determines whether the histogram will be shifted after a selection has been made
@@ -1049,13 +1051,11 @@ class Coordinator @JvmOverloads constructor(
     /**
      * @param id
      */
-    @Deprecated(
-        "This method does not utilize the result of the discrete choice model, it forcefully sets " +
-                "purely based on configuration and activity type"
-    )
+
     private fun executeStep8A(id: String) {
         // STEP8a: yes/no decision for "activity is in average time class xyz".
         // only applies to main activities
+        var counter = 0
         for (currentDay in pattern.days) {
             // skip day if person is at home
             if (currentDay.isHomeDay) {
@@ -1074,9 +1074,8 @@ class Coordinator @JvmOverloads constructor(
                     // create step object
                     val step = DCDefaultModelStep(id, fileBase, lookup, randomGenerator)
                     val decision = step.doStep()
-
+                    counter++
                     log(id, currentActivity, step.alternativeChosen.toString())
-                    // TODO this does not need to be passed onto the activity, since it is globally active.
                     // save attribute for work and education activities if coordinated modeling is enabled
                     if (Configuration.coordinated_modelling && (currentActivity.activityType == ActivityType.WORK || currentActivity.activityType == ActivityType.EDUCATION)) {
                         currentActivity.addAttributetoMap(
@@ -1089,6 +1088,7 @@ class Coordinator @JvmOverloads constructor(
                 }
             }
         }
+        println(counter)
     }
 
 
@@ -1175,10 +1175,10 @@ class Coordinator @JvmOverloads constructor(
                             if (step_dc.lowerBound >= step_dc.upperBound) step_dc.limitLowerBoundOnly(step_dc.upperBound)
                         }
 
-                        assert(step_dc.lowerBound <= step_dc.upperBound)
-
+                        assert(step_dc.lowerBound  <= step_dc.upperBound)
+                        val rng1 = randomGenerator.randomValue
                         // make selection
-                        val decision = step_dc.doStep()
+                        val decision = step_dc.doStep(rng1)
 
                         log(id_dc, currentActivity, decision.toString())
                         // TODO, why is actdurcat_index added to the map, and read 2 lines down, and never used at any other location?.
@@ -1199,9 +1199,9 @@ class Coordinator @JvmOverloads constructor(
                         step_wrd.setRangeBounds(durationBounds[0], durationBounds[1])
 
                         if (currentActivity.attributesMap["standarddauer"] == 1.0) step_wrd.setModifydistribution(true)
-
+                        val rng2 = randomGenerator.randomValue
                         // make selection
-                        val chosenTime = step_wrd.doStep()
+                        val chosenTime = step_wrd.doStep(rng2)
 
                         log(id_wrd, currentActivity, chosenTime.toString())
 

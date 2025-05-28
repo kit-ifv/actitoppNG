@@ -15,7 +15,7 @@ fun MobilityPlan.assignFirstMainActivities(strategy: SelectMainActivityDuration)
                 tourPlan = tourPlan,
                 isLastTourOfDay = tourPlan == dayPlan.tourPlans.last()
             )
-        )
+        ).also { println(it.inWholeMinutes) }
 
     }
 }
@@ -31,7 +31,7 @@ fun MobilityPlan.assignSecondaryMainActivities(strategy: SelectMajorActivityDura
                     tourPlan = tourPlan,
                     isLastTourOfDay = tourPlan == dayPlan.tourPlans.last()
                 )
-            )
+            ).also { println(it.inWholeMinutes) }
 
         }
     }

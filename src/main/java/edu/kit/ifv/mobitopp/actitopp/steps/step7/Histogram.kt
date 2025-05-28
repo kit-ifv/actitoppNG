@@ -157,7 +157,7 @@ open class ArrayHistogram protected constructor(
     }
 
     override fun toString(): String {
-        return "Histogram[$offset, ${offset + size - 1}]"
+        return "Histogram($categoryIndex)[$offset, ${offset + size - 1}]"
     }
 
     companion object {

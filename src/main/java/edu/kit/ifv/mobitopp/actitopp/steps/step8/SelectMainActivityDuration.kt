@@ -11,7 +11,7 @@ fun interface SelectMainActivityDuration {
 }
 
 class StandardStep8B<P>(
-    val rng: RNGHelper,
+    private val rng: RNGHelper,
     histogram: ActivityDurationHistograms<P>,
 ) : SelectMainActivityDuration, SelectMajorActivityDuration {
     private val taintedHistograms = histogram.taint()
@@ -27,8 +27,6 @@ class StandardStep8B<P>(
 
     fun calculateFixed(input: Step8BInput): Duration {
         return input.run {
-            val bounds = dayPlan.boundsFor(tourPlan.mainActivity)
-            println(bounds)
             val meanActivityDuration = dayPlan.getBudget(tourMainActivityType)
             taintedHistograms.selectAndTaint(rng, meanActivityDuration) {
                 MainDurationSituation(

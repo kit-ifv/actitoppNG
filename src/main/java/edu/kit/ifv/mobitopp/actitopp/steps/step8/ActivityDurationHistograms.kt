@@ -54,8 +54,8 @@ open class ActivityDurationHistograms<P>(
         val mainHistogram = histograms[index]
         val previousHistogram = histograms.getOrNull(index - 1)
         val nextHistogram = histograms.getOrNull(index + 1)
-
-        val selectedHistogram = choiceModel.selectNew(rngHelper.randomValue, converter) {
+        val rng = rngHelper.randomValue
+        val selectedHistogram = choiceModel.selectNew(rng, converter) {
             previousHistogram?.let {
                 option(it)
             }
@@ -76,8 +76,10 @@ open class ActivityDurationHistograms<P>(
 
     fun select(rngHelper: RNGHelper, bounds: ClosedRange<Duration>, converter: (ArrayHistogram) -> MainDurationSituation): Duration {
         val options = histograms.filter { it.end >= bounds.start && it.start <= bounds.endInclusive }.toSet()
-        val concreteHistogram = choiceModel.select(options, converter)
-        return concreteHistogram.select(rngHelper.randomValue, bounds.start.inWholeMinutes.toInt(), bounds.endInclusive.inWholeMinutes.toInt())
+        val rng1 = rngHelper.randomValue
+        val concreteHistogram = choiceModel.select(options, rng1, converter)
+        val rng2 = rngHelper.randomValue
+        return concreteHistogram.select(rng2, bounds.start.inWholeMinutes.toInt(), bounds.endInclusive.inWholeMinutes.toInt())
     }
 
     /**
@@ -102,9 +104,11 @@ class TaintedActivityDurationHistograms<P>(
                                converter: (ArrayHistogram) -> MainDurationSituation,): Duration {
 
         val selectedHistogram = original.chooseHistogramFromNeighbors(rngHelper, duration, converter)
+        val randomNumber = rngHelper.randomValue
         val taint = taintedHistograms.getValue(selectedHistogram)
 
-        return taint.select(rngHelper.randomValue).also { taint.modify(it.inWholeMinutes.toInt()) }
+
+        return taint.select(randomNumber).also { taint.modify(it.inWholeMinutes.toInt()) }
     }
 
     fun select(   rngHelper: RNGHelper,
