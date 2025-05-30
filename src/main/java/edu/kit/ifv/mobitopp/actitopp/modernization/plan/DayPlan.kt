@@ -4,6 +4,7 @@ import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.modernization.BidirectionalIndexedValue
 import edu.kit.ifv.mobitopp.actitopp.modernization.DurationDay
 import edu.kit.ifv.mobitopp.actitopp.modernization.LinkedActivity
+import edu.kit.ifv.mobitopp.actitopp.modernization.Position
 import edu.kit.ifv.mobitopp.actitopp.modernization.TourStructure
 import edu.kit.ifv.mobitopp.actitopp.utils.foldUntil
 import edu.kit.ifv.mobitopp.actitopp.modernization.linkByHomeActivity
@@ -22,16 +23,36 @@ interface DayPlan : List<LinkedActivity> {
     val durationDay: DurationDay
     val durationOfMainActivities: Duration
     val amountOfActivities: Int
+    val mainTour: TourPlan
+
+    fun mainActivityType() = mainTour.mainActivity.activityType
     fun numberOfActivities(activityType: ActivityType): Int
     fun hasActivity(activityType: ActivityType): Boolean
     fun mainActivities(): List<LinkedActivity>
-
+    fun durationOfActivities(): Duration
     val activityBudget: Map<ActivityType, Duration>
 
     fun getBudget(activityType: ActivityType): Duration =
         activityBudget[activityType] ?: throw NoSuchElementException("No budget found for activity $activityType")
 
-    fun boundsFor(linkedActivity: LinkedActivity): ClosedRange<Duration>
+    fun absoluteBoundsFor(linkedActivity: LinkedActivity): ClosedRange<Duration>
+    fun boundsFor(linkedActivity: LinkedActivity): ClosedRange<Duration> {
+        val absoluteBounds = absoluteBoundsFor(linkedActivity)
+        val maximumDuration = absoluteBounds.endInclusive - absoluteBounds.start
+
+        require(maximumDuration in 1.minutes..1.days) {
+            "This duration is not reasonable."
+        }
+        return 1.minutes..maximumDuration
+
+
+    }
+
+    fun absoluteBoundsFor(tourPlan: TourPlan): ClosedRange<Duration> {
+        val initialBounds = absoluteBoundsFor(tourPlan.first())
+        return initialBounds
+
+    }
 }
 
 interface MutableDayPlan : DayPlan {
@@ -54,26 +75,44 @@ class MovingDayPlan(
     override val tourPlans: List<TourPlan>,
     timeBudgets: TimeBudgets,
     override val durationDay: DurationDay,
+    override val mainTour: TourPlan = tourPlans.first { it.position == Position.MAIN },
 ) : MutableDayPlan, List<LinkedActivity> by activities {
-    private val _mainActivities by lazy {tourPlans.map { it.mainActivity }}
+    private val _mainActivities by lazy { tourPlans.map { it.mainActivity } }
 
 
     init {
         println("Creating Day with $activities")
     }
+
     override fun mainActivities(): List<LinkedActivity> {
         return _mainActivities
     }
+
     override val durationOfMainActivities: Duration by lazy {
-        mainActivities().sumOf { it.duration?.toDouble(DurationUnit.MINUTES)?: throw IllegalArgumentException(
-            "Somehow a main activity has not yet received a duration, so the sum over the main activities cannot be calculated."
-        ) }.minutes
+        mainActivities().sumOf {
+            it.duration?.toDouble(DurationUnit.MINUTES) ?: throw IllegalArgumentException(
+                "Somehow a main activity has not yet received a duration, so the sum over the main activities cannot be calculated."
+            )
+        }.minutes
     }
     override var firstActivity: LinkedActivity = activities.first()
     override var lastActivity: LinkedActivity = activities.last()
 
     val startHomeActivityDay by lazy { firstActivity.previousTrip?.previousActivity }
-    val endHomeActivityDay by lazy { lastActivity.nextTrip?.nextActivity}
+    val endHomeActivityDay by lazy { lastActivity.nextTrip?.nextActivity }
+
+    // Throw an error if the duration of any activity is not set, this scenario cannot be handled
+    private val _durationOfActivities by lazy {
+        // TODO 1) Define a .sumOf() over Duration, to avoid the double conversion
+        activities.sumOf {
+            it.duration?.toDouble(DurationUnit.MINUTES)
+                ?: throw IllegalStateException("The duration of activities can only be calculated after each activity of the day has been assigned a duration")
+        }.minutes
+    }
+
+    override fun durationOfActivities(): Duration {
+        return _durationOfActivities
+    }
 
     override fun numberOfActivities(activityType: ActivityType): Int {
         return activities.count { it.activityType == activityType }
@@ -96,8 +135,7 @@ class MovingDayPlan(
     override val activityBudget: Map<ActivityType, Duration> = activities.groupBy { it.activityType }
         .mapValues { (timeBudgets[it.key] / it.value.size).coerceIn(1.minutes, 1440.minutes) }
 
-
-    override fun boundsFor(linkedActivity: LinkedActivity): ClosedRange<Duration> {
+    override fun absoluteBoundsFor(linkedActivity: LinkedActivity): ClosedRange<Duration> {
         require(linkedActivity in activities) {
             "This check is relevant, but sadly O(n). It could be improved by checking against the start and end time" +
                     "of the day, which soft implies that the target activity lies within this day"
@@ -105,7 +143,8 @@ class MovingDayPlan(
         // Potentially locate a successor activity with a fixed start time in this day, and track the sum of
         // durations until either a successor is found or the end of the day is reached (checked by comparing against end
         // home activity)
-        val (fixedSuccessor, durationToSuccessor) = linkedActivity.iterator().drop(1).takeWhile { it != endHomeActivityDay }
+        val (fixedSuccessor, durationToSuccessor) = linkedActivity.iterator().drop(1)
+            .takeWhile { it != endHomeActivityDay }
             .foldUntil({ it.startTime != null }, Duration.ZERO) { acc, action ->
                 acc + (action.estimatedDuration(estimatedActivityDurations))
             }
@@ -115,22 +154,18 @@ class MovingDayPlan(
          */
         val (fixedPrecursor, durationToPrecursor) = linkedActivity.backwardIterator().drop(1)
             .takeWhile { it != startHomeActivityDay }.foldUntil({ it.endTime != null }, Duration.ZERO) { acc, action ->
-            acc + (action.estimatedDuration(estimatedActivityDurations))
-        }
+                acc + (action.estimatedDuration(estimatedActivityDurations))
+            }
         // If a precursor is found, that start time is a better bound for the current element, if not use 0 as relative start time of the day
         val earliestStartTime = (fixedPrecursor?.endTime ?: durationDay.startOfDay) + durationToPrecursor
 
         // Similarly, a successor with a fixed time is a better bound for the potential end time of this element, but if nothing
         // has a fixed time, the end of the day is the fallback.
         val latestEndTime = (fixedSuccessor?.startTime ?: (durationDay.startOfDay + 1.days)) - durationToSuccessor
-        val maximumDuration = latestEndTime - earliestStartTime
 
-        require(maximumDuration in 1.minutes..1.days) {
-            "This duration is not reasonable."
-        }
-        return 1.minutes..maximumDuration
-
+        return earliestStartTime..latestEndTime
     }
+
 
     companion object {
         fun create(
@@ -163,10 +198,20 @@ class HomeDayPlan(override val durationDay: DurationDay) : MutableDayPlan, List<
         return emptyList()
     }
 
+    override val mainTour: TourPlan
+        get() = throw NoSuchElementException("A home day cannot have a main tour")
     override val activityBudget: Map<ActivityType, Duration> =
         emptyMap<ActivityType, Duration>().withDefault { 0.minutes }
 
+    override fun absoluteBoundsFor(linkedActivity: LinkedActivity): ClosedRange<Duration> {
+        TODO("Not yet implemented")
+    }
+
     override fun boundsFor(linkedActivity: LinkedActivity): ClosedRange<Duration> {
         throw UnsupportedOperationException("A home day has no bounds for other activities")
+    }
+
+    override fun durationOfActivities(): Duration {
+        return Duration.ZERO
     }
 }

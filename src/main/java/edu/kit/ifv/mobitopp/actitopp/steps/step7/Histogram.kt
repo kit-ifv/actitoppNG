@@ -85,6 +85,14 @@ open class ArrayHistogram protected constructor(
         return position in offset..offset + size
     }
 
+    operator fun contains(duration: Duration): Boolean {
+        return duration.inWholeMinutes.toInt() in this
+    }
+    fun intersects(bounds: ClosedRange<Duration>): Boolean {
+        if(bounds.start > this.end) return false
+        if(bounds.endInclusive < this.start) return false
+        return true
+    }
     /**
      * Once copied, you may start modifying to your hearts content, but until then the histogram stays readonly.
      */

@@ -1,7 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.steps.step8
 
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
-import edu.kit.ifv.mobitopp.actitopp.modernization.durations.ActDurationInputs
+import edu.kit.ifv.mobitopp.actitopp.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
@@ -9,11 +9,11 @@ import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.times
 
 
 fun interface StandardDuration {
-    fun getAssignedStandardDuration(input: ActDurationInputs): Boolean
+    fun getAssignedStandardDuration(input: MobilityPlanInputs): Boolean
 }
 
 class UtilityFunctionAssignment(val rngHelper: RNGHelper): StandardDuration {
-    override fun getAssignedStandardDuration(input: ActDurationInputs): Boolean {
+    override fun getAssignedStandardDuration(input: MobilityPlanInputs): Boolean {
         return choiceModel.select(rngHelper.randomValue) {
             BooleanDecisionSituation(it, input)
         }

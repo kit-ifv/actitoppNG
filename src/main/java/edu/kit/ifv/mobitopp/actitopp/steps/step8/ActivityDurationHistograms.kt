@@ -5,10 +5,11 @@ import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.enums.Employment
 import edu.kit.ifv.mobitopp.actitopp.enums.isParttime
+import edu.kit.ifv.mobitopp.actitopp.enums.isStudent
 import edu.kit.ifv.mobitopp.actitopp.enums.isStudentOrAzubi
 import edu.kit.ifv.mobitopp.actitopp.modernization.Activity
 import edu.kit.ifv.mobitopp.actitopp.modernization.Position
-import edu.kit.ifv.mobitopp.actitopp.modernization.durations.ActDurationInputs
+import edu.kit.ifv.mobitopp.actitopp.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.DayPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MobilityPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.TourPlan
@@ -26,6 +27,8 @@ import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.times
 import java.nio.file.Path
 import java.time.DayOfWeek
 import kotlin.io.path.Path
+import kotlin.io.path.listDirectoryEntries
+import kotlin.io.path.name
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
@@ -135,15 +138,23 @@ enum class Identifier(val id: String) {
     LEAD_ACTIVITY_DURATION("8C"),
     MAJOR_ACTIVITY_DURATION("8E"),
     MINOR_ACTIVITY_DURATION("8K"),
+
+    FIRST_TOUR_START_TIME("10N"),
+    SECOND_TOUR_START_TIME("10P"),
 }
 
 fun durationHistogramsFromResourcePath(
     identifier: Identifier,
     path: Path = Path("src/main/resources/edu/kit/ifv/mobitopp/actitopp/mopv14_withpkwhh"),
 ): List<ArrayHistogram> {
-    return (0..14).map {
-        ArrayHistogram.fromPath(path.resolve("${identifier.id}_KAT_$it.csv"))
-    }
+
+    val globPattern = "${identifier.id}_KAT_*.csv"
+    return path.listDirectoryEntries(globPattern).sortedBy {
+        it.name.removePrefix("${identifier.id}_KAT_")
+            .removeSuffix(".csv")
+            .toInt()
+    }.map { ArrayHistogram.fromPath(it) }
+
 }
 
 fun <P, T> P.generateHistogram(
@@ -172,7 +183,7 @@ fun <P, T> P.generateHistogram(
 open class PlanSituation<P : Any>(
     override val choice: P,
 
-    input: ActDurationInputs,
+    input: MobilityPlanInputs,
 
     ) : ChoiceSituation<P>() {
 
@@ -184,6 +195,32 @@ open class PlanSituation<P : Any>(
     val person: IPerson = input.person
     val isLastTourOfDay: Boolean = input.isLastTourOfDay
     val activityType: ActivityType = activity.activityType
+
+    // TODO communicate clearly that this interval check is an open end range, because the legacy code doesnt communicate that
+    fun dauer_akt_tag_4bis6std(): Boolean = dayPlan.durationOfActivities() in 4.hours..<6.hours
+    fun dauer_akt_tag_6bis8std(): Boolean = dayPlan.durationOfActivities() in 6.hours..<8.hours
+    fun dauer_akt_tag_8bis10std(): Boolean = dayPlan.durationOfActivities() in 8.hours..<10.hours
+    fun dauer_akt_tag_10bis12std(): Boolean = dayPlan.durationOfActivities() in 10.hours..<12.hours
+    fun dauer_akt_tag_12bis14std(): Boolean = dayPlan.durationOfActivities() in 12.hours..<14.hours
+
+    fun anztagemit_tourennachht(): Int {
+        // TODO this number is always fixed and should be precalculated in the mobility plan
+        return mobilityPlan.dayPlans.count { it.tourPlans.last().position == Position.AFTER }
+    }
+
+    fun householdHasYouths() = person.children_u18 > 0
+    fun anztagemit_tourenvorht(): Int {
+        // TODO this number is also fixed once the mobility Plan is formulated.
+        return mobilityPlan.dayPlans.count { it.tourPlans.first().position == Position.BEFORE }
+
+    }
+
+    fun isStudent() = person.employment.isStudent()
+    fun isVocational() = person.employment == Employment.VOCATIONAL
+    fun isAged10to17() = person.age in 10..17
+    fun haupttour_work() = dayPlan.mainActivityType() == ActivityType.WORK
+    fun haupttour_education() = dayPlan.mainActivityType() == ActivityType.EDUCATION
+    fun touristhaupttour() = tourPlan.position == Position.MAIN
     fun dauer_hauptakt_tag_4bis6std(): Boolean {
         return dayPlan.durationOfMainActivities in 4.hours..<6.hours
     }
@@ -392,7 +429,7 @@ open class PlanSituation<P : Any>(
 
 class MainDurationSituation(
     choice: ArrayHistogram,
-    input: ActDurationInputs,
+    input: MobilityPlanInputs,
 ) : PlanSituation<ArrayHistogram>(
     choice,
     input
@@ -400,7 +437,7 @@ class MainDurationSituation(
 
 class BooleanDecisionSituation(
     choice: Boolean,
-    input: ActDurationInputs,
+    input: MobilityPlanInputs,
 ) : PlanSituation<Boolean>(
     choice,
     input

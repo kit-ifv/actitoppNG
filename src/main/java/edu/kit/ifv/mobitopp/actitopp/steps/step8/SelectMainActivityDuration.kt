@@ -3,12 +3,12 @@ package edu.kit.ifv.mobitopp.actitopp.steps.step8
 
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
-import edu.kit.ifv.mobitopp.actitopp.modernization.durations.ActDurationInputs
+import edu.kit.ifv.mobitopp.actitopp.modernization.durations.MobilityPlanInputs
 import java.util.EnumSet
 import kotlin.time.Duration
 
 fun interface SelectMainActivityDuration {
-    fun getDuration(input: ActDurationInputs): Duration
+    fun getDuration(input: MobilityPlanInputs): Duration
 }
 
 class StandardStep8B<P>(
@@ -19,20 +19,22 @@ class StandardStep8B<P>(
     private val taintedHistograms = histogram.taint()
 
     private val fixedTypes = EnumSet.of(ActivityType.WORK, ActivityType.EDUCATION)
-    override fun getDuration(input: ActDurationInputs): Duration {
-        val shouldUseStandardDuration = useStandardDuration.getAssignedStandardDuration(input)
-        val validActivityType = input.tourMainActivityType in fixedTypes
+    override fun getDuration(input: MobilityPlanInputs): Duration {
+
+
+        val useStandardDuration =
+            input.tourMainActivityType in fixedTypes && useStandardDuration.getAssignedStandardDuration(input)
         return input.run {
 
-            when  {
+            when {
 
-                shouldUseStandardDuration && validActivityType -> calculateFixedAndTarnish(this)
+                useStandardDuration -> calculateFixedAndTarnish(this)
                 else -> calculateDefault(this)
             }
         }
     }
 
-    fun calculateFixedAndTarnish(input: ActDurationInputs): Duration {
+    fun calculateFixedAndTarnish(input: MobilityPlanInputs): Duration {
         return input.run {
             val meanActivityDuration = dayPlan.getBudget(tourMainActivityType)
             taintedHistograms.selectAndTaint(rng, meanActivityDuration) {
@@ -45,7 +47,7 @@ class StandardStep8B<P>(
         }
     }
 
-    fun calculateDefault(input: ActDurationInputs): Duration {
+    fun calculateDefault(input: MobilityPlanInputs): Duration {
 
         return input.run {
             val bounds = dayPlan.boundsFor(tourPlan.mainActivity)

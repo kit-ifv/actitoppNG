@@ -6,7 +6,7 @@ import edu.kit.ifv.mobitopp.actitopp.modernization.plan.DayPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MobilityPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.TourPlan
 
-data class ActDurationInputs(
+data class MobilityPlanInputs(
     val mobilityPlan: MobilityPlan,
     val person: IPerson,
     val dayPlan: DayPlan,
