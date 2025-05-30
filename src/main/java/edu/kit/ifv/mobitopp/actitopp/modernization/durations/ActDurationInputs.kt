@@ -6,22 +6,15 @@ import edu.kit.ifv.mobitopp.actitopp.modernization.plan.DayPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MobilityPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.TourPlan
 
-data class Step8BInput(
+data class ActDurationInputs(
     val mobilityPlan: MobilityPlan,
     val person: IPerson,
     val dayPlan: DayPlan,
     val tourPlan: TourPlan,
-    val isLastTourOfDay: Boolean
+    val activity: LinkedActivity
 ) {
     val tourMainActivityType = tourPlan.mainActivity.activityType
+    val isLastTourOfDay: Boolean = dayPlan.tourPlans.last() == tourPlan
 }
 
 
-data class Step8JInput(
-    val mobilityPlan: MobilityPlan,
-    val person: IPerson,
-    val dayPlan: DayPlan,
-    val tourPlan: TourPlan,
-    val activity: LinkedActivity,
-    val isLastTourOfDay: Boolean
-)

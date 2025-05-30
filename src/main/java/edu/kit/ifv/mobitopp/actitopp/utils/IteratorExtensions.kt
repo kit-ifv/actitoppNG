@@ -1,4 +1,4 @@
-package edu.kit.ifv.mobitopp.actitopp.modernization
+package edu.kit.ifv.mobitopp.actitopp.utils
 
 fun <T, R> Iterator<T>.foldUntil(
     predicate: (T) -> Boolean,

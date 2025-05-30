@@ -59,7 +59,7 @@ open class ArrayHistogram protected constructor(
     constructor(offset: Int, values: Collection<Number>, categoryIndex: Category) : this(
         offset,
         values.map { it.toDouble() / values.sumOf { it.toDouble() } }.toDoubleArray(),
-        categoryIndex
+        categoryIndex,
     )
 
     protected val size = probabilities.size
@@ -67,7 +67,6 @@ open class ArrayHistogram protected constructor(
 
     val start = offset.minutes
     val end = (probabilities.size + offset - 1).minutes
-    val cumulativeSum get() = _cumulativeSum.asList()
 
     init {
         cumulate()
@@ -98,7 +97,8 @@ open class ArrayHistogram protected constructor(
         return ArrayHistogram(
             offset = offset + trimmedStartIndex,
             probabilities = probabilities.copyOfRange(trimmedStartIndex, trimmedEndIndex),
-            categoryIndex = categoryIndex
+            categoryIndex = categoryIndex,
+
         )
     }
 
@@ -172,7 +172,7 @@ open class ArrayHistogram protected constructor(
             return ArrayHistogram(
                 modelDistribution.keys.min(),
                 modelDistribution.values.map { it.toDouble() / sum }.toDoubleArray(),
-                Category(categoryIndex)
+                Category(categoryIndex),
 
             )
         }

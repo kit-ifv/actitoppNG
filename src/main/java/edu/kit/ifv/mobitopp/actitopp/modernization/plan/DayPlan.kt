@@ -5,11 +5,10 @@ import edu.kit.ifv.mobitopp.actitopp.modernization.BidirectionalIndexedValue
 import edu.kit.ifv.mobitopp.actitopp.modernization.DurationDay
 import edu.kit.ifv.mobitopp.actitopp.modernization.LinkedActivity
 import edu.kit.ifv.mobitopp.actitopp.modernization.TourStructure
-import edu.kit.ifv.mobitopp.actitopp.modernization.foldUntil
+import edu.kit.ifv.mobitopp.actitopp.utils.foldUntil
 import edu.kit.ifv.mobitopp.actitopp.modernization.linkByHomeActivity
 import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.steps.step7.TimeBudgets
-import kotlin.math.max
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.minutes
@@ -125,10 +124,6 @@ class MovingDayPlan(
         // has a fixed time, the end of the day is the fallback.
         val latestEndTime = (fixedSuccessor?.startTime ?: (durationDay.startOfDay + 1.days)) - durationToSuccessor
         val maximumDuration = latestEndTime - earliestStartTime
-
-        val successorElements = linkedActivity.iterator().drop(1).takeWhile { it != endHomeActivityDay }.count()
-        val predecessorElements =  linkedActivity.backwardIterator().drop(1)
-            .takeWhile { it != startHomeActivityDay }.count()
 
         require(maximumDuration in 1.minutes..1.days) {
             "This duration is not reasonable."

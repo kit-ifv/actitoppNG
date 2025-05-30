@@ -12,7 +12,6 @@ import edu.kit.ifv.mobitopp.actitopp.modernization.PatternStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.Step5Generator
 import edu.kit.ifv.mobitopp.actitopp.modernization.assignDirectly
 import edu.kit.ifv.mobitopp.actitopp.modernization.calculateTourAmounts
-import edu.kit.ifv.mobitopp.actitopp.modernization.foldUntil
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.StandardCommuteDurations
 import edu.kit.ifv.mobitopp.actitopp.steps.step1.assignWeekRoutine
 import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
@@ -27,7 +26,6 @@ import edu.kit.ifv.mobitopp.actitopp.steps.step8.assignMinorActivities
 import edu.kit.ifv.mobitopp.actitopp.steps.step8.assignSecondaryMainActivities
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.time.Duration.Companion.minutes
 
 val STATIC_HISTOGRAMS = HistogramPerActivity()
 
@@ -1055,7 +1053,6 @@ class Coordinator @JvmOverloads constructor(
     private fun executeStep8A(id: String) {
         // STEP8a: yes/no decision for "activity is in average time class xyz".
         // only applies to main activities
-        var counter = 0
         for (currentDay in pattern.days) {
             // skip day if person is at home
             if (currentDay.isHomeDay) {
@@ -1074,7 +1071,7 @@ class Coordinator @JvmOverloads constructor(
                     // create step object
                     val step = DCDefaultModelStep(id, fileBase, lookup, randomGenerator)
                     val decision = step.doStep()
-                    counter++
+
                     log(id, currentActivity, step.alternativeChosen.toString())
                     // save attribute for work and education activities if coordinated modeling is enabled
                     if (Configuration.coordinated_modelling && (currentActivity.activityType == ActivityType.WORK || currentActivity.activityType == ActivityType.EDUCATION)) {
@@ -1088,7 +1085,7 @@ class Coordinator @JvmOverloads constructor(
                 }
             }
         }
-        println(counter)
+
     }
 
 
