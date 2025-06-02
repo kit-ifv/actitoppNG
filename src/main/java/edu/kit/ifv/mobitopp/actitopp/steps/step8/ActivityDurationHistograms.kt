@@ -141,6 +141,7 @@ enum class Identifier(val id: String) {
 
     FIRST_TOUR_START_TIME("10N"),
     SECOND_TOUR_START_TIME("10P"),
+    OTHER_TOUR_START_TIME("10T")
 }
 
 fun durationHistogramsFromResourcePath(
@@ -214,7 +215,11 @@ open class PlanSituation<P : Any>(
         return mobilityPlan.dayPlans.count { it.tourPlans.first().position == Position.BEFORE }
 
     }
+    fun anztourenamtag(): Int {
+        return dayPlan.tourPlans.size
+    }
 
+    fun tour3destages() = tourPlan == dayPlan.tourPlans.getOrNull(2)
     fun isStudent() = person.employment.isStudent()
     fun isVocational() = person.employment == Employment.VOCATIONAL
     fun isAged10to17() = person.age in 10..17
@@ -354,6 +359,10 @@ open class PlanSituation<P : Any>(
         return dayPlan.tourPlans.size == 2
     }
 
+    fun taghat3touren(): Boolean {
+        return dayPlan.tourPlans.size == 3
+    }
+
     fun aktliegtvorhauptakt(): Boolean {
         return activity.position == Position.BEFORE
     }
@@ -373,7 +382,20 @@ open class PlanSituation<P : Any>(
     fun tag_sa(): Boolean {
         return dayPlan.durationDay.weekday == DayOfWeek.SATURDAY
     }
+    // TODO Add Modulo to all time accesses
+    fun endetourvorher_Std_12() = (tourPlan.first().previousTrip?.endTime ?: Duration.INFINITE) in 12.hours..<13.hours
+    fun endetourvorher_Std_13() = (tourPlan.first().previousTrip?.endTime ?: Duration.INFINITE)  in 13.hours..<14.hours
+    fun endetourvorher_Std_14() = (tourPlan.first().previousTrip?.endTime ?: Duration.INFINITE)  in 14.hours..<15.hours
+    fun endetourvorher_Std_15() = (tourPlan.first().previousTrip?.endTime ?: Duration.INFINITE)  in 15.hours..<16.hours
+    fun endetourvorher_Std_16() = (tourPlan.first().previousTrip?.endTime ?: Duration.INFINITE)  in 16.hours..<17.hours
+    fun endetourvorher_Std_17() = (tourPlan.first().previousTrip?.endTime ?: Duration.INFINITE)  in 17.hours..<18.hours
+    fun endetourvorher_Std_18() = (tourPlan.first().previousTrip?.endTime ?: Duration.INFINITE)  in 18.hours..<19.hours
+    fun endetourvorher_Std_19() = (tourPlan.first().previousTrip?.endTime ?: Duration.INFINITE)  in 19.hours..<20.hours
+    fun endetourvorher_Std_20() = (tourPlan.first().previousTrip?.endTime ?: Duration.INFINITE)  in 20.hours..<21.hours
 
+    fun dauer_akt_in_tour_0bis2std() = tourPlan.activityDurations in 0.hours..<2.hours
+    fun dauer_akt_in_tour_2bis4std() = tourPlan.activityDurations in 2.hours..<4.hours
+    fun dauer_akt_in_tour_4bis6std() = tourPlan.activityDurations in 4.hours..<6.hours
     fun anzaktwieanztagemitzweck(): Boolean {
         return mobilityPlan.regularActivities[activityType] ?: false
     }

@@ -146,6 +146,9 @@ open class ArrayHistogram protected constructor(
         return (_cumulativeSum.indexBinarySearch(affineRandomNumber, lb ?: 0, ub) + offset).minutes
     }
 
+    fun select(randomNumber: Double, lowerBoundInclusive: Duration? = null, upperBoundInclusive: Duration? = null): Duration {
+        return select(randomNumber, lowerBoundInclusive?.inWholeMinutes?.toInt(), upperBoundInclusive?.inWholeMinutes?.toInt())
+    }
     /**
      * Affine transform the target number so that the interval of 0..1 is mapped to lower..upper
      */

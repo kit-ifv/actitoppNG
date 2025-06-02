@@ -5,6 +5,8 @@ import edu.kit.ifv.mobitopp.actitopp.modernization.ModernizedActivity
 import edu.kit.ifv.mobitopp.actitopp.modernization.Position
 import edu.kit.ifv.mobitopp.actitopp.modernization.TourStructure
 import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.DurationUnit
 
 /**
  * A tour plan has a fixed ordering of activities, which may never change, also there is a requirement of having a home
@@ -21,6 +23,10 @@ class TourPlan private constructor(
         return "$linkedActivities"
     }
 
+
+    val activityDurations by lazy {
+        linkedActivities.sumOf { it.duration?.toDouble(DurationUnit.MINUTES) ?: throw IllegalStateException("Some Activities have no duration yet set.") }.minutes
+    }
     companion object {
         fun create(tourStructure: TourStructure,
                    person: PersonWithRoutine,
