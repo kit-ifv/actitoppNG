@@ -31,6 +31,10 @@ class PatternStructure(
     fun mobileDays(): List<ModifiableDayStructure> {
         return activeDays
     }
+
+    fun homeDays(): Set<DurationDay> {
+        return days.toSet() - activeDays.map { it.startTimeDay }.toSet()
+    }
     fun generateTrackedActivity(day: DurationDay, lambda: PatternStructure.(DurationDay) -> ActivityType): ActivityType {
         val activityType = lambda(day)
         activityTracker.add(
@@ -103,7 +107,7 @@ class PatternStructure(
         if(mobileDays().isEmpty()) {
             return null
         }
-        return MobilityPlan.create(mobileDays(), timeBudgets, personWithRoutine, tripDuration)
+        return MobilityPlan.create(mobileDays(), homeDays(), timeBudgets, personWithRoutine, tripDuration)
     }
 
 }

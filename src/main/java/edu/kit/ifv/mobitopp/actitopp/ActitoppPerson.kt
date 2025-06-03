@@ -25,6 +25,8 @@ interface IPerson {
     val commutingdistance_work: Double
     val commutingdistance_education : Double
 
+    val id: Int
+
     fun isAnywayEmployed(): Boolean
     fun isinEducation(): Boolean
 }
@@ -42,7 +44,7 @@ class ActitoppPerson@JvmOverloads constructor(
     override val maxCommute: Double =
             max(commutingdistance_work, commutingdistance_education)
 
-     val id: Int = ActitoppPerson.idCounter
+     override val id: Int = ActitoppPerson.idCounter
     private val attributes: MutableMap<String, Double> = mutableMapOf()
     @TestOnly
     internal fun getMutableMapForTest(): MutableMap<String, Double> = attributes

@@ -42,6 +42,10 @@ open class ActivityDurationHistograms<P>(
     // TODO histograms could be a sorted Set, since they are supposed to cover respective ranges.
     open val histograms: List<ArrayHistogram>,
     open val choiceModel: ParametrizedDiscreteChoiceModel<ArrayHistogram, MainDurationSituation, P>,
+    val emergencyBehaviour: (ClosedRange<Duration>, RNGHelper) -> Duration = {range, rng ->
+        rng.getRandomValueBetween(range.start.inWholeMinutes.toInt(), range.endInclusive.inWholeMinutes.toInt()).minutes
+
+    }
 ) {
 
     /**
@@ -84,10 +88,18 @@ open class ActivityDurationHistograms<P>(
         converter: (ArrayHistogram) -> MainDurationSituation,
     ): Duration {
         val options = histograms.filter { it.end >= bounds.start && it.start <= bounds.endInclusive }.toSet()
+
+        if(options.isEmpty()) {
+            return emergencyBehaviour(bounds, rngHelper)
+        }
+
         val rng1 = rngHelper.randomValue
+        // It can happen that no histogram fits, because they are trimmed. The default behaviour of legacy actitopp is to return a random value.
+
+
         val concreteHistogram = choiceModel.select(options, rng1, converter)
         val rng2 = rngHelper.randomValue
-        return concreteHistogram.select(
+        return concreteHistogram.selectInt(
             rng2,
             bounds.start.inWholeMinutes.toInt(),
             bounds.endInclusive.inWholeMinutes.toInt()

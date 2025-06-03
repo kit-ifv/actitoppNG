@@ -10,8 +10,17 @@ interface Action {
     val startTime: Duration?
     val duration: Duration?
     val endTime: Duration?
+
+    fun shortString(): String
 }
 
+interface MutableAction {
+    var startTime: Duration?
+}
+interface MutableLinkedAction: MutableAction, LinkedAction {
+    override val previous: MutableLinkedAction?
+    override val next: MutableLinkedAction?
+}
 interface LinkedAction : Action {
     val previous: LinkedAction?
     val next: LinkedAction?
@@ -25,12 +34,17 @@ interface Activity : Action {
     override val endTime: Duration?
     val activityType: ActivityType
     val position: Position
+
+
+    override fun shortString(): String {
+        return "${activityType.typeasChar}[${startTime?.inWholeMinutes?:"?"}, ${endTime?.inWholeMinutes?:"?"}] (${duration?.inWholeMinutes})"
+    }
 }
 
 /**
  *
  */
-interface MutableActivity : Activity {
+interface MutableActivity : Activity, MutableAction {
     override var startTime: Duration?
     override var duration: Duration?
 }
@@ -50,18 +64,19 @@ class ModernizedActivity(
     override val endTime get() = startTime?.let { it + duration }
 
 
+
 }
 
 class LinkedActivity(
     val original: ModernizedActivity,
     var previousTrip: ModernizedTrip? = null,
     var nextTrip: ModernizedTrip? = null,
-) : MutableActivity by original, LinkedAction {
+) : MutableActivity by original, MutableLinkedAction {
 
 
-    override val previous: LinkedAction?
+    override val previous: ModernizedTrip?
         get() = previousTrip
-    override val next: LinkedAction?
+    override val next: ModernizedTrip?
         get() = nextTrip
 
     /**
@@ -87,6 +102,12 @@ class LinkedActivity(
     fun iterator(): Sequence<LinkedAction> {
         return LinkedActionIterator(this).asSequence()
     }
+    fun mutableIterator(): Sequence<MutableLinkedAction> {
+        return MutableLinkedActionIterator(this).asSequence()
+    }
+    fun activityIterator(): Sequence<LinkedActivity> {
+        return LinkedActivityIterator(this).asSequence()
+    }
 
     fun backwardIterator(): Sequence<LinkedAction> {
         return BackwardLinkedActionIterator(this).asSequence()
@@ -98,6 +119,28 @@ class LinkedActivity(
 
     companion object {
         fun homeDay(): LinkedActivity = LinkedActivity(ModernizedActivity(ActivityType.HOME, position = Position.MAIN))
+    }
+}
+
+class MutableLinkedActionIterator(start: MutableLinkedAction) : Iterator<MutableLinkedAction> {
+    private var current: MutableLinkedAction? = start
+    override fun hasNext(): Boolean {
+        return current != null
+    }
+
+    override fun next(): MutableLinkedAction {
+        return current!!.also { current = it.next }
+    }
+}
+
+class LinkedActivityIterator(start: LinkedActivity): Iterator<LinkedActivity> {
+    private var current: LinkedActivity? = start
+    override fun hasNext(): Boolean {
+        return current != null
+    }
+
+    override fun next(): LinkedActivity {
+        return current!!.also { current = it.next?.next }
     }
 }
 
@@ -146,7 +189,7 @@ class ModernizedTrip(
     override val duration: Duration,
     val previousActivity: LinkedActivity,
     val nextActivity: LinkedActivity,
-) : LinkedAction {
+) : MutableLinkedAction {
     init {
 
         require(!(previousActivity.activityType == ActivityType.HOME && nextActivity.activityType == ActivityType.HOME)) {
@@ -158,16 +201,20 @@ class ModernizedTrip(
         return duration
     }
 
-    override val startTime: Duration? get() = previousActivity.endTime
-    override val endTime: Duration? get() = nextActivity.startTime
-    override val previous: LinkedAction
+    override var startTime: Duration? = null
+    override val endTime: Duration? get() = startTime?.let { it + duration }
+    override val previous: LinkedActivity
         get() = previousActivity
-    override val next: LinkedAction
+    override val next: LinkedActivity
         get() = nextActivity
 
     override fun toString(): String {
         return "Trip ($duration) ${previousActivity.activityType} (#${
             previousActivity.hashCode().toString().substring(0, 3)
         }) ${nextActivity.activityType} (#${nextActivity.hashCode().toString().substring(0, 3)})"
+    }
+
+    override fun shortString(): String {
+        return " -(${duration.inWholeMinutes})->"
     }
 }

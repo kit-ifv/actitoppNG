@@ -1,5 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.steps.step7
 
+import edu.kit.ifv.mobitopp.actitopp.changes.Category
 import org.junit.jupiter.api.Assertions.*
 import kotlin.test.Test
 import kotlin.time.Duration.Companion.minutes
@@ -7,12 +8,12 @@ import kotlin.time.Duration.Companion.minutes
 class ArrayHistogramTest {
     @Test
     fun boundedSelectionTakesProperElements() {
-        val histogram = ArrayHistogram(offset = 0, listOf(1, 1, 1, 1, 1), 1)
+        val histogram = ArrayHistogram(offset = 0, listOf(1, 1, 1, 1, 1), Category(1))
         assertEquals(histogram[0], 0.2)
         assertEquals(histogram[2], 0.2)
 
         assertEquals(histogram.select(0.5), 2.minutes)
 
-        assertEquals(histogram.select(0.45, lowerBoundInclusive = 0, upperBoundInclusive = 1), 0.minutes)
+        assertEquals(histogram.selectInt(0.45, lowerBoundInclusive = 0, upperBoundInclusive = 1), 0.minutes)
     }
 }

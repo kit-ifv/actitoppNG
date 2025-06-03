@@ -1,5 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp
 
+import kotlin.math.abs
 import kotlin.random.Random
 
 /**
@@ -19,12 +20,13 @@ class RNGHelper private constructor(
     var lastRandomValue: Double = 0.0
         private set
 
-
+    private var generationCounter = 0
     val randomValue: Double
         /**
          * @return
          */
         get() {
+            generationCounter++
             // create randomValue
             val randomvalue = rng.nextDouble()
 
@@ -42,6 +44,7 @@ class RNGHelper private constructor(
      * @return
      */
     fun getRandomPersonKey(bound: Int): Int {
+        generationCounter++
         return rng.nextInt(bound)
     }
 
@@ -53,13 +56,33 @@ class RNGHelper private constructor(
      * If in the future anyone requires stepSize -> In kotlin you can pass the stepSize to the range.
      */
     fun getRandomValueBetween(from: Int, to: Int): Int {
-
+        generationCounter++
         require(from <= to) { "FROM bigger than TO $from $to" }
         return (from..to).random(rng)
     }
 
     fun copy(): RNGHelper {
         return RNGHelper(seed)
+    }
+
+    fun synchronize(other: RNGHelper) {
+        val difference = abs(generationCounter - other.generationCounter)
+        if(difference == 0) return
+        if(generationCounter < other.generationCounter) {
+            repeat(difference) {
+                this.randomValue
+            }
+        } else {
+            repeat(difference) {
+                other.randomValue
+            }
+        }
+
+
+    }
+
+    override fun toString(): String {
+        return "Rand($seed) $generationCounter"
     }
 }
 

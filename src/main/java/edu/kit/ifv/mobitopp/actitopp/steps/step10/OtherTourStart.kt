@@ -1,10 +1,14 @@
 package edu.kit.ifv.mobitopp.actitopp.steps.step10
 
+import edu.kit.ifv.mobitopp.actitopp.RNGHelper
+import edu.kit.ifv.mobitopp.actitopp.modernization.durations.MobilityPlanInputs
+import edu.kit.ifv.mobitopp.actitopp.steps.step8.ActivityDurationHistograms
 import edu.kit.ifv.mobitopp.actitopp.steps.step8.Identifier
 import edu.kit.ifv.mobitopp.actitopp.steps.step8.MainDurationSituation
 import edu.kit.ifv.mobitopp.actitopp.steps.step8.durationHistogramsFromResourcePath
 import edu.kit.ifv.mobitopp.actitopp.steps.step8.generateHistogram
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.times
+import kotlin.time.Duration
 
 
 private val standardUtilityFunction10S: ParameterStep10S.(MainDurationSituation) -> Double = {
@@ -30,6 +34,28 @@ private val standardUtilityFunction10S: ParameterStep10S.(MainDurationSituation)
                 (it.isStudent()) * beruf_schueler
 
 }
+
+operator fun ClosedRange<Duration>.minus(duration: Duration): ClosedRange<Duration> {
+    return (start - duration)..(endInclusive - duration)
+}
+
+class TourStartByHistogramsRelative<P>(private val rng: RNGHelper, private val startTimeHistograms: ActivityDurationHistograms<P>) : SelectTourStart {
+    override fun selectStartTime(input: MobilityPlanInputs): Duration {
+        val bounds = input.dayPlan.dayRelativeBoundsFor(input.tourPlan)
+        val startTime = bounds.start
+        val relativeBounds = bounds - startTime
+        return startTimeHistograms.select(rng, relativeBounds) {
+            MainDurationSituation(it, input)
+        } + startTime
+    }
+
+    companion object {
+        fun standard(rng: RNGHelper): TourStartByHistogramsRelative<ParameterCollectionStep10S> {
+            return TourStartByHistogramsRelative(rng, OTHER_TOUR_HISTOGRAM)
+        }
+    }
+}
+
 
 val OTHER_TOUR_HISTOGRAM = ParametersStep10S.generateHistogram(
     durationHistogramsFromResourcePath(Identifier.OTHER_TOUR_START_TIME),

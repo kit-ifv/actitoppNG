@@ -121,6 +121,12 @@ class HWeekPattern(
         printActivities(allActivities)
     }
 
+    fun reasonableString() : String {
+        return allActivities.joinToString(separator = "\n") {
+            "${it.activityType.typeasChar}[${it.startTimeWeekContext}, ${it.endTimeWeekContext}] (${it.duration})"
+        }
+    }
+
 
     private fun printActivities(listtoprinte: List<HActivity>) {
         val listtoprint = listtoprinte.sortedBy { it.startTimeWeekContext }

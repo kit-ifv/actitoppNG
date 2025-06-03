@@ -16,6 +16,29 @@ fun <T, R> Iterator<T>.foldUntil(
     return null to acc
 }
 
+
+fun <T> Iterator<T>.takeUntil(predicate: (T) -> Boolean): List<T> {
+    val list = ArrayList<T>()
+    for (item in this) {
+        list.add(item)
+        if(predicate(item)) {
+            break
+        }
+    }
+    return list
+}
+
+fun <T> Sequence<T>.takeUntil(predicate: (T) -> Boolean): Sequence<T> {
+    return sequence<T> {
+        for (item in this@takeUntil) {
+            yield(item)
+            if(predicate(item)) {
+                break
+            }
+        }
+    }
+
+}
 fun <T, R> Sequence<T>.foldUntil(
     predicate: (T) -> Boolean,
     initial: R,

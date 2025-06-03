@@ -10,6 +10,8 @@ import edu.kit.ifv.mobitopp.actitopp.utils.foldUntil
 import edu.kit.ifv.mobitopp.actitopp.modernization.linkByHomeActivity
 import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.steps.step7.TimeBudgets
+import edu.kit.ifv.mobitopp.actitopp.utils.takeUntil
+import kotlin.math.abs
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.minutes
@@ -40,7 +42,7 @@ interface DayPlan : List<LinkedActivity> {
         val absoluteBounds = absoluteBoundsFor(linkedActivity)
         val maximumDuration = absoluteBounds.endInclusive - absoluteBounds.start
 
-        require(maximumDuration in 1.minutes..1.days) {
+        require(maximumDuration >= 1.minutes) {
             "This duration is not reasonable."
         }
         return 1.minutes..maximumDuration
@@ -51,7 +53,14 @@ interface DayPlan : List<LinkedActivity> {
     fun absoluteBoundsFor(tourPlan: TourPlan): ClosedRange<Duration> {
         val initialBounds = absoluteBoundsFor(tourPlan.first())
         return initialBounds
+    }
 
+    fun dayRelativeBoundsFor(tourPlan: TourPlan): ClosedRange<Duration> {
+        val absoluteBounds = absoluteBoundsFor(tourPlan)
+        require(!absoluteBounds.isEmpty()) {
+            "Generating an empty range will never allow proper times to be selected, this should not occur"
+        }
+        return absoluteBounds.start - durationDay.startOfDay..absoluteBounds.endInclusive - durationDay.startOfDay
     }
 }
 
@@ -79,10 +88,6 @@ class MovingDayPlan(
 ) : MutableDayPlan, List<LinkedActivity> by activities {
     private val _mainActivities by lazy { tourPlans.map { it.mainActivity } }
 
-
-    init {
-        println("Creating Day with $activities")
-    }
 
     override fun mainActivities(): List<LinkedActivity> {
         return _mainActivities
@@ -144,7 +149,7 @@ class MovingDayPlan(
         // durations until either a successor is found or the end of the day is reached (checked by comparing against end
         // home activity)
         val (fixedSuccessor, durationToSuccessor) = linkedActivity.iterator().drop(1)
-            .takeWhile { it != endHomeActivityDay }
+            .takeUntil { it == endHomeActivityDay }
             .foldUntil({ it.startTime != null }, Duration.ZERO) { acc, action ->
                 acc + (action.estimatedDuration(estimatedActivityDurations))
             }
@@ -153,7 +158,7 @@ class MovingDayPlan(
             fixec element or the sum of durations up to the start of the day.
          */
         val (fixedPrecursor, durationToPrecursor) = linkedActivity.backwardIterator().drop(1)
-            .takeWhile { it != startHomeActivityDay }.foldUntil({ it.endTime != null }, Duration.ZERO) { acc, action ->
+            .takeUntil { it == startHomeActivityDay }.foldUntil({ it.endTime != null }, Duration.ZERO) { acc, action ->
                 acc + (action.estimatedDuration(estimatedActivityDurations))
             }
         // If a precursor is found, that start time is a better bound for the current element, if not use 0 as relative start time of the day
@@ -161,7 +166,7 @@ class MovingDayPlan(
 
         // Similarly, a successor with a fixed time is a better bound for the potential end time of this element, but if nothing
         // has a fixed time, the end of the day is the fallback.
-        val latestEndTime = (fixedSuccessor?.startTime ?: (durationDay.startOfDay + 1.days)) - durationToSuccessor
+        val latestEndTime = (fixedSuccessor?.startTime ?: (durationDay.startOfDay + 1.days)) - durationToSuccessor - linkedActivity.estimatedDuration(estimatedActivityDurations)
 
         return earliestStartTime..latestEndTime
     }

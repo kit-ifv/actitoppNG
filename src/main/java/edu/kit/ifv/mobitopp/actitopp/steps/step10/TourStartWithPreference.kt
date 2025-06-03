@@ -49,23 +49,22 @@ val FIRST_TOUR_HISTOGRAM: ActivityDurationHistograms<ParameterCollectionStep10M>
 
 
 
-class TourStartWithPreference(private val rng: RNGHelper, override val preferredTourStart: ArrayHistogram? = null) :
+class TourStartWithPreference<P>(private val rng: RNGHelper, private val startTimeHistograms: ActivityDurationHistograms<P>, override val preferredTourStart: ArrayHistogram? = null) :
     SelectTourStartWithPreference {
 
     override fun selectStartTime(input: MobilityPlanInputs, preferredTourStart: ArrayHistogram?): Duration {
-        val bounds = input.dayPlan.absoluteBoundsFor(input.tourPlan)
-        return preferredTourStart?.let {
+        val bounds = input.dayPlan.dayRelativeBoundsFor(input.tourPlan)
+        preferredTourStart?.let {
             if (it.intersects(bounds)) {
-                it.select(
+                return it.select(
                     rng.randomValue,
                     bounds.start,
                     bounds.endInclusive
                 )
-            } else {
-                null
             }
 
-        } ?: FIRST_TOUR_HISTOGRAM.select(rng, bounds) {
+        }
+        return startTimeHistograms.select(rng, bounds) {
             MainDurationSituation(it, input)
         }
     }

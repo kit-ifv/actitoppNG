@@ -7,7 +7,7 @@ import edu.kit.ifv.mobitopp.actitopp.steps.step7.ArrayHistogram
 
 
 fun MobilityPlan.assignPreferredTourStart(strategy: PersonPreferredTourStart): ArrayHistogram? {
-    if(!person.isAnywayEmployed() || !person.isinEducation()) return null
+    if(!person.isAnywayEmployed() && !person.isinEducation()) return null
     if(activityMap[ActivityType.WORK]?.isNotEmpty() == true || activityMap[ActivityType.EDUCATION]?.isNotEmpty() == true) {
         return strategy.determinePreferredTourStart(
             MobilityPlanInputs(

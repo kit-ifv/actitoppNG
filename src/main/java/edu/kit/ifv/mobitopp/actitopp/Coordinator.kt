@@ -14,6 +14,13 @@ import edu.kit.ifv.mobitopp.actitopp.modernization.assignDirectly
 import edu.kit.ifv.mobitopp.actitopp.modernization.calculateTourAmounts
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.StandardCommuteDurations
 import edu.kit.ifv.mobitopp.actitopp.steps.step1.assignWeekRoutine
+import edu.kit.ifv.mobitopp.actitopp.steps.step10.FIRST_TOUR_HISTOGRAM
+import edu.kit.ifv.mobitopp.actitopp.steps.step10.SECOND_TOUR_HISTOGRAM
+import edu.kit.ifv.mobitopp.actitopp.steps.step10.TourStartByHistogramsRelative
+import edu.kit.ifv.mobitopp.actitopp.steps.step10.TourStartWithPreference
+import edu.kit.ifv.mobitopp.actitopp.steps.step10.assignFirstTourStarts
+import edu.kit.ifv.mobitopp.actitopp.steps.step10.assignRemainingTourStarts
+import edu.kit.ifv.mobitopp.actitopp.steps.step10.assignSecondTourStarts
 import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.steps.step7.FinalizedActivityPattern
 import edu.kit.ifv.mobitopp.actitopp.steps.step7.HistogramPerActivity
@@ -24,6 +31,8 @@ import edu.kit.ifv.mobitopp.actitopp.steps.step8.StandardStep8B
 import edu.kit.ifv.mobitopp.actitopp.steps.step8.assignFirstMainActivities
 import edu.kit.ifv.mobitopp.actitopp.steps.step8.assignMinorActivities
 import edu.kit.ifv.mobitopp.actitopp.steps.step8.assignSecondaryMainActivities
+import edu.kit.ifv.mobitopp.actitopp.steps.step9.StandardPreferredTourStart
+import edu.kit.ifv.mobitopp.actitopp.steps.step9.assignPreferredTourStart
 import kotlin.math.max
 import kotlin.math.min
 
@@ -215,10 +224,12 @@ class Coordinator @JvmOverloads constructor(
 
         executeStep7DC("7I", ActivityType.TRANSPORT, randomNumbers[8])
         executeStep7WRD("7J", ActivityType.TRANSPORT, randomNumbers[9])
+        executeStep8A("8A") // This step only determines whether the histogram will be shifted after a selection has been made
+        executeStep8_MainAct("8B", "8C") // The first tour main activity is assigned a duration
+        executeStep8_MainAct("8D", "8E") // The main activity of the other tours is assigned a duration
+        executeStep8_NonMainAct("8J", "8K") // All other activities are assigned a duration
 
-        repeat(24) {
-           rngCopy.randomValue
-        }
+
         val mobilityPlan =
             patternStructure.toPlan(personWithRoutine, StandardCommuteDurations.STANDARD_ASSIGNMENT, output)
 
@@ -227,12 +238,32 @@ class Coordinator @JvmOverloads constructor(
         mobilityPlan?.assignMinorActivities(AssignMinorActivityDuration(rngCopy))
 
 
-        executeStep8A("8A") // This step only determines whether the histogram will be shifted after a selection has been made
-        executeStep8_MainAct("8B", "8C") // The first tour main activity is assigned a duration
-        executeStep8_MainAct("8D", "8E") // The main activity of the other tours is assigned a duration
-        executeStep8_NonMainAct("8J", "8K") // All other activities are assigned a duration
+        rngCopy.synchronize(randomGenerator)
 
         executeStep9A("9A") // Determines the start time category of the first tour of the day, if working or education
+        val preferredHistogram = mobilityPlan?.assignPreferredTourStart(StandardPreferredTourStart(rngCopy))
+        mobilityPlan?.let {
+            val firstStrategy = TourStartWithPreference(
+                rng = rngCopy,
+                startTimeHistograms = FIRST_TOUR_HISTOGRAM,
+                preferredTourStart = preferredHistogram
+            )
+
+            val secondStrategy = TourStartWithPreference(
+                rng = rngCopy,
+                startTimeHistograms = SECOND_TOUR_HISTOGRAM,
+                preferredTourStart = preferredHistogram
+            )
+            it.assignFirstTourStarts(firstStrategy)
+            it.assignSecondTourStarts(secondStrategy)
+            it.assignRemainingTourStarts(TourStartByHistogramsRelative.standard(rngCopy))
+
+            val b = it.isConsistent()
+            it.extrudeHomeActivities()
+        }
+
+
+
 
         executeStep10A("10A") // This is a yes no decision, it sets a field called "default_start_cat_yes"
 
@@ -257,7 +288,7 @@ class Coordinator @JvmOverloads constructor(
 
         // 2) create home activities to be performed between tours
         createHomeActivities(allModeledActivities)
-
+//        println(pattern.reasonableString())
         // DEBUG
         if (Configuration.debugenabled) {
             pattern.printAllActivitiesList()
@@ -1316,8 +1347,8 @@ class Coordinator @JvmOverloads constructor(
 
             // create step object
             val step = DCDefaultModelStep(id, fileBase, lookup, randomGenerator)
-            val decision = step.doStep()
-
+            val rnd = randomGenerator.randomValue
+            val decision = step.doStep(rnd)
             log(id, person, decision.toString())
 
             person.addAttributetoMap("first_tour_default_start_cat", decision.toDouble())

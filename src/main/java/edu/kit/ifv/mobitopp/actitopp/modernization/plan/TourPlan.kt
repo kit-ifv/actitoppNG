@@ -4,6 +4,7 @@ import edu.kit.ifv.mobitopp.actitopp.modernization.LinkedActivity
 import edu.kit.ifv.mobitopp.actitopp.modernization.ModernizedActivity
 import edu.kit.ifv.mobitopp.actitopp.modernization.Position
 import edu.kit.ifv.mobitopp.actitopp.modernization.TourStructure
+import edu.kit.ifv.mobitopp.actitopp.modernization.linkByHomeActivity
 import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.DurationUnit
@@ -22,7 +23,7 @@ class TourPlan private constructor(
     override fun toString(): String {
         return "$linkedActivities"
     }
-
+    val nextHomeActivity get()= linkedActivities.last().next?.nextActivity
 
     val activityDurations by lazy {
         linkedActivities.sumOf { it.duration?.toDouble(DurationUnit.MINUTES) ?: throw IllegalStateException("Some Activities have no duration yet set.") }.minutes

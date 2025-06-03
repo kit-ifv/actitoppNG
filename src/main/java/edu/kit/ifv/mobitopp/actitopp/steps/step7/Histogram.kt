@@ -1,16 +1,12 @@
 package edu.kit.ifv.mobitopp.actitopp.steps.step7
 
 import edu.kit.ifv.mobitopp.actitopp.IO.loadDistributionInformationFromFile
-import edu.kit.ifv.mobitopp.actitopp.WRDDiscreteDistribution
 import edu.kit.ifv.mobitopp.actitopp.WRDModelDistributionInformation
 import edu.kit.ifv.mobitopp.actitopp.changes.Category
+import edu.kit.ifv.mobitopp.actitopp.utils.ceilWholeMinutes
 import java.nio.file.Path
-import java.util.Comparator
-import kotlin.io.path.Path
 import kotlin.io.path.name
-import kotlin.math.max
 import kotlin.math.min
-import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
@@ -121,7 +117,7 @@ open class ArrayHistogram protected constructor(
      * Instead of passing absolute bounds, you can also specify relative bounds. The result will however still be absolute
      */
     fun selectRelative(randomNumber: Double, lowerBoundRelative: Int? = null, upperBoundRelative: Int? = null): Duration {
-        return select(randomNumber, lowerBoundRelative?.let { it + offset }, upperBoundRelative?.let { it + offset })
+        return selectInt(randomNumber, lowerBoundRelative?.let { it + offset }, upperBoundRelative?.let { it + offset })
     }
 
     /**
@@ -129,7 +125,7 @@ open class ArrayHistogram protected constructor(
      * transformed using an affine translation to match the probabiliy range of the cumulative sum of the elements within
      * the
      */
-    fun select(randomNumber: Double, lowerBoundInclusive: Int? = null, upperBoundInclusive: Int? = null): Duration {
+    fun selectInt(randomNumber: Double, lowerBoundInclusive: Int? = null, upperBoundInclusive: Int? = null): Duration {
         val lb = lowerBoundInclusive?.let {
             val index = it - offset
             if (index > 0) index - 1 else null
@@ -141,13 +137,16 @@ open class ArrayHistogram protected constructor(
         }
         val lowerCumulativeProbability = lb?.let { _cumulativeSum[it] } ?: 0.0
         val upperCumulativeProbability = _cumulativeSum[ub]
+        // TODO add protection in case the probabilities of all elements in the range are 0, because the affine transformation will most likely produce a NaN
         val affineRandomNumber = randomNumber.affineTransform(lowerCumulativeProbability, upperCumulativeProbability)
 
         return (_cumulativeSum.indexBinarySearch(affineRandomNumber, lb ?: 0, ub) + offset).minutes
     }
 
     fun select(randomNumber: Double, lowerBoundInclusive: Duration? = null, upperBoundInclusive: Duration? = null): Duration {
-        return select(randomNumber, lowerBoundInclusive?.inWholeMinutes?.toInt(), upperBoundInclusive?.inWholeMinutes?.toInt())
+        val lb = lowerBoundInclusive?.ceilWholeMinutes
+        val ub = upperBoundInclusive?.inWholeMinutes?.toInt()
+        return selectInt(randomNumber, lb, ub)
     }
     /**
      * Affine transform the target number so that the interval of 0..1 is mapped to lower..upper
@@ -172,7 +171,7 @@ open class ArrayHistogram protected constructor(
     }
 
     companion object {
-
+        // The +1 is correct, the histogram path names do not match the reference numbers in the choice models... for some reason....
         fun fromPath(path: Path) = fromWRDDistribution(loadDistributionInformationFromFile(path)
         ,path.name.split('_').last().split('.').first().toInt() + 1).trim()
         fun fromWRDDistribution(modelDistribution: WRDModelDistributionInformation, categoryIndex: Int): ArrayHistogram {

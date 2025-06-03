@@ -1,7 +1,5 @@
 package edu.kit.ifv.mobitopp.actitopp.steps.step7
 
-import edu.kit.ifv.mobitopp.actitopp.HDay
-import edu.kit.ifv.mobitopp.actitopp.HWeekPattern
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.changes.Category
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
@@ -102,7 +100,7 @@ class HistogramPerActivity(
         finalizedActivityPattern: FinalizedActivityPattern,
     ): Pair<Duration, Category> {
         val histogram = select(rngHelper.randomValue, finalizedActivityPattern)
-        return histogram.select(rngHelper.randomValue) to histogram.categoryIndex
+        return histogram.selectInt(rngHelper.randomValue) to histogram.categoryIndex
     }
 
     private fun HistogramSelection.select(
@@ -111,6 +109,6 @@ class HistogramPerActivity(
         finalizedActivityPattern: FinalizedActivityPattern,
     ): Pair<Duration, Category> {
         val histogram = select(firstRnd, finalizedActivityPattern)
-        return histogram.select(secondRnd) to histogram.categoryIndex
+        return histogram.selectInt(secondRnd) to histogram.categoryIndex
     }
 }
