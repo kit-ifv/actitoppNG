@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.modernization
 
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
+import edu.kit.ifv.mobitopp.actitopp.RNGKeeper
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.steps.TourPositionAttributesByIndex
 import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
@@ -20,7 +21,7 @@ fun interface AssignMainActivityOfSideTour {
 
 
 
-class AssignByUtilityFunction(private val patternStructure: PatternStructure, val rngHelper: RNGHelper) : AssignMainActivityOfSideTour {
+class AssignByUtilityFunction(private val patternStructure: PatternStructure, val rngHelper: RNGKeeper) : AssignMainActivityOfSideTour {
     override fun generateSideTourActivities(input: DayWithPlans): Pair<List<ActivityType>, List<ActivityType>> {
         val plannedPrecursors = input.plannedTourAmounts.precursorAmount
         val plannedSuccessors = input.plannedTourAmounts.successorAmount
@@ -48,7 +49,9 @@ class AssignByUtilityFunction(private val patternStructure: PatternStructure, va
                 if (day.shouldNotBeEducationDay(routine)) availableOptions.remove(
                     ActivityType.EDUCATION
                 )
-                step4WithParams.select(availableOptions, rngHelper.randomValue) {
+
+                val rnd = rngHelper.pull("4A")
+                step4WithParams.select(availableOptions, rnd) {
                     TourSituation(
                         it,
                         input.personWithRoutine.person,

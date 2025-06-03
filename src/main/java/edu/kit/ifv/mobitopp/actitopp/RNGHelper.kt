@@ -1,16 +1,29 @@
 package edu.kit.ifv.mobitopp.actitopp
 
+import java.util.Queue
 import kotlin.math.abs
 import kotlin.random.Random
+
+interface RNGHelper {
+    val randomValue: Double
+    val generationCounter: Int
+    fun copy(): RNGHelper
+    @Deprecated("Pure int index based should never occur, use a wrapper")
+    fun getRandomPersonKey(size: Int): Int
+    fun getRandomValueBetween(from: Int, to: Int): Int
+    companion object {
+        operator fun invoke(seed: Long) = RNGHelperImpl(seed)
+    }
+}
 
 /**
  * @author Tim Hilgert
  */
-class RNGHelper private constructor(
+class RNGHelperImpl private constructor(
 
     val seed: Long,
     private val rng : Random
-) {
+): RNGHelper {
 
     constructor(seed: Long): this(seed = seed, rng = Random(seed))
     /**
@@ -20,8 +33,8 @@ class RNGHelper private constructor(
     var lastRandomValue: Double = 0.0
         private set
 
-    private var generationCounter = 0
-    val randomValue: Double
+    override var generationCounter = 0
+    override val randomValue: Double
         /**
          * @return
          */
@@ -43,7 +56,8 @@ class RNGHelper private constructor(
      * @param bound
      * @return
      */
-    fun getRandomPersonKey(bound: Int): Int {
+
+    override fun getRandomPersonKey(bound: Int): Int {
         generationCounter++
         return rng.nextInt(bound)
     }
@@ -55,14 +69,14 @@ class RNGHelper private constructor(
      *
      * If in the future anyone requires stepSize -> In kotlin you can pass the stepSize to the range.
      */
-    fun getRandomValueBetween(from: Int, to: Int): Int {
+    override fun getRandomValueBetween(from: Int, to: Int): Int {
         generationCounter++
         require(from <= to) { "FROM bigger than TO $from $to" }
         return (from..to).random(rng)
     }
 
-    fun copy(): RNGHelper {
-        return RNGHelper(seed)
+    override fun copy(): RNGHelper {
+        return RNGHelperImpl(seed)
     }
 
     fun synchronize(other: RNGHelper) {
@@ -94,4 +108,34 @@ fun RNGHelper.getRandomValues(amount: Int): List<Double> {
     return (0..<amount).map{
         randomValue
     }
+}
+
+/**
+ * The randomness of legacy actitopp is stepped through in a nondecipherable way, so we track the randomness generated,
+ * and pull the values if needed.
+ */
+class RNGKeeper(val original: RNGHelper): RNGHelper by original {
+    val tracker: MutableMap<String, ArrayDeque<Double>> = mutableMapOf()
+    fun generate(id: String): Double {
+        val rnd = original.randomValue
+        val queue = tracker.getOrPut(id) {
+            ArrayDeque()
+        }
+        queue.add(rnd)
+        println("Adding for $id size ${queue.size}")
+        return rnd
+    }
+
+    fun pull(id: String): Double {
+
+        val queue = tracker.getOrElse(id) {
+            throw NoSuchElementException("This shouldn't work$id does not exist ${tracker.keys}")
+        }
+        println("Pullin for $id size ${queue.size}")
+        if(queue.isEmpty()) {
+            throw NoSuchElementException("Queue should not be empty")
+        }
+        return queue.removeFirst()
+    }
+
 }

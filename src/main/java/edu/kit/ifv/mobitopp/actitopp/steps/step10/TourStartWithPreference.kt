@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.steps.step10
 
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
+import edu.kit.ifv.mobitopp.actitopp.RNGKeeper
 import edu.kit.ifv.mobitopp.actitopp.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitopp.steps.step7.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitopp.steps.step8.ActivityDurationHistograms
@@ -49,13 +50,18 @@ val FIRST_TOUR_HISTOGRAM: ActivityDurationHistograms<ParameterCollectionStep10M>
 
 
 
-class TourStartWithPreference<P>(private val rng: RNGHelper, private val startTimeHistograms: ActivityDurationHistograms<P>, override val preferredTourStart: ArrayHistogram? = null) :
+class TourStartWithPreference<P>(private val rng: RNGKeeper, val categoryID: String, val  weightedDrawID: String,  private val startTimeHistograms: ActivityDurationHistograms<P>, override val preferredTourStart: ArrayHistogram? = null) :
     SelectTourStartWithPreference {
 
     override fun selectStartTime(input: MobilityPlanInputs, preferredTourStart: ArrayHistogram?): Duration {
         val bounds = input.dayPlan.dayRelativeBoundsFor(input.tourPlan)
+
+        val rnd1 = rng.pull(categoryID)
+        val rnd2 = rng.pull(weightedDrawID)
+
         preferredTourStart?.let {
             if (it.intersects(bounds)) {
+                TODO("Debug whether rnd1 is set. ")
                 return it.select(
                     rng.randomValue,
                     bounds.start,
@@ -64,7 +70,7 @@ class TourStartWithPreference<P>(private val rng: RNGHelper, private val startTi
             }
 
         }
-        return startTimeHistograms.select(rng, bounds) {
+        return startTimeHistograms.select(rnd1, rnd2, bounds) {
             MainDurationSituation(it, input)
         }
     }

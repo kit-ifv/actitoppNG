@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.modernization
 
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
+import edu.kit.ifv.mobitopp.actitopp.RNGKeeper
 import edu.kit.ifv.mobitopp.actitopp.WeekRoutine
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.DetermineTripDuration
@@ -58,7 +59,7 @@ class PatternStructure(
 
     fun determineNextMainActivity(
         activityTypeFilter: ActivityTypeFilter = Step2Tracking,
-        rngHelper: RNGHelper,
+        rngKeeper: RNGKeeper,
     ): ActivityType {
         val currentDay = days.lastOrNull()?.next() ?: DurationDay.FIRST
         days.add(currentDay)
@@ -68,17 +69,17 @@ class PatternStructure(
                 weekRoutine,
                 coordinatedStep2AWithParams.registeredOptions()
             )
-        val rng = rngHelper
-        return determineActivityFor(activeOptions, currentDay, rng)
+        return determineActivityFor(activeOptions, currentDay, rngKeeper)
     }
 
     private fun determineActivityFor(
         availableOptions: Set<ActivityType>,
         day: DurationDay,
-        rngHelper: RNGHelper,
+        rngHelper: RNGKeeper,
     ): ActivityType {
 
-        val randomNumber = rngHelper.randomValue
+//        val randomNumber = rngHelper.randomValue
+        val randomNumber = rngHelper.pull("2A")
 
         val converter: (ActivityType) -> DaySituation = {
             DaySituation(
@@ -112,7 +113,9 @@ class PatternStructure(
 
 }
 
-class Generator(private val patternStructure: PatternStructure, private val personWithRoutine: PersonWithRoutine, val rngHelper: RNGHelper) {
+class Generator(private val patternStructure: PatternStructure,
+                private val personWithRoutine: PersonWithRoutine,
+                val rngHelper: RNGKeeper) {
 
     private val mainActivityOfSideTours: AssignMainActivityOfSideTour = AssignByUtilityFunction(patternStructure, rngHelper)
     fun generateSideTours(tourAmounts: Map<DurationDay, PlannedTourAmounts>): Map<ModifiableDayStructure, Pair<List<ActivityType>, List<ActivityType>>> {

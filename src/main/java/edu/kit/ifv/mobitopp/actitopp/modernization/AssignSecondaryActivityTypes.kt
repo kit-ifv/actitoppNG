@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.modernization
 
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
+import edu.kit.ifv.mobitopp.actitopp.RNGKeeper
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.steps.step6.ActivitySituation
@@ -35,13 +36,15 @@ fun Map<DayStructure, Map<BidirectionalIndexedValue<TourStructure>, PlannedTourA
 class ExampleAssign(
     val patternStructure: PatternStructure,
     val personWithRoutine: PersonWithRoutine,
-    val rngHelper: RNGHelper,
+    val rngHelper: RNGKeeper,
 ) : AssignSecondaryActivityTypes {
-    override fun generateSecondaryActivityTypes(input: SecondaryActInput): Pair<List<ActivityType>, List<ActivityType>> {
+    override fun generateSecondaryActivityTypes(input: SecondaryActInput):
+            Pair<List<ActivityType>, List<ActivityType>> {
         val precursors = input.plannedTourAmounts.precursorAmount
         val successors = input.plannedTourAmounts.successorAmount
 
-        return (0..<precursors).calculate(Position.BEFORE, input) to (0..<successors).calculate(Position.AFTER, input)
+        return (0..<precursors).calculate(Position.BEFORE, input) to
+                (0..<successors).calculate(Position.AFTER, input)
     }
 
     private fun Iterable<Int>.calculate(position: Position, input: SecondaryActInput): List<ActivityType> {
@@ -58,9 +61,12 @@ class ExampleAssign(
                     ActivityType.EDUCATION
                 )
                 val converter: (ActivityType) -> ActivitySituation = {
-                    ActivitySituation(it, personWithRoutine, input.dayStructure, input.tourStructure, position, input.plannedTourAmounts)
+                    ActivitySituation(it, personWithRoutine,
+                        input.dayStructure,
+                        input.tourStructure, position, input.plannedTourAmounts)
                 }
-                step6WithParams.select(availableOptions, rngHelper.randomValue, converter)
+                val rnd = rngHelper.pull("6A")
+                step6WithParams.select(availableOptions, rnd, converter)
             }
         }
     }

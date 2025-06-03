@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.modernization
 
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
+import edu.kit.ifv.mobitopp.actitopp.RNGKeeper
 import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.steps.step3.GenerateSideToursFollowing
 import edu.kit.ifv.mobitopp.actitopp.steps.step3.GenerateSideToursPreceeding
@@ -42,7 +43,9 @@ data class ModifiableStructureWithPreviousDay(
  * TODO define an interface to allow for different strategies to determine the planned tour amounts, because some maniac
  *   may use completely new attributes to determine the number of tours.
  */
-class TourAmountTracker(initialDayStructures: Collection<DayStructure>, val person: PersonWithRoutine, val rngHelper: RNGHelper) {
+class TourAmountTracker(initialDayStructures: Collection<DayStructure>,
+                        val person: PersonWithRoutine,
+                        val rngHelper: RNGKeeper) {
     // Irealy wish that I could find a better solution than to allow every field to be modifiable, because home activities
     // should not have a modifiable field for tour amounts, but since it is private whatever
     private val map: PlannedTourMap = PlannedTourMap(initialDayStructures)
@@ -96,7 +99,7 @@ class TourAmountTracker(initialDayStructures: Collection<DayStructure>, val pers
 
 }
 
-fun PatternStructure.calculateTourAmounts(person: PersonWithRoutine, rngHelper: RNGHelper): Map<DurationDay, PlannedTourAmounts> {
+fun PatternStructure.calculateTourAmounts(person: PersonWithRoutine, rngHelper: RNGKeeper): Map<DurationDay, PlannedTourAmounts> {
     val tracker = TourAmountTracker(allDays(), person = person, rngHelper = rngHelper)
     tracker.generateSideTours(mobileDays())
     return tracker.output()

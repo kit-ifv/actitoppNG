@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.steps.step8
 
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
+import edu.kit.ifv.mobitopp.actitopp.RNGKeeper
 import edu.kit.ifv.mobitopp.actitopp.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
@@ -12,11 +13,13 @@ fun interface StandardDuration {
     fun getAssignedStandardDuration(input: MobilityPlanInputs): Boolean
 }
 
-class UtilityFunctionAssignment(val rngHelper: RNGHelper): StandardDuration {
+class UtilityFunctionAssignment(val rngHelper: RNGKeeper): StandardDuration {
     override fun getAssignedStandardDuration(input: MobilityPlanInputs): Boolean {
-        return choiceModel.select(rngHelper.randomValue) {
+        val randomNumber = rngHelper.pull("8A")
+
+        return choiceModel.select(randomNumber) {
             BooleanDecisionSituation(it, input)
-        }
+        }.also { println("Modernized 8A $rngHelper -> $it") }
     }
 
     private val choiceModel = ModifiableDiscreteChoiceModel<Boolean, BooleanDecisionSituation, ParameterCollectionStep8A>(

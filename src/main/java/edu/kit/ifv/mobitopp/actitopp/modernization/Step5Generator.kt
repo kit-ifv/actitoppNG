@@ -1,13 +1,14 @@
 package edu.kit.ifv.mobitopp.actitopp.modernization
 
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
+import edu.kit.ifv.mobitopp.actitopp.RNGKeeper
 import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.steps.step5.DayAmountTracker
 
 class Step5Generator(
     private val patternStructure: PatternStructure,
     val personWithRoutine: PersonWithRoutine,
-    val rngHelper: RNGHelper,
+    val rngHelper: RNGKeeper,
 ) {
 
     private val relevantDays = patternStructure.mobileDays()

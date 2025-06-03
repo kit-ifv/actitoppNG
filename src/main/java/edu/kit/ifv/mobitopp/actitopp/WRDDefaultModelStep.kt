@@ -65,14 +65,6 @@ class WRDDefaultModelStep(
     @Deprecated("Only used in the print method below")
     private var chosenDistributionElement = 0
 
-    fun printDecisionProcess() {
-        println("--------------- MC-Simulation @ " + this.id + this.category + this.activityType + " ---------------")
-        println("From " + this.bounds.first)
-        println("To " + this.bounds.last)
-        println("Random Value: " + modelCoordinator.randomGenerator.lastRandomValue)
-        println("Chosen: $chosenDistributionElement")
-        println("")
-    }
 
     /**
      * @param lowerbound

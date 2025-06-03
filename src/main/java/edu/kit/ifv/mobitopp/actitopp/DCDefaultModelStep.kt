@@ -204,6 +204,7 @@ class DCDefaultModelStep(
     /**
      * prints the decision process for debug reasons
      */
+    @Deprecated("Don't use console print debugging for legacy model")
     fun printDecisionProcess() {
         println("-------- DECISIONS FOR STEP " + this.id + " ---------------")
 
@@ -217,7 +218,7 @@ class DCDefaultModelStep(
         }
 
         println("Chosen alternative: $alternativeChosen")
-        println("Random Value: " + randomgenerator.lastRandomValue)
+//        println("Random Value: " + randomgenerator.lastRandomValue)
         println("SAVED for: $attributeLookup")
         println()
     }

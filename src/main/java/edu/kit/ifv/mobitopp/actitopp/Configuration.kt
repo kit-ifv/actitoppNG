@@ -206,6 +206,6 @@ object Configuration {
     /*
      * ONLY FOR DEBUG ON CONSOLE
      */
-    
+    @Deprecated("This flag should not be used, debugging via console is dirty")
     var debugenabled: Boolean = false
 }

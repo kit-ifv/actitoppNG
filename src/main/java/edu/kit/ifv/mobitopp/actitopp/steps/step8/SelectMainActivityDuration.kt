@@ -2,6 +2,7 @@ package edu.kit.ifv.mobitopp.actitopp.steps.step8
 
 
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
+import edu.kit.ifv.mobitopp.actitopp.RNGKeeper
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.modernization.durations.MobilityPlanInputs
 import java.util.EnumSet
@@ -12,8 +13,10 @@ fun interface SelectMainActivityDuration {
 }
 
 class StandardStep8B<P>(
-    private val rng: RNGHelper,
+    private val rng: RNGKeeper,
     histogram: ActivityDurationHistograms<P>,
+    val categoryDiscreteChoiceID: String,
+    val weightedRandomDrawID: String,
     private val useStandardDuration: StandardDuration = UtilityFunctionAssignment(rng),
 ) : SelectMainActivityDuration, SelectMajorActivityDuration {
     private val taintedHistograms = histogram.taint()
@@ -37,7 +40,7 @@ class StandardStep8B<P>(
     fun calculateFixedAndTarnish(input: MobilityPlanInputs): Duration {
         return input.run {
             val meanActivityDuration = dayPlan.getBudget(tourMainActivityType)
-            taintedHistograms.selectAndTaint(rng, meanActivityDuration) {
+            taintedHistograms.selectAndTaint(rng.pull("8A"), rng.pull(weightedRandomDrawID), meanActivityDuration) {
                 MainDurationSituation(
                     it,
                     this
@@ -51,7 +54,7 @@ class StandardStep8B<P>(
 
         return input.run {
             val bounds = dayPlan.boundsFor(tourPlan.mainActivity)
-            taintedHistograms.select(rng, bounds) {
+            taintedHistograms.select(rng.pull(categoryDiscreteChoiceID), rng.pull(weightedRandomDrawID), bounds) {
                 MainDurationSituation(
                     it,
                     this

@@ -6,10 +6,15 @@ import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType.Companion.getTypeFromChar
 import edu.kit.ifv.mobitopp.actitopp.enums.JointStatus
 import edu.kit.ifv.mobitopp.actitopp.enums.TripStatus
+import edu.kit.ifv.mobitopp.actitopp.modernization.BidirectionalIndexedValue
+import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
+import edu.kit.ifv.mobitopp.actitopp.modernization.DurationDay
 import edu.kit.ifv.mobitopp.actitopp.modernization.ExampleAssign
 import edu.kit.ifv.mobitopp.actitopp.modernization.Generator
 import edu.kit.ifv.mobitopp.actitopp.modernization.PatternStructure
+import edu.kit.ifv.mobitopp.actitopp.modernization.PlannedTourAmounts
 import edu.kit.ifv.mobitopp.actitopp.modernization.Step5Generator
+import edu.kit.ifv.mobitopp.actitopp.modernization.TourStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.assignDirectly
 import edu.kit.ifv.mobitopp.actitopp.modernization.calculateTourAmounts
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.StandardCommuteDurations
@@ -24,6 +29,7 @@ import edu.kit.ifv.mobitopp.actitopp.steps.step10.assignSecondTourStarts
 import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.steps.step7.FinalizedActivityPattern
 import edu.kit.ifv.mobitopp.actitopp.steps.step7.HistogramPerActivity
+import edu.kit.ifv.mobitopp.actitopp.steps.step7.TimeBudgets
 import edu.kit.ifv.mobitopp.actitopp.steps.step8.AssignMinorActivityDuration
 import edu.kit.ifv.mobitopp.actitopp.steps.step8.LEAD
 import edu.kit.ifv.mobitopp.actitopp.steps.step8.MAJOR
@@ -51,11 +57,10 @@ class Coordinator @JvmOverloads constructor(
     val fileBase: ModelFileBase, private val debugloggers: DebugLoggers? = null,
 ) {
 
-    val randomGenerator = person.personalRNG
-    val rngCopy = randomGenerator.copy()
+    val randomGeneratorDeprecated = person.personalRNG
 
-    // TODO remove once tested and confirmed identical
-    val rngCopy2 = rngCopy.copy()
+    val randomGenerator = RNGKeeper(randomGeneratorDeprecated)
+
 
     /**///////////// */ //	declaration of variables
     private val pattern: HWeekPattern = person.weekPattern
@@ -92,7 +97,7 @@ class Coordinator @JvmOverloads constructor(
             determineMinimumTourActivityBounds()
         }
 
-        val weekRoutine = person.assignWeekRoutine(rngCopy)
+
 
 
         executeStep1("1A", "anztage_w") // Appears to determine amount of days working?
@@ -104,126 +109,70 @@ class Coordinator @JvmOverloads constructor(
 
         executeStep1("1K", "anztourentag_mean")
         executeStep1("1L", "anzakttag_mean")
-        require(weekRoutine.similarToAttributeMap(person.attributesMap)) {
-            "Mismatch between week routine and person map \n$weekRoutine \n${person.attributesMap}"
-        }
-        repeat(8) {
-            rngCopy2.randomValue
-        }
 
+        val weekRoutine = person.assignWeekRoutine(randomGenerator)
+
+
+        testRoutineEquality(weekRoutine)
         val personWithRoutine = PersonWithRoutine(person, weekRoutine)
         val patternStructure = PatternStructure(personWithRoutine)
 
         executeStep2("2A")
 
-        val mainActivitiesNew = (0..6).map {
-            patternStructure.determineNextMainActivity(rngHelper = rngCopy)
-        }
-
-        val legacyMainActivities =
-            pattern.days.map { it.getTourOrNull(0)?.getActivity(0)?.activityType ?: ActivityType.HOME }
-
-        require(legacyMainActivities.zip(mainActivitiesNew).all { (a, b) -> a == b }) {
-            "Mismatch between generated activity schedules"
-        }
-//        pattern.assignMainActivityCoordinated(PersonWithRoutine(person, weekRoutine), rngCopy)
-
+        testMainActivityEquality(patternStructure)
+        executeStep3("3A")
+        executeStep3("3B")
         val tourAmounts = patternStructure.calculateTourAmounts(
             person = personWithRoutine,
-            rngCopy
+            randomGenerator
         )
-        executeStep3("3A")
-        val modernizedAmountPrecursors = tourAmounts.map { it.value.precursorAmount }
-        val legacyAmountPrecursors = pattern.days.map { it.amountOfPreviousTours() }
-        require(legacyAmountPrecursors.zip(modernizedAmountPrecursors).all { (a, b) -> a == b }) {
-            "Output mismatch between predecessor tour amounts ${person.id}"
-        }
 
-        executeStep3("3B")
-        val legacyAmountSuccessors = pattern.days.map { it.amountOfLaterTours() }
-        val modernizedAmountSuccessors = tourAmounts.map { it.value.successorAmount }
-        require(legacyAmountSuccessors.zip(modernizedAmountSuccessors).all { (a, b) -> a == b }) {
-            "Mismatch between successor tour amounts ${person.id}"
-        }
+        testTourAmountEquality(tourAmounts)
         executeStep4("4A")
-        val generator = Generator(patternStructure, personWithRoutine, rngCopy)
+        val generator = Generator(patternStructure, personWithRoutine, randomGenerator)
         generator.loadSideTours(tourAmounts)
 
-        val legacyActivityTypes = pattern.days.map { it.tours.map { it.activities.map { it.activityType } } }
-        val moderniedSideAc = patternStructure.allDays().map { it.elements().map { it.elements() } }
-        require(
-            legacyActivityTypes.flatten().flatten().zip(moderniedSideAc.flatten().flatten()).all { (a, b) -> a == b }) {
-            "There are some activities that did not get the correct assignment :/"
-        }
+        testTourTypeEquality(patternStructure)
         executeStep5("5A") // Create Activities before main activity (?)
         executeStep5("5B") // Create Activities after  main activity (?)
 
-        val step5Gen = Step5Generator(patternStructure, personWithRoutine, rngCopy)
+        val step5Gen = Step5Generator(patternStructure, personWithRoutine, randomGenerator)
         step5Gen.calculate()
-
-//        val trackers = patternStructure.mobileDays().associateWith {
-//            DayAmountTracker(it, rngCopy, personWithRoutine)
-//        }
-
-//        val pred = trackers.values.map { it.generatePredecessors() }
-//        val succ = trackers.values.map {
-//            it.generateSuccessors()
-//        }
-
         val step5output = step5Gen.output()
-        val pred = step5output.values.flatMap { it.values.map { it.precursorAmount } }
-        val succ = step5output.values.flatMap { it.values.map { it.successorAmount } }
-
-        val legacyTourActivitiesPred = pattern.allTours.map { it.activities.filter { it.index < 0 }.count() }
-        val legacyTourActivitiesSucc = pattern.allTours.map { it.activities.filter { it.index > 0 }.count() }
-        val modernizedTourActivitiesPred = pred
-//        val modernizedTourActivitiesPred = pred.flatMap { it.values }
-        val modernizedTourActivitiesSucc = succ
-//        val modernizedTourActivitiesSucc = succ.flatMap { it.values }
-        require(legacyTourActivitiesPred.zip(modernizedTourActivitiesPred).all { (a, b) -> a == b }) {
-            "Misaligned amount of tour pred activity counts ${person.id}"
-        }
-
-        require(legacyTourActivitiesSucc.zip(modernizedTourActivitiesSucc).all { (a, b) -> a == b }) {
-            "Misaligned amount of tour succ activity counts ${person.id}"
-        }
+        testStep5Equality(step5output)
         executeStep6("6A") // Determine Activity Type for all non main activities (?)
 
-        val nextStep = ExampleAssign(patternStructure, personWithRoutine, rngCopy)
+        val nextStep = ExampleAssign(patternStructure, personWithRoutine, randomGenerator)
         step5output.assignDirectly(nextStep)
-//        nextStep.generateSecondaryActivityTypes()
 
-        val allLegacyActivities = pattern.days.flatMap { it.allActivitiesoftheDay.map { it.activityType } }
-        val allModernizedActivity = patternStructure.allDays().flatMap { it.elements().flatMap { it.elements() } }
-        require(allLegacyActivities.zip(allModernizedActivity).all { (a, b) -> a == b }) {
-            "Activity list mismatch for person ${person.id}"
-        }
-        createTripTimesforActivities()
+        testStep6Equality(patternStructure)
+        createTripTimesforActivities() // TODO figure out if this legacy method does anything
 
         // joint activities
         if (Configuration.modelJointActions) {
             placeJointActivitiesIntoPattern()
         }
 
-        val randomNumbers = (0..9).map { randomGenerator.randomValue }
-        rngCopy.synchronize(randomGenerator)
-        val output = STATIC_HISTOGRAMS.determineTimeBudgets(randomNumbers, FinalizedActivityPattern(person, pattern))
+        executeStep7DC("7A", ActivityType.WORK, )
+        executeStep7WRD("7B", ActivityType.WORK, )
 
+        executeStep7DC("7C", ActivityType.EDUCATION, )
+        executeStep7WRD("7D", ActivityType.EDUCATION, )
 
-        executeStep7DC("7A", ActivityType.WORK, randomNumbers[0])
-        executeStep7WRD("7B", ActivityType.WORK, randomNumbers[1])
+        executeStep7DC("7E", ActivityType.LEISURE, )
+        executeStep7WRD("7F", ActivityType.LEISURE, )
 
-        executeStep7DC("7C", ActivityType.EDUCATION, randomNumbers[2])
-        executeStep7WRD("7D", ActivityType.EDUCATION, randomNumbers[3])
+        executeStep7DC("7G", ActivityType.SHOPPING, )
+        executeStep7WRD("7H", ActivityType.SHOPPING, )
 
-        executeStep7DC("7E", ActivityType.LEISURE, randomNumbers[4])
-        executeStep7WRD("7F", ActivityType.LEISURE, randomNumbers[5])
+        executeStep7DC("7I", ActivityType.TRANSPORT, )
+        executeStep7WRD("7J", ActivityType.TRANSPORT, )
 
-        executeStep7DC("7G", ActivityType.SHOPPING, randomNumbers[6])
-        executeStep7WRD("7H", ActivityType.SHOPPING, randomNumbers[7])
+        val output = STATIC_HISTOGRAMS.determineTimeBudgets(randomGenerator,
+            FinalizedActivityPattern(person, pattern))
 
-        executeStep7DC("7I", ActivityType.TRANSPORT, randomNumbers[8])
-        executeStep7WRD("7J", ActivityType.TRANSPORT, randomNumbers[9])
+        testTimeEquality(output)
+
         executeStep8A("8A") // This step only determines whether the histogram will be shifted after a selection has been made
         executeStep8_MainAct("8B", "8C") // The first tour main activity is assigned a duration
         executeStep8_MainAct("8D", "8E") // The main activity of the other tours is assigned a duration
@@ -233,30 +182,33 @@ class Coordinator @JvmOverloads constructor(
         val mobilityPlan =
             patternStructure.toPlan(personWithRoutine, StandardCommuteDurations.STANDARD_ASSIGNMENT, output)
 
-        mobilityPlan?.assignFirstMainActivities(StandardStep8B(rngCopy, LEAD))
-        mobilityPlan?.assignSecondaryMainActivities(StandardStep8B(rngCopy, MAJOR))
-        mobilityPlan?.assignMinorActivities(AssignMinorActivityDuration(rngCopy))
+        mobilityPlan?.assignFirstMainActivities(StandardStep8B(randomGenerator, LEAD, "8B", "8C"))
+        mobilityPlan?.assignSecondaryMainActivities(StandardStep8B(randomGenerator, MAJOR, "8D", "8E"))
+        mobilityPlan?.assignMinorActivities(AssignMinorActivityDuration(randomGenerator, "8J", "8K"))
 
 
-        rngCopy.synchronize(randomGenerator)
 
         executeStep9A("9A") // Determines the start time category of the first tour of the day, if working or education
-        val preferredHistogram = mobilityPlan?.assignPreferredTourStart(StandardPreferredTourStart(rngCopy))
+        val preferredHistogram = mobilityPlan?.assignPreferredTourStart(StandardPreferredTourStart(randomGenerator))
         mobilityPlan?.let {
             val firstStrategy = TourStartWithPreference(
-                rng = rngCopy,
+                rng = randomGenerator,
+                categoryID = "10M",
+                weightedDrawID = "10N",
                 startTimeHistograms = FIRST_TOUR_HISTOGRAM,
                 preferredTourStart = preferredHistogram
             )
 
             val secondStrategy = TourStartWithPreference(
-                rng = rngCopy,
+                rng = randomGenerator,
+                categoryID = "10O",
+                weightedDrawID = "10P",
                 startTimeHistograms = SECOND_TOUR_HISTOGRAM,
                 preferredTourStart = preferredHistogram
             )
             it.assignFirstTourStarts(firstStrategy)
             it.assignSecondTourStarts(secondStrategy)
-            it.assignRemainingTourStarts(TourStartByHistogramsRelative.standard(rngCopy))
+            it.assignRemainingTourStarts(TourStartByHistogramsRelative.standard(randomGenerator))
 
             val b = it.isConsistent()
             it.extrudeHomeActivities()
@@ -303,6 +255,80 @@ class Coordinator @JvmOverloads constructor(
 
     }
 
+    private fun testTimeEquality(timeBudgets: TimeBudgets) {
+
+
+
+    }
+
+    private fun testStep6Equality(patternStructure: PatternStructure) {
+        val allLegacyActivities = pattern.days.flatMap { it.allActivitiesoftheDay.map { it.activityType } }
+        val allModernizedActivity = patternStructure.allDays().flatMap { it.elements().flatMap { it.elements() } }
+        require(allLegacyActivities.zip(allModernizedActivity).all { (a, b) -> a == b }) {
+            "Activity list mismatch for person ${person.id}"
+        }
+    }
+
+    private fun testStep5Equality(step5output: Map<DayStructure, Map<BidirectionalIndexedValue<TourStructure>, PlannedTourAmounts>>) {
+        val pred = step5output.values.flatMap { it.values.map { it.precursorAmount } }
+        val succ = step5output.values.flatMap { it.values.map { it.successorAmount } }
+
+        val legacyTourActivitiesPred = pattern.allTours.map { it.activities.filter { it.index < 0 }.count() }
+        val legacyTourActivitiesSucc = pattern.allTours.map { it.activities.filter { it.index > 0 }.count() }
+        val modernizedTourActivitiesPred = pred
+        val modernizedTourActivitiesSucc = succ
+
+        require(legacyTourActivitiesPred.zip(modernizedTourActivitiesPred).all { (a, b) -> a == b }) {
+            "Misaligned amount of tour pred activity counts ${person.id}"
+        }
+        require(legacyTourActivitiesSucc.zip(modernizedTourActivitiesSucc).all { (a, b) -> a == b }) {
+            "Misaligned amount of tour succ activity counts ${person.id}"
+        }
+    }
+
+    private fun testTourTypeEquality(patternStructure: PatternStructure) {
+        val legacyActivityTypes = pattern.days.map { it.tours.map { it.activities.map { it.activityType } } }
+        val moderniedSideAc = patternStructure.allDays().map { it.elements().map { it.elements() } }
+        require(
+            legacyActivityTypes.flatten().flatten().zip(moderniedSideAc.flatten().flatten()).all { (a, b) -> a == b }) {
+            "There are some activities that did not get the correct assignment :/"
+        }
+    }
+
+    private fun testTourAmountEquality(tourAmounts: Map<DurationDay, PlannedTourAmounts>) {
+        val modernizedAmountPrecursors = tourAmounts.map { it.value.precursorAmount }
+        val legacyAmountPrecursors = pattern.days.map { it.amountOfPreviousTours() }
+        require(legacyAmountPrecursors.zip(modernizedAmountPrecursors).all { (a, b) -> a == b }) {
+            "Output mismatch between predecessor tour amounts ${person.id}"
+        }
+
+
+        val legacyAmountSuccessors = pattern.days.map { it.amountOfLaterTours() }
+        val modernizedAmountSuccessors = tourAmounts.map { it.value.successorAmount }
+        require(legacyAmountSuccessors.zip(modernizedAmountSuccessors).all { (a, b) -> a == b }) {
+            "Mismatch between successor tour amounts ${person.id}"
+        }
+    }
+
+    private fun testMainActivityEquality(patternStructure: PatternStructure) {
+        val mainActivitiesNew = (0..6).map {
+            patternStructure.determineNextMainActivity(rngKeeper = randomGenerator)
+        }
+
+        val legacyMainActivities =
+            pattern.days.map { it.getTourOrNull(0)?.getActivity(0)?.activityType ?: ActivityType.HOME }
+
+        require(legacyMainActivities.zip(mainActivitiesNew).all { (a, b) -> a == b }) {
+            "Mismatch between generated activity schedules"
+        }
+    }
+
+    private fun testRoutineEquality(weekRoutine: WeekRoutine) {
+        require(weekRoutine.similarToAttributeMap(person.attributesMap)) {
+            "Mismatch between week routine and person map \n$weekRoutine \n${person.attributesMap}"
+        }
+    }
+
     /**
      * select the minimum number of tours and activities for each day
      * based on the list of known joint activities, the method decides for a minimum number of tours
@@ -347,7 +373,7 @@ class Coordinator @JvmOverloads constructor(
 
         // create step object
         val step = DCDefaultModelStep(id, fileBase, lookup, randomGenerator)
-        val rand = randomGenerator.randomValue
+        val rand = randomGenerator.generate(id)
         step.doStep(rand)
         // save result
         var decision = step.alternativeChosen.toDouble()
@@ -421,7 +447,7 @@ class Coordinator @JvmOverloads constructor(
                 }
 
                 // make selection
-                val decision = step.doStep()
+                val decision = step.doStep(randomGenerator.generate(id))
                 val activityType = getTypeFromChar(step.alternativeChosen[0])
 
 
@@ -502,7 +528,7 @@ class Coordinator @JvmOverloads constructor(
             }
 
             // make selection
-            val decision = step.doStep()
+            val decision = step.doStep(randomGenerator.generate(id))
             log(id, currentDay, decision.toString())
 
             // create tours based on the decision and add them to the pattern
@@ -524,7 +550,7 @@ class Coordinator @JvmOverloads constructor(
     /**
      * @param id
      */
-    private fun executeStep4(id: String) {
+     private fun executeStep4(id: String) {
         // STEP 4A Main activity for all other tours
         for (currentDay in pattern.days) {
             // skip day if person is at home
@@ -560,7 +586,7 @@ class Coordinator @JvmOverloads constructor(
                     }
 
                     // make selection
-                    val decision = step.doStep()
+                    val decision = step.doStep(randomGenerator.generate(id))
                     val activityType = getTypeFromChar(step.alternativeChosen[0])
 
                     log(id, currentTour, activityType.toString())
@@ -630,7 +656,7 @@ class Coordinator @JvmOverloads constructor(
                 step.limitLowerBoundOnly(minimumnumberofactivities)
 
                 // make selection
-                val decision = step.doStep()
+                val decision = step.doStep(randomGenerator.generate(id))
 
 
 
@@ -697,7 +723,7 @@ class Coordinator @JvmOverloads constructor(
                         }
 
                         //make selection
-                        val decision = step.doStep()
+                        val decision = step.doStep(randomGenerator.generate(id))
 
                         // set activity type
                         val activityType = getTypeFromChar(step.alternativeChosen[0])
@@ -713,6 +739,7 @@ class Coordinator @JvmOverloads constructor(
     /**
      * determination of default trip times for all activities
      */
+    @Deprecated("This method appears to do nothing")
     private fun createTripTimesforActivities() {
         for (day in pattern.days) {
             for (tour in day.tours) {
@@ -1019,14 +1046,14 @@ class Coordinator @JvmOverloads constructor(
      * @param id
      * @param variablenname
      */
-    private fun executeStep7DC(id: String, activitytype: ActivityType, randomNumber: Double? = null) {
+    private fun executeStep7DC(id: String, activitytype: ActivityType) {
         if (pattern.countActivitiesPerWeek(activitytype) > 0) {
             // create attribute lookup
             val lookup = AttributeLookup(person)
 
             // create step object
             val step = DCDefaultModelStep(id, fileBase, lookup, randomGenerator)
-            val decisionIndex = randomNumber?.let { step.doStep(it) } ?: step.doStep()
+            val decisionIndex = step.doStep(randomGenerator.generate(id))
             val decision = step.alternativeChosen.toInt()
 
             log(id, person, decision.toString())
@@ -1064,13 +1091,13 @@ class Coordinator @JvmOverloads constructor(
      * @param id
      * @param activitytype
      */
-    private fun executeStep7WRD(id: String, activitytype: ActivityType, randomNumber: Double? = null) {
+    private fun executeStep7WRD(id: String, activitytype: ActivityType) {
         if (pattern.countActivitiesPerWeek(activitytype) > 0) {
             // get decision from step 7 DC
             val chosenIndex = person.getAttributefromMap(activitytype.toString() + "budget_category_index")
             //TODO why is get Attribute returning a double, which is then cast to an int. Skip the intermediate step
             val step = WRDDefaultModelStep(id, Category(chosenIndex.toInt()), activitytype, this)
-            val chosenTime = randomNumber?.let { step.doStep(it) } ?: step.doStep()
+            val chosenTime = step.doStep(randomGenerator.generate(id))
 
             log(id, person, chosenTime.toString())
 
@@ -1098,15 +1125,21 @@ class Coordinator @JvmOverloads constructor(
                 }
                 if (!currentActivity.durationisScheduled()) {
                     // create attribute lookup
-                    val lookup = AttributeLookup(person, currentDay, currentTour, currentActivity)
 
-                    // create step object
-                    val step = DCDefaultModelStep(id, fileBase, lookup, randomGenerator)
-                    val decision = step.doStep()
+                    if (Configuration.coordinated_modelling &&
+                        (currentActivity.activityType == ActivityType.WORK ||
+                                currentActivity.activityType == ActivityType.EDUCATION)
+                    ) {
 
-                    log(id, currentActivity, step.alternativeChosen.toString())
-                    // save attribute for work and education activities if coordinated modeling is enabled
-                    if (Configuration.coordinated_modelling && (currentActivity.activityType == ActivityType.WORK || currentActivity.activityType == ActivityType.EDUCATION)) {
+                        val lookup = AttributeLookup(person, currentDay, currentTour, currentActivity)
+
+
+                        // create step object
+                        val step = DCDefaultModelStep(id, fileBase, lookup, randomGenerator)
+                        val decision = step.doStep(randomGenerator.generate(id))
+                        println("Step 8A: $randomGenerator -> $decision")
+                        log(id, currentActivity, step.alternativeChosen.toString())
+                        // save attribute for work and education activities if coordinated modeling is enabled
                         currentActivity.addAttributetoMap(
                             "standarddauer",
                             (if (step.alternativeChosen == "yes") 1.0 else 0.0)
@@ -1204,10 +1237,10 @@ class Coordinator @JvmOverloads constructor(
                             if (step_dc.lowerBound >= step_dc.upperBound) step_dc.limitLowerBoundOnly(step_dc.upperBound)
                         }
 
-                        assert(step_dc.lowerBound  <= step_dc.upperBound)
-                        val rng1 = randomGenerator.randomValue
+                        assert(step_dc.lowerBound <= step_dc.upperBound)
+
                         // make selection
-                        val decision = step_dc.doStep(rng1)
+                        val decision = step_dc.doStep(randomGenerator.generate(id_dc))
                         println("Step $id_dc: $randomGenerator -> Category($decision)")
                         log(id_dc, currentActivity, decision.toString())
                         // TODO, why is actdurcat_index added to the map, and read 2 lines down, and never used at any other location?.
@@ -1228,11 +1261,8 @@ class Coordinator @JvmOverloads constructor(
                         step_wrd.setRangeBounds(durationBounds[0], durationBounds[1])
 
                         if (currentActivity.attributesMap["standarddauer"] == 1.0) step_wrd.setModifydistribution(true)
-                        val rng2 = randomGenerator.randomValue
-
-
                         // make selection
-                        val chosenTime = step_wrd.doStep(rng2)
+                        val chosenTime = step_wrd.doStep(randomGenerator.generate(id_wrd))
                         println("Step $id_wrd: $randomGenerator -> $chosenTime")
                         log(id_wrd, currentActivity, chosenTime.toString())
 
@@ -1303,7 +1333,7 @@ class Coordinator @JvmOverloads constructor(
                         assert(step_dc.lowerBound <= step_dc.upperBound)
 
                         // make selection
-                        val decision = step_dc.doStep()
+                        val decision = step_dc.doStep(randomGenerator.generate(id_dc))
 
                         log(id_dc, currentActivity, decision.toString())
 
@@ -1324,7 +1354,7 @@ class Coordinator @JvmOverloads constructor(
                         step_wrd.setRangeBounds(durationBounds[0], durationBounds[1])
 
                         // make selection
-                        val chosenTime = step_wrd.doStep()
+                        val chosenTime = step_wrd.doStep(randomGenerator.generate(id_wrd))
 
                         log(id_wrd, currentActivity, chosenTime.toString())
 
@@ -1950,11 +1980,12 @@ class Coordinator @JvmOverloads constructor(
             if (actfrom == null) true else
                 actfrom >= it
         }.filter {
-            if(actto == null) true else
+            if (actto == null) true else
                 actto <= it
         }.sumOf {
             it.estimatedTripTimeBeforeActivity + if (it.isActivityLastinTour) it.estimatedTripTimeAfterActivity else 0
-        } - (actfrom?.estimatedTripTimeBeforeActivity ?: 0) - (if(actto?.isActivityLastinTour == true) actto.estimatedTripTimeAfterActivity else 0)
+        } - (actfrom?.estimatedTripTimeBeforeActivity
+            ?: 0) - (if (actto?.isActivityLastinTour == true) actto.estimatedTripTimeAfterActivity else 0)
 
     }
 
@@ -1990,7 +2021,6 @@ class Coordinator @JvmOverloads constructor(
                  */
 
         val tourday = tour.day
-
 
 
         /*
@@ -2105,11 +2135,13 @@ class Coordinator @JvmOverloads constructor(
         if (categories && tour.index == tourday.lowestTourIndex) {
             for (i in 0..<Configuration.NUMBER_OF_FIRST_START_TIME_CLASSES) {
                 if (lowerbound >= Configuration.FIRST_TOUR_START_TIMECLASSES_LB[i] &&
-                    lowerbound <= Configuration.FIRST_TOUR_START_TIMECLASSES_UB[i]) {
+                    lowerbound <= Configuration.FIRST_TOUR_START_TIMECLASSES_UB[i]
+                ) {
                     lowercat = i
                 }
                 if (upperbound >= Configuration.FIRST_TOUR_START_TIMECLASSES_LB[i] &&
-                    upperbound <= Configuration.FIRST_TOUR_START_TIMECLASSES_UB[i]) {
+                    upperbound <= Configuration.FIRST_TOUR_START_TIMECLASSES_UB[i]
+                ) {
                     uppercat = i
                 }
             }
@@ -2119,11 +2151,13 @@ class Coordinator @JvmOverloads constructor(
         if (categories && tour.index != tourday.lowestTourIndex) {
             for (i in 0..<Configuration.NUMBER_OF_SECTHR_START_TIME_CLASSES) {
                 if (lowerbound >= Configuration.SECTHR_TOUR_START_TIMECLASSES_LB[i] &&
-                    lowerbound <= Configuration.SECTHR_TOUR_START_TIMECLASSES_UB[i]) {
+                    lowerbound <= Configuration.SECTHR_TOUR_START_TIMECLASSES_UB[i]
+                ) {
                     lowercat = i
                 }
                 if (upperbound >= Configuration.SECTHR_TOUR_START_TIMECLASSES_LB[i] &&
-                    upperbound <= Configuration.SECTHR_TOUR_START_TIMECLASSES_UB[i]) {
+                    upperbound <= Configuration.SECTHR_TOUR_START_TIMECLASSES_UB[i]
+                ) {
                     uppercat = i
                 }
             }

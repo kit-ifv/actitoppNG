@@ -5,6 +5,7 @@ import edu.kit.ifv.mobitopp.actitopp.HDay
 import edu.kit.ifv.mobitopp.actitopp.HTour
 import edu.kit.ifv.mobitopp.actitopp.WeekRoutine
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
+import edu.kit.ifv.mobitopp.actitopp.RNGKeeper
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.ModifiableDayStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.ModifiablePlannedTourAmounts
@@ -14,7 +15,7 @@ import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ParametrizedDiscreteChoiceModel
 
 
-class GenerateSideToursPreceeding(rngHelper: RNGHelper,
+class GenerateSideToursPreceeding(rngHelper: RNGKeeper,
                                   choiceModel: ParametrizedDiscreteChoiceModel<Int, PreviousDaySituation, ParameterCollectionStep3A> = step3AWithParams,
 ) : DefaultSideTourDeterminer<ParameterCollectionStep3A>(rngHelper, choiceModel) {
 //    override fun createChoiceSituation(
@@ -48,4 +49,6 @@ class GenerateSideToursPreceeding(rngHelper: RNGHelper,
     override fun update(day: ModifiablePlannedTourAmounts, result: Int) {
         day.precursorAmount = result
     }
+
+    override val stringID: String = "3A"
 }

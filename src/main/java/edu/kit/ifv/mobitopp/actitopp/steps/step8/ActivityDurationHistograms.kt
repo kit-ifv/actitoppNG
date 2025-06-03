@@ -2,6 +2,7 @@ package edu.kit.ifv.mobitopp.actitopp.steps.step8
 
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
+import edu.kit.ifv.mobitopp.actitopp.RNGKeeper
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.enums.Employment
 import edu.kit.ifv.mobitopp.actitopp.enums.isParttime
@@ -42,9 +43,9 @@ open class ActivityDurationHistograms<P>(
     // TODO histograms could be a sorted Set, since they are supposed to cover respective ranges.
     open val histograms: List<ArrayHistogram>,
     open val choiceModel: ParametrizedDiscreteChoiceModel<ArrayHistogram, MainDurationSituation, P>,
-    val emergencyBehaviour: (ClosedRange<Duration>, RNGHelper) -> Duration = {range, rng ->
-        rng.getRandomValueBetween(range.start.inWholeMinutes.toInt(), range.endInclusive.inWholeMinutes.toInt()).minutes
-
+    val emergencyBehaviour: (ClosedRange<Duration>, Double) -> Duration = {range, rng ->
+//        rng.getRandomValueBetween(range.start.inWholeMinutes.toInt(), range.endInclusive.inWholeMinutes.toInt()).minutes
+        TODO()
     }
 ) {
 
@@ -53,7 +54,7 @@ open class ActivityDurationHistograms<P>(
      * Select duration from selected histogram.
      */
     fun chooseHistogramFromNeighbors(
-        rngHelper: RNGHelper,
+        randomValue: Double,
         duration: Duration,
         converter: (ArrayHistogram) -> MainDurationSituation,
     ): ArrayHistogram {
@@ -61,8 +62,7 @@ open class ActivityDurationHistograms<P>(
         val mainHistogram = histograms[index]
         val previousHistogram = histograms.getOrNull(index - 1)
         val nextHistogram = histograms.getOrNull(index + 1)
-        val rng = rngHelper.randomValue
-        val selectedHistogram = choiceModel.selectNew(rng, converter) {
+        val selectedHistogram = choiceModel.selectNew(randomValue, converter) {
             previousHistogram?.let {
                 option(it)
             }
@@ -83,30 +83,26 @@ open class ActivityDurationHistograms<P>(
     }
 
     fun select(
-        rngHelper: RNGHelper,
+        rnd1: Double,
+        rnd2: Double,
         bounds: ClosedRange<Duration>,
         converter: (ArrayHistogram) -> MainDurationSituation,
     ): Duration {
         val options = histograms.filter { it.end >= bounds.start && it.start <= bounds.endInclusive }.toSet()
 
         if(options.isEmpty()) {
-            return emergencyBehaviour(bounds, rngHelper)
+            return emergencyBehaviour(bounds, rnd1)
         }
 
-        val rng1 = rngHelper.randomValue
         // It can happen that no histogram fits, because they are trimmed. The default behaviour of legacy actitopp is to return a random value.
 
 
-        val concreteHistogram = choiceModel.select(options, rng1, converter)
-        println("Modernized: $rngHelper -> Category(${concreteHistogram.categoryIndex})")
-        val rng2 = rngHelper.randomValue
+        val concreteHistogram = choiceModel.select(options, rnd1, converter)
         return concreteHistogram.selectInt(
-            rng2,
+            rnd2,
             bounds.start.inWholeMinutes.toInt(),
             bounds.endInclusive.inWholeMinutes.toInt()
-        ).also {
-            println("Modernized $rngHelper $it")
-        }
+        )
     }
 
     /**
@@ -127,25 +123,26 @@ class TaintedActivityDurationHistograms<P>(
 
 
     fun selectAndTaint(
-        rngHelper: RNGHelper,
+        rngNumberOne: Double,
+        rngNumberTwo: Double,
         duration: Duration,
         converter: (ArrayHistogram) -> MainDurationSituation,
     ): Duration {
 
-        val selectedHistogram = original.chooseHistogramFromNeighbors(rngHelper, duration, converter)
-        val randomNumber = rngHelper.randomValue
+        val selectedHistogram = original.chooseHistogramFromNeighbors(rngNumberOne, duration, converter)
         val taint = taintedHistograms.getValue(selectedHistogram)
 
 
-        return taint.select(randomNumber).also { taint.modify(it.inWholeMinutes.toInt()) }
+        return taint.select(rngNumberTwo).also { taint.modify(it.inWholeMinutes.toInt()) }
     }
 
     fun select(
-        rngHelper: RNGHelper,
+        rnd1: Double,
+        rnd2: Double,
         bounds: ClosedRange<Duration>,
         converter: (ArrayHistogram) -> MainDurationSituation,
     ): Duration {
-        return original.select(rngHelper, bounds, converter)
+        return original.select(rnd1, rnd2, bounds, converter)
     }
 }
 

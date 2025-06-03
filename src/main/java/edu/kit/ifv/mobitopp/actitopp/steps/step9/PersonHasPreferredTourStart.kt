@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.steps.step9
 
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
+import edu.kit.ifv.mobitopp.actitopp.RNGKeeper
 import edu.kit.ifv.mobitopp.actitopp.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitopp.steps.step10.FIRST_TOUR_HISTOGRAM
 import edu.kit.ifv.mobitopp.actitopp.steps.step10.ParameterStep10M
@@ -218,7 +219,7 @@ data class ParameterStep9A(
     )
 
 
-class StandardPreferredTourStart(private val rng: RNGHelper) : PersonPreferredTourStart {
+class StandardPreferredTourStart(private val rng: RNGKeeper) : PersonPreferredTourStart {
     private val choiceModel =
         ModifiableDiscreteChoiceModel<ArrayHistogram, MainDurationSituation, ParameterCollectionStep9A>(
             AllocatedLogit.create {
@@ -237,7 +238,7 @@ class StandardPreferredTourStart(private val rng: RNGHelper) : PersonPreferredTo
     override fun determinePreferredTourStart(input: MobilityPlanInputs): ArrayHistogram {
 
         val converter: (ArrayHistogram) -> MainDurationSituation = { MainDurationSituation(it, input) }
-        val randomNumber = rng.randomValue
+        val randomNumber = rng.pull("9A")
         return choiceModel.select(randomNumber, converter)
     }
 }

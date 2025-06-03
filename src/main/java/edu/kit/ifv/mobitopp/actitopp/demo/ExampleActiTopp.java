@@ -14,7 +14,7 @@ import edu.kit.ifv.mobitopp.actitopp.ModelFileBase;
 public class ExampleActiTopp {
 
     private static ModelFileBase fileBase = new ModelFileBase();
-    private static RNGHelper randomgenerator = new RNGHelper(1234);
+    private static RNGHelper randomgenerator = RNGHelper.Companion.invoke(1234);
     private static DebugLoggers debugloggers = new DebugLoggers();
 
     /**
