@@ -98,12 +98,15 @@ open class ActivityDurationHistograms<P>(
 
 
         val concreteHistogram = choiceModel.select(options, rng1, converter)
+        println("Modernized: $rngHelper -> Category(${concreteHistogram.categoryIndex})")
         val rng2 = rngHelper.randomValue
         return concreteHistogram.selectInt(
             rng2,
             bounds.start.inWholeMinutes.toInt(),
             bounds.endInclusive.inWholeMinutes.toInt()
-        )
+        ).also {
+            println("Modernized $rngHelper $it")
+        }
     }
 
     /**

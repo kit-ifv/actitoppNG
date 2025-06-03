@@ -81,6 +81,8 @@ class RNGHelper private constructor(
 
     }
 
+    fun isSynchronized(other: RNGHelper) = generationCounter == other.generationCounter
+
     override fun toString(): String {
         return "Rand($seed) $generationCounter"
     }

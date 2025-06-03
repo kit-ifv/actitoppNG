@@ -206,7 +206,7 @@ class Coordinator @JvmOverloads constructor(
         }
 
         val randomNumbers = (0..9).map { randomGenerator.randomValue }
-
+        rngCopy.synchronize(randomGenerator)
         val output = STATIC_HISTOGRAMS.determineTimeBudgets(randomNumbers, FinalizedActivityPattern(person, pattern))
 
 
@@ -260,6 +260,7 @@ class Coordinator @JvmOverloads constructor(
 
             val b = it.isConsistent()
             it.extrudeHomeActivities()
+            println(it)
         }
 
 
@@ -288,7 +289,7 @@ class Coordinator @JvmOverloads constructor(
 
         // 2) create home activities to be performed between tours
         createHomeActivities(allModeledActivities)
-//        println(pattern.reasonableString())
+        println(pattern.reasonableString())
         // DEBUG
         if (Configuration.debugenabled) {
             pattern.printAllActivitiesList()
@@ -1207,7 +1208,7 @@ class Coordinator @JvmOverloads constructor(
                         val rng1 = randomGenerator.randomValue
                         // make selection
                         val decision = step_dc.doStep(rng1)
-
+                        println("Step $id_dc: $randomGenerator -> Category($decision)")
                         log(id_dc, currentActivity, decision.toString())
                         // TODO, why is actdurcat_index added to the map, and read 2 lines down, and never used at any other location?.
                         currentActivity.addAttributetoMap("actdurcat_index", decision.toDouble())
@@ -1228,9 +1229,11 @@ class Coordinator @JvmOverloads constructor(
 
                         if (currentActivity.attributesMap["standarddauer"] == 1.0) step_wrd.setModifydistribution(true)
                         val rng2 = randomGenerator.randomValue
+
+
                         // make selection
                         val chosenTime = step_wrd.doStep(rng2)
-
+                        println("Step $id_wrd: $randomGenerator -> $chosenTime")
                         log(id_wrd, currentActivity, chosenTime.toString())
 
                         currentActivity.duration = chosenTime
