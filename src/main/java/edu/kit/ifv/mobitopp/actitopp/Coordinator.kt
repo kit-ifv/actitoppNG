@@ -6,6 +6,7 @@ import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType.Companion.getTypeFromChar
 import edu.kit.ifv.mobitopp.actitopp.enums.JointStatus
 import edu.kit.ifv.mobitopp.actitopp.enums.TripStatus
+import edu.kit.ifv.mobitopp.actitopp.modernization.Activity
 import edu.kit.ifv.mobitopp.actitopp.modernization.BidirectionalIndexedValue
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.DurationDay
@@ -186,9 +187,23 @@ class Coordinator @JvmOverloads constructor(
         mobilityPlan?.assignSecondaryMainActivities(StandardStep8B(randomGenerator, MAJOR, "8D", "8E"))
         mobilityPlan?.assignMinorActivities(AssignMinorActivityDuration(randomGenerator, "8J", "8K"))
 
+        testActivityDurationEquality(mobilityPlan?.outOfHomeActivities()?: emptySet(
 
+        ))
 
         executeStep9A("9A") // Determines the start time category of the first tour of the day, if working or education
+
+
+        executeStep10A("10A") // This is a yes no decision, it sets a field called "default_start_cat_yes"
+
+        createTourStartTimesDueToScheduledActivities()
+
+        executeStep10("10M", "10N", 1) // Calculates start time for tour number 1 per day
+        executeStep10("10O", "10P", 2) // Calculates start time for tour number 2 per day
+
+        executeStep10ST()
+
+
         val preferredHistogram = mobilityPlan?.assignPreferredTourStart(StandardPreferredTourStart(randomGenerator))
         mobilityPlan?.let {
             val firstStrategy = TourStartWithPreference(
@@ -212,20 +227,8 @@ class Coordinator @JvmOverloads constructor(
 
             val b = it.isConsistent()
             it.extrudeHomeActivities()
-            println(it)
+//            println(it)
         }
-
-
-
-
-        executeStep10A("10A") // This is a yes no decision, it sets a field called "default_start_cat_yes"
-
-        createTourStartTimesDueToScheduledActivities()
-
-        executeStep10("10M", "10N", 1) // Calculates start time for tour number 1 per day
-        executeStep10("10O", "10P", 2) // Calculates start time for tour number 2 per day
-
-        executeStep10ST()
 
         if (Configuration.modelJointActions) {
             executeStep11("11")
@@ -241,7 +244,7 @@ class Coordinator @JvmOverloads constructor(
 
         // 2) create home activities to be performed between tours
         createHomeActivities(allModeledActivities)
-        println(pattern.reasonableString())
+//        println(pattern.reasonableString())
         // DEBUG
         if (Configuration.debugenabled) {
             pattern.printAllActivitiesList()
@@ -254,7 +257,17 @@ class Coordinator @JvmOverloads constructor(
         }
 
     }
-
+    private fun testActivityDurationEquality(activities: Collection<Activity>) {
+        require(pattern.allOutofHomeActivities.size == activities.size) {
+            "Activity sizes mismatch ${pattern.allOutofHomeActivities.size} ${activities.size} "
+        }
+        val mismatches = pattern.allOutofHomeActivities.zip(activities).filter { (legacy, modernized) ->
+            legacy.duration != modernized.duration!!.inWholeMinutes.toInt()
+        }
+        if(mismatches.isNotEmpty()) {
+            println("${person.id}: ${mismatches.map { it.first.duration - (it.second.duration?.inWholeMinutes?.toInt()?: 0)}}")
+        }
+    }
     private fun testTimeEquality(timeBudgets: TimeBudgets) {
 
 
@@ -1136,8 +1149,13 @@ class Coordinator @JvmOverloads constructor(
 
                         // create step object
                         val step = DCDefaultModelStep(id, fileBase, lookup, randomGenerator)
-                        val decision = step.doStep(randomGenerator.generate(id))
-                        println("Step 8A: $randomGenerator -> $decision")
+
+                        val decision = step.doStep(randomGenerator.generate(id + currentDay.weekday.toString()))
+//                        println(currentDay.weekday)
+//                        println(step.utilities { it
+//                        })
+//                        step.printUtilities()
+
                         log(id, currentActivity, step.alternativeChosen.toString())
                         // save attribute for work and education activities if coordinated modeling is enabled
                         currentActivity.addAttributetoMap(
@@ -1241,7 +1259,6 @@ class Coordinator @JvmOverloads constructor(
 
                         // make selection
                         val decision = step_dc.doStep(randomGenerator.generate(id_dc))
-                        println("Step $id_dc: $randomGenerator -> Category($decision)")
                         log(id_dc, currentActivity, decision.toString())
                         // TODO, why is actdurcat_index added to the map, and read 2 lines down, and never used at any other location?.
                         currentActivity.addAttributetoMap("actdurcat_index", decision.toDouble())
@@ -1260,10 +1277,13 @@ class Coordinator @JvmOverloads constructor(
 
                         step_wrd.setRangeBounds(durationBounds[0], durationBounds[1])
 
-                        if (currentActivity.attributesMap["standarddauer"] == 1.0) step_wrd.setModifydistribution(true)
+                        if (currentActivity.attributesMap["standarddauer"] == 1.0)
+                        {
+                            step_wrd.setModifydistribution(true)
+                        }
+
                         // make selection
                         val chosenTime = step_wrd.doStep(randomGenerator.generate(id_wrd))
-                        println("Step $id_wrd: $randomGenerator -> $chosenTime")
                         log(id_wrd, currentActivity, chosenTime.toString())
 
                         currentActivity.duration = chosenTime
@@ -1380,7 +1400,7 @@ class Coordinator @JvmOverloads constructor(
 
             // create step object
             val step = DCDefaultModelStep(id, fileBase, lookup, randomGenerator)
-            val rnd = randomGenerator.randomValue
+            val rnd = randomGenerator.generate(id)
             val decision = step.doStep(rnd)
             log(id, person, decision.toString())
 
@@ -1529,7 +1549,7 @@ class Coordinator @JvmOverloads constructor(
                 }
 
                 // make selection
-                val decision = step_dc.doStep()
+                val decision = step_dc.doStep(randomGenerator.generate(id_dc))
 
                 log(id_dc, currentTour, decision.toString())
                 // TODO this field is never used in any calculation whatsoever, except the calculation below.
@@ -1551,7 +1571,7 @@ class Coordinator @JvmOverloads constructor(
                 step_wrd.setRangeBounds(bounds_mc[0], bounds_mc[1])
 
                 // make selection
-                val chosenStartTime = step_wrd.doStep()
+                val chosenStartTime = step_wrd.doStep(randomGenerator.generate(id_wrd))
 
                 log(id_wrd, currentTour, chosenStartTime.toString())
 
@@ -1600,7 +1620,7 @@ class Coordinator @JvmOverloads constructor(
                     dcstep.limitUpperandLowerBound(lowerbound, upperbound)
 
                     // make selection
-                    val decision = dcstep.doStep()
+                    val decision = dcstep.doStep(randomGenerator.generate("10S"))
 
                     log("10S", currentTour, decision.toString())
 
@@ -1615,7 +1635,7 @@ class Coordinator @JvmOverloads constructor(
                     step_wrd.setRangeBounds(wrdbounds[0], wrdbounds[1])
 
                     // make selection
-                    val chosenTime = step_wrd.doStep()
+                    val chosenTime = step_wrd.doStep(randomGenerator.generate("10T"))
 
 
                     log("10T", currentTour, chosenTime.toString())

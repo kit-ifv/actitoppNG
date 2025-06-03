@@ -46,7 +46,7 @@ class MobilityPlan(
     fun amountOfDaysWithActivity(activityType: ActivityType): Int {
         TODO()
     }
-
+    fun outOfHomeActivities() = activities.filter { it.activityType != ActivityType.HOME }
     val activityMap: Map<ActivityType, List<LinkedActivity>> = activities.groupBy { it.activityType }
 
     /**
@@ -61,9 +61,6 @@ class MobilityPlan(
         }
     }
 
-    fun calculateMeanTime(dayPlan: MutableDayPlan, activityType: ActivityType): Duration {
-        TODO()
-    }
 
     fun isConsistent(): Boolean {
         return startHomeAnchor.iterator().zipWithNext().all { (a, b) ->

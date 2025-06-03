@@ -61,9 +61,9 @@ class TourStartWithPreference<P>(private val rng: RNGKeeper, val categoryID: Str
 
         preferredTourStart?.let {
             if (it.intersects(bounds)) {
-                TODO("Debug whether rnd1 is set. ")
+                // In this instance we discard rnd1 because it is not required to find out that we want to use our preferred histogram. The legacy code will always generate the random number, so for consistency we always need to consume it
                 return it.select(
-                    rng.randomValue,
+                    rnd2,
                     bounds.start,
                     bounds.endInclusive
                 )

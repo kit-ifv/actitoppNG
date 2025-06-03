@@ -15,11 +15,13 @@ fun interface StandardDuration {
 
 class UtilityFunctionAssignment(val rngHelper: RNGKeeper): StandardDuration {
     override fun getAssignedStandardDuration(input: MobilityPlanInputs): Boolean {
-        val randomNumber = rngHelper.pull("8A")
+        val randomNumber = rngHelper.pull("8A" + input.dayPlan.durationDay.weekday.toString())
 
-        return choiceModel.select(randomNumber) {
+        val converter: (Boolean) -> BooleanDecisionSituation = {
             BooleanDecisionSituation(it, input)
-        }.also { println("Modernized 8A $rngHelper -> $it") }
+        }
+
+        return choiceModel.select(randomNumber, converter)
     }
 
     private val choiceModel = ModifiableDiscreteChoiceModel<Boolean, BooleanDecisionSituation, ParameterCollectionStep8A>(
@@ -54,6 +56,7 @@ class UtilityFunctionAssignment(val rngHelper: RNGKeeper): StandardDuration {
                     (it.tourhat2akt()) * tourhat2akt +
                     (it.tourhat3akt()) * tourhat3akt
             }
+
         }
     ).initializeWithParameters(ParametersStep8A)
 }

@@ -122,7 +122,6 @@ class RNGKeeper(val original: RNGHelper): RNGHelper by original {
             ArrayDeque()
         }
         queue.add(rnd)
-        println("Adding for $id size ${queue.size}")
         return rnd
     }
 
@@ -131,7 +130,6 @@ class RNGKeeper(val original: RNGHelper): RNGHelper by original {
         val queue = tracker.getOrElse(id) {
             throw NoSuchElementException("This shouldn't work$id does not exist ${tracker.keys}")
         }
-        println("Pullin for $id size ${queue.size}")
         if(queue.isEmpty()) {
             throw NoSuchElementException("Queue should not be empty")
         }

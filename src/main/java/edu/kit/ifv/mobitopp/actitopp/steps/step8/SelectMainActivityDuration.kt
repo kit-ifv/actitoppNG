@@ -40,7 +40,7 @@ class StandardStep8B<P>(
     fun calculateFixedAndTarnish(input: MobilityPlanInputs): Duration {
         return input.run {
             val meanActivityDuration = dayPlan.getBudget(tourMainActivityType)
-            taintedHistograms.selectAndTaint(rng.pull("8A"), rng.pull(weightedRandomDrawID), meanActivityDuration) {
+            taintedHistograms.selectAndTaint(rng.pull(categoryDiscreteChoiceID), rng.pull(weightedRandomDrawID), meanActivityDuration) {
                 MainDurationSituation(
                     it,
                     this

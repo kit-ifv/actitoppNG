@@ -98,11 +98,12 @@ open class ActivityDurationHistograms<P>(
 
 
         val concreteHistogram = choiceModel.select(options, rnd1, converter)
-        return concreteHistogram.selectInt(
+        val output = concreteHistogram.selectInt(
             rnd2,
             bounds.start.inWholeMinutes.toInt(),
             bounds.endInclusive.inWholeMinutes.toInt()
         )
+        return output
     }
 
     /**
@@ -133,7 +134,9 @@ class TaintedActivityDurationHistograms<P>(
         val taint = taintedHistograms.getValue(selectedHistogram)
 
 
-        return taint.select(rngNumberTwo).also { taint.modify(it.inWholeMinutes.toInt()) }
+        return taint.select(rngNumberTwo).also {
+            taint.modify(it.inWholeMinutes.toInt())
+        }
     }
 
     fun select(
