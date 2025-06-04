@@ -72,7 +72,7 @@ class HActivity @JvmOverloads constructor(
     val person: ActitoppPerson
         get() = day.person
 
-
+    val activityID = person.activityCounter
 
 
 

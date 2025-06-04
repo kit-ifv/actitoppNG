@@ -42,23 +42,33 @@ class ActitoppPerson@JvmOverloads constructor(
     override val commutingdistance_education: Double = .0,
 ) :IPerson {
     override val maxCommute: Double =
-            max(commutingdistance_work, commutingdistance_education)
+        max(commutingdistance_work, commutingdistance_education)
 
-     override val id: Int = ActitoppPerson.idCounter
+    override val id: Int = ActitoppPerson.idCounter
     private val attributes: MutableMap<String, Double> = mutableMapOf()
+
     @TestOnly
     internal fun getMutableMapForTest(): MutableMap<String, Double> = attributes
     override val gender: Gender = Gender.fromCode(genderCode)
     override val employment: Employment = Employment.fromInt(employmentCode)
     override val isAllowedToWork: Boolean = true
     var weekPattern: HWeekPattern = HWeekPattern(this)
+
     // TODO make RNG a bit more random, there could be overlaps in the hash generation.
-    val personalRNG: RNGHelper = RNGHelper((household.householdIndex.hashCode() + persNrinHousehold.hashCode()).toLong())
+    val personalRNG: RNGHelper =
+        RNGHelper((household.householdIndex.hashCode() + persNrinHousehold.hashCode()).toLong())
 
     init {
         household.addHouseholdmember(this, persNrinHousehold)
         attributes["numbermodeledinhh"] = persNrinHousehold.toDouble()
     }
+
+    var activityCounter = 0
+        get() {
+            return field.also { field++ }
+        }
+        private set
+
 
     constructor(tmppers: ActitoppPerson, tmphh: ActiToppHousehold) : this(
         tmphh,
@@ -100,8 +110,6 @@ class ActitoppPerson@JvmOverloads constructor(
 
     // List of joint actions to consider that are first created from other household members
     private val jointActivitiesforConsideration: MutableList<HActivity> = mutableListOf()
-
-
 
 
     override val children0_10: Int
@@ -183,18 +191,40 @@ class ActitoppPerson@JvmOverloads constructor(
      * @param name
      * @param value
      */
+    @Deprecated("Use set operator")
     fun addAttributetoMap(name: String, value: Double) {
         attributes[name] = value
     }
+
+
+    fun addBudget(activityType: ActivityType, name: String, value: Double) =
+        addAttributetoMap("${activityType.typeasChar}$name", value)
 
     /**
      * @param name
      * @return
      */
+    operator fun get(name: String) = attributesMap[name]
+    operator fun set(name: String, value: Double) {
+        attributes[name] = value
+    }
+
+    operator fun get(activityType: ActivityType, name: String): Double =
+        attributesMap["${activityType.typeasChar}$name"]
+
+    operator fun set(activityType: ActivityType, name: String, value: Double) = addBudget(activityType, name, value)
+
+    /**
+     * Replaces old naked string access of "budget_category_alternative"
+     */
+    fun categoryAlternative(activityType: ActivityType) = get(activityType, "budget_category_alternative")
+    fun categoryIndex(activityType: ActivityType) = get(activityType, "budget_category_index")
+    fun budgetExact(activityType: ActivityType) = get(activityType, "budget_exact")
+
+    @Deprecated("Never ever allow free access via strings, thats just bad design")
     fun getAttributefromMap(name: String): Double {
         return attributes[name]!!
     }
-
     /**
      * check existence of attribute
      *

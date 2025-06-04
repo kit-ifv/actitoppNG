@@ -3,6 +3,7 @@ package edu.kit.ifv.mobitopp.actitopp.steps.step8
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.RNGKeeper
+import edu.kit.ifv.mobitopp.actitopp.changes.Category
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.enums.Employment
 import edu.kit.ifv.mobitopp.actitopp.enums.isParttime
@@ -48,7 +49,12 @@ open class ActivityDurationHistograms<P>(
         TODO()
     }
 ) {
-
+    fun categoryFor(duration: Duration): Category {
+        return histograms.first { duration in it }.categoryIndex
+    }
+    fun categoryFor(int: Int): Category {
+        return histograms.first { int in it}.categoryIndex
+    }
     /**
      * Find the proper histogram, select between histogram and neighbors, where main histogram gets a 1.1 boost.
      * Select duration from selected histogram.
@@ -89,12 +95,12 @@ open class ActivityDurationHistograms<P>(
         converter: (ArrayHistogram) -> MainDurationSituation,
     ): Duration {
         val options = histograms.filter { it.end >= bounds.start && it.start <= bounds.endInclusive }.toSet()
-
+        // It can happen that no histogram fits, because they are trimmed. The default behaviour of legacy actitopp is to return a random value.
         if(options.isEmpty()) {
             return emergencyBehaviour(bounds, rnd1)
         }
 
-        // It can happen that no histogram fits, because they are trimmed. The default behaviour of legacy actitopp is to return a random value.
+
 
 
         val concreteHistogram = choiceModel.select(options, rnd1, converter)

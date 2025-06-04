@@ -42,6 +42,7 @@ import edu.kit.ifv.mobitopp.actitopp.steps.step9.StandardPreferredTourStart
 import edu.kit.ifv.mobitopp.actitopp.steps.step9.assignPreferredTourStart
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.time.Duration
 
 val STATIC_HISTOGRAMS = HistogramPerActivity()
 
@@ -154,23 +155,25 @@ class Coordinator @JvmOverloads constructor(
             placeJointActivitiesIntoPattern()
         }
 
-        executeStep7DC("7A", ActivityType.WORK, )
-        executeStep7WRD("7B", ActivityType.WORK, )
+        executeStep7DC("7A", ActivityType.WORK)
+        executeStep7WRD("7B", ActivityType.WORK)
 
-        executeStep7DC("7C", ActivityType.EDUCATION, )
-        executeStep7WRD("7D", ActivityType.EDUCATION, )
+        executeStep7DC("7C", ActivityType.EDUCATION)
+        executeStep7WRD("7D", ActivityType.EDUCATION)
 
-        executeStep7DC("7E", ActivityType.LEISURE, )
-        executeStep7WRD("7F", ActivityType.LEISURE, )
+        executeStep7DC("7E", ActivityType.LEISURE)
+        executeStep7WRD("7F", ActivityType.LEISURE)
 
-        executeStep7DC("7G", ActivityType.SHOPPING, )
-        executeStep7WRD("7H", ActivityType.SHOPPING, )
+        executeStep7DC("7G", ActivityType.SHOPPING)
+        executeStep7WRD("7H", ActivityType.SHOPPING)
 
-        executeStep7DC("7I", ActivityType.TRANSPORT, )
-        executeStep7WRD("7J", ActivityType.TRANSPORT, )
+        executeStep7DC("7I", ActivityType.TRANSPORT)
+        executeStep7WRD("7J", ActivityType.TRANSPORT)
 
-        val output = STATIC_HISTOGRAMS.determineTimeBudgets(randomGenerator,
-            FinalizedActivityPattern(person, pattern))
+        val output = STATIC_HISTOGRAMS.determineTimeBudgets(
+            randomGenerator,
+            FinalizedActivityPattern(person, pattern)
+        )
 
         testTimeEquality(output)
 
@@ -187,9 +190,11 @@ class Coordinator @JvmOverloads constructor(
         mobilityPlan?.assignSecondaryMainActivities(StandardStep8B(randomGenerator, MAJOR, "8D", "8E"))
         mobilityPlan?.assignMinorActivities(AssignMinorActivityDuration(randomGenerator, "8J", "8K"))
 
-        testActivityDurationEquality(mobilityPlan?.outOfHomeActivities()?: emptySet(
+        testActivityDurationEquality(
+            mobilityPlan?.outOfHomeActivities() ?: emptySet(
 
-        ))
+            )
+        )
 
         executeStep9A("9A") // Determines the start time category of the first tour of the day, if working or education
 
@@ -257,21 +262,57 @@ class Coordinator @JvmOverloads constructor(
         }
 
     }
+
+    // TODO this test functionality should be removed in the future
     private fun testActivityDurationEquality(activities: Collection<Activity>) {
+
         require(pattern.allOutofHomeActivities.size == activities.size) {
             "Activity sizes mismatch ${pattern.allOutofHomeActivities.size} ${activities.size} "
         }
+        val oldCategories = pattern.allOutofHomeActivities.map { LEAD.categoryFor(it.duration) to it.activityID }
+        val newCategories = activities.map { LEAD.categoryFor(it.duration ?: Duration.ZERO) }
+        val bad = oldCategories.zip(newCategories).filter { (a, b) ->
+            a.first != b
+        }
+        require(bad.isEmpty()) {
+            "Person(${person.id}) Category mismatch for Activity #${bad.map { it.first.second }} \nOld\n$oldCategories\nNew\n$newCategories"
+        }
+
         val mismatches = pattern.allOutofHomeActivities.zip(activities).filter { (legacy, modernized) ->
             legacy.duration != modernized.duration!!.inWholeMinutes.toInt()
         }
-        if(mismatches.isNotEmpty()) {
-            println("${person.id}: ${mismatches.map { it.first.duration - (it.second.duration?.inWholeMinutes?.toInt()?: 0)}}")
+        if (mismatches.isNotEmpty()) {
+            println("${person.id}: ${mismatches.map { it.first.duration - (it.second.duration?.inWholeMinutes?.toInt() ?: 0) }}")
         }
     }
+
     private fun testTimeEquality(timeBudgets: TimeBudgets) {
+        timeBudgets.run {
+
+                require(testCategory(ActivityType.WORK, workCategory))
+                require(testBudget(ActivityType.WORK, workBudget))
+                require(testCategory(ActivityType.EDUCATION, educationCategory))
+                require(testBudget(ActivityType.EDUCATION, educationBudget))
+                require(testCategory(ActivityType.LEISURE, leisureCategory))
+                require(testBudget(ActivityType.LEISURE, leisureBudget))
+                require(testCategory(ActivityType.SHOPPING, shoppingCategory))
+                require(testBudget(ActivityType.SHOPPING, shoppingBudget))
+                require(testCategory(ActivityType.TRANSPORT, transportCategory))
+                require(testBudget(ActivityType.TRANSPORT, transportBudget))
 
 
 
+
+        }
+
+    }
+
+    private fun testBudget(activityType: ActivityType, duration: Duration): Boolean {
+        return person.budgetExact(activityType).toLong() == duration.inWholeMinutes
+    }
+
+    private fun testCategory(activityType: ActivityType, category: Category): Boolean {
+        return person.categoryAlternative(activityType).toInt() == category.category
     }
 
     private fun testStep6Equality(patternStructure: PatternStructure) {
@@ -393,7 +434,7 @@ class Coordinator @JvmOverloads constructor(
         // set anztage_w to 0 if person is not allowed to work (this may be configured for minors)
         if (variablenname === "anztage_w" && !person.isAllowedToWork) decision = 0.0
 
-        person.addAttributetoMap(variablenname, decision)
+        person[variablenname] = decision
 
         if (debugloggers != null && debugloggers.existsLogger(id)) {
             debugloggers.getLogger(id)[person] = decision.toString()
@@ -563,7 +604,7 @@ class Coordinator @JvmOverloads constructor(
     /**
      * @param id
      */
-     private fun executeStep4(id: String) {
+    private fun executeStep4(id: String) {
         // STEP 4A Main activity for all other tours
         for (currentDay in pattern.days) {
             // skip day if person is at home
@@ -1077,15 +1118,15 @@ class Coordinator @JvmOverloads constructor(
 
                Failing at failing is not a double negative.
              */
-            person.addAttributetoMap(activitytype.toString() + "budget_category_index", decisionIndex.toDouble())
+            person.addBudget(activitytype, "budget_category_index", decisionIndex.toDouble())
             val value = step.alternativeChosen.toDouble()
-            person.addAttributetoMap(
-                activitytype.toString() + "budget_category_alternative",
+            person.addBudget(
+                activitytype, "budget_category_alternative",
                 value
             )
             require(
-                person.attributesMap.get(activitytype.toString() + "budget_category_alternative") - 1 ==
-                        person.attributesMap.get(activitytype.toString() + "budget_category_index")
+                person[activitytype, "budget_category_alternative"] - 1 ==
+                        person[activitytype, "budget_category_index"]
             ) {
                 "I proclaim, index is always one less than alternative"
             }
@@ -1096,7 +1137,7 @@ class Coordinator @JvmOverloads constructor(
 
         // TODO figure out why this line of code could cause issues when missing (Assumption: The entry won't be in the map)
         if (activitytype == ActivityType.WORK && pattern.countActivitiesPerWeek(activitytype) == 0) {
-            person.addAttributetoMap(activitytype.toString() + "budget_category_alternative", 0.0)
+            person[activitytype, "budget_category_alternative"] = 0.0
         }
     }
 
@@ -1107,14 +1148,14 @@ class Coordinator @JvmOverloads constructor(
     private fun executeStep7WRD(id: String, activitytype: ActivityType) {
         if (pattern.countActivitiesPerWeek(activitytype) > 0) {
             // get decision from step 7 DC
-            val chosenIndex = person.getAttributefromMap(activitytype.toString() + "budget_category_index")
+            val chosenIndex = person[activitytype, "budget_category_index"]
             //TODO why is get Attribute returning a double, which is then cast to an int. Skip the intermediate step
             val step = WRDDefaultModelStep(id, Category(chosenIndex.toInt()), activitytype, this)
             val chosenTime = step.doStep(randomGenerator.generate(id))
 
             log(id, person, chosenTime.toString())
 
-            person.addAttributetoMap(activitytype.toString() + "budget_exact", chosenTime.toDouble())
+            person[activitytype, "budget_exact"] = chosenTime.toDouble()
         }
     }
 
@@ -1157,11 +1198,12 @@ class Coordinator @JvmOverloads constructor(
 //                        step.printUtilities()
 
                         log(id, currentActivity, step.alternativeChosen.toString())
-                        // save attribute for work and education activities if coordinated modeling is enabled
-                        currentActivity.addAttributetoMap(
-                            "standarddauer",
-                            (if (step.alternativeChosen == "yes") 1.0 else 0.0)
-                        )
+
+                        if (step.alternativeChosen == "yes") {
+                            currentActivity.addAttributetoMap("standarddauer", 1.0)
+                        } else {
+                            currentActivity.addAttributetoMap("standarddauer", 0.0)
+                        }
                     } else {
                         currentActivity.addAttributetoMap("standarddauer", 0.0)
                     }
@@ -1277,8 +1319,7 @@ class Coordinator @JvmOverloads constructor(
 
                         step_wrd.setRangeBounds(durationBounds[0], durationBounds[1])
 
-                        if (currentActivity.attributesMap["standarddauer"] == 1.0)
-                        {
+                        if (currentActivity.attributesMap["standarddauer"] == 1.0) {
                             step_wrd.setModifydistribution(true)
                         }
 
@@ -1403,8 +1444,7 @@ class Coordinator @JvmOverloads constructor(
             val rnd = randomGenerator.generate(id)
             val decision = step.doStep(rnd)
             log(id, person, decision.toString())
-
-            person.addAttributetoMap("first_tour_default_start_cat", decision.toDouble())
+            person["first_tour_default_start_cat"] = decision.toDouble()
         }
     }
 
