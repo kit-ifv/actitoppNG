@@ -97,6 +97,6 @@ class PatternAttributesByElement(val element: FinalizedActivityPattern): Finaliz
     override fun amountOfDaysWithShoppingActivityIs4() = element.shoppingDays.size == 4
 
 
-    override fun amountOfDaysWithTransportActivityIs1() = element.transportDays.size == 4
+    override fun amountOfDaysWithTransportActivityIs1() = element.transportDays.size == 1
 
 }

@@ -67,7 +67,7 @@ data class TimeBudgets(
     }
 }
 
-val NO_TIME: Pair<Duration, Category> = Duration.ZERO to Category(-1)
+val NO_TIME: Pair<Duration, Category> = Duration.ZERO to Category(0)
 class HistogramPerActivity(
     val workHistograms: WorkHistograms = WorkHistograms.fromResourcePath(),
     val educationHistograms: EducationHistograms = EducationHistograms.fromResourcePath(),

@@ -78,7 +78,7 @@ open class ArrayHistogram protected constructor(
     }
 
     operator fun contains(position: Int): Boolean {
-        return position in offset..offset + size
+        return position in offset..<offset + size
     }
 
     operator fun contains(duration: Duration): Boolean {

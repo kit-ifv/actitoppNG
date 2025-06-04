@@ -2,6 +2,7 @@ package edu.kit.ifv.mobitopp.actitopp.steps.step7
 
 import edu.kit.ifv.mobitopp.actitopp.changes.Category
 import org.junit.jupiter.api.Assertions.*
+import kotlin.io.path.Path
 import kotlin.test.Test
 import kotlin.time.Duration.Companion.minutes
 
@@ -15,5 +16,14 @@ class ArrayHistogramTest {
         assertEquals(histogram.select(0.5), 2.minutes)
 
         assertEquals(histogram.selectInt(0.45, lowerBoundInclusive = 0, upperBoundInclusive = 1), 0.minutes)
+    }
+
+    @Test
+    fun properContainsCheck() {
+        val histogram = ArrayHistogram.fromPath(Path("src/main/resources/edu/kit/ifv/mobitopp/actitopp/mopv14_withpkwhh/8C_KAT_8.csv"))
+        val earlierHistogram = ArrayHistogram.fromPath(Path("src/main/resources/edu/kit/ifv/mobitopp/actitopp/mopv14_withpkwhh/8C_KAT_7.csv"))
+        assertFalse(earlierHistogram.contains(360))
+        assertTrue(histogram.contains(360))
+        assertTrue(histogram.contains(361))
     }
 }

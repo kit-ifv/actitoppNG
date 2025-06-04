@@ -26,7 +26,7 @@ class UtilityFunction {
             return utility
         }
     fun printSane() {
-        println(parameterattributeCombinations.filter { it.getattributeValue() != 0.0 }.joinToString { it.name })
+        println(parameterattributeCombinations.filter { it.getattributeValue() != 0.0 }.joinToString { "${it.name}==${it.getattributeValue()} (p=${it.getparameterValue()})" })
     }
     fun printUtilityDetails() {
         print("Base utility: $baseWeight")

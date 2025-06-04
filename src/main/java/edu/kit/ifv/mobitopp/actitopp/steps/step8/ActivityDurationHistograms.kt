@@ -272,43 +272,43 @@ open class PlanSituation<P : Any>(
     }
 
     fun mittl_zeit_akt_1bis14min(): Boolean {
-        return dayPlan.getBudget(activityType) in 1.minutes..14.minutes
+        return dayPlan.getBudget(activityType) in 1.minutes..<15.minutes
     }
 
     fun mittl_zeit_akt_15bis29min(): Boolean {
-        return dayPlan.getBudget(activityType) in 15.minutes..29.minutes
+        return dayPlan.getBudget(activityType) in 15.minutes..<30.minutes
     }
 
     fun mittl_zeit_akt_30bis59min(): Boolean {
-        return dayPlan.getBudget(activityType) in 30.minutes..59.minutes
+        return dayPlan.getBudget(activityType) in 30.minutes..<60.minutes
     }
 
     fun mittl_zeit_akt_60bis119min(): Boolean {
-        return dayPlan.getBudget(activityType) in 60.minutes..119.minutes
+        return dayPlan.getBudget(activityType) in 60.minutes..<120.minutes
     }
 
     fun mittl_zeit_akt_120bis179min(): Boolean {
-        return dayPlan.getBudget(activityType) in 120.minutes..179.minutes
+        return dayPlan.getBudget(activityType) in 120.minutes..<180.minutes
     }
 
     fun mittl_zeit_akt_180bis239min(): Boolean {
-        return dayPlan.getBudget(activityType) in 180.minutes..239.minutes
+        return dayPlan.getBudget(activityType) in 180.minutes..<240.minutes
     }
 
     fun mittl_zeit_akt_240bis299min(): Boolean {
-        return dayPlan.getBudget(activityType) in 240.minutes..299.minutes
+        return dayPlan.getBudget(activityType) in 240.minutes..<300.minutes
     }
 
     fun mittl_zeit_akt_300bis359min(): Boolean {
-        return dayPlan.getBudget(activityType) in 300.minutes..359.minutes
+        return dayPlan.getBudget(activityType) in 300.minutes..<360.minutes
     }
 
     fun mittl_zeit_akt_360bis419min(): Boolean {
-        return dayPlan.getBudget(activityType) in 360.minutes..419.minutes
+        return dayPlan.getBudget(activityType) in 360.minutes..<420.minutes
     }
 
     fun mittl_zeit_akt_420bis479min(): Boolean {
-        return dayPlan.getBudget(activityType) in 420.minutes..479.minutes
+        return dayPlan.getBudget(activityType) in 420.minutes..<480.minutes
 
     }
 

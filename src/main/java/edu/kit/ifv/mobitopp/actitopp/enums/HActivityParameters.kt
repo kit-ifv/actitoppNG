@@ -237,27 +237,27 @@ enum class HActivityParameters
      */
     wochenzbudget_zweck_kat1{
         override fun getAttribute(act: HActivity): Double {
-            return (if (act.person.getAttributefromMap(act.activityType.toString() + "budget_category_alternative") == 1.0) 1.0 else 0.0)
+            return (if (act.person[act.activityType, "budget_category_alternative"] == 1.0) 1.0 else 0.0)
         }
     },
     wochenzbudget_zweck_kat2{
         override fun getAttribute(act: HActivity): Double {
-            return (if (act.person.getAttributefromMap(act.activityType.toString() + "budget_category_alternative") == 2.0) 1.0 else 0.0)
+            return (if (act.person[act.activityType,  "budget_category_alternative"] == 2.0) 1.0 else 0.0)
         }
     },
     wochenzbudget_zweck_kat3{
         override fun getAttribute(act: HActivity): Double {
-            return (if (act.person.getAttributefromMap(act.activityType.toString() + "budget_category_alternative") == 3.0) 1.0 else 0.0)
+            return (if (act.person[act.activityType,  "budget_category_alternative"] == 3.0) 1.0 else 0.0)
         }
     },
     wochenzbudget_zweck_kat4{
         override fun getAttribute(act: HActivity): Double {
-            return (if (act.person.getAttributefromMap(act.activityType.toString() + "budget_category_alternative") == 4.0) 1.0 else 0.0)
+            return (if (act.person[act.activityType,  "budget_category_alternative"] == 4.0) 1.0 else 0.0)
         }
     },
     wochenzbudget_zweck_kat5{
         override fun getAttribute(act: HActivity): Double {
-            return (if (act.person.getAttributefromMap(act.activityType.toString() + "budget_category_alternative") == 5.0) 1.0 else 0.0)
+            return (if (act.person[act.activityType,  "budget_category_alternative"] == 5.0) 1.0 else 0.0)
         }
     },
 

@@ -287,22 +287,24 @@ class Coordinator @JvmOverloads constructor(
     }
 
     private fun testTimeEquality(timeBudgets: TimeBudgets) {
-        timeBudgets.run {
+        val outputs = timeBudgets.run {
+            listOf(
+                testCategory(ActivityType.WORK, workCategory),
+                testBudget(ActivityType.WORK, workBudget),
+                testCategory(ActivityType.EDUCATION, educationCategory),
+                testBudget(ActivityType.EDUCATION, educationBudget),
+                testCategory(ActivityType.LEISURE, leisureCategory),
+                testBudget(ActivityType.LEISURE, leisureBudget),
+                testCategory(ActivityType.SHOPPING, shoppingCategory),
+                testBudget(ActivityType.SHOPPING, shoppingBudget),
+                testCategory(ActivityType.TRANSPORT, transportCategory),
+                testBudget(ActivityType.TRANSPORT, transportBudget),
+            )
 
-                require(testCategory(ActivityType.WORK, workCategory))
-                require(testBudget(ActivityType.WORK, workBudget))
-                require(testCategory(ActivityType.EDUCATION, educationCategory))
-                require(testBudget(ActivityType.EDUCATION, educationBudget))
-                require(testCategory(ActivityType.LEISURE, leisureCategory))
-                require(testBudget(ActivityType.LEISURE, leisureBudget))
-                require(testCategory(ActivityType.SHOPPING, shoppingCategory))
-                require(testBudget(ActivityType.SHOPPING, shoppingBudget))
-                require(testCategory(ActivityType.TRANSPORT, transportCategory))
-                require(testBudget(ActivityType.TRANSPORT, transportBudget))
 
-
-
-
+        }
+        require(outputs.all { it }) {
+            "Mismatch in budget calculation: legacy \n${person.categoryAlternative()}\n${person.budgetExact()} \n$timeBudgets"
         }
 
     }
@@ -1257,7 +1259,7 @@ class Coordinator @JvmOverloads constructor(
 
                         // limit alternatives if needed
                         if (currentActivity.attributesMap["standarddauer"] == 1.0) {
-                            val timeCategory = currentActivity.calculateMeanTimeCategory()
+                            val timeCategory = currentActivity.calculateMeanTimeCategoryINDEX()
 
                             log("meantime", currentActivity, timeCategory.toString())
 

@@ -218,9 +218,10 @@ class ActitoppPerson@JvmOverloads constructor(
      * Replaces old naked string access of "budget_category_alternative"
      */
     fun categoryAlternative(activityType: ActivityType) = get(activityType, "budget_category_alternative")
+    fun categoryAlternative()  = ActivityType.OUTOFHOMEACTIVITY.associateWith { categoryAlternative(it) }
     fun categoryIndex(activityType: ActivityType) = get(activityType, "budget_category_index")
     fun budgetExact(activityType: ActivityType) = get(activityType, "budget_exact")
-
+    fun budgetExact() = ActivityType.OUTOFHOMEACTIVITY.associateWith { budgetExact(it) }
     @Deprecated("Never ever allow free access via strings, thats just bad design")
     fun getAttributefromMap(name: String): Double {
         return attributes[name]!!

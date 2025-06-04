@@ -134,10 +134,11 @@ fun <X: Any, SIT:ChoiceSituation<X>, PARAMS> OptionDistributionFunction<X, SIT, 
     collector.apply(lambda)
 
 
-    return calculateProbabilities(collector.registeredUtilityFunctions.entries.associate {
+    val evaluators = collector.registeredUtilityFunctions.entries.associate {
         val situation = converter(it.key)
         situation to it.value.calculateUtility(situation, parameters)
-    }, parameters)
+    }
+    return calculateProbabilities(evaluators, parameters)
 
 }
 

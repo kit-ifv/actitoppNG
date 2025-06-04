@@ -277,7 +277,7 @@ class HActivity @JvmOverloads constructor(
      * @return
      */
     fun calculateMeanTime(): Int {
-        val timebudget = person.getAttributefromMap(activityType.toString() + "budget_exact")
+        val timebudget = person[activityType, "budget_exact"]
         val daysWithAct = weekPattern.countDaysWithSpecificActivity(activityType).toDouble()
         val specificActivitiesForCurrentDay = day.getTotalNumberOfActivitites(activityType).toDouble()
 
@@ -294,7 +294,7 @@ class HActivity @JvmOverloads constructor(
      *
      * @return
      */
-    fun calculateMeanTimeCategory(): Int {
+    fun calculateMeanTimeCategoryINDEX(): Int {
         val meantime = calculateMeanTime()
         var meantimecategory = -99
         for (i in 0..<Configuration.NUMBER_OF_ACT_DURATION_CLASSES) {

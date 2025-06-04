@@ -15,7 +15,8 @@ class TransportHistograms(
 ) : HistogramSelection {
 
     override fun select(randomNumber: Double, finalizedActivityPattern: FinalizedActivityPattern): ArrayHistogram {
-        return choiceModel.select(randomNumber) { WorkChoiceSituation(it, finalizedActivityPattern) }
+        val converter: (ArrayHistogram) -> WorkChoiceSituation = { WorkChoiceSituation(it, finalizedActivityPattern) }
+        return choiceModel.select(randomNumber, converter)
     }
 
     private val choiceModel =

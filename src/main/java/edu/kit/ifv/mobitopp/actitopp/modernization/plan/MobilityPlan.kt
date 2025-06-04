@@ -48,6 +48,7 @@ class MobilityPlan(
     }
     fun outOfHomeActivities() = activities.filter { it.activityType != ActivityType.HOME }
     val activityMap: Map<ActivityType, List<LinkedActivity>> = activities.groupBy { it.activityType }
+    val mainActivityMap : Map<ActivityType, List<LinkedActivity>> = dayPlans.flatMap { it.tourPlans.map { it.mainActivity } }.groupBy{it.activityType}
 
     /**
      * An activity is regular, if the amount of activities per week is equal to the number of days with said activity
