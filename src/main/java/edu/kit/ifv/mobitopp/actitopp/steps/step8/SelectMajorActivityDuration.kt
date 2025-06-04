@@ -1,6 +1,5 @@
 package edu.kit.ifv.mobitopp.actitopp.steps.step8
 
-import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.RNGKeeper
 import edu.kit.ifv.mobitopp.actitopp.modernization.durations.MobilityPlanInputs
 import kotlin.time.Duration
@@ -19,7 +18,7 @@ class AssignMinorActivityDuration(val rngHelper: RNGKeeper,
                                   private val histogram: ActivityDurationHistograms<ParameterCollectionStep8J> = MINOR): SelectMinorActivityDuration {
     override fun getDuration(input: MobilityPlanInputs): Duration {
         return input.run {
-            val bounds = dayPlan.boundsFor(activity)
+            val bounds = dayPlan.activityDurationBounds(activity)
 
             val rnd1 = rngHelper.pull(categoryDiscreteChoiceID)
             val rnd2 = rngHelper.pull(weightedRandomDrawID)

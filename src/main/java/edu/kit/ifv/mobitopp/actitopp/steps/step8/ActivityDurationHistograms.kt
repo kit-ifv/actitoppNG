@@ -45,8 +45,8 @@ open class ActivityDurationHistograms<P>(
     open val histograms: List<ArrayHistogram>,
     open val choiceModel: ParametrizedDiscreteChoiceModel<ArrayHistogram, MainDurationSituation, P>,
     val emergencyBehaviour: (ClosedRange<Duration>, Double) -> Duration = {range, rng ->
-//        rng.getRandomValueBetween(range.start.inWholeMinutes.toInt(), range.endInclusive.inWholeMinutes.toInt()).minutes
-        TODO()
+
+        ((range.endInclusive - range.start) * rng + range.start).inWholeMinutes.minutes
     }
 ) {
     fun categoryFor(duration: Duration): Category {

@@ -11,7 +11,6 @@ import edu.kit.ifv.mobitopp.actitopp.modernization.linkByHomeActivity
 import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.steps.step7.TimeBudgets
 import edu.kit.ifv.mobitopp.actitopp.utils.takeUntil
-import kotlin.math.abs
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.minutes
@@ -37,9 +36,9 @@ interface DayPlan : List<LinkedActivity> {
     fun getBudget(activityType: ActivityType): Duration =
         activityBudget[activityType] ?: throw NoSuchElementException("No budget found for activity $activityType")
 
-    fun absoluteBoundsFor(linkedActivity: LinkedActivity): ClosedRange<Duration>
-    fun boundsFor(linkedActivity: LinkedActivity): ClosedRange<Duration> {
-        val absoluteBounds = absoluteBoundsFor(linkedActivity)
+    fun activityTimeBounds(linkedActivity: LinkedActivity): ClosedRange<Duration>
+    fun activityDurationBounds(linkedActivity: LinkedActivity): ClosedRange<Duration> {
+        val absoluteBounds = activityTimeBounds(linkedActivity)
         val maximumDuration = absoluteBounds.endInclusive - absoluteBounds.start
 
         require(maximumDuration >= 1.minutes) {
@@ -50,17 +49,12 @@ interface DayPlan : List<LinkedActivity> {
 
     }
 
-    fun absoluteBoundsFor(tourPlan: TourPlan): ClosedRange<Duration> {
-        val initialBounds = absoluteBoundsFor(tourPlan.first())
-        return initialBounds
-    }
-
-    fun dayRelativeBoundsFor(tourPlan: TourPlan): ClosedRange<Duration> {
-        val absoluteBounds = absoluteBoundsFor(tourPlan)
+    fun startTimeBoundsFor(tourPlan: TourPlan): ClosedRange<Duration> {
+        val absoluteBounds = activityTimeBounds(tourPlan.first())
         require(!absoluteBounds.isEmpty()) {
             "Generating an empty range will never allow proper times to be selected, this should not occur"
         }
-        return absoluteBounds.start - durationDay.startOfDay..absoluteBounds.endInclusive - durationDay.startOfDay
+        return absoluteBounds.start - durationDay.startOfDay..absoluteBounds.endInclusive - durationDay.startOfDay - (tourPlan.first().duration ?: throw IllegalStateException("At this point the duration should be set"))
     }
 }
 
@@ -140,7 +134,7 @@ class MovingDayPlan(
     override val activityBudget: Map<ActivityType, Duration> = activities.groupBy { it.activityType }
         .mapValues { (timeBudgets[it.key] / it.value.size).coerceIn(1.minutes, 1440.minutes) }
 
-    override fun absoluteBoundsFor(linkedActivity: LinkedActivity): ClosedRange<Duration> {
+    override fun activityTimeBounds(linkedActivity: LinkedActivity): ClosedRange<Duration> {
         require(linkedActivity in activities) {
             "This check is relevant, but sadly O(n). It could be improved by checking against the start and end time" +
                     "of the day, which soft implies that the target activity lies within this day"
@@ -166,9 +160,10 @@ class MovingDayPlan(
 
         // Similarly, a successor with a fixed time is a better bound for the potential end time of this element, but if nothing
         // has a fixed time, the end of the day is the fallback.
-        val latestEndTime = (fixedSuccessor?.startTime ?: (durationDay.startOfDay + 1.days)) - durationToSuccessor - linkedActivity.estimatedDuration(estimatedActivityDurations)
+        val latestStartTime = (fixedSuccessor?.startTime ?: (durationDay.startOfDay + 1.days)) -
+                durationToSuccessor
 
-        return earliestStartTime..latestEndTime
+        return earliestStartTime..latestStartTime
     }
 
 
@@ -208,11 +203,11 @@ class HomeDayPlan(override val durationDay: DurationDay) : MutableDayPlan, List<
     override val activityBudget: Map<ActivityType, Duration> =
         emptyMap<ActivityType, Duration>().withDefault { 0.minutes }
 
-    override fun absoluteBoundsFor(linkedActivity: LinkedActivity): ClosedRange<Duration> {
+    override fun activityTimeBounds(linkedActivity: LinkedActivity): ClosedRange<Duration> {
         TODO("Not yet implemented")
     }
 
-    override fun boundsFor(linkedActivity: LinkedActivity): ClosedRange<Duration> {
+    override fun activityDurationBounds(linkedActivity: LinkedActivity): ClosedRange<Duration> {
         throw UnsupportedOperationException("A home day has no bounds for other activities")
     }
 

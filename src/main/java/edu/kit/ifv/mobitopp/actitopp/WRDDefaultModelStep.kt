@@ -30,7 +30,7 @@ class WRDDefaultModelStep(
     private var bounds: IntRange = Int.MIN_VALUE..Int.MAX_VALUE
 
 
-
+    fun probabilities(bounds: IntRange = this.bounds) = weightedDistribution.probabilities(bounds)
     public override fun doStep(): Int {
         // pick a random number within the given boundaries
 

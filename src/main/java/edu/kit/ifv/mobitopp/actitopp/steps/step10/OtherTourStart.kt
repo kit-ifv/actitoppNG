@@ -1,6 +1,5 @@
 package edu.kit.ifv.mobitopp.actitopp.steps.step10
 
-import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.RNGKeeper
 import edu.kit.ifv.mobitopp.actitopp.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitopp.steps.step8.ActivityDurationHistograms
@@ -42,7 +41,7 @@ operator fun ClosedRange<Duration>.minus(duration: Duration): ClosedRange<Durati
 
 class TourStartByHistogramsRelative<P>(private val rng: RNGKeeper, val categoryID:String, val weightedDrawID: String, private val startTimeHistograms: ActivityDurationHistograms<P>) : SelectTourStart {
     override fun selectStartTime(input: MobilityPlanInputs): Duration {
-        val bounds = input.dayPlan.dayRelativeBoundsFor(input.tourPlan)
+        val bounds = input.dayPlan.startTimeBoundsFor(input.tourPlan)
         val startTime = bounds.start
         val relativeBounds = bounds - startTime
         val rnd1 = rng.pull(categoryID)

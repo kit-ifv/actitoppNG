@@ -20,6 +20,9 @@ class ModifiableArrayHistogram (offset: Int = 0, probabilities: DoubleArray, cat
     probabilities,
     categoryIndex
 ) {
+    /**
+     * Takes an absolute position
+     */
     fun modify(position: Int) {
         require(position in this) {
             "Cannot update a position that is not present in the histogram. $position  ${offset}..${offset + size - 1}"
@@ -68,7 +71,7 @@ open class ArrayHistogram protected constructor(
         cumulate()
     }
 
-
+    fun probabilities() = probabilities.toList()
     protected fun cumulate() {
         var counter = 0.0
         probabilities.withIndex().forEach { (index, probability) ->
@@ -92,7 +95,7 @@ open class ArrayHistogram protected constructor(
     /**
      * Once copied, you may start modifying to your hearts content, but until then the histogram stays readonly.
      */
-    fun copy(): ModifiableArrayHistogram = ModifiableArrayHistogram(offset, probabilities, categoryIndex)
+    fun copy(): ModifiableArrayHistogram = ModifiableArrayHistogram(offset, probabilities.clone(), categoryIndex)
     fun trim(): ArrayHistogram {
         val trimmedStartIndex =
             probabilities.withIndex().takeWhile { it.value == 0.0 }.lastOrNull()?.let { it.index + 1 } ?: 0

@@ -84,13 +84,7 @@ class WRDDiscreteDistribution(private val histogram: NavigableMap<Int, Int>) {
     fun getRandomPickFromDistribution(bounds: IntRange, randomgenerator: RNGHelper): Int {
         return getRandomPickFromDistribution(bounds, randomgenerator.randomValue)
     }
-
-    /**
-     * returns an element from the distribution based on a random number
-     * WRD = weighted random draw - the selection of the element is dependent on their share within the distribution
-     *
-     */
-    fun getRandomPickFromDistribution(bounds: IntRange, rand : Double): Int {
+    fun probabilities(bounds: IntRange): Map<Int, Double> {
         //Phase1: check and apply bounds
         /*Issue 1) The assignment to usedLowerBound /upperbound can be solved via max/min, instead of assignment -> if
           Issue 2) Assert statements have two effects: Disabled -> Useless, Enabled -> Error. Why can we pass lowerbound
@@ -120,14 +114,24 @@ class WRDDiscreteDistribution(private val histogram: NavigableMap<Int, Int>) {
 
         // if all element values are equal to zero, choose one of them randomly
         if (sumofvalidelements == 0) {
-            return (usedLowerBound..usedUpperBound).random()
+            return emptyMap()
 //            return randomgenerator.getRandomValueBetween(usedLowerBound, usedUpperBound)
         }
         var acc = 0.0
         //TODO big Idea, if we know the first and last element in the range, and cumulate beforehand, we can translate the random number
         //  to the number range of the bounded histogram.
         val normalizedValues = relevantElements.mapValues { acc += it.value.toDouble() / sumofvalidelements; acc }
-        /* Issue 5) A detailed analysis of the original code showed that the selection of a firstslot / lastslot would
+        return normalizedValues
+    }
+    /**
+     * returns an element from the distribution based on a random number
+     * WRD = weighted random draw - the selection of the element is dependent on their share within the distribution
+     *
+     */
+    fun getRandomPickFromDistribution(bounds: IntRange, rand : Double): Int {
+        val normalizedValues = probabilities(bounds)
+        if (normalizedValues.isEmpty()) return ((bounds.endInclusive - bounds.start).toDouble() * rand).toInt() + bounds.start
+         /* Issue 5) A detailed analysis of the original code showed that the selection of a firstslot / lastslot would
         ALWAYS result in the same element being used for both slots, this is most likely not what the author intended
         BUT, it is what the author has written. This behaviour can be easily be reproduced by just returning the first
         element with a cumulative sum larger than the random value.

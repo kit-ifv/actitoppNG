@@ -4,6 +4,7 @@ import edu.kit.ifv.mobitopp.actitopp.changes.Category
 import org.junit.jupiter.api.Assertions.*
 import kotlin.io.path.Path
 import kotlin.test.Test
+import kotlin.test.assertContentEquals
 import kotlin.time.Duration.Companion.minutes
 
 class ArrayHistogramTest {
@@ -25,5 +26,16 @@ class ArrayHistogramTest {
         assertFalse(earlierHistogram.contains(360))
         assertTrue(histogram.contains(360))
         assertTrue(histogram.contains(361))
+    }
+    @Test
+    fun taintingWorks() {
+        val histogram = ArrayHistogram.fromPath(Path("src/main/resources/edu/kit/ifv/mobitopp/actitopp/mopv14_withpkwhh/8C_KAT_5.csv"))
+        val originalProbabilities = histogram.probabilities()
+        val taint = histogram.copy()
+        assertContentEquals(originalProbabilities, histogram.probabilities())
+        taint.modify(181)
+        assertContentEquals(originalProbabilities, histogram.probabilities())
+
+
     }
 }
