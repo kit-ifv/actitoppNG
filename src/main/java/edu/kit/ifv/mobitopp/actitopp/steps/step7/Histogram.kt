@@ -145,7 +145,7 @@ open class ArrayHistogram protected constructor(
 
         return (_cumulativeSum.indexBinarySearch(affineRandomNumber, lb ?: 0, ub) + offset).minutes
     }
-
+    fun select(randomNumber: Double, bounds: ClosedRange<Duration>) = select(randomNumber, bounds.start, bounds.endInclusive)
     fun select(randomNumber: Double, lowerBoundInclusive: Duration? = null, upperBoundInclusive: Duration? = null): Duration {
         val lb = lowerBoundInclusive?.ceilWholeMinutes
         val ub = upperBoundInclusive?.inWholeMinutes?.toInt()

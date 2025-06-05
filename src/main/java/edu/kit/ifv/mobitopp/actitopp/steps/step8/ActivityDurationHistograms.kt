@@ -88,22 +88,24 @@ open class ActivityDurationHistograms<P>(
         return choiceModel.select(rngHelper.randomValue, converter).select(rngHelper.randomValue)
     }
 
+    fun selectHistogram(rnd1: Double, bounds: ClosedRange<Duration>, converter: (ArrayHistogram) -> MainDurationSituation): ArrayHistogram? {
+        val options = histograms.filter { it.end >= bounds.start && it.start <= bounds.endInclusive }.toSet()
+        // It can happen that no histogram fits, because they are trimmed. The default behaviour of legacy actitopp is to return a random value.
+        if(options.isEmpty()) {
+            return null
+        }
+        return choiceModel.select(options, rnd1, converter)
+    }
+
     fun select(
         rnd1: Double,
         rnd2: Double,
         bounds: ClosedRange<Duration>,
         converter: (ArrayHistogram) -> MainDurationSituation,
     ): Duration {
-        val options = histograms.filter { it.end >= bounds.start && it.start <= bounds.endInclusive }.toSet()
-        // It can happen that no histogram fits, because they are trimmed. The default behaviour of legacy actitopp is to return a random value.
-        if(options.isEmpty()) {
-            return emergencyBehaviour(bounds, rnd1)
-        }
 
+        val concreteHistogram = selectHistogram(rnd1, bounds, converter) ?: return emergencyBehaviour(bounds, rnd2)
 
-
-
-        val concreteHistogram = choiceModel.select(options, rnd1, converter)
         val output = concreteHistogram.selectInt(
             rnd2,
             bounds.start.inWholeMinutes.toInt(),
@@ -151,7 +153,10 @@ class TaintedActivityDurationHistograms<P>(
         bounds: ClosedRange<Duration>,
         converter: (ArrayHistogram) -> MainDurationSituation,
     ): Duration {
-        return original.select(rnd1, rnd2, bounds, converter)
+
+        val histogram = original.selectHistogram(rnd1, bounds, converter) ?: return original.emergencyBehaviour(bounds, rnd2)
+        val taint = taintedHistograms.getValue(histogram)
+        return taint.select(rnd2, bounds)
     }
 }
 
