@@ -62,6 +62,7 @@ open class ActivityDurationHistograms<P>(
     fun chooseHistogramFromNeighbors(
         randomValue: Double,
         duration: Duration,
+        bounds: ClosedRange<Duration>,
         converter: (ArrayHistogram) -> MainDurationSituation,
     ): ArrayHistogram {
         val index = histograms.binarySearch { it.compareTo(duration.inWholeMinutes.toInt()) }.indexOfSearch()
@@ -70,15 +71,22 @@ open class ActivityDurationHistograms<P>(
         val nextHistogram = histograms.getOrNull(index + 1)
         val selectedHistogram = choiceModel.selectNew(randomValue, converter) {
             previousHistogram?.let {
-                option(it)
+                if(it.intersects(bounds)) {option(it)}
+
             }
-            option(mainHistogram) { original ->
-                UtilityFunction { a, b ->
-                    1.1 * original.calculateUtility(a, b)
+            if(mainHistogram.intersects(bounds)) {
+                option(mainHistogram) { original ->
+                    UtilityFunction { a, b ->
+                        1.1 * original.calculateUtility(a, b)
+                    }
                 }
             }
+
             nextHistogram?.let {
-                option(it)
+                if(it.intersects(bounds)) {
+                    option(it)
+                }
+
             }
         }
         return selectedHistogram
@@ -134,15 +142,16 @@ class TaintedActivityDurationHistograms<P>(
     fun selectAndTaint(
         rngNumberOne: Double,
         rngNumberTwo: Double,
+        bounds:ClosedRange<Duration>,
         duration: Duration,
         converter: (ArrayHistogram) -> MainDurationSituation,
     ): Duration {
 
-        val selectedHistogram = original.chooseHistogramFromNeighbors(rngNumberOne, duration, converter)
+        val selectedHistogram = original.chooseHistogramFromNeighbors(rngNumberOne, duration, bounds, converter)
         val taint = taintedHistograms.getValue(selectedHistogram)
 
 
-        return taint.select(rngNumberTwo).also {
+        return taint.select(rngNumberTwo, bounds).also {
             taint.modify(it.inWholeMinutes.toInt())
         }
     }

@@ -19,7 +19,7 @@ class StandardStep8B<P>(
     private val useStandardDuration: StandardDuration = UtilityFunctionAssignment(rng),
 ) : SelectMainActivityDuration, SelectMajorActivityDuration {
     private val taintedHistograms = histogram.taint()
-
+    private val taintedHistogramMap = ActivityType.OUTOFHOMEACTIVITY.associateWith { histogram.taint() }
     private val fixedTypes = EnumSet.of(ActivityType.WORK, ActivityType.EDUCATION)
     override fun getDuration(input: MobilityPlanInputs): Duration {
 
@@ -39,12 +39,18 @@ class StandardStep8B<P>(
     fun calculateFixedAndTarnish(input: MobilityPlanInputs): Duration {
         return input.run {
             val meanActivityDuration = dayPlan.getBudget(tourMainActivityType)
-            taintedHistograms.selectAndTaint(rng.pull(categoryDiscreteChoiceID), rng.pull(weightedRandomDrawID), meanActivityDuration) {
+            val bounds = dayPlan.activityDurationBounds(input.activity)
+            taintedHistogramMap[input.activity.activityType]?.selectAndTaint(
+                rng.pull(categoryDiscreteChoiceID),
+                rng.pull(weightedRandomDrawID),
+                bounds,
+                meanActivityDuration
+            ) {
                 MainDurationSituation(
                     it,
                     this
                 )
-            }
+            } ?: throw NoSuchElementException("There are no tainted histograms for ${input.activity.activityType}")
 
         }
     }
@@ -53,12 +59,16 @@ class StandardStep8B<P>(
 
         return input.run {
             val bounds = dayPlan.activityDurationBounds(tourPlan.mainActivity)
-            taintedHistograms.select(rng.pull(categoryDiscreteChoiceID), rng.pull(weightedRandomDrawID), bounds) {
+            taintedHistogramMap[input.activity.activityType]?.select(
+                rng.pull(categoryDiscreteChoiceID),
+                rng.pull(weightedRandomDrawID),
+                bounds
+            ) {
                 MainDurationSituation(
                     it,
                     this
                 )
-            }
+            } ?: throw NoSuchElementException("There are no tainted histograms for ${input.activity.activityType}")
         }
     }
 }

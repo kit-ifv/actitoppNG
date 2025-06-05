@@ -15,6 +15,8 @@ data class MobilityPlanInputs(
 ) {
     val tourMainActivityType = tourPlan.mainActivity.activityType
     val isLastTourOfDay: Boolean = dayPlan.tourPlans.last() == tourPlan
+
+    val weekday = dayPlan.durationDay.weekday
 }
 
 

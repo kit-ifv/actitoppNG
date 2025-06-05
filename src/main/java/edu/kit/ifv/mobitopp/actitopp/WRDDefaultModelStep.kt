@@ -28,7 +28,8 @@ class WRDDefaultModelStep(
 
 
     private var bounds: IntRange = Int.MIN_VALUE..Int.MAX_VALUE
-
+    val lowerBound get() = bounds.start
+    val upperBound get() = bounds.endInclusive
 
     fun probabilities(bounds: IntRange = this.bounds) = weightedDistribution.probabilities(bounds)
     public override fun doStep(): Int {
