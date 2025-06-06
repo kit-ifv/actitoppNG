@@ -5,7 +5,13 @@ import edu.kit.ifv.mobitopp.actitopp.modernization.ModernizedActivity
 import edu.kit.ifv.mobitopp.actitopp.modernization.Position
 import edu.kit.ifv.mobitopp.actitopp.modernization.TourStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.linkByHomeActivity
+import edu.kit.ifv.mobitopp.actitopp.steps.step10.assignFirstTourStarts
 import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
+import edu.kit.ifv.mobitopp.actitopp.utils.ceil
+import edu.kit.ifv.mobitopp.actitopp.utils.takeUntil
+import kotlin.math.ceil
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.ZERO
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.DurationUnit
 
@@ -24,10 +30,34 @@ class TourPlan private constructor(
         return "$linkedActivities"
     }
     val nextHomeActivity get()= linkedActivities.last().next?.nextActivity
-
+    val previousHomeActivity get() = linkedActivities.first().previousTrip?.previousActivity ?: throw IllegalStateException("A tour plan should always have a preceeding home activity")
     val activityDurations by lazy {
         linkedActivities.sumOf { it.duration?.toDouble(DurationUnit.MINUTES) ?: throw IllegalStateException("Some Activities have no duration yet set.") }.minutes
     }
+    val activityDurationsWithTrips by lazy {
+        (activityDurations + (first().previousTrip?.duration?: Duration.ZERO) + (last().nextTrip?.duration ?:Duration.ZERO)).ceil(DurationUnit.MINUTES)
+    }
+    fun setStartTime(duration: Duration) {
+        // Remember that the start time of a tour is not the start time of the first activity but the first trip, and thus the end time of the activity before the first activity (which is hopefully a home activity)
+        val firstAct = first()
+        firstAct.startTime = duration + (firstAct.previousTrip?.duration?.ceil(DurationUnit.MINUTES) ?: ZERO )
+        // The previous home activity now has a fixed start time. TODO set the end time instead, that way we dont need to subtract the duration
+        previousHomeActivity.let { it.startTime = duration - (it.duration?: throw NoSuchElementException("This should not happen")) }
+        previousHomeActivity.mutableIterator().takeUntil { it == nextHomeActivity }.forEach {
+            if(it.startTime == null) {
+                it.startTime = it.previous?.endTime?: throw NoSuchElementException("Should not be null")
+            }
+        }
+//        firstAct.previousTrip?.startTime = duration
+//        firstAct.mutableIterator().takeUntil { it == nextHomeActivity }.forEach {
+//            if(it.startTime == null) {
+//                it.startTime = it.previous?.endTime?: throw NoSuchElementException("Should not be null")
+//            }
+//
+//
+//        }
+    }
+
     companion object {
         fun create(tourStructure: TourStructure,
                    person: PersonWithRoutine,

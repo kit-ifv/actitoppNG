@@ -48,10 +48,17 @@ val FIRST_TOUR_HISTOGRAM: ActivityDurationHistograms<ParameterCollectionStep10M>
 }
 
 
-
-class TourStartWithPreference<P>(private val rng: RNGKeeper, val categoryID: String, val  weightedDrawID: String,  private val startTimeHistograms: ActivityDurationHistograms<P>, override val preferredTourStart: ArrayHistogram? = null) :
+class TourStartWithPreference<P>(
+    private val rng: RNGKeeper,
+    val categoryID: String,
+    val weightedDrawID: String,
+    private val startTimeHistograms: ActivityDurationHistograms<P>,
+    override val preferredTourStart: ArrayHistogram? = null,
+    private val usePreferredTourStart: Boolean,
+) :
     SelectTourStartWithPreference {
-
+    val strategy = UseStartViaChoiceModel(rng)
+    val useStrategy = if(usePreferredTourStart) strategy else UsePreferredTourStart {_,_ ->false}
     override fun selectStartTime(input: MobilityPlanInputs, preferredTourStart: ArrayHistogram?): Duration {
         val bounds = input.dayPlan.startTimeBoundsFor(input.tourPlan)
 
@@ -59,7 +66,8 @@ class TourStartWithPreference<P>(private val rng: RNGKeeper, val categoryID: Str
         val rnd2 = rng.pull(weightedDrawID)
 
         preferredTourStart?.let {
-            if (it.intersects(bounds)) {
+
+            if (useStrategy.usePreferredTourStart(input, it) &&it.intersects(bounds) ) {
                 // In this instance we discard rnd1 because it is not required to find out that we want to use our preferred histogram. The legacy code will always generate the random number, so for consistency we always need to consume it
                 return it.select(
                     rnd2,

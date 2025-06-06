@@ -36,6 +36,12 @@ class ArrayHistogramTest {
         taint.modify(181)
         assertContentEquals(originalProbabilities, histogram.probabilities())
 
+    }
 
+    @Test
+    fun theCorrespondence() {
+        val histogram = ArrayHistogram.fromPath(Path("src/main/resources/edu/kit/ifv/mobitopp/actitopp/mopv14_withpkwhh/10N_KAT_4.csv"))
+        val histogram2 = ArrayHistogram.fromPath(Path("src/main/resources/edu/kit/ifv/mobitopp/actitopp/mopv14_withpkwhh/10P_KAT_4.csv"))
+        println("#(I%@!*(")
     }
 }

@@ -41,7 +41,7 @@ operator fun ClosedRange<Duration>.minus(duration: Duration): ClosedRange<Durati
 
 class TourStartByHistogramsRelative<P>(private val rng: RNGKeeper, val categoryID:String, val weightedDrawID: String, private val startTimeHistograms: ActivityDurationHistograms<P>) : SelectTourStart {
     override fun selectStartTime(input: MobilityPlanInputs): Duration {
-        val bounds = input.dayPlan.startTimeBoundsFor(input.tourPlan)
+        val bounds = input.dayPlan.startTimeBoundsFor(input.tourPlan, disregardDayEnd = input.isLastDay)
         val startTime = bounds.start
         val relativeBounds = bounds - startTime
         val rnd1 = rng.pull(categoryID)
@@ -50,7 +50,6 @@ class TourStartByHistogramsRelative<P>(private val rng: RNGKeeper, val categoryI
             MainDurationSituation(it, input)
         } + startTime
     }
-
     companion object {
         fun standard(rng: RNGKeeper): TourStartByHistogramsRelative<ParameterCollectionStep10S> {
             return TourStartByHistogramsRelative(rng, "10S", "10T", OTHER_TOUR_HISTOGRAM)

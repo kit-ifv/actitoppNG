@@ -69,7 +69,11 @@ class ActitoppPerson@JvmOverloads constructor(
         }
         private set
 
-
+    var tourCounter = 0
+        get() {
+            return field.also { field++ }
+        }
+        private set
     constructor(tmppers: ActitoppPerson, tmphh: ActiToppHousehold) : this(
         tmphh,
         tmppers.persNrinHousehold,

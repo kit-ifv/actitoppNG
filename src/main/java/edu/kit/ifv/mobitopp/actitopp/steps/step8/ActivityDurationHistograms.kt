@@ -16,6 +16,7 @@ import edu.kit.ifv.mobitopp.actitopp.modernization.plan.DayPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MobilityPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.TourPlan
 import edu.kit.ifv.mobitopp.actitopp.steps.step7.ArrayHistogram
+import edu.kit.ifv.mobitopp.actitopp.steps.step7.ModifiableArrayHistogram
 import edu.kit.ifv.mobitopp.actitopp.steps.step7.TimeBudgets
 import edu.kit.ifv.mobitopp.actitopp.steps.step7.indexOfSearch
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
@@ -26,12 +27,15 @@ import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.UtilityFunction
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.selectNew
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.times
+import edu.kit.ifv.mobitopp.actitopp.utils.rem
+import edu.kit.ifv.mobitopp.actitopp.utils.sumOf
 import java.nio.file.Path
 import java.time.DayOfWeek
 import kotlin.io.path.Path
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.name
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
@@ -44,17 +48,19 @@ open class ActivityDurationHistograms<P>(
     // TODO histograms could be a sorted Set, since they are supposed to cover respective ranges.
     open val histograms: List<ArrayHistogram>,
     open val choiceModel: ParametrizedDiscreteChoiceModel<ArrayHistogram, MainDurationSituation, P>,
-    val emergencyBehaviour: (ClosedRange<Duration>, Double) -> Duration = {range, rng ->
+    val emergencyBehaviour: (ClosedRange<Duration>, Double) -> Duration = { range, rng ->
 
         ((range.endInclusive - range.start) * rng + range.start).inWholeMinutes.minutes
-    }
+    },
 ) {
     fun categoryFor(duration: Duration): Category {
         return histograms.first { duration in it }.categoryIndex
     }
+
     fun categoryFor(int: Int): Category {
-        return histograms.first { int in it}.categoryIndex
+        return histograms.first { int in it }.categoryIndex
     }
+
     /**
      * Find the proper histogram, select between histogram and neighbors, where main histogram gets a 1.1 boost.
      * Select duration from selected histogram.
@@ -71,10 +77,12 @@ open class ActivityDurationHistograms<P>(
         val nextHistogram = histograms.getOrNull(index + 1)
         val selectedHistogram = choiceModel.selectNew(randomValue, converter) {
             previousHistogram?.let {
-                if(it.intersects(bounds)) {option(it)}
+                if (it.intersects(bounds)) {
+                    option(it)
+                }
 
             }
-            if(mainHistogram.intersects(bounds)) {
+            if (mainHistogram.intersects(bounds)) {
                 option(mainHistogram) { original ->
                     UtilityFunction { a, b ->
                         1.1 * original.calculateUtility(a, b)
@@ -83,7 +91,7 @@ open class ActivityDurationHistograms<P>(
             }
 
             nextHistogram?.let {
-                if(it.intersects(bounds)) {
+                if (it.intersects(bounds)) {
                     option(it)
                 }
 
@@ -96,10 +104,14 @@ open class ActivityDurationHistograms<P>(
         return choiceModel.select(rngHelper.randomValue, converter).select(rngHelper.randomValue)
     }
 
-    fun selectHistogram(rnd1: Double, bounds: ClosedRange<Duration>, converter: (ArrayHistogram) -> MainDurationSituation): ArrayHistogram? {
+    fun selectHistogram(
+        rnd1: Double,
+        bounds: ClosedRange<Duration>,
+        converter: (ArrayHistogram) -> MainDurationSituation,
+    ): ArrayHistogram? {
         val options = histograms.filter { it.end >= bounds.start && it.start <= bounds.endInclusive }.toSet()
         // It can happen that no histogram fits, because they are trimmed. The default behaviour of legacy actitopp is to return a random value.
-        if(options.isEmpty()) {
+        if (options.isEmpty()) {
             return null
         }
         return choiceModel.select(options, rnd1, converter)
@@ -142,7 +154,7 @@ class TaintedActivityDurationHistograms<P>(
     fun selectAndTaint(
         rngNumberOne: Double,
         rngNumberTwo: Double,
-        bounds:ClosedRange<Duration>,
+        bounds: ClosedRange<Duration>,
         duration: Duration,
         converter: (ArrayHistogram) -> MainDurationSituation,
     ): Duration {
@@ -163,7 +175,8 @@ class TaintedActivityDurationHistograms<P>(
         converter: (ArrayHistogram) -> MainDurationSituation,
     ): Duration {
 
-        val histogram = original.selectHistogram(rnd1, bounds, converter) ?: return original.emergencyBehaviour(bounds, rnd2)
+        val histogram =
+            original.selectHistogram(rnd1, bounds, converter) ?: return original.emergencyBehaviour(bounds, rnd2)
         val taint = taintedHistograms.getValue(histogram)
         return taint.select(rnd2, bounds)
     }
@@ -250,6 +263,7 @@ open class PlanSituation<P : Any>(
         return mobilityPlan.dayPlans.count { it.tourPlans.first().position == Position.BEFORE }
 
     }
+
     fun anztourenamtag(): Int {
         return dayPlan.tourPlans.size
     }
@@ -417,20 +431,38 @@ open class PlanSituation<P : Any>(
     fun tag_sa(): Boolean {
         return dayPlan.durationDay.weekday == DayOfWeek.SATURDAY
     }
-    // TODO Add Modulo to all time accesses
-    fun endetourvorher_Std_12() = (tourPlan.first().previousTrip?.endTime ?: Duration.INFINITE) in 12.hours..<13.hours
-    fun endetourvorher_Std_13() = (tourPlan.first().previousTrip?.endTime ?: Duration.INFINITE)  in 13.hours..<14.hours
-    fun endetourvorher_Std_14() = (tourPlan.first().previousTrip?.endTime ?: Duration.INFINITE)  in 14.hours..<15.hours
-    fun endetourvorher_Std_15() = (tourPlan.first().previousTrip?.endTime ?: Duration.INFINITE)  in 15.hours..<16.hours
-    fun endetourvorher_Std_16() = (tourPlan.first().previousTrip?.endTime ?: Duration.INFINITE)  in 16.hours..<17.hours
-    fun endetourvorher_Std_17() = (tourPlan.first().previousTrip?.endTime ?: Duration.INFINITE)  in 17.hours..<18.hours
-    fun endetourvorher_Std_18() = (tourPlan.first().previousTrip?.endTime ?: Duration.INFINITE)  in 18.hours..<19.hours
-    fun endetourvorher_Std_19() = (tourPlan.first().previousTrip?.endTime ?: Duration.INFINITE)  in 19.hours..<20.hours
-    fun endetourvorher_Std_20() = (tourPlan.first().previousTrip?.endTime ?: Duration.INFINITE)  in 20.hours..<21.hours
+
+    fun dauer_akt_vorht_tag_1bis120(): Boolean {
+        return dayPlan.tourPlans.filter { it.position == Position.BEFORE }
+            .sumOf { it.activityDurationsWithTrips ?: Duration.ZERO } in 1.minutes..<120.minutes
+    }
+
+    fun anztourenvorhaupttour() = dayPlan.tourPlans.count { it.position == Position.BEFORE }
+    fun anztourennachhaupttour() = dayPlan.tourPlans.count { it.position == Position.AFTER }
+    fun endetourvorher_Std_12() = dayPlan.endOfPreviousTour(tourPlan) in 12.hours..<13.hours
+
+    fun endetourvorher_Std_13() = dayPlan.endOfPreviousTour(tourPlan) in 13.hours..<14.hours
+
+    fun endetourvorher_Std_14() =dayPlan.endOfPreviousTour(tourPlan)in 14.hours..<15.hours
+
+    fun endetourvorher_Std_15() =dayPlan.endOfPreviousTour(tourPlan)in 15.hours..<16.hours
+
+    fun endetourvorher_Std_16() =dayPlan.endOfPreviousTour(tourPlan)in 16.hours..<17.hours
+
+    fun endetourvorher_Std_17() =dayPlan.endOfPreviousTour(tourPlan) in 17.hours..<18.hours
+
+    fun endetourvorher_Std_18() =dayPlan.endOfPreviousTour(tourPlan)in 18.hours..<19.hours
+
+    fun endetourvorher_Std_19() =dayPlan.endOfPreviousTour(tourPlan) in 19.hours..<20.hours
+
+    fun endetourvorher_Std_20() =dayPlan.endOfPreviousTour(tourPlan) in 20.hours..<21.hours
 
     fun dauer_akt_in_tour_0bis2std() = tourPlan.activityDurations in 0.hours..<2.hours
     fun dauer_akt_in_tour_2bis4std() = tourPlan.activityDurations in 2.hours..<4.hours
     fun dauer_akt_in_tour_4bis6std() = tourPlan.activityDurations in 4.hours..<6.hours
+    fun dauer_akt_in_tour_6bis8std() = tourPlan.activityDurations in 6.hours..<8.hours
+    fun dauer_akt_in_tour_8bis10std() = tourPlan.activityDurations in 8.hours..<10.hours
+    fun dauer_akt_in_tour_10bis12std() = tourPlan.activityDurations in 10.hours..<12.hours
     fun anzaktwieanztagemitzweck(): Boolean {
         return mobilityPlan.regularActivities[activityType] ?: false
     }
@@ -492,13 +524,29 @@ class MainDurationSituation(
     input
 )
 
-class BooleanDecisionSituation(
+open class BooleanDecisionSituation(
     choice: Boolean,
     input: MobilityPlanInputs,
 ) : PlanSituation<Boolean>(
     choice,
     input
 )
+
+class BooleanDecisionWithPreferenceCategory(
+    choice: Boolean,
+    input: MobilityPlanInputs, val preferredHistogram: ArrayHistogram,
+) : BooleanDecisionSituation(
+    choice,
+    input
+) {
+    fun std_start_T1_6_7_Uhr(): Boolean {
+        return preferredHistogram.start in (6.hours -15.minutes)..(6.hours + 15.minutes) // SOme buffer because the histograms could theroretically not have an entry precisely for 6 hours
+    }
+
+    fun std_start_T1_7_8_Uhr(): Boolean {
+        return preferredHistogram.start in (7.hours -15.minutes)..(7.hours + 15.minutes) // SOme buffer
+    }
+}
 
 private val minorFunction: ParameterStep8J.(MainDurationSituation) -> Double = {
     base +

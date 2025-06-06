@@ -18,6 +18,7 @@ import edu.kit.ifv.mobitopp.actitopp.modernization.Step5Generator
 import edu.kit.ifv.mobitopp.actitopp.modernization.TourStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.assignDirectly
 import edu.kit.ifv.mobitopp.actitopp.modernization.calculateTourAmounts
+import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MobilityPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.StandardCommuteDurations
 import edu.kit.ifv.mobitopp.actitopp.steps.step1.assignWeekRoutine
 import edu.kit.ifv.mobitopp.actitopp.steps.step10.FIRST_TOUR_HISTOGRAM
@@ -40,6 +41,8 @@ import edu.kit.ifv.mobitopp.actitopp.steps.step8.assignMinorActivities
 import edu.kit.ifv.mobitopp.actitopp.steps.step8.assignSecondaryMainActivities
 import edu.kit.ifv.mobitopp.actitopp.steps.step9.StandardPreferredTourStart
 import edu.kit.ifv.mobitopp.actitopp.steps.step9.assignPreferredTourStart
+import java.time.DayOfWeek
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.time.Duration
@@ -216,7 +219,8 @@ class Coordinator @JvmOverloads constructor(
                 categoryID = "10M",
                 weightedDrawID = "10N",
                 startTimeHistograms = FIRST_TOUR_HISTOGRAM,
-                preferredTourStart = preferredHistogram
+                preferredTourStart = preferredHistogram,
+                usePreferredTourStart = true,
             )
 
             val secondStrategy = TourStartWithPreference(
@@ -224,16 +228,24 @@ class Coordinator @JvmOverloads constructor(
                 categoryID = "10O",
                 weightedDrawID = "10P",
                 startTimeHistograms = SECOND_TOUR_HISTOGRAM,
-                preferredTourStart = preferredHistogram
+                preferredTourStart = preferredHistogram,
+                usePreferredTourStart = false,
             )
             it.assignFirstTourStarts(firstStrategy)
+            require(it.isConsistent())
             it.assignSecondTourStarts(secondStrategy)
+            require(it.isConsistent())
             it.assignRemainingTourStarts(TourStartByHistogramsRelative.standard(randomGenerator))
+            require(it.isConsistent())
 
             val b = it.isConsistent()
             it.extrudeHomeActivities()
 //            println(it)
         }
+
+
+        testTourStartEquality(mobilityPlan)
+
 
         if (Configuration.modelJointActions) {
             executeStep11("11")
@@ -261,6 +273,29 @@ class Coordinator @JvmOverloads constructor(
             throw AssertionError("Some elements overlap in the pattern")
         }
 
+    }
+
+    //TODO this test functionality should be removed in the future
+    private fun testTourStartEquality(mobilityPlan: MobilityPlan?) {
+        if(mobilityPlan == null) return
+        if(mobilityPlan.homePlans.isNotEmpty()) return // Legacy actitopp cannot handle home days for calculation purposes, these plans will most often not match, since in legacy the activities cannot extrude into the next day even if homeday
+        val oldActivities = pattern.allOutofHomeActivities
+        val newActivities = mobilityPlan.outOfHomeActivities()
+        val bad = oldActivities.zip(newActivities).filter { (a, b) ->
+            abs(a.startTimeWeekContext - (b.startTime?.inWholeMinutes?.toInt() ?: Int.MIN_VALUE)) > 120
+
+        }
+        val mismatches = bad.map { it.first.startTimeWeekContext to it.second.startTime?.inWholeMinutes?.toInt() }
+        val mismatchNumbers = bad.map {it.first.tour.tourID}
+
+        val reallybad = bad.filter { it.first.day.weekday != DayOfWeek.SUNDAY }
+
+        if(bad.isNotEmpty()) {
+            println("Bad for person $bad")
+        }
+        require(reallybad.isEmpty()) {
+            "Start times for Person ${person.id} don't match $bad"
+        }
     }
 
     // TODO this test functionality should be removed in the future
@@ -1475,7 +1510,7 @@ class Coordinator @JvmOverloads constructor(
 
                     // create step object
                     val step = DCDefaultModelStep(id, fileBase, lookup, randomGenerator)
-                    val decision = step.doStep()
+                    val decision = step.doStep(randomGenerator.generate("10A"))
 
                     log(id, currentTour, step.alternativeChosen)
 
@@ -1584,7 +1619,8 @@ class Coordinator @JvmOverloads constructor(
 
                 if (Configuration.coordinated_modelling) {
                     // Get whether the person starts their day in the same category.
-                    if (currentTour.existsAttributeinMap("default_start_cat_yes") && currentTour.getAttributefromMap("default_start_cat_yes") == 1.0) {
+                    if (currentTour.existsAttributeinMap("default_start_cat_yes") &&
+                        currentTour.getAttributefromMap("default_start_cat_yes") == 1.0) {
                         val defaultcat = person.getAttributefromMap("first_tour_default_start_cat").toInt()
                         //And if the category fits within the bounds, use the standard category as only option.
                         if (defaultcat >= lowerbound && defaultcat <= upperbound) step_dc.limitUpperandLowerBound(

@@ -12,6 +12,10 @@ interface Action {
     val endTime: Duration?
 
     fun shortString(): String
+
+    fun inconsistent(): Boolean {
+        return startTime?.let { startTime -> endTime?.let { startTime > it }}?: false
+    }
 }
 
 interface MutableAction {
@@ -26,6 +30,18 @@ interface LinkedAction : Action {
     val next: LinkedAction?
 
     fun estimatedDuration(defaultDuration: Map<ActivityType, Duration>): Duration
+
+    fun isConsistent(): Boolean {
+        if(inconsistent()) return false
+        val next = this.next
+        val endTime = this.endTime
+        val startTime = next?.startTime
+        return if (endTime == null || startTime == null) {
+            true
+        } else {
+            startTime >= endTime
+        }
+    }
 }
 
 interface Activity : Action {
@@ -78,7 +94,7 @@ class LinkedActivity(
         get() = previousTrip
     override val next: ModernizedTrip?
         get() = nextTrip
-
+    val previousActivity get() = previousTrip?.previousActivity
     /**
      * If the duration is not yet set, estimate the duration based on the amount of occurences of a given
      * activity during a day.

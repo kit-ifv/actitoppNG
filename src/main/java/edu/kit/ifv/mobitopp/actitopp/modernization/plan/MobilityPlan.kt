@@ -6,12 +6,14 @@ import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.modernization.Activity
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.DurationDay
+import edu.kit.ifv.mobitopp.actitopp.modernization.LinkedAction
 import edu.kit.ifv.mobitopp.actitopp.modernization.LinkedActivity
 import edu.kit.ifv.mobitopp.actitopp.modernization.linkByHomeActivity
 import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.steps.step7.TimeBudgets
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 class MobilityPlan(
@@ -30,7 +32,7 @@ class MobilityPlan(
 
     // And ends their mobility pattern at home.
     private val endHomeAnchor = LinkedActivity.homeDay().apply {
-        startTime = (dayPlans.size + homePlans.size).days - 1.minutes
+        startTime = (dayPlans.size + homePlans.size).days - 1.minutes + 3.hours
         duration = 1.minutes
     }
 
@@ -64,22 +66,21 @@ class MobilityPlan(
 
 
     fun isConsistent(): Boolean {
-        return startHomeAnchor.iterator().zipWithNext().all { (a, b) ->
-            val endTime = a.endTime
-            val startTime = b.startTime
-            if (endTime == null || startTime == null) {
-                true
-            } else {
-                startTime >= endTime
-            }
+        return startHomeAnchor.iterator().all {
+            it.isConsistent()
         }
+    }
 
+
+    fun filterInconsistent(): List<LinkedAction> {
+        return startHomeAnchor.iterator().filter { !it.isConsistent() }.toList()
     }
 
     fun fullPrint() {
         println(startHomeAnchor.iterator().joinToString(separator = "\n") { it.shortString() })
     }
     fun extrudeHomeActivities() {
+        startHomeAnchor.startTime  = Duration.ZERO
         startHomeAnchor.activityIterator().filter { it.activityType == ActivityType.HOME }.forEach { act ->
             val previousAct = act.previous?.previousActivity
             previousAct?.let {
@@ -104,6 +105,7 @@ class MobilityPlan(
     override fun toString(): String {
         return startHomeAnchor.activityIterator().joinToString(separator = "\n") { it.shortString() }
     }
+
 
 
     companion object {

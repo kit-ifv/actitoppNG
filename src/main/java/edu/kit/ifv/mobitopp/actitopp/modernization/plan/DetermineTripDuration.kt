@@ -3,12 +3,14 @@ package edu.kit.ifv.mobitopp.actitopp.modernization.plan
 import edu.kit.ifv.mobitopp.actitopp.Configuration
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
+import edu.kit.ifv.mobitopp.actitopp.utils.round
 import units.Distance
 import units.Speed
 import units.kilometers
 import units.kmh
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.DurationUnit
 
 /**
  * This interface is used to determine the trip duration between two activities
@@ -57,7 +59,7 @@ class StandardCommuteDurations(private val standardTripDuration: Duration = Conf
     fun Distance.calculateCommuteDuration(functor: (Distance) -> Speed): Duration {
         val speed = functor(this)
         val duration = this / speed
-        return duration.coerceAtLeast(1.minutes)
+        return duration.coerceAtLeast(1.minutes).round(DurationUnit.MINUTES)
     }
 
     private fun commuteSpeedWork(distance: Distance): Speed {
