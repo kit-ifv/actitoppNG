@@ -2,15 +2,9 @@ package edu.kit.ifv.mobitopp.actitopp.steps.step4
 
 import edu.kit.ifv.mobitopp.actitopp.ActitoppPerson
 import edu.kit.ifv.mobitopp.actitopp.HDay
-import edu.kit.ifv.mobitopp.actitopp.IPerson
-import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.WeekRoutine
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
-import edu.kit.ifv.mobitopp.actitopp.steps.DayActivityTracker
 import edu.kit.ifv.mobitopp.actitopp.steps.SubTourInput
-import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
-import edu.kit.ifv.mobitopp.actitopp.steps.step3.TourSituation
-import edu.kit.ifv.mobitopp.actitopp.steps.step3.step4WithParams
 
 //class SubTourMainActivityDeterminer(val rngHelper: RNGHelper) : DetermineSubTourMainActivities {
 //    override fun generate(input: SubTourInput): List<ActivityType> {

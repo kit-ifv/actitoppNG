@@ -1,9 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp
 
-import edu.kit.ifv.mobitopp.actitopp.ModelFileBase
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.deprecated.LogitFunction
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.deprecated.UtilityParameterAttributeCombination
-import org.jetbrains.annotations.TestOnly
 import java.text.NumberFormat
 
 

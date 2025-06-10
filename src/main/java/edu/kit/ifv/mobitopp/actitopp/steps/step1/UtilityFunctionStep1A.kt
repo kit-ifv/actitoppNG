@@ -1,14 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.steps.step1
 
-import edu.kit.ifv.mobitopp.actitopp.ActitoppPerson
-import edu.kit.ifv.mobitopp.actitopp.IPerson
-import edu.kit.ifv.mobitopp.actitopp.enums.AreaType
-import edu.kit.ifv.mobitopp.actitopp.enums.Employment
-import edu.kit.ifv.mobitopp.actitopp.enums.Gender
-import edu.kit.ifv.mobitopp.actitopp.enums.isParttime
-import edu.kit.ifv.mobitopp.actitopp.enums.isStudent
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonSituation
-import edu.kit.ifv.mobitopp.actitopp.toModifiable
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.D
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.I
@@ -181,13 +173,6 @@ data class ParametersStep1A(
 // TODO move these to a util definition
 inline operator fun Boolean.times(other: Double): Double = this.D * other
 inline operator fun Boolean.times(other: Int): Int = this.I * other
-class Situation1A(override val choice: Int, person: IPerson): PersonSituation(choice, person.toModifiable()) {
-    val employment = person.employment
-    val age = person.age
-    val areaType = person.areatype
-    val hasChildrenUnder10 = person.children0_10 > 0
-    val gender = person.gender
-}
 
 val step1AModel = ModifiableDiscreteChoiceModel<Int, PersonSituation, ParameterCollectionStep1A>(AllocatedLogit.create {
 

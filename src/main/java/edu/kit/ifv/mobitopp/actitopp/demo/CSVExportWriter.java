@@ -1,10 +1,14 @@
 package edu.kit.ifv.mobitopp.actitopp.demo;
 
+import edu.kit.ifv.mobitopp.actitopp.ActiToppHousehold;
+import edu.kit.ifv.mobitopp.actitopp.ActitoppPerson;
+import edu.kit.ifv.mobitopp.actitopp.Configuration;
+import edu.kit.ifv.mobitopp.actitopp.HActivity;
+import edu.kit.ifv.mobitopp.actitopp.HTrip;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
-
-import edu.kit.ifv.mobitopp.actitopp.*;
 
 
 public class CSVExportWriter {

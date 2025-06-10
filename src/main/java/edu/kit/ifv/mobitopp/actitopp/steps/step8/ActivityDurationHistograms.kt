@@ -2,7 +2,6 @@ package edu.kit.ifv.mobitopp.actitopp.steps.step8
 
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
-import edu.kit.ifv.mobitopp.actitopp.RNGKeeper
 import edu.kit.ifv.mobitopp.actitopp.changes.Category
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.enums.Employment
@@ -16,7 +15,6 @@ import edu.kit.ifv.mobitopp.actitopp.modernization.plan.DayPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MobilityPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.TourPlan
 import edu.kit.ifv.mobitopp.actitopp.steps.step7.ArrayHistogram
-import edu.kit.ifv.mobitopp.actitopp.steps.step7.ModifiableArrayHistogram
 import edu.kit.ifv.mobitopp.actitopp.steps.step7.TimeBudgets
 import edu.kit.ifv.mobitopp.actitopp.steps.step7.indexOfSearch
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
@@ -27,7 +25,6 @@ import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.UtilityFunction
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.selectNew
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.times
-import edu.kit.ifv.mobitopp.actitopp.utils.rem
 import edu.kit.ifv.mobitopp.actitopp.utils.sumOf
 import java.nio.file.Path
 import java.time.DayOfWeek
@@ -35,7 +32,6 @@ import kotlin.io.path.Path
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.name
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 

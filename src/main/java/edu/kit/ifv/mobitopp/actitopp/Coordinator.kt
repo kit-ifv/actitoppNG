@@ -41,8 +41,6 @@ import edu.kit.ifv.mobitopp.actitopp.steps.step8.assignMinorActivities
 import edu.kit.ifv.mobitopp.actitopp.steps.step8.assignSecondaryMainActivities
 import edu.kit.ifv.mobitopp.actitopp.steps.step9.StandardPreferredTourStart
 import edu.kit.ifv.mobitopp.actitopp.steps.step9.assignPreferredTourStart
-import java.time.DayOfWeek
-import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.time.Duration

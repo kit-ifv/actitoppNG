@@ -2,15 +2,11 @@ package edu.kit.ifv.mobitopp.actitopp.steps.step3
 
 import edu.kit.ifv.mobitopp.actitopp.HDay
 import edu.kit.ifv.mobitopp.actitopp.HTour
-import edu.kit.ifv.mobitopp.actitopp.WeekRoutine
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
-import edu.kit.ifv.mobitopp.actitopp.RNGKeeper
+import edu.kit.ifv.mobitopp.actitopp.WeekRoutine
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
-import edu.kit.ifv.mobitopp.actitopp.modernization.DurationDay
-import edu.kit.ifv.mobitopp.actitopp.modernization.ModifiableDayStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.ModifiablePlannedTourAmounts
-import edu.kit.ifv.mobitopp.actitopp.modernization.ModifiableStructureWithPreviousDay
 import edu.kit.ifv.mobitopp.actitopp.modernization.PlannedTourAmounts
 import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ParametrizedDiscreteChoiceModel

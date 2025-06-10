@@ -1,6 +1,5 @@
 package edu.kit.ifv.mobitopp.actitopp.steps.step2
 
-import edu.kit.ifv.mobitopp.actitopp.ActitoppPerson
 import edu.kit.ifv.mobitopp.actitopp.HDay
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.WeekRoutine
@@ -8,14 +7,13 @@ import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributesFromElement
+import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributesFromStructure
+import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributesFromWeekday
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAttributesFromElement
 import edu.kit.ifv.mobitopp.actitopp.steps.RoutineAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.RoutineAttributesFromElement
 import edu.kit.ifv.mobitopp.actitopp.steps.step1.times
-import edu.kit.ifv.mobitopp.actitopp.steps.DayActivityTracker
-import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributesFromStructure
-import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributesFromWeekday
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceSituation
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel

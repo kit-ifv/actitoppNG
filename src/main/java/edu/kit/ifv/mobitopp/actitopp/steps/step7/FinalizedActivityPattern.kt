@@ -1,6 +1,5 @@
 package edu.kit.ifv.mobitopp.actitopp.steps.step7
 
-import edu.kit.ifv.mobitopp.actitopp.ActitoppPerson
 import edu.kit.ifv.mobitopp.actitopp.HWeekPattern
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.modernization.PatternStructure

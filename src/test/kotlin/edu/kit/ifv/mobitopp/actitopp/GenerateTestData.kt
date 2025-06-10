@@ -2,15 +2,15 @@ package edu.kit.ifv.mobitopp.actitopp
 
 import edu.kit.ifv.mobitopp.actitopp.modernization.DefaultPlanGeneration
 import edu.kit.ifv.mobitopp.actitopp.modernization.ModernizedActivity
-import edu.kit.ifv.mobitopp.actitopp.modernization.StandardHouseholdPlan
 import edu.kit.ifv.mobitopp.generateHouseholds
-import edu.kit.ifv.mobitopp.generatePerson
 import edu.kit.ifv.mobitopp.generatePersons
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlin.io.path.Path
+import kotlin.io.path.writeText
 
 fun main() {
-    val targets = generateHouseholds(10)
+    val targets = generateHouseholds(1000)
     targets.forEach {
 
         it.generatePersons(5)
@@ -24,7 +24,9 @@ fun main() {
         }
         HouseholdPlanOutput(household.id, plans)
     }
-    println(Json.encodeToString(plans))
+    val path = Path("src/test/resources/testPlans.json")
+    path.writeText(Json.encodeToString(plans))
+
 }
 
 @Serializable

@@ -1,6 +1,5 @@
 package edu.kit.ifv.mobitopp.actitopp.steps
 
-import edu.kit.ifv.mobitopp.actitopp.ActitoppPerson
 import edu.kit.ifv.mobitopp.actitopp.ActitoppPersonModifierFields
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.enums.AreaType
@@ -13,7 +12,6 @@ import edu.kit.ifv.mobitopp.actitopp.enums.isParttime
 import edu.kit.ifv.mobitopp.actitopp.enums.isStudent
 import edu.kit.ifv.mobitopp.actitopp.enums.isStudentOrAzubi
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceSituation
-import kotlin.math.max
 
 /**
  * This interface is a rewrite of the actitoppPersonParameters Enum, and exists only to be able to cross reference the

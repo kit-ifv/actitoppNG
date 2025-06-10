@@ -1,7 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.modernization
 
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
-import edu.kit.ifv.mobitopp.actitopp.RNGKeeper
 import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.steps.step3.GenerateSideToursFollowing
 import edu.kit.ifv.mobitopp.actitopp.steps.step3.GenerateSideToursPreceeding

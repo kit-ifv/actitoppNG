@@ -1,11 +1,8 @@
 package edu.kit.ifv.mobitopp.actitopp
 
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
-import java.util.Collections
 import java.util.NavigableMap
-import java.util.NavigableSet
 import java.util.TreeMap
-import java.util.TreeSet
 
 
 /**

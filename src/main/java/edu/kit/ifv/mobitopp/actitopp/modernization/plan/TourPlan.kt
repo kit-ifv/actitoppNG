@@ -4,12 +4,9 @@ import edu.kit.ifv.mobitopp.actitopp.modernization.LinkedActivity
 import edu.kit.ifv.mobitopp.actitopp.modernization.ModernizedActivity
 import edu.kit.ifv.mobitopp.actitopp.modernization.Position
 import edu.kit.ifv.mobitopp.actitopp.modernization.TourStructure
-import edu.kit.ifv.mobitopp.actitopp.modernization.linkByHomeActivity
-import edu.kit.ifv.mobitopp.actitopp.steps.step10.assignFirstTourStarts
 import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.utils.ceil
 import edu.kit.ifv.mobitopp.actitopp.utils.takeUntil
-import kotlin.math.ceil
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.ZERO
 import kotlin.time.Duration.Companion.minutes

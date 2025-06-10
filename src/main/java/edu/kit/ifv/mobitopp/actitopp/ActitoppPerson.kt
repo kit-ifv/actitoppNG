@@ -8,10 +8,10 @@ import edu.kit.ifv.mobitopp.actitopp.enums.Gender
 import edu.kit.ifv.mobitopp.actitopp.enums.JointStatus
 import edu.kit.ifv.mobitopp.actitopp.enums.isEmployedAnywhere
 import edu.kit.ifv.mobitopp.actitopp.enums.isStudentOrAzubi
-import kotlinx.serialization.Serializable
 import org.jetbrains.annotations.TestOnly
 import java.util.Collections
 import kotlin.math.max
+
 // TODO once refactored, rename or remove
 
 interface IPerson {

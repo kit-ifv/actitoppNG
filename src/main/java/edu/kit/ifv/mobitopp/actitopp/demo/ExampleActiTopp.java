@@ -1,15 +1,19 @@
 package edu.kit.ifv.mobitopp.actitopp.demo;
 
+import edu.kit.ifv.mobitopp.actitopp.ActiToppHousehold;
+import edu.kit.ifv.mobitopp.actitopp.ActitoppPerson;
+import edu.kit.ifv.mobitopp.actitopp.Configuration;
+import edu.kit.ifv.mobitopp.actitopp.IO.CSVExportLogger;
+import edu.kit.ifv.mobitopp.actitopp.IO.DebugLoggers;
+import edu.kit.ifv.mobitopp.actitopp.InvalidPatternException;
+import edu.kit.ifv.mobitopp.actitopp.ModelFileBase;
+import edu.kit.ifv.mobitopp.actitopp.RNGHelper;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-
-import edu.kit.ifv.mobitopp.actitopp.*;
-import edu.kit.ifv.mobitopp.actitopp.IO.CSVExportLogger;
-import edu.kit.ifv.mobitopp.actitopp.IO.DebugLoggers;
-import edu.kit.ifv.mobitopp.actitopp.ModelFileBase;
 
 public class ExampleActiTopp {
 
