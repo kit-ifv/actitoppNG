@@ -1,5 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.steps.step7
 
+import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
@@ -16,8 +17,8 @@ class LeisureHistograms(
     val histogram6: ArrayHistogram,
 ): HistogramSelection{
 
-    override fun select(randomNumber: Double, finalizedActivityPattern: FinalizedActivityPattern): ArrayHistogram {
-        return choiceModel.select(randomNumber) { WorkChoiceSituation(it, finalizedActivityPattern) }
+    override fun select(randomNumber: Double, finalizedActivityPattern: FinalizedActivityPattern, person: IPerson): ArrayHistogram {
+        return choiceModel.select(randomNumber) { WorkChoiceSituation(it, finalizedActivityPattern, person) }
     }
 
 

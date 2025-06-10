@@ -3,6 +3,7 @@ package edu.kit.ifv.mobitopp.actitopp.steps.step7
 import edu.kit.ifv.mobitopp.actitopp.ActitoppPerson
 import edu.kit.ifv.mobitopp.actitopp.HWeekPattern
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
+import edu.kit.ifv.mobitopp.actitopp.modernization.PatternStructure
 
 
 /**
@@ -11,23 +12,66 @@ import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
  * this could be used in the daily time activity calculation. TODO this is now the MobilityPlan, which does not use
  * the dirty H(X) Fields.
  */
-class FinalizedActivityPattern(
-    val person: ActitoppPerson,
-    pattern: HWeekPattern,
-) {
-    val workDays = pattern.days.filter { it.hasActivity(ActivityType.WORK) }
-    val educationDays = pattern.days.filter { it.hasActivity(ActivityType.EDUCATION) }
-    val leisureDays = pattern.days.filter { it.hasActivity(ActivityType.LEISURE) }
-    val shoppingDays = pattern.days.filter { it.hasActivity(ActivityType.SHOPPING) }
-    val transportDays = pattern.days.filter { it.hasActivity(ActivityType.TRANSPORT) }
 
-    val workActivities = pattern.allActivities.filter { it.activityType == ActivityType.WORK }
-    val educationActivities = pattern.allActivities.filter { it.activityType == ActivityType.EDUCATION }
-    val leisureActivities = pattern.allActivities.filter { it.activityType == ActivityType.LEISURE }
-    val shoppingActivities = pattern.allActivities.filter { it.activityType == ActivityType.SHOPPING }
-    val transportActivities = pattern.allActivities.filter { it.activityType == ActivityType.TRANSPORT }
+interface FinalizedActivityPattern {
+    val workDays: Int
+    val educationDays: Int
+    val leisureDays: Int
+    val shoppingDays: Int
+    val transportDays: Int
+    val workActivities: Int
+    val educationActivities: Int
+    val leisureActivities: Int
+    val shoppingActivities: Int
+    val transportActivities: Int
+    
+    companion object {
+        fun fromLegacyPattern(weekPattern: HWeekPattern): FinalizedActivityPatternImpl {
+            return FinalizedActivityPatternImpl(
+                workDays = weekPattern.days.count { it.hasActivity(ActivityType.WORK)},
+                educationDays = weekPattern.days.count { it.hasActivity(ActivityType.EDUCATION)},
+                leisureDays = weekPattern.days.count { it.hasActivity(ActivityType.LEISURE)},
+                shoppingDays = weekPattern.days.count { it.hasActivity(ActivityType.SHOPPING)},
+                transportDays = weekPattern.days.count { it.hasActivity(ActivityType.TRANSPORT)},
+                workActivities = weekPattern.allActivities.count { it.activityType == ActivityType.WORK },
+                educationActivities = weekPattern.allActivities.count { it.activityType == ActivityType.EDUCATION },
+                leisureActivities = weekPattern.allActivities.count { it.activityType == ActivityType.LEISURE },
+                shoppingActivities = weekPattern.allActivities.count { it.activityType == ActivityType.SHOPPING },
+                transportActivities = weekPattern.allActivities.count { it.activityType == ActivityType.TRANSPORT }
+            )
+        }
 
+        fun fromModernPattern(patternStructure: PatternStructure): FinalizedActivityPatternImpl {
+            val activityMap = patternStructure.activityTypes().groupBy { it }.mapValues { it.value.size }
+            return FinalizedActivityPatternImpl(
+                workDays = patternStructure.amountOfDaysWith(ActivityType.WORK),
+                educationDays = patternStructure.amountOfDaysWith(ActivityType.EDUCATION),
+                leisureDays = patternStructure.amountOfDaysWith(ActivityType.LEISURE),
+                shoppingDays = patternStructure.amountOfDaysWith(ActivityType.SHOPPING),
+                transportDays = patternStructure.amountOfDaysWith(ActivityType.TRANSPORT),
+                workActivities =  activityMap[ActivityType.WORK]?:0,
+                educationActivities = activityMap[ActivityType.EDUCATION]?:0,
+                leisureActivities = activityMap[ActivityType.LEISURE]?:0,
+                shoppingActivities = activityMap[ActivityType.SHOPPING]?:0,
+                transportActivities = activityMap[ActivityType.TRANSPORT]?:0,
+            )
+        }
+    }
 }
+
+data class FinalizedActivityPatternImpl(
+    override val workDays: Int,
+    override val educationDays: Int,
+    override val leisureDays: Int,
+    override val shoppingDays: Int,
+    override val transportDays: Int,
+    override val workActivities: Int,
+    override val educationActivities: Int,
+    override val leisureActivities: Int,
+    override val shoppingActivities: Int,
+    override val transportActivities: Int,
+) : FinalizedActivityPattern
+
 
 interface FinalizedPatternAttributes {
     fun amountOfWorkActivitiesInWeek(): Int
@@ -64,39 +108,39 @@ interface FinalizedPatternAttributes {
 
 class PatternAttributesByElement(val element: FinalizedActivityPattern): FinalizedPatternAttributes {
     override fun amountOfWorkActivitiesInWeek(): Int {
-        return element.workActivities.size
+        return element.workActivities
     }
 
     override fun amountOfEducationActivitiesInWeek(): Int {
-        return element.educationActivities.size
+        return element.educationActivities
     }
-    override fun amountOfLeisureActivitiesInWeek(): Int = element.leisureActivities.size
-    override fun amountOfShoppingActivitiesInWeek(): Int = element.shoppingActivities.size
-    override fun amountOfTransportActivitiesInWeek(): Int = element.transportActivities.size
-    override fun amountOfDaysWithWorkActivityIs1() = element.workDays.size == 1
-    override fun amountOfDaysWithWorkActivityIs2() = element.workDays.size == 2
-    override fun amountOfDaysWithWorkActivityIs3() = element.workDays.size == 3
-    override fun amountOfDaysWithWorkActivityIs4() = element.workDays.size == 4
-    override fun amountOfDaysWithWorkActivityIs5() = element.workDays.size == 5
-    override fun amountOfDaysWithWorkActivityIs6() = element.workDays.size == 6
+    override fun amountOfLeisureActivitiesInWeek(): Int = element.leisureActivities
+    override fun amountOfShoppingActivitiesInWeek(): Int = element.shoppingActivities
+    override fun amountOfTransportActivitiesInWeek(): Int = element.transportActivities
+    override fun amountOfDaysWithWorkActivityIs1() = element.workDays == 1
+    override fun amountOfDaysWithWorkActivityIs2() = element.workDays == 2
+    override fun amountOfDaysWithWorkActivityIs3() = element.workDays == 3
+    override fun amountOfDaysWithWorkActivityIs4() = element.workDays == 4
+    override fun amountOfDaysWithWorkActivityIs5() = element.workDays == 5
+    override fun amountOfDaysWithWorkActivityIs6() = element.workDays == 6
 
-    override fun amountOfDaysWithEducationActivityIs2() = element.educationDays.size == 2
-    override fun amountOfDaysWithEducationActivityIs3() = element.educationDays.size == 3
-    override fun amountOfDaysWithEducationActivityIs4() = element.educationDays.size == 4
-    override fun amountOfDaysWithEducationActivityIs5() = element.educationDays.size == 5
+    override fun amountOfDaysWithEducationActivityIs2() = element.educationDays == 2
+    override fun amountOfDaysWithEducationActivityIs3() = element.educationDays == 3
+    override fun amountOfDaysWithEducationActivityIs4() = element.educationDays == 4
+    override fun amountOfDaysWithEducationActivityIs5() = element.educationDays == 5
 
-    override fun amountOfDaysWithLeisureActivityIs1() = element.leisureDays.size == 1
-    override fun amountOfDaysWithLeisureActivityIs2() = element.leisureDays.size == 2
-    override fun amountOfDaysWithLeisureActivityIs3() = element.leisureDays.size == 3
-    override fun amountOfDaysWithLeisureActivityIs4() = element.leisureDays.size == 4
-    override fun amountOfDaysWithLeisureActivityIs5() = element.leisureDays.size == 5
+    override fun amountOfDaysWithLeisureActivityIs1() = element.leisureDays == 1
+    override fun amountOfDaysWithLeisureActivityIs2() = element.leisureDays == 2
+    override fun amountOfDaysWithLeisureActivityIs3() = element.leisureDays == 3
+    override fun amountOfDaysWithLeisureActivityIs4() = element.leisureDays == 4
+    override fun amountOfDaysWithLeisureActivityIs5() = element.leisureDays == 5
 
-    override fun amountOfDaysWithShoppingActivityIs1() = element.shoppingDays.size == 1
-    override fun amountOfDaysWithShoppingActivityIs2() = element.shoppingDays.size == 2
-    override fun amountOfDaysWithShoppingActivityIs3() = element.shoppingDays.size == 3
-    override fun amountOfDaysWithShoppingActivityIs4() = element.shoppingDays.size == 4
+    override fun amountOfDaysWithShoppingActivityIs1() = element.shoppingDays == 1
+    override fun amountOfDaysWithShoppingActivityIs2() = element.shoppingDays == 2
+    override fun amountOfDaysWithShoppingActivityIs3() = element.shoppingDays == 3
+    override fun amountOfDaysWithShoppingActivityIs4() = element.shoppingDays == 4
 
 
-    override fun amountOfDaysWithTransportActivityIs1() = element.transportDays.size == 1
+    override fun amountOfDaysWithTransportActivityIs1() = element.transportDays == 1
 
 }

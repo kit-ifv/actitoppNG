@@ -13,9 +13,9 @@ fun interface StandardDuration {
     fun getAssignedStandardDuration(input: MobilityPlanInputs): Boolean
 }
 
-class UtilityFunctionAssignment(val rngHelper: RNGKeeper): StandardDuration {
+class UtilityFunctionAssignment(val rngHelper: RNGHelper): StandardDuration {
     override fun getAssignedStandardDuration(input: MobilityPlanInputs): Boolean {
-        val randomNumber = rngHelper.pull("8A" + input.dayPlan.durationDay.weekday.toString())
+        val randomNumber = rngHelper.randomValue
 
         val converter: (Boolean) -> BooleanDecisionSituation = {
             BooleanDecisionSituation(it, input)

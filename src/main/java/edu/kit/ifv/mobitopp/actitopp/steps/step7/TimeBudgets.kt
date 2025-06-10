@@ -1,13 +1,16 @@
 package edu.kit.ifv.mobitopp.actitopp.steps.step7
 
+import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.RNGKeeper
 import edu.kit.ifv.mobitopp.actitopp.changes.Category
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
+import kotlinx.serialization.Serializable
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
 // TODO mention somewhere that the categories are indexed starting from 1 isntead of 0, and eventually change the index t 0based.
+@Serializable
 data class TimeBudgets(
 
     val workBudget: Duration,
@@ -65,9 +68,23 @@ data class TimeBudgets(
 
         }
     }
+    
+    companion object {
+        val NONE = TimeBudgets(
+            Duration.ZERO,
+            Duration.ZERO,
+            Duration.ZERO,
+            Duration.ZERO,
+            Duration.ZERO,
+            Category.NONE_CHOSEN,
+            Category.NONE_CHOSEN,
+            Category.NONE_CHOSEN,
+            Category.NONE_CHOSEN,
+            Category.NONE_CHOSEN,)
+    }
 }
 
-val NO_TIME: Pair<Duration, Category> = Duration.ZERO to Category(0)
+val NO_TIME: Pair<Duration, Category> = Duration.ZERO to Category.NONE_CHOSEN
 class HistogramPerActivity(
     val workHistograms: WorkHistograms = WorkHistograms.fromResourcePath(),
     val educationHistograms: EducationHistograms = EducationHistograms.fromResourcePath(),
@@ -78,20 +95,21 @@ class HistogramPerActivity(
 
 
     fun determineTimeBudgets(
-        rngKeeper: RNGKeeper,
+        rngKeeper: RNGHelper,
+        person: IPerson,
         finalizedActivityPattern: FinalizedActivityPattern,
     ): TimeBudgets {
-        val workSelection = if (finalizedActivityPattern.workDays.isEmpty()) NO_TIME else
-            workHistograms.select(rngKeeper.pull("7A"),
-            rngKeeper.pull("7B"), finalizedActivityPattern)
-        val educationSelection = if (finalizedActivityPattern.educationDays.isEmpty()) NO_TIME else
-        educationHistograms.select(rngKeeper.pull("7C"), rngKeeper.pull("7D"), finalizedActivityPattern)
-        val leisureSelection = if (finalizedActivityPattern.leisureDays.isEmpty()) NO_TIME else
-        leisureHistograms.select(rngKeeper.pull("7E"), rngKeeper.pull("7F"), finalizedActivityPattern)
-        val shoppingSelection = if (finalizedActivityPattern.shoppingDays.isEmpty()) NO_TIME else
-        shoppingHistograms.select(rngKeeper.pull("7G"), rngKeeper.pull("7H"), finalizedActivityPattern)
-        val transportSelection = if (finalizedActivityPattern.transportDays.isEmpty()) NO_TIME else
-        transportHistograms.select(rngKeeper.pull("7I"), rngKeeper.pull("7J"), finalizedActivityPattern)
+        val workSelection = if (finalizedActivityPattern.workDays == 0 ) NO_TIME else
+            workHistograms.select(rngKeeper.randomValue,
+            rngKeeper.randomValue, finalizedActivityPattern, person)
+        val educationSelection = if (finalizedActivityPattern.educationDays == 0) NO_TIME else
+        educationHistograms.select(rngKeeper.randomValue, rngKeeper.randomValue, finalizedActivityPattern, person)
+        val leisureSelection = if (finalizedActivityPattern.leisureDays == 0) NO_TIME else
+        leisureHistograms.select(rngKeeper.randomValue, rngKeeper.randomValue, finalizedActivityPattern, person)
+        val shoppingSelection = if (finalizedActivityPattern.shoppingDays == 0) NO_TIME else
+        shoppingHistograms.select(rngKeeper.randomValue, rngKeeper.randomValue, finalizedActivityPattern, person)
+        val transportSelection = if (finalizedActivityPattern.transportDays == 0) NO_TIME else
+        transportHistograms.select(rngKeeper.randomValue, rngKeeper.randomValue, finalizedActivityPattern, person)
         return TimeBudgets(
             workBudget = workSelection.first,
             workCategory = workSelection.second,
@@ -106,20 +124,15 @@ class HistogramPerActivity(
         )
     }
 
-    private fun HistogramSelection.select(
-        rngHelper: RNGHelper,
-        finalizedActivityPattern: FinalizedActivityPattern,
-    ): Pair<Duration, Category> {
-        val histogram = select(rngHelper.randomValue, finalizedActivityPattern)
-        return histogram.selectInt(rngHelper.randomValue) to histogram.categoryIndex
-    }
+
 
     private fun HistogramSelection.select(
         firstRnd: Double,
         secondRnd: Double,
         finalizedActivityPattern: FinalizedActivityPattern,
+        person: IPerson,
     ): Pair<Duration, Category> {
-        val histogram = select(firstRnd, finalizedActivityPattern)
+        val histogram = select(firstRnd, finalizedActivityPattern, person)
         return histogram.selectInt(secondRnd) to histogram.categoryIndex
     }
 }

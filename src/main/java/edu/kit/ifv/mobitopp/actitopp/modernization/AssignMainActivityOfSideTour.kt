@@ -21,7 +21,7 @@ fun interface AssignMainActivityOfSideTour {
 
 
 
-class AssignByUtilityFunction(private val patternStructure: PatternStructure, val rngHelper: RNGKeeper) : AssignMainActivityOfSideTour {
+class AssignByUtilityFunction(private val patternStructure: PatternStructure, val rngHelper: RNGHelper) : AssignMainActivityOfSideTour {
     override fun generateSideTourActivities(input: DayWithPlans): Pair<List<ActivityType>, List<ActivityType>> {
         val plannedPrecursors = input.plannedTourAmounts.precursorAmount
         val plannedSuccessors = input.plannedTourAmounts.successorAmount
@@ -50,7 +50,7 @@ class AssignByUtilityFunction(private val patternStructure: PatternStructure, va
                     ActivityType.EDUCATION
                 )
 
-                val rnd = rngHelper.pull("4A")
+                val rnd = rngHelper.randomValue
                 step4WithParams.select(availableOptions, rnd) {
                     TourSituation(
                         it,

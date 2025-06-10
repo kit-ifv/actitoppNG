@@ -17,7 +17,7 @@ import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ParametrizedDiscreteChoice
 import kotlin.math.max
 
 abstract class DefaultSideTourDeterminer<P>(
-    val rngHelper: RNGKeeper,
+    val rngHelper: RNGHelper,
     val choiceModel: ParametrizedDiscreteChoiceModel<Int, PreviousDaySituation, P>,
 ) : GenerateSideTours {
     override fun generate(precedingInput: PrecedingInput): Int {
@@ -27,7 +27,7 @@ abstract class DefaultSideTourDeterminer<P>(
 
                 val availableOptions = determineAvailableOptions(day, precedingInput.personInfo.routine)
 
-                val rnd = rngHelper.pull(stringID)
+                val rnd = rngHelper.randomValue
                 val converter: (Int) -> PreviousDaySituation = {
                     createChoiceSituation(
                         choice = it,
@@ -46,7 +46,7 @@ abstract class DefaultSideTourDeterminer<P>(
     }
 
     abstract fun update(day: ModifiablePlannedTourAmounts, result: Int)
-    fun determineAvailableOptions(day: DayStructure, routine: WeekRoutine): Set<Int> {
+    private fun determineAvailableOptions(day: DayStructure, routine: WeekRoutine): Set<Int> {
         // If the main activity is staying home, there should not be the option to choose any other subtour
 //        if(day.day.mainTourActivityType() == ActivityType.HOME) return setOf(0)
         if(day.mainActivityType() == ActivityType.HOME) return setOf(0)
@@ -73,7 +73,6 @@ abstract class DefaultSideTourDeterminer<P>(
         }
         return availableOptions
     }
-    abstract val stringID: String
     abstract fun spawnTour(day: HDay): HTour
     abstract fun determineMinimumAmountOfTours(remainingNumberOfTours: Int): Int
     open fun createChoiceSituation(

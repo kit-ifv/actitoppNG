@@ -7,10 +7,10 @@ import edu.kit.ifv.mobitopp.actitopp.steps.step5.DayAmountTracker
 
 class Step5Generator(
     private val patternStructure: PatternStructure,
-    val personWithRoutine: PersonWithRoutine,
-    val rngHelper: RNGKeeper,
-) {
 
+    val rngHelper: RNGHelper,
+) {
+    val personWithRoutine: PersonWithRoutine = patternStructure.weekRoutine
     private val relevantDays = patternStructure.mobileDays()
     val map = relevantDays.associateWith {
         DayAmountTracker(it, rngHelper, personWithRoutine)

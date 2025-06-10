@@ -11,7 +11,7 @@ import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
  * Keep track of the amount of "activities" placed within the day, to avoid the side effect shenanigans of the legacy
  * code. We want to determine the amount of activities in bulk, before even considering spawning a single activity.
  */
-class DayAmountTracker(val day: DayStructure, val rngHelper: RNGKeeper, val personWithRoutine: PersonWithRoutine) {
+class DayAmountTracker(val day: DayStructure, val rngHelper: RNGHelper, val personWithRoutine: PersonWithRoutine) {
 
     private var counter = 2 * day.amountOfElements()
     private var remainingPlacements = day.minimumAmountOfActivitiesByJointActions - day.amountOfActivities()

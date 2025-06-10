@@ -8,30 +8,82 @@ import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.DurationDay
 import edu.kit.ifv.mobitopp.actitopp.modernization.LinkedAction
 import edu.kit.ifv.mobitopp.actitopp.modernization.LinkedActivity
+import edu.kit.ifv.mobitopp.actitopp.modernization.ModernizedActivity
 import edu.kit.ifv.mobitopp.actitopp.modernization.linkByHomeActivity
 import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.steps.step7.TimeBudgets
+import kotlinx.serialization.Serializable
+import kotlin.math.sin
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.times
 
-class MobilityPlan(
-    val dayPlans: Collection<MutableDayPlan>,
-    val homePlans: Collection<HomeDayPlan>,
-    val activities: Collection<LinkedActivity>,
-    val timeBudgets: TimeBudgets,
-    val person: IPerson,
+interface MobilityPlan {
+    val startHomeAnchor: LinkedActivity
+    val endHomeAnchor: LinkedActivity
+    val dayPlans: Collection<MutableDayPlan>
+    val homePlans: Collection<HomeDayPlan>
+    val activities: Collection<LinkedActivity>
+    val timeBudgets: TimeBudgets
+    val person: IPerson
+
+    val mainActivityMap : Map<ActivityType, List<LinkedActivity>>
+    val regularActivities : Map<ActivityType, Boolean>
+    fun finish(): List<ModernizedActivity>
+    fun isConsistent() = true
+    fun extrudeHomeActivities() {
+
+    }
+    companion object {
+        fun stayAtHomePlan(person: IPerson, amountOfDays: Int): MobilityPlan {
+            return StayAtHomePlan((0..<amountOfDays).map { HomeDayPlan(DurationDay(it)) }, person)
+        }
+
+    }
+}
+
+class StayAtHomePlan(override val homePlans: Collection<HomeDayPlan>,     override val person: IPerson) : MobilityPlan {
+
+    private val singularHomeActivity = LinkedActivity.homeDay().apply {
+        startTime = Duration.ZERO
+        duration = homePlans.size * 1.days
+    }
+    override val startHomeAnchor: LinkedActivity = singularHomeActivity
+    override val endHomeAnchor: LinkedActivity = singularHomeActivity
+    override val dayPlans: Collection<MutableDayPlan> = emptyList()
+
+    override val activities: Collection<LinkedActivity> = emptyList()
+    override val timeBudgets: TimeBudgets = TimeBudgets.NONE
+    override fun finish(): List<ModernizedActivity> {
+        return listOf(singularHomeActivity.original)
+    }
+
+    override val mainActivityMap: Map<ActivityType, List<LinkedActivity>> = emptyMap()
+    override val regularActivities: Map<ActivityType, Boolean> = emptyMap()
+
+    companion object {
+        fun create(days: Collection<DurationDay>, person: IPerson) =  StayAtHomePlan(days.map { HomeDayPlan(it) }, person)
+    }
+}
+
+class ActualMobilityPlan(
+    override val dayPlans: Collection<MutableDayPlan>,
+    override val homePlans: Collection<HomeDayPlan>,
+    override val activities: Collection<LinkedActivity>,
+    override val timeBudgets: TimeBudgets,
+    override val person: IPerson,
     tripDuration: DetermineTripDuration = StandardCommuteDurations(),
-) {
+) : MobilityPlan {
     // Assume that the agent starts their plan at home.
-    private val startHomeAnchor = LinkedActivity.homeDay().apply {
+    override val startHomeAnchor = LinkedActivity.homeDay().apply {
         startTime = 0.minutes
         duration = 1.minutes
     }
 
     // And ends their mobility pattern at home.
-    private val endHomeAnchor = LinkedActivity.homeDay().apply {
+    override val endHomeAnchor = LinkedActivity.homeDay().apply {
         startTime = (dayPlans.size + homePlans.size).days - 1.minutes + 3.hours
         duration = 1.minutes
     }
@@ -45,17 +97,17 @@ class MobilityPlan(
             .link(endHomeAnchor, duration = tripDuration.lastTourTrip(person, activities.last().activityType))
     }
 
-    fun amountOfDaysWithActivity(activityType: ActivityType): Int {
-        TODO()
-    }
+    override fun finish(): List<ModernizedActivity> = startHomeAnchor.activityIterator().map { it.original }.toList()
+
     fun outOfHomeActivities() = activities.filter { it.activityType != ActivityType.HOME }
-    val activityMap: Map<ActivityType, List<LinkedActivity>> = activities.groupBy { it.activityType }
-    val mainActivityMap : Map<ActivityType, List<LinkedActivity>> = dayPlans.flatMap { it.tourPlans.map { it.mainActivity } }.groupBy{it.activityType}
+    val activityMap: Map<ActivityType, List<LinkedActivity>> get() = activities.groupBy { it.activityType }
+    override val mainActivityMap: Map<ActivityType, List<LinkedActivity>>
+        get() = dayPlans.flatMap { it.tourPlans.map { it.mainActivity } }.groupBy { it.activityType }
 
     /**
      * An activity is regular, if the amount of activities per week is equal to the number of days with said activity
      */
-    val regularActivities: Map<ActivityType, Boolean> by lazy {
+    override val regularActivities: Map<ActivityType, Boolean> by lazy {
         val dayMap = ActivityType.OUTOFHOMEACTIVITY.associateWith { actType ->
             dayPlans.count { it.hasActivity(actType) }
         }
@@ -65,7 +117,7 @@ class MobilityPlan(
     }
 
 
-    fun isConsistent(): Boolean {
+    override fun isConsistent(): Boolean {
         return startHomeAnchor.iterator().all {
             it.isConsistent()
         }
@@ -79,8 +131,9 @@ class MobilityPlan(
     fun fullPrint() {
         println(startHomeAnchor.iterator().joinToString(separator = "\n") { it.shortString() })
     }
-    fun extrudeHomeActivities() {
-        startHomeAnchor.startTime  = Duration.ZERO
+
+    override fun extrudeHomeActivities() {
+        startHomeAnchor.startTime = Duration.ZERO
         startHomeAnchor.activityIterator().filter { it.activityType == ActivityType.HOME }.forEach { act ->
             val previousAct = act.previous?.previousActivity
             previousAct?.let {
@@ -107,8 +160,8 @@ class MobilityPlan(
     }
 
 
-
     companion object {
+
         fun create(
             dayStructures: Collection<DayStructure>,
             homeDays: Collection<DurationDay>,
@@ -139,7 +192,7 @@ class MobilityPlan(
             val activities = dayPlans.zipWithNext().flatMap { (firstDay, secondDay) ->
                 firstDay.linkByHomeActivity(secondDay, personWithRoutine, tripDuration)
             } + dayPlans.last()
-            return MobilityPlan(
+            return ActualMobilityPlan(
                 dayPlans, homePlans, activities, timeBudgets, personWithRoutine
             )
         }

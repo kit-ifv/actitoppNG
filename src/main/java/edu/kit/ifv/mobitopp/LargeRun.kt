@@ -33,7 +33,6 @@ private fun generateHousehold(): ActiToppHousehold {
         random.nextInt(0, 10),
         random.nextInt(0, 10),
         random.nextInt(0, 10),
-        random.nextInt(0, 10),
         random.nextInt(0, 10)
     )
 }
@@ -66,7 +65,7 @@ fun Collection<ActitoppPerson>.generateSchedules() {
     withIndex().forEach { (index, person) -> person.generateSchedule(fileBase, randomgenerator, debugloggers).also { if(index % 100 == 0)println("Working on person $index done") } }
 }
 fun main() {
-    val targets = generateHouseholds(1000).flatMap { it.generatePersons(5) }.drop(1104)
+    val targets = generateHouseholds(1000).flatMap { it.generatePersons(5) }
 
 
     targets.generateSchedules()

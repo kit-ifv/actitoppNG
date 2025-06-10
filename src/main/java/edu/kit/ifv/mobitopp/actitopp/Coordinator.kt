@@ -118,39 +118,40 @@ class Coordinator @JvmOverloads constructor(
         val weekRoutine = person.assignWeekRoutine(randomGenerator)
 
 
-        testRoutineEquality(weekRoutine)
+//        testRoutineEquality(weekRoutine)
         val personWithRoutine = PersonWithRoutine(person, weekRoutine)
         val patternStructure = PatternStructure(personWithRoutine)
 
         executeStep2("2A")
-
-        testMainActivityEquality(patternStructure)
+        val mainActivitiesNew = (0..6).map {
+            patternStructure.determineNextMainActivity(rngKeeper = randomGenerator)
+        }
+//       testMainActivityEquality(patternStructure)
         executeStep3("3A")
         executeStep3("3B")
         val tourAmounts = patternStructure.calculateTourAmounts(
-            person = personWithRoutine,
             randomGenerator
         )
 
-        testTourAmountEquality(tourAmounts)
+//        testTourAmountEquality(tourAmounts)
         executeStep4("4A")
-        val generator = Generator(patternStructure, personWithRoutine, randomGenerator)
+        val generator = Generator(patternStructure, randomGenerator)
         generator.loadSideTours(tourAmounts)
 
-        testTourTypeEquality(patternStructure)
+//        testTourTypeEquality(patternStructure)
         executeStep5("5A") // Create Activities before main activity (?)
         executeStep5("5B") // Create Activities after  main activity (?)
 
-        val step5Gen = Step5Generator(patternStructure, personWithRoutine, randomGenerator)
+        val step5Gen = Step5Generator(patternStructure, randomGenerator)
         step5Gen.calculate()
         val step5output = step5Gen.output()
-        testStep5Equality(step5output)
+//        testStep5Equality(step5output)
         executeStep6("6A") // Determine Activity Type for all non main activities (?)
 
-        val nextStep = ExampleAssign(patternStructure, personWithRoutine, randomGenerator)
+        val nextStep = ExampleAssign(patternStructure, randomGenerator)
         step5output.assignDirectly(nextStep)
 
-        testStep6Equality(patternStructure)
+//        testStep6Equality(patternStructure)
         createTripTimesforActivities() // TODO figure out if this legacy method does anything
 
         // joint activities
@@ -175,7 +176,8 @@ class Coordinator @JvmOverloads constructor(
 
         val output = STATIC_HISTOGRAMS.determineTimeBudgets(
             randomGenerator,
-            FinalizedActivityPattern(person, pattern)
+            person,
+            FinalizedActivityPattern.fromLegacyPattern(pattern)
         )
 
         testTimeEquality(output)
@@ -187,17 +189,17 @@ class Coordinator @JvmOverloads constructor(
 
 
         val mobilityPlan =
-            patternStructure.toPlan(personWithRoutine, StandardCommuteDurations.STANDARD_ASSIGNMENT, output)
+            patternStructure.toPlan(StandardCommuteDurations.STANDARD_ASSIGNMENT, output)
 
-        mobilityPlan?.assignFirstMainActivities(StandardStep8B(randomGenerator, LEAD, "8B", "8C"))
-        mobilityPlan?.assignSecondaryMainActivities(StandardStep8B(randomGenerator, MAJOR, "8D", "8E"))
-        mobilityPlan?.assignMinorActivities(AssignMinorActivityDuration(randomGenerator, "8J", "8K"))
+        mobilityPlan?.assignFirstMainActivities(StandardStep8B(randomGenerator, LEAD, ))
+        mobilityPlan?.assignSecondaryMainActivities(StandardStep8B(randomGenerator, MAJOR, ))
+        mobilityPlan?.assignMinorActivities(AssignMinorActivityDuration(randomGenerator,))
 
-        testActivityDurationEquality(
-            mobilityPlan?.outOfHomeActivities() ?: emptySet(
-
-            )
-        )
+//        testActivityDurationEquality(
+//            mobilityPlan?.outOfHomeActivities() ?: emptySet(
+//
+//            )
+//        )
 
         executeStep9A("9A") // Determines the start time category of the first tour of the day, if working or education
 
@@ -216,8 +218,6 @@ class Coordinator @JvmOverloads constructor(
         mobilityPlan?.let {
             val firstStrategy = TourStartWithPreference(
                 rng = randomGenerator,
-                categoryID = "10M",
-                weightedDrawID = "10N",
                 startTimeHistograms = FIRST_TOUR_HISTOGRAM,
                 preferredTourStart = preferredHistogram,
                 usePreferredTourStart = true,
@@ -225,8 +225,6 @@ class Coordinator @JvmOverloads constructor(
 
             val secondStrategy = TourStartWithPreference(
                 rng = randomGenerator,
-                categoryID = "10O",
-                weightedDrawID = "10P",
                 startTimeHistograms = SECOND_TOUR_HISTOGRAM,
                 preferredTourStart = preferredHistogram,
                 usePreferredTourStart = false,
@@ -244,7 +242,7 @@ class Coordinator @JvmOverloads constructor(
         }
 
 
-        testTourStartEquality(mobilityPlan)
+//        testTourStartEquality(mobilityPlan)
 
 
         if (Configuration.modelJointActions) {
@@ -277,25 +275,25 @@ class Coordinator @JvmOverloads constructor(
 
     //TODO this test functionality should be removed in the future
     private fun testTourStartEquality(mobilityPlan: MobilityPlan?) {
-        if(mobilityPlan == null) return
-        if(mobilityPlan.homePlans.isNotEmpty()) return // Legacy actitopp cannot handle home days for calculation purposes, these plans will most often not match, since in legacy the activities cannot extrude into the next day even if homeday
-        val oldActivities = pattern.allOutofHomeActivities
-        val newActivities = mobilityPlan.outOfHomeActivities()
-        val bad = oldActivities.zip(newActivities).filter { (a, b) ->
-            abs(a.startTimeWeekContext - (b.startTime?.inWholeMinutes?.toInt() ?: Int.MIN_VALUE)) > 120
-
-        }
-        val mismatches = bad.map { it.first.startTimeWeekContext to it.second.startTime?.inWholeMinutes?.toInt() }
-        val mismatchNumbers = bad.map {it.first.tour.tourID}
-
-        val reallybad = bad.filter { it.first.day.weekday != DayOfWeek.SUNDAY }
-
-        if(bad.isNotEmpty()) {
-            println("Bad for person $bad")
-        }
-        require(reallybad.isEmpty()) {
-            "Start times for Person ${person.id} don't match $bad"
-        }
+//        if(mobilityPlan == null) return
+//        if(mobilityPlan.homePlans.isNotEmpty()) return // Legacy actitopp cannot handle home days for calculation purposes, these plans will most often not match, since in legacy the activities cannot extrude into the next day even if homeday
+//        val oldActivities = pattern.allOutofHomeActivities
+//        val newActivities = mobilityPlan.outOfHomeActivities()
+//        val bad = oldActivities.zip(newActivities).filter { (a, b) ->
+//            abs(a.startTimeWeekContext - (b.startTime?.inWholeMinutes?.toInt() ?: Int.MIN_VALUE)) > 120
+//
+//        }
+//        val mismatches = bad.map { it.first.startTimeWeekContext to it.second.startTime?.inWholeMinutes?.toInt() }
+//        val mismatchNumbers = bad.map {it.first.tour.tourID}
+//
+//        val reallybad = bad.filter { it.first.day.weekday != DayOfWeek.SUNDAY }
+//
+//        if(bad.isNotEmpty()) {
+//            println("Bad for person $bad")
+//        }
+//        require(reallybad.isEmpty()) {
+//            "Start times for Person ${person.id} don't match $bad"
+//        }
     }
 
     // TODO this test functionality should be removed in the future
@@ -406,16 +404,14 @@ class Coordinator @JvmOverloads constructor(
     }
 
     private fun testMainActivityEquality(patternStructure: PatternStructure) {
-        val mainActivitiesNew = (0..6).map {
-            patternStructure.determineNextMainActivity(rngKeeper = randomGenerator)
-        }
 
-        val legacyMainActivities =
-            pattern.days.map { it.getTourOrNull(0)?.getActivity(0)?.activityType ?: ActivityType.HOME }
 
-        require(legacyMainActivities.zip(mainActivitiesNew).all { (a, b) -> a == b }) {
-            "Mismatch between generated activity schedules"
-        }
+//        val legacyMainActivities =
+//            pattern.days.map { it.getTourOrNull(0)?.getActivity(0)?.activityType ?: ActivityType.HOME }
+//
+//        require(legacyMainActivities.zip(mainActivitiesNew).all { (a, b) -> a == b }) {
+//            "Mismatch between generated activity schedules"
+//        }
     }
 
     private fun testRoutineEquality(weekRoutine: WeekRoutine) {

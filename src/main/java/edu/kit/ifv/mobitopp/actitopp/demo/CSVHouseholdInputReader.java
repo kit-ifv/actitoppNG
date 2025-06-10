@@ -70,7 +70,7 @@ public class CSVHouseholdInputReader {
             try {
 
                 ActiToppHousehold tmphousehold = new ActiToppHousehold(
-                        Integer.parseInt(splitted[0]),        // householdIndex
+//                        Integer.parseInt(splitted[0]),        // householdIndex
                         Integer.parseInt(splitted[1]),        // children_u10
                         Integer.parseInt(splitted[2]),        // children_u18
                         Integer.parseInt(splitted[3]),        // areatype

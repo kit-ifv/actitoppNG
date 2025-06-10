@@ -1,5 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.steps.step7
 
+import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAttributesFromElement
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
@@ -26,8 +27,8 @@ class WorkHistograms(
     
 ): HistogramSelection {
 
-    override fun select(randomNumber: Double, finalizedActivityPattern: FinalizedActivityPattern): ArrayHistogram {
-        return choiceModel.select(randomNumber) { WorkChoiceSituation(it, finalizedActivityPattern) }
+    override fun select(randomNumber: Double, finalizedActivityPattern: FinalizedActivityPattern, person: IPerson): ArrayHistogram {
+        return choiceModel.select(randomNumber) { WorkChoiceSituation(it, finalizedActivityPattern, person) }
     }
 
     private val choiceModel = ModifiableDiscreteChoiceModel<ArrayHistogram, WorkChoiceSituation, ParameterCollectionStep7A>(
@@ -285,6 +286,6 @@ private data class ParameterStep7A(
 
 class WorkChoiceSituation private constructor(override val choice: ArrayHistogram, val personAttributes: PersonAttributes, val patternAttributes: FinalizedPatternAttributes) :
     ChoiceSituation<ArrayHistogram>(), PersonAttributes by personAttributes, FinalizedPatternAttributes by patternAttributes {
-        constructor(choice: ArrayHistogram, finalizedPattern: FinalizedActivityPattern): this(choice, PersonAttributesFromElement(finalizedPattern.person), PatternAttributesByElement(finalizedPattern))
+        constructor(choice: ArrayHistogram, finalizedPattern: FinalizedActivityPattern, person: IPerson): this(choice, PersonAttributesFromElement(person), PatternAttributesByElement(finalizedPattern))
 
 }

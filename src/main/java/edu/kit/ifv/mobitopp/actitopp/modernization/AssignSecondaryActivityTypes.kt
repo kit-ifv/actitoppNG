@@ -35,9 +35,10 @@ fun Map<DayStructure, Map<BidirectionalIndexedValue<TourStructure>, PlannedTourA
 
 class ExampleAssign(
     val patternStructure: PatternStructure,
-    val personWithRoutine: PersonWithRoutine,
-    val rngHelper: RNGKeeper,
+
+    val rngHelper: RNGHelper,
 ) : AssignSecondaryActivityTypes {
+    val personWithRoutine: PersonWithRoutine = patternStructure.weekRoutine
     override fun generateSecondaryActivityTypes(input: SecondaryActInput):
             Pair<List<ActivityType>, List<ActivityType>> {
         val precursors = input.plannedTourAmounts.precursorAmount
@@ -65,7 +66,7 @@ class ExampleAssign(
                         input.dayStructure,
                         input.tourStructure, position, input.plannedTourAmounts)
                 }
-                val rnd = rngHelper.pull("6A")
+                val rnd = rngHelper.randomValue
                 step6WithParams.select(availableOptions, rnd, converter)
             }
         }

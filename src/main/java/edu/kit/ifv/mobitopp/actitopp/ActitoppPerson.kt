@@ -8,10 +8,12 @@ import edu.kit.ifv.mobitopp.actitopp.enums.Gender
 import edu.kit.ifv.mobitopp.actitopp.enums.JointStatus
 import edu.kit.ifv.mobitopp.actitopp.enums.isEmployedAnywhere
 import edu.kit.ifv.mobitopp.actitopp.enums.isStudentOrAzubi
+import kotlinx.serialization.Serializable
 import org.jetbrains.annotations.TestOnly
 import java.util.Collections
 import kotlin.math.max
 // TODO once refactored, rename or remove
+
 interface IPerson {
     val children0_10: Int
     val children_u18: Int
@@ -29,6 +31,10 @@ interface IPerson {
 
     fun isAnywayEmployed(): Boolean
     fun isinEducation(): Boolean
+}
+
+fun IPerson.spawnRandomGenerator(offset: Long = 0L): RNGHelper {
+    return RNGHelper(id.toLong() + offset)
 }
 
 class ActitoppPerson@JvmOverloads constructor(
@@ -476,7 +482,6 @@ class ActitoppPerson@JvmOverloads constructor(
             commutingdistance_education: Double = .0,
         ): ActitoppPerson {
             val household = ActiToppHousehold(
-                PersIndex,
                 children0_10,
                 children_u18,
                 areatype,

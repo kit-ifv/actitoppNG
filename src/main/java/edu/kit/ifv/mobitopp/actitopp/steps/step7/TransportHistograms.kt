@@ -1,5 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.steps.step7
 
+import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
@@ -14,8 +15,8 @@ class TransportHistograms(
     val histogram4: ArrayHistogram,
 ) : HistogramSelection {
 
-    override fun select(randomNumber: Double, finalizedActivityPattern: FinalizedActivityPattern): ArrayHistogram {
-        val converter: (ArrayHistogram) -> WorkChoiceSituation = { WorkChoiceSituation(it, finalizedActivityPattern) }
+    override fun select(randomNumber: Double, finalizedActivityPattern: FinalizedActivityPattern, person: IPerson): ArrayHistogram {
+        val converter: (ArrayHistogram) -> WorkChoiceSituation = { WorkChoiceSituation(it, finalizedActivityPattern, person) }
         return choiceModel.select(randomNumber, converter)
     }
 

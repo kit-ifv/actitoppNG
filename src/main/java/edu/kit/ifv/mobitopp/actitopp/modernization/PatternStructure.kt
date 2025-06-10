@@ -1,11 +1,14 @@
 package edu.kit.ifv.mobitopp.actitopp.modernization
 
+import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.RNGKeeper
 import edu.kit.ifv.mobitopp.actitopp.WeekRoutine
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
+import edu.kit.ifv.mobitopp.actitopp.modernization.plan.ActualMobilityPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.DetermineTripDuration
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MobilityPlan
+import edu.kit.ifv.mobitopp.actitopp.modernization.plan.StayAtHomePlan
 import edu.kit.ifv.mobitopp.actitopp.steps.step2.DaySituation
 import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.steps.step2.coordinatedStep2AWithParams
@@ -21,6 +24,9 @@ import kotlin.time.Duration.Companion.days
 class PatternStructure(
     val weekRoutine: PersonWithRoutine,
 ) {
+
+    constructor(person: IPerson, weekRoutine: WeekRoutine) : this(PersonWithRoutine(person, weekRoutine))
+
     private val activeDays: MutableList<ModifiableDayStructure> = mutableListOf()
     private val days: MutableCollection<DurationDay> = mutableListOf()
     private val dayStructure: MutableMap<DurationDay, DayStructure> = mutableMapOf()
@@ -29,6 +35,7 @@ class PatternStructure(
     fun allDays(): Collection<DayStructure> {
         return dayStructure.values
     }
+
     fun mobileDays(): List<ModifiableDayStructure> {
         return activeDays
     }
@@ -36,7 +43,13 @@ class PatternStructure(
     fun homeDays(): Set<DurationDay> {
         return days.toSet() - activeDays.map { it.startTimeDay }.toSet()
     }
-    fun generateTrackedActivity(day: DurationDay, lambda: PatternStructure.(DurationDay) -> ActivityType): ActivityType {
+    fun activityTypes(): List<ActivityType> {
+        return activeDays.flatMap { it.elements().flatMap { it.elements() } }
+    }
+    fun generateTrackedActivity(
+        day: DurationDay,
+        lambda: PatternStructure.(DurationDay) -> ActivityType,
+    ): ActivityType {
         val activityType = lambda(day)
         activityTracker.add(
             activityType,
@@ -46,20 +59,27 @@ class PatternStructure(
     }
 
     fun DurationDay.shouldNotBeEducationDay(weekRoutine: WeekRoutine): Boolean {
-        return activityTracker.amountOfDaysWithActivity(ActivityType.EDUCATION) >= weekRoutine.amountOfEducationDays && this !in activityTracker.daysWithActivity(ActivityType.EDUCATION)
+        return activityTracker.amountOfDaysWithActivity(ActivityType.EDUCATION) >= weekRoutine.amountOfEducationDays && this !in activityTracker.daysWithActivity(
+            ActivityType.EDUCATION
+        )
     }
 
     fun DurationDay.shouldNotBeWorkDay(weekRoutine: WeekRoutine): Boolean {
-        return activityTracker.amountOfDaysWithActivity(ActivityType.WORK) >= weekRoutine.amountOfWorkingDays && this !in activityTracker.daysWithActivity(ActivityType.WORK)
+        return activityTracker.amountOfDaysWithActivity(ActivityType.WORK) >= weekRoutine.amountOfWorkingDays && this !in activityTracker.daysWithActivity(
+            ActivityType.WORK
+        )
     }
 
     fun amountOfDaysWith(activityType: ActivityType): Int {
         return activityTracker.amountOfDaysWithActivity(activityType)
     }
 
+    /**
+     * This method operates by sideeffect, so maybe not the best solution
+     */
     fun determineNextMainActivity(
         activityTypeFilter: ActivityTypeFilter = Step2Tracking,
-        rngKeeper: RNGKeeper,
+        rngKeeper: RNGHelper,
     ): ActivityType {
         val currentDay = days.lastOrNull()?.next() ?: DurationDay.FIRST
         days.add(currentDay)
@@ -75,11 +95,10 @@ class PatternStructure(
     private fun determineActivityFor(
         availableOptions: Set<ActivityType>,
         day: DurationDay,
-        rngHelper: RNGKeeper,
+        rngHelper: RNGHelper,
     ): ActivityType {
 
-//        val randomNumber = rngHelper.randomValue
-        val randomNumber = rngHelper.pull("2A")
+        val randomNumber = rngHelper.randomValue
 
         val converter: (ActivityType) -> DaySituation = {
             DaySituation(
@@ -88,7 +107,8 @@ class PatternStructure(
                 day.weekday
             )
         }
-        val activityType = coordinatedStep2AWithParams.select(options = availableOptions, randomNumber = randomNumber,
+        val activityType = coordinatedStep2AWithParams.select(
+            options = availableOptions, randomNumber = randomNumber,
             converter = converter
         )
         activityTracker.add(activityType, day)
@@ -104,23 +124,32 @@ class PatternStructure(
      * complicates the legacy counting, we can drop these days, since these days will be modelled exclusively by the
      * spawned Home Activity spanning between the previous day and the next day.
      */
-    fun toPlan(personWithRoutine: PersonWithRoutine, tripDuration: DetermineTripDuration, timeBudgets: TimeBudgets) : MobilityPlan? {
-        if(mobileDays().isEmpty()) {
-            return null
+    fun toPlan(
+        tripDuration: DetermineTripDuration,
+        timeBudgets: TimeBudgets,
+    ): MobilityPlan {
+        if (mobileDays().isEmpty()) {
+            return StayAtHomePlan.create(homeDays(), weekRoutine)
         }
-        return MobilityPlan.create(mobileDays(), homeDays(), timeBudgets, personWithRoutine, tripDuration)
+        return ActualMobilityPlan.create(mobileDays(), homeDays(), timeBudgets, weekRoutine, tripDuration)
     }
 
 }
 
-class Generator(private val patternStructure: PatternStructure,
-                private val personWithRoutine: PersonWithRoutine,
-                val rngHelper: RNGKeeper) {
+class Generator(
+    private val patternStructure: PatternStructure,
+    val rngHelper: RNGHelper,
+) {
 
-    private val mainActivityOfSideTours: AssignMainActivityOfSideTour = AssignByUtilityFunction(patternStructure, rngHelper)
+    private val mainActivityOfSideTours: AssignMainActivityOfSideTour =
+        AssignByUtilityFunction(patternStructure, rngHelper)
+
     fun generateSideTours(tourAmounts: Map<DurationDay, PlannedTourAmounts>): Map<ModifiableDayStructure, Pair<List<ActivityType>, List<ActivityType>>> {
         return patternStructure.mobileDays().associateWith {
-            val input = DayWithPlans(it, personWithRoutine, tourAmounts[it.startTimeDay] ?: PlannedTourAmounts.NONE)
+            val input =
+                DayWithPlans(it,
+                    patternStructure.weekRoutine,
+                    tourAmounts[it.startTimeDay] ?: PlannedTourAmounts.NONE)
             mainActivityOfSideTours.generateSideTourActivities(input)
         }
     }
@@ -133,6 +162,7 @@ class Generator(private val patternStructure: PatternStructure,
         }
     }
 }
+
 fun interface ActivityTypeFilter {
     fun determineAvailableOptions(
         tracker: ActivityDayTracker,
@@ -168,18 +198,20 @@ class ActivityDayTracker {
         mutableMapOf<ActivityType, MutableSet<DurationDay>>()
 
     fun add(activityType: ActivityType, day: DurationDay) {
-        daysWithActivities.getOrPut(activityType){
-          mutableSetOf()
+        daysWithActivities.getOrPut(activityType) {
+            mutableSetOf()
         }.add(day)
     }
 
     fun amountOfDaysWithActivity(activityType: ActivityType): Int = daysWithActivities[activityType]?.size ?: 0
     fun daysWithActivity(activityType: ActivityType): Set<DurationDay> = daysWithActivities[activityType] ?: emptySet()
 }
+
 fun Int.positiveModulus(modulo: Int): Int {
-    val result  = this % modulo
+    val result = this % modulo
     return if (result < 0) result + modulo else result
 }
+
 /**
  * A wrapper class around duration that holds both the exact duration start point when a day starts and the information
  * which weekday is represented. Once sufficient refactors have been done, this class could probably be removed and simply

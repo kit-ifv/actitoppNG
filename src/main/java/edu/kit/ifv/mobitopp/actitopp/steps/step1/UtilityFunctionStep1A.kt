@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.steps.step1
 
 import edu.kit.ifv.mobitopp.actitopp.ActitoppPerson
+import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.enums.AreaType
 import edu.kit.ifv.mobitopp.actitopp.enums.Employment
 import edu.kit.ifv.mobitopp.actitopp.enums.Gender
@@ -180,7 +181,7 @@ data class ParametersStep1A(
 // TODO move these to a util definition
 inline operator fun Boolean.times(other: Double): Double = this.D * other
 inline operator fun Boolean.times(other: Int): Int = this.I * other
-class Situation1A(override val choice: Int, person: ActitoppPerson): PersonSituation(choice, person.toModifiable()) {
+class Situation1A(override val choice: Int, person: IPerson): PersonSituation(choice, person.toModifiable()) {
     val employment = person.employment
     val age = person.age
     val areaType = person.areatype

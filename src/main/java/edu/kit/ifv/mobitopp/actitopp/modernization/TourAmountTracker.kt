@@ -45,7 +45,7 @@ data class ModifiableStructureWithPreviousDay(
  */
 class TourAmountTracker(initialDayStructures: Collection<DayStructure>,
                         val person: PersonWithRoutine,
-                        val rngHelper: RNGKeeper) {
+                        val rngHelper: RNGHelper) {
     // Irealy wish that I could find a better solution than to allow every field to be modifiable, because home activities
     // should not have a modifiable field for tour amounts, but since it is private whatever
     private val map: PlannedTourMap = PlannedTourMap(initialDayStructures)
@@ -99,20 +99,10 @@ class TourAmountTracker(initialDayStructures: Collection<DayStructure>,
 
 }
 
-fun PatternStructure.calculateTourAmounts(person: PersonWithRoutine, rngHelper: RNGKeeper): Map<DurationDay, PlannedTourAmounts> {
-    val tracker = TourAmountTracker(allDays(), person = person, rngHelper = rngHelper)
+fun PatternStructure.calculateTourAmounts(rngHelper: RNGHelper): Map<DurationDay, PlannedTourAmounts> {
+    val tracker = TourAmountTracker(allDays(), person = this.weekRoutine, rngHelper = rngHelper)
     tracker.generateSideTours(mobileDays())
     return tracker.output()
 
-}
-
-fun interface CalculatePlannedTourAmounts {
-    fun plannedTourAmounts(
-        person: PersonWithRoutine,
-        day: DayStructure,
-        previousPlannedAmounts: PlannedTourAmounts?,
-        randomNumber: Double,
-        randomNumber2: Double,
-    ): PlannedTourAmounts
 }
 

@@ -3,10 +3,10 @@ package edu.kit.ifv.mobitopp.actitopp.modernization
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.DetermineTripDuration
 import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
+import kotlinx.serialization.Serializable
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
-
-interface Action {
+sealed interface Action {
     val startTime: Duration?
     val duration: Duration?
     val endTime: Duration?
@@ -68,8 +68,8 @@ interface MutableActivity : Activity, MutableAction {
 operator fun Duration.plus(nullable: Duration?): Duration {
     return nullable?.let { it + this } ?: this
 }
-
-class ModernizedActivity(
+@Serializable
+data class ModernizedActivity(
     override val activityType: ActivityType,
     override var startTime: Duration? = null,
     override var duration: Duration? = null,

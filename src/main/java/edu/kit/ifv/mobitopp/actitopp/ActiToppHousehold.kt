@@ -3,20 +3,26 @@ package edu.kit.ifv.mobitopp.actitopp
 import edu.kit.ifv.mobitopp.actitopp.IO.DebugLoggers
 import edu.kit.ifv.mobitopp.actitopp.ModelFileBase
 import edu.kit.ifv.mobitopp.actitopp.enums.AreaType
+import edu.kit.ifv.mobitopp.actitopp.modernization.ModernizedHousehold
 
 /**
  * @author Tim Hilgert
  */
 class ActiToppHousehold @JvmOverloads constructor(
-    val householdIndex: Int,
+
     val children0_10: Int,
     val children_u18: Int,
     areatypeCode: Int,
     val numberofcarsinhousehold: Int = 0,
-) {
+) : ModernizedHousehold{
+    val householdIndex: Int = ActiToppHousehold.ID
 
     val areatype = AreaType.fromCode(areatypeCode)
-
+    override val members: List<IPerson>
+        get() = householdmembersasList
+    override val areaType: AreaType = areatype
+    override val numberOfCars: Int = numberofcarsinhousehold
+    override val id: Int = householdIndex
     /**
      * @return the householdIndex
      */
@@ -26,7 +32,6 @@ class ActiToppHousehold @JvmOverloads constructor(
 
     fun clone(): ActiToppHousehold {
         val clone = ActiToppHousehold(
-            this.householdIndex,
             this.children0_10,
             this.children_u18,
             this.areatype.code,
@@ -84,6 +89,7 @@ class ActiToppHousehold @JvmOverloads constructor(
          * @return the numberofpersonsinhousehold
          */
         get() = householdmembers.size
+
 
     /**
      * resets all modeling results for this household
@@ -218,5 +224,11 @@ class ActiToppHousehold @JvmOverloads constructor(
                 }
             }
         }
+    }
+
+    companion object {
+        var ID = 0
+            get() = field++
+            private set
     }
 }

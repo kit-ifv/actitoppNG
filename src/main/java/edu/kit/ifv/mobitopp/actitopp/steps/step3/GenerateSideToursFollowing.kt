@@ -12,7 +12,7 @@ import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ParametrizedDiscreteChoiceModel
 
 class GenerateSideToursFollowing(
-    rngHelper: RNGKeeper,
+    rngHelper: RNGHelper,
     choiceModel: ParametrizedDiscreteChoiceModel<Int, PreviousDaySituation, ParameterCollectionStep3B> = step3BWithParams,
 
     ) : DefaultSideTourDeterminer<ParameterCollectionStep3B>(rngHelper, choiceModel) {
@@ -46,5 +46,4 @@ class GenerateSideToursFollowing(
         day.successorAmount = result
     }
 
-    override val stringID: String = "3B"
 }

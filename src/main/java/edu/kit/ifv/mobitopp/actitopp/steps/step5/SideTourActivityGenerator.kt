@@ -6,7 +6,7 @@ import edu.kit.ifv.mobitopp.actitopp.steps.step3.TourSituationInt
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ParametrizedDiscreteChoiceModel
 
 abstract class SideTourActivityGenerator<P>(
-    val rngHelper: RNGKeeper,
+    val rngHelper: RNGHelper,
     val choiceModel: ParametrizedDiscreteChoiceModel<Int, TourSituationInt, P>,
 ) : GenerateSideTourActivities {
     override fun generateActivityAmount(input: SideTourActivityInput): Int {
@@ -17,23 +17,19 @@ abstract class SideTourActivityGenerator<P>(
         val converter: (Int) -> TourSituationInt = {
             TourSituationInt(it, input.person, input.routine, input.currentDay, input.tour, input.amountOfActivitiesBeforeMainAct)
         }
-        val rnd = rngHelper.pull(stringID)
+        val rnd = rngHelper.randomValue
         return choiceModel.select(options, rnd, converter)
     }
-
-    abstract val stringID: String
-
-
 }
 
-class PrecedingSpawns(rngHelper: RNGKeeper) : SideTourActivityGenerator<ParameterCollectionStep5A>(
+class PrecedingSpawns(rngHelper: RNGHelper) : SideTourActivityGenerator<ParameterCollectionStep5A>(
     rngHelper, step5AWithParams,
 ) {
-    override val stringID: String = "5A"
+
 }
 
-class FollowingSpawns(rngHelper: RNGKeeper) : SideTourActivityGenerator<ParameterCollectionStep5B>(
+class FollowingSpawns(rngHelper: RNGHelper) : SideTourActivityGenerator<ParameterCollectionStep5B>(
     rngHelper, step5BWithParams,
 ) {
-    override val stringID: String = "5B"
+
 }

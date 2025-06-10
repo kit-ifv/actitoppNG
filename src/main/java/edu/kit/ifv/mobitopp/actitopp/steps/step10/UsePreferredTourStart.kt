@@ -1,5 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.steps.step10
 
+import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.RNGKeeper
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.modernization.durations.MobilityPlanInputs
@@ -15,7 +16,7 @@ fun interface UsePreferredTourStart {
 }
 
 
-class UseStartViaChoiceModel(private val rngKeeper: RNGKeeper) : UsePreferredTourStart {
+class UseStartViaChoiceModel(private val rngKeeper: RNGHelper) : UsePreferredTourStart {
     private val choiceModel =
         ModifiableDiscreteChoiceModel<Boolean, BooleanDecisionWithPreferenceCategory, ParameterStep10A>(
             AllocatedLogit.create {
@@ -49,7 +50,7 @@ class UseStartViaChoiceModel(private val rngKeeper: RNGKeeper) : UsePreferredTou
             val converter: (Boolean) -> BooleanDecisionWithPreferenceCategory = {
                 BooleanDecisionWithPreferenceCategory(it, input, preferredHistogram)
             }
-            val rnd = rngKeeper.pull("10A")
+            val rnd = rngKeeper.randomValue
             return choiceModel.select(rnd, converter)
         }
         return false

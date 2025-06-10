@@ -165,7 +165,7 @@ public class ExampleActiTopp {
     public static void createAndModelOnePerson_Example3() {
 
         ActiToppHousehold testhousehold = new ActiToppHousehold(
-                1,        // household index
+//                1,        // household index
                 0,        // number of children 0-10
                 1,        // number of children bwlow 18
                 2,        // are of living

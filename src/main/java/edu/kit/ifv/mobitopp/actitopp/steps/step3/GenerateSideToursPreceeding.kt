@@ -15,7 +15,7 @@ import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ParametrizedDiscreteChoiceModel
 
 
-class GenerateSideToursPreceeding(rngHelper: RNGKeeper,
+class GenerateSideToursPreceeding(rngHelper: RNGHelper,
                                   choiceModel: ParametrizedDiscreteChoiceModel<Int, PreviousDaySituation, ParameterCollectionStep3A> = step3AWithParams,
 ) : DefaultSideTourDeterminer<ParameterCollectionStep3A>(rngHelper, choiceModel) {
 //    override fun createChoiceSituation(
@@ -49,6 +49,4 @@ class GenerateSideToursPreceeding(rngHelper: RNGKeeper,
     override fun update(day: ModifiablePlannedTourAmounts, result: Int) {
         day.precursorAmount = result
     }
-
-    override val stringID: String = "3A"
 }

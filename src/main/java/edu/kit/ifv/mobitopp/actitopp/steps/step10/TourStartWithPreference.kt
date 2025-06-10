@@ -1,5 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.steps.step10
 
+import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.RNGKeeper
 import edu.kit.ifv.mobitopp.actitopp.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitopp.steps.step7.ArrayHistogram
@@ -49,9 +50,7 @@ val FIRST_TOUR_HISTOGRAM: ActivityDurationHistograms<ParameterCollectionStep10M>
 
 
 class TourStartWithPreference<P>(
-    private val rng: RNGKeeper,
-    val categoryID: String,
-    val weightedDrawID: String,
+    private val rng: RNGHelper,
     private val startTimeHistograms: ActivityDurationHistograms<P>,
     override val preferredTourStart: ArrayHistogram? = null,
     private val usePreferredTourStart: Boolean,
@@ -62,8 +61,8 @@ class TourStartWithPreference<P>(
     override fun selectStartTime(input: MobilityPlanInputs, preferredTourStart: ArrayHistogram?): Duration {
         val bounds = input.dayPlan.startTimeBoundsFor(input.tourPlan)
 
-        val rnd1 = rng.pull(categoryID)
-        val rnd2 = rng.pull(weightedDrawID)
+        val rnd1 = rng.randomValue
+        val rnd2 = rng.randomValue
 
         preferredTourStart?.let {
 

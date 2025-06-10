@@ -126,14 +126,14 @@ class RNGKeeper(val original: RNGHelper): RNGHelper by original {
     }
 
     fun pull(id: String): Double {
-
-        val queue = tracker.getOrElse(id) {
-            throw NoSuchElementException("This shouldn't work$id does not exist ${tracker.keys}")
-        }
-        if(queue.isEmpty()) {
-            throw NoSuchElementException("Queue should not be empty")
-        }
-        return queue.removeFirst()
+        return original.randomValue
+//        val queue = tracker.getOrElse(id) {
+//            throw NoSuchElementException("This shouldn't work$id does not exist ${tracker.keys}")
+//        }
+//        if(queue.isEmpty()) {
+//            throw NoSuchElementException("Queue should not be empty")
+//        }
+//        return queue.removeFirst()
     }
 
 }

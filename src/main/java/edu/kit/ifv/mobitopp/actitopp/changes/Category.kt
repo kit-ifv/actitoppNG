@@ -1,5 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.changes
 
+import kotlinx.serialization.Serializable
+
 
 /**
  * For Some reason there are a lot of casts for category from Int to String and back. Until I figure
@@ -7,9 +9,15 @@ package edu.kit.ifv.mobitopp.actitopp.changes
  * to be the nubmer in the _KAT_{X}.csv files.
  */
 @JvmInline
+@Serializable
 value class Category(val category: Int) {
     // To collect all comparisons against the category to simplify changing to a 0 based index sometime
     fun matches(index: Int): Boolean {
         return category == index
+    }
+
+    companion object {
+        // Sometimes no category is picked, this is the representative of that case
+        val NONE_CHOSEN = Category(0)
     }
 }

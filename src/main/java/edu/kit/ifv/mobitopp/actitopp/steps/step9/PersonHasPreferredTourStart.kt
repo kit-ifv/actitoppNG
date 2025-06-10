@@ -219,7 +219,7 @@ data class ParameterStep9A(
     )
 
 
-class StandardPreferredTourStart(private val rng: RNGKeeper) : PersonPreferredTourStart {
+class StandardPreferredTourStart(private val rng: RNGHelper) : PersonPreferredTourStart {
     private val choiceModel =
         ModifiableDiscreteChoiceModel<ArrayHistogram, MainDurationSituation, ParameterCollectionStep9A>(
             AllocatedLogit.create {
@@ -238,7 +238,7 @@ class StandardPreferredTourStart(private val rng: RNGKeeper) : PersonPreferredTo
     override fun determinePreferredTourStart(input: MobilityPlanInputs): ArrayHistogram {
 
         val converter: (ArrayHistogram) -> MainDurationSituation = { MainDurationSituation(it, input) }
-        val randomNumber = rng.pull("9A")
+        val randomNumber = rng.randomValue
         return choiceModel.select(randomNumber, converter)
     }
 }

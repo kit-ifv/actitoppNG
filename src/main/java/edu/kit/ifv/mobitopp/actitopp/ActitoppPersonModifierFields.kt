@@ -4,7 +4,7 @@ import edu.kit.ifv.mobitopp.actitopp.steps.DayActivityTracker
 import org.jetbrains.annotations.TestOnly
 import kotlin.properties.Delegates
 
-class ActitoppPersonModifierFields(val original: ActitoppPerson) {
+class ActitoppPersonModifierFields(val original: IPerson) {
     var amountOfWorkingDays: Int by Delegates.notNull()
     var amountOfEducationDays: Int by Delegates.notNull()
     var amountOfLeisureDays: Int by Delegates.notNull()
@@ -27,7 +27,7 @@ class ActitoppPersonModifierFields(val original: ActitoppPerson) {
         )
     }
 }
-fun ActitoppPerson.toModifiable() = ActitoppPersonModifierFields(this)
+fun IPerson.toModifiable() = ActitoppPersonModifierFields(this)
 
 interface WeekRoutine {
     val amountOfWorkingDays: Int
