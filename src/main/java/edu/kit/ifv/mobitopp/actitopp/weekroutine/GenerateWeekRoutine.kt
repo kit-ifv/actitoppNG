@@ -16,8 +16,3 @@ fun interface GenerateWeekRoutine {
 fun IPerson.generateWeekRoutine(rng: RNGHelper, strategy: GenerateWeekRoutine = DefaultWeekRoutineGeneration()) : WeekRoutine {
     return strategy.generate(this, rng)
 }
-
-
-fun <T> ParametrizedDiscreteChoiceModel<Int, PersonSituation, T>.select(rand: Double, modifierField: ModifiableWeekPattern): Int {
-    return select(rand) {PersonSituation(it, modifierField) }
-}

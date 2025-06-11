@@ -30,9 +30,9 @@ class DefaultWeekRoutineGeneration(
     private val averageAmountOfActivitiesChoiceModel: ChoiceModel = step1LWithParams,
 ) : GenerateWeekRoutine {
     override fun generate(person: IPerson, rng: RNGHelper): WeekRoutine {
-        return person.linkModifiableWeekPattern().run {
+        return ModifiableWeekRoutine().run {
 
-            val converter: (Int) -> PersonSituation = { PersonSituation(it, this) }
+            val converter: (Int) -> PersonSituation = { PersonSituation(it, this, person) }
             amountOfWorkingDays = workDayChoiceModel.select(rng.randomValue, converter)
             amountOfEducationDays = educationDayChoiceModel.select(rng.randomValue, converter)
             amountOfLeisureDays = leisureDayChoiceModel.select(rng.randomValue, converter)

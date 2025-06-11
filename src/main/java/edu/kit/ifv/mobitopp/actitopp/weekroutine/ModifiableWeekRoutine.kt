@@ -1,11 +1,10 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine
 
 import edu.kit.ifv.mobitopp.actitopp.IPerson
-import edu.kit.ifv.mobitopp.actitopp.steps.DayActivityTracker
 import org.jetbrains.annotations.TestOnly
 import kotlin.properties.Delegates
 
-class ModifiableWeekPattern(val original: IPerson) {
+class ModifiableWeekRoutine() {
     var amountOfWorkingDays: Int by Delegates.notNull()
     var amountOfEducationDays: Int by Delegates.notNull()
     var amountOfLeisureDays: Int by Delegates.notNull()
@@ -28,7 +27,7 @@ class ModifiableWeekPattern(val original: IPerson) {
         )
     }
 }
-fun IPerson.linkModifiableWeekPattern() = ModifiableWeekPattern(this)
+
 
 interface WeekRoutine {
     val amountOfWorkingDays: Int

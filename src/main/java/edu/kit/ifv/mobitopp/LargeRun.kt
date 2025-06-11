@@ -23,6 +23,7 @@ class LargeRun {
 class Limits {
 
 }
+
 private val fileBase = ModelFileBase()
 private val randomgenerator = RNGHelper(1234)
 
@@ -36,9 +37,11 @@ private fun generateHousehold(): ActiToppHousehold {
         random.nextInt(0, 10)
     )
 }
+
 fun generateHouseholds(amount: Int): List<ActiToppHousehold> {
     return (0..<amount).map { generateHousehold() }
 }
+
 fun ActiToppHousehold.generatePersons(amount: Int): List<ActitoppPerson> {
     return (0..<amount).map {
         this.generatePerson(it)
@@ -46,11 +49,11 @@ fun ActiToppHousehold.generatePersons(amount: Int): List<ActitoppPerson> {
 }
 
 fun ActiToppHousehold.generatePerson(number: Int): ActitoppPerson {
-    return         ActitoppPerson(
+    return ActitoppPerson(
         household = this,
         persNrinHousehold = number,
         persIndex = number,
-        age = random.nextInt(0,100),
+        age = random.nextInt(0, 100),
         employmentCode = random.nextInt(0, 42),
         genderCode = random.nextInt(0, 3),
         commutingdistance_work = random.nextDouble(),
@@ -61,9 +64,14 @@ fun ActiToppHousehold.generatePerson(number: Int): ActitoppPerson {
 fun ActitoppPerson.Companion.randomPerson(): ActitoppPerson {
     return generateHousehold().generatePerson(1)
 }
+
 fun Collection<ActitoppPerson>.generateSchedules() {
-    withIndex().forEach { (index, person) -> person.generateSchedule(fileBase, randomgenerator, debugloggers).also { if(index % 100 == 0)println("Working on person $index done") } }
+    withIndex().forEach { (index, person) ->
+        person.generateSchedule(fileBase, randomgenerator, debugloggers)
+            .also { if (index % 100 == 0) println("Working on person $index done") }
+    }
 }
+
 fun main() {
     val targets = generateHouseholds(1000).flatMap { it.generatePersons(5) }
 
