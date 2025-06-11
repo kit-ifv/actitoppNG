@@ -4,6 +4,8 @@ import edu.kit.ifv.mobitopp.actitopp.IO.loadDistributionInformationFromFile
 import edu.kit.ifv.mobitopp.actitopp.WRDModelDistributionInformation
 import edu.kit.ifv.mobitopp.actitopp.changes.Category
 import edu.kit.ifv.mobitopp.actitopp.utils.ceilWholeMinutes
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import java.nio.file.Path
 import kotlin.io.path.name
 import kotlin.math.min
@@ -50,6 +52,7 @@ class ModifiableArrayHistogram (offset: Int = 0, probabilities: DoubleArray, cat
  * Using an array rather than a map allows quicker access and calculation. In particular because all histogram entries
  * in actiTopp are formulated over a range.
  */
+@Serializable
 open class ArrayHistogram protected constructor(
     protected val offset: Int = 0,
     protected val probabilities: DoubleArray = doubleArrayOf(0.0),
@@ -60,10 +63,10 @@ open class ArrayHistogram protected constructor(
         values.map { it.toDouble() / values.sumOf { it.toDouble() } }.toDoubleArray(),
         categoryIndex,
     )
-
+    @Transient
     protected val size = probabilities.size
+    @Transient
     private val _cumulativeSum: DoubleArray = DoubleArray(probabilities.size)
-
     val start = offset.minutes
     val end = (probabilities.size + offset - 1).minutes
 

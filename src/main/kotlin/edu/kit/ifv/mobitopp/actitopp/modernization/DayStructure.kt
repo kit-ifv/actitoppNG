@@ -23,7 +23,7 @@ interface DayStructure :Comparable<DayStructure> {
     override fun compareTo(other: DayStructure): Int {
         return startTimeDay.compareTo(other.startTimeDay)
     }
-
+    fun isHomeDay(): Boolean
     fun mainActivityType(): ActivityType
     fun amountOfPrecursorElements(): Int
     fun amountOfSuccessorElements(): Int
@@ -48,6 +48,7 @@ interface DayStructure :Comparable<DayStructure> {
 class HomeDay private constructor(
     val tourStructureCollection: Collection<TourStructure>,
     override val startTimeDay: DurationDay) : DayStructure {
+    override fun isHomeDay(): Boolean = true
 
     constructor(startTimeDay: DurationDay): this(emptyList(), startTimeDay)
     override val weekday: DayOfWeek = startTimeDay.weekday
@@ -72,6 +73,7 @@ class ModifiableDayStructure(override val startTimeDay: DurationDay, mainTourStr
     BidirectionalQueue<MutableTourStructure>(mainTourStructure), DayStructure {
     constructor(dayIndex: Int, mainTourStructure: MutableTourStructure) : this(DurationDay(dayIndex), mainTourStructure)
 
+    override fun isHomeDay(): Boolean = false
     override val weekday: DayOfWeek = startTimeDay.weekday
     override val duration = startTimeDay.startOfDay
     // TODO maybe protect this field from modification, right now it is just a template holder for 3A

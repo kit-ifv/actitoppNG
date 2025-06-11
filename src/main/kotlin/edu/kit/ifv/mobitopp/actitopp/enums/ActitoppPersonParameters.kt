@@ -819,7 +819,7 @@ enum class ActitoppPersonParameters{
         override fun getAttribute(actitoppPerson: ActitoppPerson): Double {
             var counter = 0
             for (day in actitoppPerson.days())  {
-                if (!day.isHomeDay && day.lowestTourIndex < 0) counter++
+                if (!day.isHomeDayDeprecated && day.lowestTourIndex < 0) counter++
             }
             return counter.toDouble()
         }
@@ -828,7 +828,7 @@ enum class ActitoppPersonParameters{
         override fun getAttribute(actitoppPerson: ActitoppPerson): Double {
             var counter = 0
             for (day in actitoppPerson.days())  {
-                if (!day.isHomeDay && day.highestTourIndex > 0) counter++
+                if (!day.isHomeDayDeprecated && day.highestTourIndex > 0) counter++
             }
             return counter.toDouble()
         }

@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.steps.step7
 
 import edu.kit.ifv.mobitopp.actitopp.changes.Category
+import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.*
 import kotlin.io.path.Path
 import kotlin.test.Test
@@ -41,7 +42,7 @@ class ArrayHistogramTest {
     @Test
     fun theCorrespondence() {
         val histogram = ArrayHistogram.fromPath(Path("src/main/resources/edu/kit/ifv/mobitopp/actitopp/mopv14_withpkwhh/10N_KAT_4.csv"))
-        val histogram2 = ArrayHistogram.fromPath(Path("src/main/resources/edu/kit/ifv/mobitopp/actitopp/mopv14_withpkwhh/10P_KAT_4.csv"))
-        println("#(I%@!*(")
+        val otherHistogram = Json.decodeFromString<ArrayHistogram>(Json.encodeToString(histogram))
+        println(Json.encodeToString(histogram))
     }
 }

@@ -80,7 +80,7 @@ abstract class CoordinatorTestUtilities {
 
     protected fun loadRandomPrecedingTours(person: ActitoppPerson, randomTargets: List<Int>) {
         person.weekPattern.days.zip(randomTargets).map { (day, acts) ->
-            if(!day.isHomeDay) {
+            if(!day.isHomeDayDeprecated) {
                 repeat(acts) {
                     day.generatePrecedingTour()
                 }
@@ -89,7 +89,7 @@ abstract class CoordinatorTestUtilities {
     }
     protected fun loadRandomFollowingTours(person: ActitoppPerson, randomTargets: List<Int>) {
         person.weekPattern.days.zip(randomTargets).map { (day, acts) ->
-            if(!day.isHomeDay) {
+            if(!day.isHomeDayDeprecated) {
                 repeat(acts) {
                     day.generateFollowingTour()
                 }
@@ -99,7 +99,7 @@ abstract class CoordinatorTestUtilities {
     protected fun generateRandomPrecedingTours(person: ActitoppPerson): List<HTour> {
         val rnd = Random(person.age + 42 * 1337)
         return person.weekPattern.days.flatMap{ day->
-            val rndNum = if(day.isHomeDay) 0 else rnd.nextInt(0, 5)
+            val rndNum = if(day.isHomeDayDeprecated) 0 else rnd.nextInt(0, 5)
             (0..<rndNum).map {
                 day.generatePrecedingTour()
             }
@@ -108,7 +108,7 @@ abstract class CoordinatorTestUtilities {
     protected fun generateRandomFollowingTours(person: ActitoppPerson) : List<HTour> {
         val rng = Random(person.age - 13 + person.persIndex * 10003)
         return person.weekPattern.days.flatMap { day ->
-            val rndNum = if(day.isHomeDay) 0 else rng.nextInt(0, 5)
+            val rndNum = if(day.isHomeDayDeprecated) 0 else rng.nextInt(0, 5)
             (0..<rndNum).map {
                 day.generateFollowingTour()
             }
@@ -133,7 +133,7 @@ abstract class CoordinatorTestUtilities {
     }
     protected fun HTour.generateRandomSideActivitiesBefore(): List<HActivity> {
 
-        val rndNum = if(day.isHomeDay) 0 else internalRng.nextInt(0, 5)
+        val rndNum = if(day.isHomeDayDeprecated) 0 else internalRng.nextInt(0, 5)
         return (0..<rndNum).map {
             generateRandomBeforeSideActivity()
         }
@@ -141,7 +141,7 @@ abstract class CoordinatorTestUtilities {
 
     protected fun HTour.generateRandomSideActivitiesAfter(): List<HActivity> {
 
-        val rndNum = if(day.isHomeDay) 0 else internalRng.nextInt(0, 5)
+        val rndNum = if(day.isHomeDayDeprecated) 0 else internalRng.nextInt(0, 5)
         return (0..<rndNum).map {
             generateRandomAfterSideActivity()
         }

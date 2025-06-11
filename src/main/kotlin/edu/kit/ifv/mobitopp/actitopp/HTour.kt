@@ -190,7 +190,7 @@ class HTour(parent: HDay, val index: Int) {
                 var previousDaywithTour: HDay? = day
                 do {
                     previousDaywithTour = previousDaywithTour!!.previousDay
-                    if (previousDaywithTour != null && !previousDaywithTour.isHomeDay) break
+                    if (previousDaywithTour != null && !previousDaywithTour.isHomeDayDeprecated) break
                 } while (previousDaywithTour != null)
 
                 previousTour = previousDaywithTour?.lastTourOfDay
@@ -213,7 +213,7 @@ class HTour(parent: HDay, val index: Int) {
                 var nextDaywithTour: HDay? = day
                 do {
                     nextDaywithTour = nextDaywithTour!!.nextDay
-                    if (nextDaywithTour != null && !nextDaywithTour.isHomeDay) break
+                    if (nextDaywithTour != null && !nextDaywithTour.isHomeDayDeprecated) break
                 } while (nextDaywithTour != null)
 
                 nextTour = nextDaywithTour?.firstTourOfDay

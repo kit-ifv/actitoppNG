@@ -4,7 +4,7 @@ import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.sideTourAmounts.GenerateSideToursFollowing
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.sideTourAmounts.GenerateSideToursPreceeding
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.sideTourAmounts.PlannedTourMap
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.PlannedTourMap
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.sideTourAmounts.PrecedingInput
 
 

@@ -286,7 +286,7 @@ enum class HDayParameters
             val previousday = day.previousDay
             var tagvorhervortouren = 999
             if (previousday != null)  {
-                tagvorhervortouren = if (previousday.isHomeDay)  {
+                tagvorhervortouren = if (previousday.isHomeDayDeprecated)  {
                     0
                 } else {
                     -1 * previousday.lowestTourIndex
@@ -300,7 +300,7 @@ enum class HDayParameters
             val previousday = day.previousDay
             var tagvorhervortouren = 999
             if (previousday != null)  {
-                tagvorhervortouren = if (previousday.isHomeDay)  {
+                tagvorhervortouren = if (previousday.isHomeDayDeprecated)  {
                     0
                 } else {
                     -1 * previousday.lowestTourIndex
@@ -314,7 +314,7 @@ enum class HDayParameters
             val previousday = day.previousDay
             var tagvorhernachtouren = 999
             if (previousday != null)  {
-                tagvorhernachtouren = if (previousday.isHomeDay)  {
+                tagvorhernachtouren = if (previousday.isHomeDayDeprecated)  {
                     0
                 } else {
                     +1 * previousday.highestTourIndex
@@ -328,7 +328,7 @@ enum class HDayParameters
             val previousday = day.previousDay
             var tagvorhernachtouren = 999
             if (previousday != null)  {
-                tagvorhernachtouren = if (previousday.isHomeDay)  {
+                tagvorhernachtouren = if (previousday.isHomeDayDeprecated)  {
                     0
                 } else {
                     +1 * previousday.highestTourIndex

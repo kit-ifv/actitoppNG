@@ -30,12 +30,6 @@ class TourSituation private constructor(
     ChoiceSituation<ActivityType>(), TourPositionAttributes by tourAttributes, PersonAttributes by personAndRoutineAttributes,
     RoutineAttributes by personAndRoutineAttributes, FullyQualifiedDayStructureAttributes by dayAttributes {
 
-        constructor(choice: ActivityType, person: IPerson, routine: WeekRoutine, day: HDay, tour: HTour): this(
-            choice,
-            PersonAndRoutineFrom(PersonWithRoutine(person, routine)),
-            DayAttributesFromElement(day),
-            TourAttributesByElement(tour)
-        )
 
     constructor(choice: ActivityType, person: IPerson, routine: WeekRoutine, day: DayStructure, tourAttributes: TourPositionAttributes): this(
         choice,
@@ -53,14 +47,6 @@ class TourSituationInt private constructor(
     ) :
     ChoiceSituation<Int>(), TourAttributes by tourAttributes, PersonAttributes by personAndRoutineAttributes,
     RoutineAttributes by personAndRoutineAttributes, FullyQualifiedDayStructureAttributes by dayAttributes, ActivityAmountAttributes by activityAmountAttributes {
-
-    constructor(choice: Int, person: IPerson, routine: WeekRoutine, day: HDay, tour: HTour): this(
-        choice,
-        PersonAndRoutineFrom(PersonWithRoutine(person, routine)),
-        DayAttributesFromElement(day),
-        TourAttributesByElement(tour),
-        TourAttributesByElement(tour)
-    )
 
     constructor(choice: Int, person: IPerson, routine: WeekRoutine, day: DayStructure, tour: BidirectionalIndexedValue<MutableTourStructure>, amountOfPrecursorActivities: Int): this(
         choice,

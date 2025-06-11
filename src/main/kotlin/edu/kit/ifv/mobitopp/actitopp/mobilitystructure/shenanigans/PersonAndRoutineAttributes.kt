@@ -31,14 +31,6 @@ class DaySituation private constructor(
 ) :
     ChoiceSituation<ActivityType>(), PersonAttributes by personAttributesFromElement, RoutineAttributes by personAttributesFromElement,
     DayAttributes by dayAttributesFromElement {
-    constructor(choice: ActivityType, personRoutine: PersonWithRoutine, structure: DayStructure): this(
-        choice, PersonAndRoutineFrom(personRoutine), DayAttributesFromStructure(structure)
-    )
-
-    constructor(choice: ActivityType, personRoutine: PersonWithRoutine, day: HDay): this(
-        choice, PersonAndRoutineFrom(personRoutine), DayAttributesFromElement(day)
-    )
-
     constructor(choice: ActivityType, personRoutine: PersonWithRoutine, week: DayOfWeek): this(
         choice, PersonAndRoutineFrom(personRoutine), DayAttributesFromWeekday(week)
     )

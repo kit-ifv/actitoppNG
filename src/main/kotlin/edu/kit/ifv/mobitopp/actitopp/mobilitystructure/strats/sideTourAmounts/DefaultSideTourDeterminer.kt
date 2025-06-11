@@ -9,6 +9,7 @@ import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.ModifiablePlannedTourAmounts
 import edu.kit.ifv.mobitopp.actitopp.modernization.PlannedTourAmounts
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.PreviousDaySituation
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ParametrizedDiscreteChoiceModel
 import kotlin.math.max
 
@@ -44,8 +45,7 @@ abstract class DefaultSideTourDeterminer<P>(
     abstract fun update(day: ModifiablePlannedTourAmounts, result: Int)
     private fun determineAvailableOptions(day: DayStructure, routine: WeekRoutine): Set<Int> {
         // If the main activity is staying home, there should not be the option to choose any other subtour
-//        if(day.day.mainTourActivityType() == ActivityType.HOME) return setOf(0)
-        if(day.mainActivityType() == ActivityType.HOME) return setOf(0)
+        if(day.isHomeDay()) return setOf(0)
 
         val availableOptions = choiceModel.registeredOptions().toMutableSet()
         val amountOfTours = day.amountOfPrecursorElements()

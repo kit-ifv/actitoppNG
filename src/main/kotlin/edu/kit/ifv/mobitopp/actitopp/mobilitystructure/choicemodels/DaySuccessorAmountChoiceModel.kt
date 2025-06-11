@@ -3,7 +3,7 @@ package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SuccessorTourAmountSet
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.DefaultSuccessorTourParameters
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SuccessorTourAmountParameters
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.sideTourAmounts.PreviousDaySituation
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.PreviousDaySituation
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel

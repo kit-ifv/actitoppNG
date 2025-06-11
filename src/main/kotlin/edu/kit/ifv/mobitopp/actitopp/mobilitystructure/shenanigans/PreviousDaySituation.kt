@@ -1,4 +1,4 @@
-package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.sideTourAmounts
+package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans
 
 import edu.kit.ifv.mobitopp.actitopp.ActitoppPerson
 import edu.kit.ifv.mobitopp.actitopp.HDay
@@ -12,11 +12,7 @@ import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributesFromElement
 import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributesFromStructure
 import edu.kit.ifv.mobitopp.actitopp.steps.DayStructureAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.PartialTourLayoutAttributes
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.PersonAndRoutineAttributes
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.PersonAndRoutineFrom
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.PreviousDayAttributes
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.PreviousDayAttributesNumeric
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceSituation
 
 
@@ -50,22 +46,7 @@ class PreviousDaySituation private constructor(
     val structureAttributes: DayStructureAttributes,
 ) : ChoiceSituation<Int>(), PreviousDayAttributes by previousDayAttributes,
     PersonAndRoutineAttributes by pAttr, PartialTourLayoutAttributes by plannedTourAttributes, DayStructureAttributes by structureAttributes {
-    constructor(
-        choice: Int,
-        day: HDay,
-        previousDayBeforeTours: Int?,
-        previousDayAfterTours: Int?,
-        person: ActitoppPerson,
-        weekRoutine: WeekRoutine,
-    ) : this(
-        choice, PreviousDayAttributesNumeric(day, previousDayBeforeTours, previousDayAfterTours), PersonAndRoutineFrom(
-            PersonWithRoutine(person, weekRoutine),
 
-
-        ),
-        PartialTourLayoutAttributes{day.amountOfPreviousTours()},
-        DayAttributesFromElement(day)
-    )
 
     constructor(
         choice: Int,

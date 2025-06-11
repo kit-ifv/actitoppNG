@@ -7,15 +7,15 @@ import edu.kit.ifv.mobitopp.actitopp.modernization.DurationDay
 import edu.kit.ifv.mobitopp.actitopp.modernization.MutableTourStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MovingDayPlanInput
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MutableDayPlan
+import edu.kit.ifv.mobitopp.actitopp.utils.firstValue
+import edu.kit.ifv.mobitopp.actitopp.utils.lastValue
 import java.time.DayOfWeek
 import java.util.NavigableMap
 import java.util.SortedMap
 import java.util.TreeMap
 import kotlin.time.Duration
 
-// TODO move these extension functions to something called utils, they should not loiter here
-fun <K, V> SortedMap<K, V>.lastValue(): V = this.getValue(lastKey())
-fun <K, V> SortedMap<K, V>.firstValue(): V = this.getValue(firstKey())
+
 
 /**
  * @author Tim Hilgert
@@ -27,7 +27,9 @@ class HDay(parent: HWeekPattern, override val weekday: DayOfWeek) : DayStructure
     val pattern: HWeekPattern = parent
     override val startTimeDay: DurationDay = DurationDay(weekday.value)
     override val duration: Duration = startTimeDay.startOfDay
-
+    override fun isHomeDay(): Boolean {
+        TODO("Not yet implemented")
+    }
     override fun mainActivityType() = this.mainTourType
 
     override fun amountOfPrecursorElements(): Int = this.amountOfPreviousTours()
@@ -77,8 +79,8 @@ class HDay(parent: HWeekPattern, override val weekday: DayOfWeek) : DayStructure
 
     val lastTourOfDay: HTour get() = mappedTours.lastValue()
 
-    val isHomeDay: Boolean get() = mappedTours.isEmpty()
-    fun hasTours() = !isHomeDay
+    val isHomeDayDeprecated: Boolean get() = mappedTours.isEmpty()
+    fun hasTours() = !isHomeDayDeprecated
     val amountOfTours: Int get() = mappedTours.size
 
 
@@ -286,10 +288,10 @@ class HDay(parent: HWeekPattern, override val weekday: DayOfWeek) : DayStructure
 }
 
 // TODO find out whether a home day could feasibly generate a previous tour somehow, otherwise these methods are irrelevant
-fun HDay.hasPreviousTours() = !isHomeDay && lowestTourIndex != 0
+fun HDay.hasPreviousTours() = !isHomeDayDeprecated && lowestTourIndex != 0
 fun HDay.hasNoPreviousTours() = !hasPreviousTours()
-fun HDay.amountOfPreviousTours() = if (isHomeDay) 0 else -lowestTourIndex
+fun HDay.amountOfPreviousTours() = if (isHomeDayDeprecated) 0 else -lowestTourIndex
 
-fun HDay.hasLaterTours() = !isHomeDay && highestTourIndex != 0
+fun HDay.hasLaterTours() = !isHomeDayDeprecated && highestTourIndex != 0
 fun HDay.hasNoLaterTours() = !hasLaterTours()
-fun HDay.amountOfLaterTours() = if (isHomeDay) 0 else highestTourIndex
+fun HDay.amountOfLaterTours() = if (isHomeDayDeprecated) 0 else highestTourIndex

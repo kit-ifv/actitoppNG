@@ -2,6 +2,7 @@ package edu.kit.ifv.mobitopp.actitopp.utils
 
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.D
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.I
+import java.util.SortedMap
 import kotlin.math.ceil
 import kotlin.math.roundToLong
 import kotlin.time.Duration
@@ -37,7 +38,6 @@ inline fun <T> Iterable<T>.sumOf(selector: (T) -> Duration): Duration {
     return sum
 }
 
-// TODO move these to a util definition
 inline operator fun Boolean.times(other: Double): Double = this.D * other
 inline operator fun Boolean.times(other: Int): Int = this.I * other
 
@@ -45,3 +45,6 @@ fun Int.positiveModulus(modulo: Int): Int {
     val result = this % modulo
     return if (result < 0) result + modulo else result
 }
+
+fun <K, V> SortedMap<K, V>.lastValue(): V = this.getValue(lastKey())
+fun <K, V> SortedMap<K, V>.firstValue(): V = this.getValue(firstKey())

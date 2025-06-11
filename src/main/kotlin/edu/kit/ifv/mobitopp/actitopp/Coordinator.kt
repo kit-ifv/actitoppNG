@@ -577,7 +577,7 @@ class Coordinator @JvmOverloads constructor(
             // skip day if person is at home
 
             // We don't need this check if the days passed to step3 are only those that are not home days. The new system does that
-            if (currentDay.isHomeDay) {
+            if (currentDay.isHomeDayDeprecated) {
                 continue
             }
 
@@ -638,7 +638,7 @@ class Coordinator @JvmOverloads constructor(
         // STEP 4A Main activity for all other tours
         for (currentDay in pattern.days) {
             // skip day if person is at home
-            if (currentDay.isHomeDay) {
+            if (currentDay.isHomeDayDeprecated) {
                 continue
             }
 
@@ -699,7 +699,7 @@ class Coordinator @JvmOverloads constructor(
     private fun executeStep5(id: String) {
         for (currentDay in pattern.days) {
             // skip day if person is at home
-            if (currentDay.isHomeDay) {
+            if (currentDay.isHomeDayDeprecated) {
                 continue
             }
 
@@ -771,7 +771,7 @@ class Coordinator @JvmOverloads constructor(
         // STEP 6A Non-Main-Activity Type Decision
         for (currentDay in pattern.days) {
             // skip day if person is at home
-            if (currentDay.isHomeDay) {
+            if (currentDay.isHomeDayDeprecated) {
                 continue
             }
 
@@ -1198,7 +1198,7 @@ class Coordinator @JvmOverloads constructor(
         // only applies to main activities
         for (currentDay in pattern.days) {
             // skip day if person is at home
-            if (currentDay.isHomeDay) {
+            if (currentDay.isHomeDayDeprecated) {
                 continue
             }
 
@@ -1253,7 +1253,7 @@ class Coordinator @JvmOverloads constructor(
     private fun executeStep8_MainAct(id_dc: String, id_wrd: String) {
         for (currentDay in pattern.days) {
             // skip day if person is at home
-            if (currentDay.isHomeDay) {
+            if (currentDay.isHomeDayDeprecated) {
                 continue
             }
 
@@ -1378,7 +1378,7 @@ class Coordinator @JvmOverloads constructor(
             executeStep8_NonMainAct(id_dc: String, id_wrd: String) {
         for (currentDay in pattern.days) {
             // skip day if person is at home
-            if (currentDay.isHomeDay) {
+            if (currentDay.isHomeDayDeprecated) {
                 continue
             }
 
@@ -1488,7 +1488,7 @@ class Coordinator @JvmOverloads constructor(
         // Step 10a: check if first tour is work/edu lies within standard start time (applies only to work/edu persons)
         if (person.isCommuterWithAtLeastOneMatchingTour) {
             for (currentDay in pattern.days) {
-                if (currentDay.isHomeDay) {
+                if (currentDay.isHomeDayDeprecated) {
                     continue
                 }
                 val currentTour = currentDay.firstTourOfDay
@@ -1522,7 +1522,7 @@ class Coordinator @JvmOverloads constructor(
     @Throws(InvalidPatternException::class)
     private fun createTourStartTimesDueToScheduledActivities() {
         for (currentDay in pattern.days) {
-            if (currentDay.isHomeDay) {
+            if (currentDay.isHomeDayDeprecated) {
                 continue
             }
 
@@ -1580,7 +1580,7 @@ class Coordinator @JvmOverloads constructor(
         // STEP 10: determine time class for the start of the x tour of the day
 
         for (currentDay in pattern.days) {
-            if (currentDay.isHomeDay || currentDay.amountOfTours < tournrdestages) {
+            if (currentDay.isHomeDayDeprecated || currentDay.amountOfTours < tournrdestages) {
                 continue
             }
 
@@ -1670,7 +1670,7 @@ class Coordinator @JvmOverloads constructor(
         //											 only for the fourth tour if the day and following
 
         for (currentDay in pattern.days) {
-            if (currentDay.isHomeDay) {
+            if (currentDay.isHomeDayDeprecated) {
                 continue
             }
             for (j in currentDay.lowestTourIndex..currentDay.highestTourIndex) {
@@ -1730,7 +1730,7 @@ class Coordinator @JvmOverloads constructor(
 
         for (currentDay in pattern.days) {
             // skip day if person is at home
-            if (currentDay.isHomeDay) {
+            if (currentDay.isHomeDayDeprecated) {
                 continue
             }
 
@@ -1851,7 +1851,7 @@ class Coordinator @JvmOverloads constructor(
         } else {
             // check if last activity of the previous day ends after midnight
             val previousDay = dayofact.previousDay
-            if (previousDay != null && !previousDay.isHomeDay) {
+            if (previousDay != null && !previousDay.isHomeDayDeprecated) {
                 val lastactpreviousday = previousDay.lastTourOfDay.lastActivityInTour
                 if (lastactpreviousday.startTimeisScheduled()) {
                     val endlastactpreviousday = lastactpreviousday.startTime +
@@ -1878,7 +1878,7 @@ class Coordinator @JvmOverloads constructor(
 //            startingpointupperbound = 1620
             startingpointupperbound = 1439
             val nextday = dayofact.nextDay
-            if (nextday != null && !nextday.isHomeDay) {
+            if (nextday != null && !nextday.isHomeDayDeprecated) {
                 val firstactnextday = nextday.firstTourOfDay.firstActivityInTour
                 if (firstactnextday.startTimeisScheduled()) {
                     val startingtimefirstactnextday = firstactnextday.tripStartTimeBeforeActivity
@@ -2129,7 +2129,7 @@ class Coordinator @JvmOverloads constructor(
             startingpointlowerbound = tourday.getTour(tour.index - 1).endTime + 1
         } else {
             val previousDay = tourday.previousDay
-            if (previousDay != null && !previousDay.isHomeDay) {
+            if (previousDay != null && !previousDay.isHomeDayDeprecated) {
                 val lastactpreviousday = previousDay.lastTourOfDay.lastActivityInTour
                 if (lastactpreviousday.startTimeisScheduled()) {
                     val endlastactpreviousday = lastactpreviousday.startTime +
@@ -2167,7 +2167,7 @@ class Coordinator @JvmOverloads constructor(
         }
         if (nexttourscheduled == null) {
             val nextday = tourday.nextDay
-            if (nextday != null && !nextday.isHomeDay) {
+            if (nextday != null && !nextday.isHomeDayDeprecated) {
                 val firstactnextday = nextday.firstTourOfDay.firstActivityInTour
                 if (firstactnextday.startTimeisScheduled()) {
                     val startfirstactnextday = firstactnextday.startTime -
@@ -2314,7 +2314,7 @@ class Coordinator @JvmOverloads constructor(
         }
         if (starttime_nexttourscheduled == 1620) {
             val folgetag = tourday.nextDay
-            if (folgetag != null && !folgetag.isHomeDay) {
+            if (folgetag != null && !folgetag.isHomeDayDeprecated) {
                 val ersteaktfolgetag = folgetag.firstTourOfDay.firstActivityInTour
                 if (ersteaktfolgetag.startTimeisScheduled()) {
                     val startersteaktfolgetag = ersteaktfolgetag.startTime -
