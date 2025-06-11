@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp
 
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutineImpl
 import edu.kit.ifv.mobitopp.generateHouseholds
 import edu.kit.ifv.mobitopp.generatePersons
 import kotlin.math.abs

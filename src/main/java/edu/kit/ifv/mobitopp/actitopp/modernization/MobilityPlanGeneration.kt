@@ -6,7 +6,8 @@ import edu.kit.ifv.mobitopp.actitopp.STATIC_HISTOGRAMS
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MobilityPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.StandardCommuteDurations
 import edu.kit.ifv.mobitopp.actitopp.spawnRandomGenerator
-import edu.kit.ifv.mobitopp.actitopp.steps.step1.assignWeekRoutine
+
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.generateWeekRoutine
 import edu.kit.ifv.mobitopp.actitopp.steps.step10.FIRST_TOUR_HISTOGRAM
 import edu.kit.ifv.mobitopp.actitopp.steps.step10.SECOND_TOUR_HISTOGRAM
 import edu.kit.ifv.mobitopp.actitopp.steps.step10.TourStartByHistogramsRelative
@@ -50,7 +51,7 @@ class DefaultPlanGeneration : MobilityPlanGeneration {
 class StandardStructureGeneration(val rng: RNGHelper) : MobilityPlanGeneration {
     override fun generate(person: IPerson, amountOfDays: Int): MobilityPlan {
 
-        val weekRoutine = person.assignWeekRoutine(rng)
+        val weekRoutine = person.generateWeekRoutine(rng)
         val patternStructure = PatternStructure(person, weekRoutine)
         // Generate the main activities of each day
         repeat(amountOfDays) {

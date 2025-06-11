@@ -2,7 +2,7 @@ package edu.kit.ifv.mobitopp.actitopp.steps.step4
 
 import edu.kit.ifv.mobitopp.actitopp.ActitoppPerson
 import edu.kit.ifv.mobitopp.actitopp.HDay
-import edu.kit.ifv.mobitopp.actitopp.WeekRoutine
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.steps.SubTourInput
 

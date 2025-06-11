@@ -1,9 +1,4 @@
-package edu.kit.ifv.mobitopp.actitopp.steps.step1
-
-import edu.kit.ifv.mobitopp.actitopp.steps.PersonSituation
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
+package edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters
 
 val ParameterSet1F = ParameterCollectionStep1F(
     option1 = ParametersStep1F(
@@ -100,7 +95,7 @@ data class ParameterCollectionStep1F(
     override val option5: ParametersStep1F,
     override val option6: ParametersStep1F,
     override val option7: ParametersStep1F,
-): ParameterCollectionStep1<ParametersStep1F>
+): WeekRoutineParameterSet<ParametersStep1F>
 
 data class ParametersStep1F(
     val base: Double,
@@ -114,36 +109,3 @@ data class ParametersStep1F(
     val amountOfLeisureDays: Double,
     val amountOfShoppingDays: Double,
 )
-
-
-val step1FModel = ModifiableDiscreteChoiceModel<Int, PersonSituation, ParameterCollectionStep1F>(AllocatedLogit.create {
-
-    option(1, parameters = {option1}) { standardUtilityFunction(this, it) }
-    option(2, parameters = {option2}) { standardUtilityFunction(this, it) }
-    option(3, parameters = {option3}) { standardUtilityFunction(this, it) }
-    option(4, parameters = {option4}) { standardUtilityFunction(this, it) }
-    option(5, parameters = {option5}) { standardUtilityFunction(this, it) }
-    option(6, parameters = {option6}) { standardUtilityFunction(this, it) }
-    option(7, parameters = {option7}) {
-        standardUtilityFunction(this, it)
-    }
-    option(0) {
-        0.0
-    }
-}
-)
-
-val step1FWithParams = step1FModel.initializeWithParameters(ParameterSet1F)
-
-private val standardUtilityFunction:  ParametersStep1F.(PersonSituation) -> Double = {
-    base +
-            (it.isNotEarningMoney()) * employmentNotEarning +
-            (it.isRetired()) * employmentRetired +
-            (it.isAged18To25()) * ageIn18To25 +
-            it.amountOfYouthsInHousehold() * amountOfYouths +
-            (it.isMale()) * isMale +
-            it.amountOfWorkingDays() * amountOfWorkingDays +
-            it.amountOfEducationDays() * amountOfEducationDays +
-            it.amountOfLeisureDays() * amountOfLeisureDays +
-            it.amountOfShoppingDays() * amountOfShoppingDays
-}

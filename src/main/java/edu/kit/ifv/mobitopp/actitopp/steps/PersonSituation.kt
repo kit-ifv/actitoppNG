@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.steps
 
-import edu.kit.ifv.mobitopp.actitopp.ActitoppPersonModifierFields
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.ModifiableWeekPattern
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.enums.AreaType
 import edu.kit.ifv.mobitopp.actitopp.enums.Employment
@@ -89,16 +89,16 @@ class PersonAttributesFromElement(val person: IPerson) : PersonAttributes {
 
 open class PersonSituation(
     override val choice: Int,
-    val personModifiers: ActitoppPersonModifierFields,
-    attributes: PersonAttributesFromElement = PersonAttributesFromElement(personModifiers.original),
+    private val modifiableWeekPattern: ModifiableWeekPattern,
+    attributes: PersonAttributesFromElement = PersonAttributesFromElement(modifiableWeekPattern.original),
 ) : ChoiceSituation<Int>(), PersonAttributes by attributes {
-    val person = personModifiers.original
+    val person = modifiableWeekPattern.original
 
-    fun amountOfWorkingDays() = personModifiers.amountOfWorkingDays
-    fun amountOfLeisureDays() = personModifiers.amountOfLeisureDays
-    fun amountOfEducationDays() = personModifiers.amountOfEducationDays
-    fun amountOfShoppingDays() = personModifiers.amountOfShoppingDays
-    fun amountOfServiceDays() = personModifiers.amountOfServiceDays
+    fun amountOfWorkingDays() = modifiableWeekPattern.amountOfWorkingDays
+    fun amountOfLeisureDays() = modifiableWeekPattern.amountOfLeisureDays
+    fun amountOfEducationDays() = modifiableWeekPattern.amountOfEducationDays
+    fun amountOfShoppingDays() = modifiableWeekPattern.amountOfShoppingDays
+    fun amountOfServiceDays() = modifiableWeekPattern.amountOfServiceDays
 
 
     fun debug(): String {

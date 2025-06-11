@@ -3,7 +3,7 @@ package edu.kit.ifv.mobitopp.actitopp.steps.step3
 import edu.kit.ifv.mobitopp.actitopp.HDay
 import edu.kit.ifv.mobitopp.actitopp.HTour
 import edu.kit.ifv.mobitopp.actitopp.IPerson
-import edu.kit.ifv.mobitopp.actitopp.WeekRoutine
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.modernization.BidirectionalIndexedValue
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
@@ -19,7 +19,7 @@ import edu.kit.ifv.mobitopp.actitopp.steps.TourAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.TourAttributesByElement
 import edu.kit.ifv.mobitopp.actitopp.steps.TourAttributesByIndexedStructure
 import edu.kit.ifv.mobitopp.actitopp.steps.TourPositionAttributes
-import edu.kit.ifv.mobitopp.actitopp.steps.step1.times
+import edu.kit.ifv.mobitopp.actitopp.utils.times
 import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonAndRoutineAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonAndRoutineFrom
 import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine

@@ -1,5 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.utils
 
+import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.D
+import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.I
 import kotlin.math.ceil
 import kotlin.math.roundToLong
 import kotlin.time.Duration
@@ -34,3 +36,7 @@ inline fun <T> Iterable<T>.sumOf(selector: (T) -> Duration): Duration {
     }
     return sum
 }
+
+// TODO move these to a util definition
+inline operator fun Boolean.times(other: Double): Double = this.D * other
+inline operator fun Boolean.times(other: Int): Int = this.I * other

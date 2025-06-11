@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.steps
 
-import edu.kit.ifv.mobitopp.actitopp.WeekRoutine
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
 
 interface RoutineAttributes {
 

@@ -1,10 +1,11 @@
-package edu.kit.ifv.mobitopp.actitopp
+package edu.kit.ifv.mobitopp.actitopp.weekroutine
 
+import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.steps.DayActivityTracker
 import org.jetbrains.annotations.TestOnly
 import kotlin.properties.Delegates
 
-class ActitoppPersonModifierFields(val original: IPerson) {
+class ModifiableWeekPattern(val original: IPerson) {
     var amountOfWorkingDays: Int by Delegates.notNull()
     var amountOfEducationDays: Int by Delegates.notNull()
     var amountOfLeisureDays: Int by Delegates.notNull()
@@ -27,7 +28,7 @@ class ActitoppPersonModifierFields(val original: IPerson) {
         )
     }
 }
-fun IPerson.toModifiable() = ActitoppPersonModifierFields(this)
+fun IPerson.linkModifiableWeekPattern() = ModifiableWeekPattern(this)
 
 interface WeekRoutine {
     val amountOfWorkingDays: Int
@@ -38,18 +39,6 @@ interface WeekRoutine {
     val amountOfImmobileDays: Int
     val averageAmountOfTours: Int
     val averageAmountOfActivities: Int
-
-    // TODO this is only required for testing against the legacy code base, once established this can be removed.
-    fun similarToAttributeMap(attributeMap: Map<String, Double>): Boolean {
-        return amountOfWorkingDays == attributeMap["anztage_w"]?.toInt() &&
-                amountOfEducationDays == attributeMap["anztage_e"]?.toInt() &&
-                amountOfLeisureDays == attributeMap["anztage_l"]?.toInt() &&
-                amountOfShoppingDays == attributeMap["anztage_s"]?.toInt() &&
-                amountOfServiceDays == attributeMap["anztage_t"]?.toInt() &&
-                amountOfImmobileDays == attributeMap["anztage_immobil"]?.toInt() &&
-                averageAmountOfTours == attributeMap["anztourentag_mean"]?.toInt() &&
-                averageAmountOfActivities == attributeMap["anzakttag_mean"]?.toInt()
-    }
 }
 
 data class WeekRoutineImpl(
@@ -62,12 +51,7 @@ data class WeekRoutineImpl(
     override val averageAmountOfTours: Int,
     override val averageAmountOfActivities: Int,
 ): WeekRoutine {
-    /**
-     * Generates a tracker instance, where none of the days are set to be work or education respectively.
-     */
-    fun instantiateTracker() : DayActivityTracker {
-        return DayActivityTracker(amountOfWorkingDays, amountOfEducationDays, emptySet(), emptySet())
-    }
+
 
 
     /**

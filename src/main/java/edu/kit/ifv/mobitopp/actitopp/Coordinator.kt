@@ -20,7 +20,7 @@ import edu.kit.ifv.mobitopp.actitopp.modernization.assignDirectly
 import edu.kit.ifv.mobitopp.actitopp.modernization.calculateTourAmounts
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MobilityPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.StandardCommuteDurations
-import edu.kit.ifv.mobitopp.actitopp.steps.step1.assignWeekRoutine
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.generateWeekRoutine
 import edu.kit.ifv.mobitopp.actitopp.steps.step10.FIRST_TOUR_HISTOGRAM
 import edu.kit.ifv.mobitopp.actitopp.steps.step10.SECOND_TOUR_HISTOGRAM
 import edu.kit.ifv.mobitopp.actitopp.steps.step10.TourStartByHistogramsRelative
@@ -41,6 +41,7 @@ import edu.kit.ifv.mobitopp.actitopp.steps.step8.assignMinorActivities
 import edu.kit.ifv.mobitopp.actitopp.steps.step8.assignSecondaryMainActivities
 import edu.kit.ifv.mobitopp.actitopp.steps.step9.StandardPreferredTourStart
 import edu.kit.ifv.mobitopp.actitopp.steps.step9.assignPreferredTourStart
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.time.Duration
@@ -113,7 +114,7 @@ class Coordinator @JvmOverloads constructor(
         executeStep1("1K", "anztourentag_mean")
         executeStep1("1L", "anzakttag_mean")
 
-        val weekRoutine = person.assignWeekRoutine(randomGenerator)
+        val weekRoutine = person.generateWeekRoutine(randomGenerator)
 
 
 //        testRoutineEquality(weekRoutine)
@@ -412,11 +413,6 @@ class Coordinator @JvmOverloads constructor(
 //        }
     }
 
-    private fun testRoutineEquality(weekRoutine: WeekRoutine) {
-        require(weekRoutine.similarToAttributeMap(person.attributesMap)) {
-            "Mismatch between week routine and person map \n$weekRoutine \n${person.attributesMap}"
-        }
-    }
 
     /**
      * select the minimum number of tours and activities for each day

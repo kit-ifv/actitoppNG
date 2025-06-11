@@ -12,10 +12,10 @@ enum class Employment(val code: Int) {
     HOUSEKEEPER(6),
     RETIRED(7),
     UNKNOWN_21(21),
-    UNKNOWN_22(22),
-    UNKNOWN_40(40),
-    UNKNOWN_41(41),
-    UNKNOWN_42(42),
+    MARGINAL(22),
+    STUDENT_PRIMARY(40),
+    STUDENT_SECONDARY(41),
+    STUDENT_TERTIARY(42),
     DEFINITELY_UNKNOWN(Int.MIN_VALUE);
 
     companion object {
@@ -25,11 +25,11 @@ enum class Employment(val code: Int) {
 }
 
 fun Employment.isParttime(): Boolean {
-    return this == Employment.PARTTIME || this == Employment.UNKNOWN_21 || this == Employment.UNKNOWN_22
+    return this == Employment.PARTTIME || this == Employment.UNKNOWN_21 || this == Employment.MARGINAL
 }
-fun Employment.isEarning() = this == Employment.FULLTIME || this == Employment.PARTTIME || this == Employment.UNKNOWN_21 || this == Employment.UNKNOWN_22
+fun Employment.isEarning() = this == Employment.FULLTIME || this == Employment.PARTTIME || this == Employment.UNKNOWN_21 || this == Employment.MARGINAL
 fun Employment.isNotEarning() = this == Employment.UNOCCUPIED || this == Employment.HOUSEKEEPER
 fun Employment.isEmployedAnywhere() = this.isEarning() || this == Employment.VOCATIONAL
 fun Employment.isStudentOrAzubi() =  this == Employment.VOCATIONAL || this.isStudent()
 fun Employment.isStudent() =
-    this == Employment.STUDENT || this == Employment.UNKNOWN_40 || this == Employment.UNKNOWN_41 || this == Employment.UNKNOWN_42
+    this == Employment.STUDENT || this == Employment.STUDENT_PRIMARY || this == Employment.STUDENT_SECONDARY || this == Employment.STUDENT_TERTIARY

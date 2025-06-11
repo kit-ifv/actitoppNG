@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.steps.step5
 
-import edu.kit.ifv.mobitopp.actitopp.steps.step1.times
+import edu.kit.ifv.mobitopp.actitopp.utils.times
 import edu.kit.ifv.mobitopp.actitopp.steps.step3.TourSituationInt
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel

@@ -1,7 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.steps.step5
 
 import edu.kit.ifv.mobitopp.actitopp.IPerson
-import edu.kit.ifv.mobitopp.actitopp.WeekRoutine
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
 import edu.kit.ifv.mobitopp.actitopp.modernization.BidirectionalIndexedValue
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.TourStructure
