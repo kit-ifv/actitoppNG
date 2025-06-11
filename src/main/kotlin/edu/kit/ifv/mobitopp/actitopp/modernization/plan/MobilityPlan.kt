@@ -8,7 +8,7 @@ import edu.kit.ifv.mobitopp.actitopp.modernization.LinkedAction
 import edu.kit.ifv.mobitopp.actitopp.modernization.LinkedActivity
 import edu.kit.ifv.mobitopp.actitopp.modernization.ModernizedActivity
 import edu.kit.ifv.mobitopp.actitopp.modernization.linkByHomeActivity
-import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.steps.step7.TimeBudgets
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days

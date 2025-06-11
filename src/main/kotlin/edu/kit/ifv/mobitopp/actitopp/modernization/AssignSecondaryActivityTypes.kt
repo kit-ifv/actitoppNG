@@ -2,13 +2,15 @@ package edu.kit.ifv.mobitopp.actitopp.modernization
 
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
-import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
-import edu.kit.ifv.mobitopp.actitopp.steps.step6.ActivitySituation
-import edu.kit.ifv.mobitopp.actitopp.steps.step6.step6WithParams
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.ActivitySituation
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.step6WithParams
+import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalIndexedValue
+import edu.kit.ifv.mobitopp.actitopp.utils.Position
 
 data class SecondaryActInput(
     val dayStructure: DayStructure,
-    val tourStructure: BidirectionalIndexedValue<TourStructure>,
+    val tourStructure: BidirectionalIndexedValue<MutableTourStructure>,
     val plannedTourAmounts: PlannedTourAmounts,
 )
 
@@ -23,7 +25,7 @@ interface AssignSecondaryActivityTypes {
     }
 }
 
-fun Map<DayStructure, Map<BidirectionalIndexedValue<TourStructure>, PlannedTourAmounts>>.assignDirectly(strategy: AssignSecondaryActivityTypes) {
+fun Map<DayStructure, Map<BidirectionalIndexedValue<MutableTourStructure>, PlannedTourAmounts>>.assignDirectly(strategy: AssignSecondaryActivityTypes) {
     entries.forEach { (day, tourMap) ->
         tourMap.forEach { (tour, plannedTourAmounts) ->
             strategy.assignDirectly(SecondaryActInput(day, tour, plannedTourAmounts))
@@ -33,11 +35,11 @@ fun Map<DayStructure, Map<BidirectionalIndexedValue<TourStructure>, PlannedTourA
 }
 
 class ExampleAssign(
-    val patternStructure: PatternStructure,
+    val mobilityStructure: MobilityStructure,
 
     val rngHelper: RNGHelper,
 ) : AssignSecondaryActivityTypes {
-    val personWithRoutine: PersonWithRoutine = patternStructure.weekRoutine
+    val personWithRoutine: PersonWithRoutine = mobilityStructure.weekRoutine
     override fun generateSecondaryActivityTypes(input: SecondaryActInput):
             Pair<List<ActivityType>, List<ActivityType>> {
         val precursors = input.plannedTourAmounts.precursorAmount
@@ -51,7 +53,7 @@ class ExampleAssign(
         val day = input.dayStructure.startTimeDay
         val routine = personWithRoutine.routine
         return map { absoluteIndex ->
-            patternStructure.generateTrackedActivity(input.dayStructure.startTimeDay) {
+            mobilityStructure.generateTrackedActivity(input.dayStructure.startTimeDay) {
                 val availableOptions = step6WithParams.registeredOptions().toMutableSet()
                 if (!personWithRoutine.person.isAllowedToWork) availableOptions.remove(ActivityType.WORK)
                 if (day.shouldNotBeWorkDay(routine)) availableOptions.remove(

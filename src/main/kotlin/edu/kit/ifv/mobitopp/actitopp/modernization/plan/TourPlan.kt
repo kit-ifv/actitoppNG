@@ -2,9 +2,9 @@ package edu.kit.ifv.mobitopp.actitopp.modernization.plan
 
 import edu.kit.ifv.mobitopp.actitopp.modernization.LinkedActivity
 import edu.kit.ifv.mobitopp.actitopp.modernization.ModernizedActivity
-import edu.kit.ifv.mobitopp.actitopp.modernization.Position
-import edu.kit.ifv.mobitopp.actitopp.modernization.TourStructure
-import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
+import edu.kit.ifv.mobitopp.actitopp.utils.Position
+import edu.kit.ifv.mobitopp.actitopp.modernization.MutableTourStructure
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.utils.ceil
 import edu.kit.ifv.mobitopp.actitopp.utils.takeUntil
 import kotlin.time.Duration
@@ -21,7 +21,7 @@ class TourPlan private constructor(
     val mainActivity: LinkedActivity,
     val position: Position,
 
-): List<LinkedActivity> by linkedActivities {
+    ): List<LinkedActivity> by linkedActivities {
     val minorActivities = linkedActivities - mainActivity
     override fun toString(): String {
         return "$linkedActivities"
@@ -45,18 +45,10 @@ class TourPlan private constructor(
                 it.startTime = it.previous?.endTime?: throw NoSuchElementException("Should not be null")
             }
         }
-//        firstAct.previousTrip?.startTime = duration
-//        firstAct.mutableIterator().takeUntil { it == nextHomeActivity }.forEach {
-//            if(it.startTime == null) {
-//                it.startTime = it.previous?.endTime?: throw NoSuchElementException("Should not be null")
-//            }
-//
-//
-//        }
     }
 
     companion object {
-        fun create(tourStructure: TourStructure,
+        fun create(tourStructure: MutableTourStructure,
                    person: PersonWithRoutine,
                    tourPosition: Position,
                    tripDuration: DetermineTripDuration,): TourPlan {

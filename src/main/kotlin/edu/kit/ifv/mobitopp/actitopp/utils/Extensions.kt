@@ -40,3 +40,8 @@ inline fun <T> Iterable<T>.sumOf(selector: (T) -> Duration): Duration {
 // TODO move these to a util definition
 inline operator fun Boolean.times(other: Double): Double = this.D * other
 inline operator fun Boolean.times(other: Int): Int = this.I * other
+
+fun Int.positiveModulus(modulo: Int): Int {
+    val result = this % modulo
+    return if (result < 0) result + modulo else result
+}

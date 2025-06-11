@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.modernization
 
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
+import edu.kit.ifv.mobitopp.actitopp.utils.Position
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.time.Duration.Companion.hours

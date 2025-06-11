@@ -52,29 +52,29 @@ class StandardStructureGeneration(val rng: RNGHelper) : MobilityPlanGeneration {
     override fun generate(person: IPerson, amountOfDays: Int): MobilityPlan {
 
         val weekRoutine = person.generateWeekRoutine(rng)
-        val patternStructure = PatternStructure(person, weekRoutine)
+        val mobilityStructure = MobilityStructure(person, weekRoutine)
         // Generate the main activities of each day
         repeat(amountOfDays) {
-            patternStructure.determineNextMainActivity(rngKeeper = rng)
+            mobilityStructure.determineNextMainActivity(rngKeeper = rng)
         }
         // Determine the amount of tours that precede & succeed the main tour.
-        val tourOutput = patternStructure.calculateTourAmounts(rngHelper = rng)
+        val tourOutput = mobilityStructure.calculateTourAmounts(rngHelper = rng)
 
         // Determine the main type of the subtours and load it into the pattern.
-        val generator = Generator(patternStructure, rng)
+        val generator = Generator(mobilityStructure, rng)
         generator.loadSideTours(tourOutput)
 
         // Determine the amount of precursor and successor tours for each tour of the day
-        val step5Gen = Step5Generator(patternStructure, rng)
+        val step5Gen = Step5Generator(mobilityStructure, rng)
         step5Gen.calculate()
         val step5output = step5Gen.output()
 
-        val nextStep = ExampleAssign(patternStructure, rng)
+        val nextStep = ExampleAssign(mobilityStructure, rng)
         step5output.assignDirectly(nextStep)
 
 
-        val budget = STATIC_HISTOGRAMS.determineTimeBudgets(rng, person, FinalizedActivityPattern.fromModernPattern(patternStructure))
-        return patternStructure.toPlan(StandardCommuteDurations.STANDARD_ASSIGNMENT, budget)?: MobilityPlan.stayAtHomePlan(person, amountOfDays)
+        val budget = STATIC_HISTOGRAMS.determineTimeBudgets(rng, person, FinalizedActivityPattern.fromModernPattern(mobilityStructure))
+        return mobilityStructure.toPlan(StandardCommuteDurations.STANDARD_ASSIGNMENT, budget)?: MobilityPlan.stayAtHomePlan(person, amountOfDays)
     }
 }
 

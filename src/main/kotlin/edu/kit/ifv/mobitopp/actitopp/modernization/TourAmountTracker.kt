@@ -1,11 +1,11 @@
 package edu.kit.ifv.mobitopp.actitopp.modernization
 
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
-import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
-import edu.kit.ifv.mobitopp.actitopp.steps.step3.GenerateSideToursFollowing
-import edu.kit.ifv.mobitopp.actitopp.steps.step3.GenerateSideToursPreceeding
-import edu.kit.ifv.mobitopp.actitopp.steps.step3.PlannedTourMap
-import edu.kit.ifv.mobitopp.actitopp.steps.step3.PrecedingInput
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.sideTourAmounts.GenerateSideToursFollowing
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.sideTourAmounts.GenerateSideToursPreceeding
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.sideTourAmounts.PlannedTourMap
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.sideTourAmounts.PrecedingInput
 
 
 interface PlannedTourAmounts {
@@ -70,10 +70,12 @@ class TourAmountTracker(initialDayStructures: Collection<DayStructure>,
         return targets.map {
             val currentPlan = map.getModifiablePlannedTourAmounts(it)
             val previousDayPlan = map.getPreviousPlannedTourAmounts(it)
-            val result = generator.generate(PrecedingInput(person,
+            val result = generator.generate(
+                PrecedingInput(person,
                 it,
                 currentPlan,
-                previousDayPlan))
+                previousDayPlan)
+            )
             generator.update(currentPlan, result)
             result
         }
@@ -87,10 +89,12 @@ class TourAmountTracker(initialDayStructures: Collection<DayStructure>,
         return targets.map {
             val currentPlan = map.getModifiablePlannedTourAmounts(it)
             val previousDayPlan = map.getPreviousPlannedTourAmounts(it)
-            val result = generator.generate(PrecedingInput(person,
+            val result = generator.generate(
+                PrecedingInput(person,
                 it,
                 currentPlan,
-                previousDayPlan))
+                previousDayPlan)
+            )
             generator.update(currentPlan, result)
             result
         }
@@ -98,7 +102,7 @@ class TourAmountTracker(initialDayStructures: Collection<DayStructure>,
 
 }
 
-fun PatternStructure.calculateTourAmounts(rngHelper: RNGHelper): Map<DurationDay, PlannedTourAmounts> {
+fun MobilityStructure.calculateTourAmounts(rngHelper: RNGHelper): Map<DurationDay, PlannedTourAmounts> {
     val tracker = TourAmountTracker(allDays(), person = this.weekRoutine, rngHelper = rngHelper)
     tracker.generateSideTours(mobileDays())
     return tracker.output()

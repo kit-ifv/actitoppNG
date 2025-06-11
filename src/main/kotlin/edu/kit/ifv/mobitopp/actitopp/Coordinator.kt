@@ -7,15 +7,15 @@ import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType.Companion.getTypeFromCha
 import edu.kit.ifv.mobitopp.actitopp.enums.JointStatus
 import edu.kit.ifv.mobitopp.actitopp.enums.TripStatus
 import edu.kit.ifv.mobitopp.actitopp.modernization.Activity
-import edu.kit.ifv.mobitopp.actitopp.modernization.BidirectionalIndexedValue
+import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalIndexedValue
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.DurationDay
 import edu.kit.ifv.mobitopp.actitopp.modernization.ExampleAssign
 import edu.kit.ifv.mobitopp.actitopp.modernization.Generator
-import edu.kit.ifv.mobitopp.actitopp.modernization.PatternStructure
+import edu.kit.ifv.mobitopp.actitopp.modernization.MobilityStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.PlannedTourAmounts
 import edu.kit.ifv.mobitopp.actitopp.modernization.Step5Generator
-import edu.kit.ifv.mobitopp.actitopp.modernization.TourStructure
+import edu.kit.ifv.mobitopp.actitopp.modernization.MutableTourStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.assignDirectly
 import edu.kit.ifv.mobitopp.actitopp.modernization.calculateTourAmounts
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MobilityPlan
@@ -28,7 +28,7 @@ import edu.kit.ifv.mobitopp.actitopp.steps.step10.TourStartWithPreference
 import edu.kit.ifv.mobitopp.actitopp.steps.step10.assignFirstTourStarts
 import edu.kit.ifv.mobitopp.actitopp.steps.step10.assignRemainingTourStarts
 import edu.kit.ifv.mobitopp.actitopp.steps.step10.assignSecondTourStarts
-import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.steps.step7.FinalizedActivityPattern
 import edu.kit.ifv.mobitopp.actitopp.steps.step7.HistogramPerActivity
 import edu.kit.ifv.mobitopp.actitopp.steps.step7.TimeBudgets
@@ -41,7 +41,6 @@ import edu.kit.ifv.mobitopp.actitopp.steps.step8.assignMinorActivities
 import edu.kit.ifv.mobitopp.actitopp.steps.step8.assignSecondaryMainActivities
 import edu.kit.ifv.mobitopp.actitopp.steps.step9.StandardPreferredTourStart
 import edu.kit.ifv.mobitopp.actitopp.steps.step9.assignPreferredTourStart
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.time.Duration
@@ -119,35 +118,35 @@ class Coordinator @JvmOverloads constructor(
 
 //        testRoutineEquality(weekRoutine)
         val personWithRoutine = PersonWithRoutine(person, weekRoutine)
-        val patternStructure = PatternStructure(personWithRoutine)
+        val mobilityStructure = MobilityStructure(personWithRoutine)
 
         executeStep2("2A")
         val mainActivitiesNew = (0..6).map {
-            patternStructure.determineNextMainActivity(rngKeeper = randomGenerator)
+            mobilityStructure.determineNextMainActivity(rngKeeper = randomGenerator)
         }
 //       testMainActivityEquality(patternStructure)
         executeStep3("3A")
         executeStep3("3B")
-        val tourAmounts = patternStructure.calculateTourAmounts(
+        val tourAmounts = mobilityStructure.calculateTourAmounts(
             randomGenerator
         )
 
 //        testTourAmountEquality(tourAmounts)
         executeStep4("4A")
-        val generator = Generator(patternStructure, randomGenerator)
+        val generator = Generator(mobilityStructure, randomGenerator)
         generator.loadSideTours(tourAmounts)
 
 //        testTourTypeEquality(patternStructure)
         executeStep5("5A") // Create Activities before main activity (?)
         executeStep5("5B") // Create Activities after  main activity (?)
 
-        val step5Gen = Step5Generator(patternStructure, randomGenerator)
+        val step5Gen = Step5Generator(mobilityStructure, randomGenerator)
         step5Gen.calculate()
         val step5output = step5Gen.output()
 //        testStep5Equality(step5output)
         executeStep6("6A") // Determine Activity Type for all non main activities (?)
 
-        val nextStep = ExampleAssign(patternStructure, randomGenerator)
+        val nextStep = ExampleAssign(mobilityStructure, randomGenerator)
         step5output.assignDirectly(nextStep)
 
 //        testStep6Equality(patternStructure)
@@ -188,7 +187,7 @@ class Coordinator @JvmOverloads constructor(
 
 
         val mobilityPlan =
-            patternStructure.toPlan(StandardCommuteDurations.STANDARD_ASSIGNMENT, output)
+            mobilityStructure.toPlan(StandardCommuteDurations.STANDARD_ASSIGNMENT, output)
 
         mobilityPlan?.assignFirstMainActivities(StandardStep8B(randomGenerator, LEAD, ))
         mobilityPlan?.assignSecondaryMainActivities(StandardStep8B(randomGenerator, MAJOR, ))
@@ -353,15 +352,15 @@ class Coordinator @JvmOverloads constructor(
         return person.categoryAlternative(activityType).toInt() == category.category
     }
 
-    private fun testStep6Equality(patternStructure: PatternStructure) {
+    private fun testStep6Equality(mobilityStructure: MobilityStructure) {
         val allLegacyActivities = pattern.days.flatMap { it.allActivitiesoftheDay.map { it.activityType } }
-        val allModernizedActivity = patternStructure.allDays().flatMap { it.elements().flatMap { it.elements() } }
+        val allModernizedActivity = mobilityStructure.allDays().flatMap { it.elements().flatMap { it.elements() } }
         require(allLegacyActivities.zip(allModernizedActivity).all { (a, b) -> a == b }) {
             "Activity list mismatch for person ${person.id}"
         }
     }
 
-    private fun testStep5Equality(step5output: Map<DayStructure, Map<BidirectionalIndexedValue<TourStructure>, PlannedTourAmounts>>) {
+    private fun testStep5Equality(step5output: Map<DayStructure, Map<BidirectionalIndexedValue<MutableTourStructure>, PlannedTourAmounts>>) {
         val pred = step5output.values.flatMap { it.values.map { it.precursorAmount } }
         val succ = step5output.values.flatMap { it.values.map { it.successorAmount } }
 
@@ -378,9 +377,9 @@ class Coordinator @JvmOverloads constructor(
         }
     }
 
-    private fun testTourTypeEquality(patternStructure: PatternStructure) {
+    private fun testTourTypeEquality(mobilityStructure: MobilityStructure) {
         val legacyActivityTypes = pattern.days.map { it.tours.map { it.activities.map { it.activityType } } }
-        val moderniedSideAc = patternStructure.allDays().map { it.elements().map { it.elements() } }
+        val moderniedSideAc = mobilityStructure.allDays().map { it.elements().map { it.elements() } }
         require(
             legacyActivityTypes.flatten().flatten().zip(moderniedSideAc.flatten().flatten()).all { (a, b) -> a == b }) {
             "There are some activities that did not get the correct assignment :/"
@@ -402,7 +401,7 @@ class Coordinator @JvmOverloads constructor(
         }
     }
 
-    private fun testMainActivityEquality(patternStructure: PatternStructure) {
+    private fun testMainActivityEquality(mobilityStructure: MobilityStructure) {
 
 
 //        val legacyMainActivities =

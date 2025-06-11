@@ -9,7 +9,7 @@ import edu.kit.ifv.mobitopp.actitopp.enums.isParttime
 import edu.kit.ifv.mobitopp.actitopp.enums.isStudent
 import edu.kit.ifv.mobitopp.actitopp.enums.isStudentOrAzubi
 import edu.kit.ifv.mobitopp.actitopp.modernization.Activity
-import edu.kit.ifv.mobitopp.actitopp.modernization.Position
+import edu.kit.ifv.mobitopp.actitopp.utils.Position
 import edu.kit.ifv.mobitopp.actitopp.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.DayPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MobilityPlan

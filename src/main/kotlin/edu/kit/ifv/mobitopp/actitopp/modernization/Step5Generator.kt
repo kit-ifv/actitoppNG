@@ -1,23 +1,24 @@
 package edu.kit.ifv.mobitopp.actitopp.modernization
 
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
-import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
-import edu.kit.ifv.mobitopp.actitopp.steps.step5.DayAmountTracker
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.subsubTourAmount.DayAmountTracker
+import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalIndexedValue
 
 class Step5Generator(
-    private val patternStructure: PatternStructure,
+    private val mobilityStructure: MobilityStructure,
 
     val rngHelper: RNGHelper,
 ) {
-    val personWithRoutine: PersonWithRoutine = patternStructure.weekRoutine
-    private val relevantDays = patternStructure.mobileDays()
+    val personWithRoutine: PersonWithRoutine = mobilityStructure.weekRoutine
+    private val relevantDays = mobilityStructure.mobileDays()
     val map = relevantDays.associateWith {
         DayAmountTracker(it, rngHelper, personWithRoutine)
     }
-    private val dayMap: Map<DayStructure, Collection<BidirectionalIndexedValue<TourStructure>>> = relevantDays.associateWith {
+    private val dayMap: Map<DayStructure, Collection<BidirectionalIndexedValue<MutableTourStructure>>> = relevantDays.associateWith {
         it.indexedElements()
     }
-    private val output: Map<DayStructure, Map<BidirectionalIndexedValue<TourStructure>, ModifiablePlannedTourAmounts>> =
+    private val output: Map<DayStructure, Map<BidirectionalIndexedValue<MutableTourStructure>, ModifiablePlannedTourAmounts>> =
         relevantDays.associateWith {
             dayMap.getValue(it).associateWith { ModifiablePlannedTourAmounts() }
         }
@@ -42,7 +43,7 @@ class Step5Generator(
         }
     }
 
-    fun output(): Map<DayStructure, Map<BidirectionalIndexedValue<TourStructure>, PlannedTourAmounts>> {
+    fun output(): Map<DayStructure, Map<BidirectionalIndexedValue<MutableTourStructure>, PlannedTourAmounts>> {
         return output
     }
 }

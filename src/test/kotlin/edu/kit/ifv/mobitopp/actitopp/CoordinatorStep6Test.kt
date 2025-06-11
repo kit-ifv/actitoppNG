@@ -1,10 +1,8 @@
 package edu.kit.ifv.mobitopp.actitopp
 
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
-import edu.kit.ifv.mobitopp.actitopp.steps.step3.TourSituationInt
-import edu.kit.ifv.mobitopp.actitopp.steps.step5.step5BWithParams
-import edu.kit.ifv.mobitopp.actitopp.steps.step6.ActivitySituation
-import edu.kit.ifv.mobitopp.actitopp.steps.step6.step6WithParams
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.ActivitySituation
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.step6WithParams
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
 

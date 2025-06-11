@@ -3,9 +3,10 @@ package edu.kit.ifv.mobitopp.actitopp.modernization
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.steps.TourPositionAttributesByIndex
-import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
-import edu.kit.ifv.mobitopp.actitopp.steps.step3.TourSituation
-import edu.kit.ifv.mobitopp.actitopp.steps.step3.step4WithParams
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.TourSituation
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.tourMainActivityChoiceModel
+import edu.kit.ifv.mobitopp.actitopp.utils.Position
 
 class DayWithPlans(
     val dayStructure: DayStructure,
@@ -20,7 +21,7 @@ fun interface AssignMainActivityOfSideTour {
 
 
 
-class AssignByUtilityFunction(private val patternStructure: PatternStructure, val rngHelper: RNGHelper) : AssignMainActivityOfSideTour {
+class AssignByUtilityFunction(private val mobilityStructure: MobilityStructure, val rngHelper: RNGHelper) : AssignMainActivityOfSideTour {
     override fun generateSideTourActivities(input: DayWithPlans): Pair<List<ActivityType>, List<ActivityType>> {
         val plannedPrecursors = input.plannedTourAmounts.precursorAmount
         val plannedSuccessors = input.plannedTourAmounts.successorAmount
@@ -37,10 +38,10 @@ class AssignByUtilityFunction(private val patternStructure: PatternStructure, va
 
     private fun List<Int>.calculate(position: Position, input: DayWithPlans): List<ActivityType> {
         return map { absoluteIndex ->
-            patternStructure.generateTrackedActivity(input.dayStructure.startTimeDay) { day ->
+            mobilityStructure.generateTrackedActivity(input.dayStructure.startTimeDay) { day ->
 
                 val routine = input.personWithRoutine.routine
-                val availableOptions = step4WithParams.registeredOptions().toMutableSet()
+                val availableOptions = tourMainActivityChoiceModel.registeredOptions().toMutableSet()
                 if (!input.personWithRoutine.person.isAllowedToWork) availableOptions.remove(ActivityType.WORK)
                 if (day.shouldNotBeWorkDay(routine)) availableOptions.remove(
                     ActivityType.WORK
@@ -50,7 +51,7 @@ class AssignByUtilityFunction(private val patternStructure: PatternStructure, va
                 )
 
                 val rnd = rngHelper.randomValue
-                step4WithParams.select(availableOptions, rnd) {
+                tourMainActivityChoiceModel.select(availableOptions, rnd) {
                     TourSituation(
                         it,
                         input.personWithRoutine.person,

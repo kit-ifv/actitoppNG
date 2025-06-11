@@ -1,7 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp
 
-import edu.kit.ifv.mobitopp.actitopp.steps.step3.TourSituationInt
-import edu.kit.ifv.mobitopp.actitopp.steps.step5.step5BWithParams
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.TourSituationInt
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.step5BWithParams
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
 

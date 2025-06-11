@@ -5,10 +5,10 @@ import edu.kit.ifv.mobitopp.actitopp.HDay
 import edu.kit.ifv.mobitopp.actitopp.HTour
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
-import edu.kit.ifv.mobitopp.actitopp.modernization.BidirectionalIndexedValue
-import edu.kit.ifv.mobitopp.actitopp.modernization.Position
-import edu.kit.ifv.mobitopp.actitopp.modernization.TourStructure
-import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
+import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalIndexedValue
+import edu.kit.ifv.mobitopp.actitopp.utils.Position
+import edu.kit.ifv.mobitopp.actitopp.modernization.MutableTourStructure
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import org.jetbrains.annotations.TestOnly
 
 interface TourPositionAttributes {
@@ -76,11 +76,11 @@ class TourPositionAttributesByIndex(val absoluteIndex: Int, val position: Positi
 }
 
 class TourAttributesByStructAndNumbers(
-    private val indexedTour: BidirectionalIndexedValue<TourStructure>,
+    private val indexedTour: BidirectionalIndexedValue<MutableTourStructure>,
     val precursorActivityCount: Int,
-    val successorActivityCount:Int ,
+    val successorActivityCount:Int,
 
-) : TourAttributes, TourPositionAttributes,  ActivityAmountAttributes{
+    ) : TourAttributes, TourPositionAttributes,  ActivityAmountAttributes{
     override fun tourMainActivityIsWork(): Boolean {
         return indexedTour.element.mainActivityType() == ActivityType.WORK
     }
@@ -142,7 +142,7 @@ class TourAttributesByStructAndNumbers(
     }
 }
 
-class TourAttributesByIndexedStructure(private val indexedTour: BidirectionalIndexedValue<TourStructure>) :
+class TourAttributesByIndexedStructure(private val indexedTour: BidirectionalIndexedValue<MutableTourStructure>) :
     TourAttributes, TourPositionAttributes, ActivityAmountAttributes {
 
     override fun isFirstTourOfDay(): Boolean {

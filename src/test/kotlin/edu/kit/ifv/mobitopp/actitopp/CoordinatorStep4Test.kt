@@ -3,7 +3,7 @@
 //import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 //import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType.Companion.getTypeFromChar
 //import edu.kit.ifv.mobitopp.actitopp.steps.step3.TourSituation
-//import edu.kit.ifv.mobitopp.actitopp.steps.step3.step4WithParams
+//import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.getStep4WithParams
 //import org.junit.jupiter.api.DynamicTest
 //import org.junit.jupiter.api.TestFactory
 //import edu.kit.ifv.mobitopp.actitopp.steps.step4.SubTourMainActivityDeterminer

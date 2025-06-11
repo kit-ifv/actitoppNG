@@ -1,13 +1,13 @@
 package edu.kit.ifv.mobitopp.actitopp.modernization.plan
 
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
-import edu.kit.ifv.mobitopp.actitopp.modernization.BidirectionalIndexedValue
+import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalIndexedValue
 import edu.kit.ifv.mobitopp.actitopp.modernization.DurationDay
 import edu.kit.ifv.mobitopp.actitopp.modernization.LinkedActivity
-import edu.kit.ifv.mobitopp.actitopp.modernization.Position
-import edu.kit.ifv.mobitopp.actitopp.modernization.TourStructure
+import edu.kit.ifv.mobitopp.actitopp.utils.Position
+import edu.kit.ifv.mobitopp.actitopp.modernization.MutableTourStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.linkByHomeActivity
-import edu.kit.ifv.mobitopp.actitopp.steps.step2.PersonWithRoutine
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.steps.step7.TimeBudgets
 import edu.kit.ifv.mobitopp.actitopp.utils.foldUntil
 import edu.kit.ifv.mobitopp.actitopp.utils.rem
@@ -190,7 +190,7 @@ class MovingDayPlan(
 
     companion object {
         fun create(
-            tourStructures: Collection<BidirectionalIndexedValue<TourStructure>>,
+            tourStructures: Collection<BidirectionalIndexedValue<MutableTourStructure>>,
             movingDayInput: MovingDayPlanInput,
         ): MovingDayPlan {
             return movingDayInput.run {

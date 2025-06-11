@@ -2,7 +2,7 @@ package edu.kit.ifv.mobitopp.actitopp.steps.step7
 
 import edu.kit.ifv.mobitopp.actitopp.HWeekPattern
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
-import edu.kit.ifv.mobitopp.actitopp.modernization.PatternStructure
+import edu.kit.ifv.mobitopp.actitopp.modernization.MobilityStructure
 
 
 /**
@@ -40,14 +40,14 @@ interface FinalizedActivityPattern {
             )
         }
 
-        fun fromModernPattern(patternStructure: PatternStructure): FinalizedActivityPatternImpl {
-            val activityMap = patternStructure.activityTypes().groupBy { it }.mapValues { it.value.size }
+        fun fromModernPattern(mobilityStructure: MobilityStructure): FinalizedActivityPatternImpl {
+            val activityMap = mobilityStructure.activityTypes().groupBy { it }.mapValues { it.value.size }
             return FinalizedActivityPatternImpl(
-                workDays = patternStructure.amountOfDaysWith(ActivityType.WORK),
-                educationDays = patternStructure.amountOfDaysWith(ActivityType.EDUCATION),
-                leisureDays = patternStructure.amountOfDaysWith(ActivityType.LEISURE),
-                shoppingDays = patternStructure.amountOfDaysWith(ActivityType.SHOPPING),
-                transportDays = patternStructure.amountOfDaysWith(ActivityType.TRANSPORT),
+                workDays = mobilityStructure.amountOfDaysWith(ActivityType.WORK),
+                educationDays = mobilityStructure.amountOfDaysWith(ActivityType.EDUCATION),
+                leisureDays = mobilityStructure.amountOfDaysWith(ActivityType.LEISURE),
+                shoppingDays = mobilityStructure.amountOfDaysWith(ActivityType.SHOPPING),
+                transportDays = mobilityStructure.amountOfDaysWith(ActivityType.TRANSPORT),
                 workActivities =  activityMap[ActivityType.WORK]?:0,
                 educationActivities = activityMap[ActivityType.EDUCATION]?:0,
                 leisureActivities = activityMap[ActivityType.LEISURE]?:0,
