@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "2.1.20"
     kotlin("plugin.serialization") version "2.1.20"
+    id("org.jetbrains.dokka") version "1.9.10"
 }
 
 group = "edu.kit.ifv.mobitopp"
@@ -33,4 +34,17 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+tasks.dokkaHtml {
+    outputDirectory.set(buildDir.resolve("dokka"))
+
+    dokkaSourceSets {
+        named("main") {
+            includes.from("src/main/kotlin/com/example/mypackage/package.md") // optional
+            perPackageOption {
+                matchingRegex.set("com\\.example\\.internal.*")
+                suppress.set(true) // Skip internal packages
+            }
+        }
+    }
 }
