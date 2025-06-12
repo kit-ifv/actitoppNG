@@ -23,7 +23,7 @@ class Step5Generator(
             dayMap.getValue(it).associateWith { ModifiablePlannedTourAmounts() }
         }
 
-    fun calculate() {
+    fun calculate(): Map<DayStructure, Map<BidirectionalIndexedValue<TourStructure>, ModifiablePlannedTourAmounts>> {
         map.entries.forEach { (day, tracker) ->
             val predecessors = tracker.generatePredecessors(dayMap.getValue(day))
             val mapy = output.getValue(day)
@@ -41,6 +41,7 @@ class Step5Generator(
             }
 
         }
+        return output
     }
 
     fun output(): Map<DayStructure, Map<BidirectionalIndexedValue<TourStructure>, PlannedTourAmounts>> {

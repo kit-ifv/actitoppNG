@@ -3,7 +3,9 @@ package edu.kit.ifv.mobitopp.actitopp.modernization
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.STATIC_HISTOGRAMS
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.SpawnWeek
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.SpawnWithRespect
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.StandardImplementation
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MobilityPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.StandardCommuteDurations
 import edu.kit.ifv.mobitopp.actitopp.spawnRandomGenerator
@@ -26,6 +28,7 @@ import edu.kit.ifv.mobitopp.actitopp.steps.step8.assignMinorActivities
 import edu.kit.ifv.mobitopp.actitopp.steps.step8.assignSecondaryMainActivities
 import edu.kit.ifv.mobitopp.actitopp.steps.step9.StandardPreferredTourStart
 import edu.kit.ifv.mobitopp.actitopp.steps.step9.assignPreferredTourStart
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
 
 
 fun interface MobilityPlanGeneration {
@@ -50,40 +53,30 @@ class DefaultPlanGeneration : MobilityPlanGeneration {
 }
 
 class StandardStructureGeneration(val rng: RNGHelper) : MobilityPlanGeneration {
+    val sideActivityStrategy = StandardImplementation(rng)
+    val spawnMainActivities = {rng: RNGHelper, person: IPerson, routine: WeekRoutine ->
+        SpawnWeek(rng, person, routine)
+    }
     override fun generate(person: IPerson, amountOfDays: Int): MobilityPlan {
 
         val weekRoutine = person.generateWeekRoutine(rng)
         val mobilityStructure = MobilityStructure(person, weekRoutine)
         // Generate the main activities of each day
-        val mainGenerator = SpawnWithRespect(rng, person, weekRoutine)
-        repeat(amountOfDays) {
-            mainGenerator.generateNewDay(mobilityStructure)
-//            mobilityStructure.determineNextMainActivity(rngKeeper = rng)
-        }
+        val spawnMainActivities = spawnMainActivities(rng, person, weekRoutine)
+        spawnMainActivities.spawnMainActivities(mobilityStructure)
+//        val mainGenerator = SpawnWithRespect(rng, person, weekRoutine)
+//        repeat(amountOfDays) {
+//            mainGenerator.generateNewDay(mobilityStructure)
+////            mobilityStructure.determineNextMainActivity(rngKeeper = rng)
+//        }
         // Determine the amount of tours that precede & succeed the main tour.
         val tourOutput = mobilityStructure.calculateTourAmounts(rngHelper = rng)
 
         // Determine the main type of the subtours and load it into the pattern.
         val generator = SideTourMainActivityGenerator(mobilityStructure, rng)
         generator.loadSideTours(tourOutput)
-
+        sideActivityStrategy.spawnSideActivities(mobilityStructure)
         // Determine the amount of precursor and successor tours for each tour of the day
-        val step5Gen = Step5Generator(mobilityStructure, rng)
-        step5Gen.calculate()
-        val step5output = step5Gen.output()
-        val nextStep = ExampleAssign(mobilityStructure, rng)
-        mobilityStructure.elements().forEach { day ->
-            day.trackedElements().forEach { element ->
-                val plan = step5output[day]?.get(element)?: PlannedTourAmounts.NONE
-                val (precursors, successors) = nextStep.generateSecondaryActivityTypes(SecondaryActInput(day, element, plan))
-                element.element.loadPrecursors(precursors)
-                element.element.loadSuccessors(successors)
-            }
-        }
-
-
-//        step5output.assignDirectly(nextStep)
-
 
         val budget = STATIC_HISTOGRAMS.determineTimeBudgets(rng, person, FinalizedActivityPattern.fromModernPattern(mobilityStructure))
         return mobilityStructure.toPlan(StandardCommuteDurations.STANDARD_ASSIGNMENT, budget)?: MobilityPlan.stayAtHomePlan(person, amountOfDays)
