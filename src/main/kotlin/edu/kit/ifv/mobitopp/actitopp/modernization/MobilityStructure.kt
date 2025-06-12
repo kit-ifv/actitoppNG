@@ -11,7 +11,7 @@ import edu.kit.ifv.mobitopp.actitopp.modernization.plan.StayAtHomePlan
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.DaySituation
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.mainActivityChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.steps.step7.TimeBudgets
+import edu.kit.ifv.mobitopp.actitopp.timebudgets.TimeBudgets
 
 /**
  * Pattern keeps track of which days have been made working days, and education days and so on, as such, it will know

@@ -3,32 +3,32 @@ package edu.kit.ifv.mobitopp.actitopp.modernization
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.STATIC_HISTOGRAMS
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.LegacySpawnSideTours
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.SpawnSideTours
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.SpawnWeek
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.SpawnWithRespect
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.StandardImplementation
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MobilityPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.StandardCommuteDurations
 import edu.kit.ifv.mobitopp.actitopp.spawnRandomGenerator
 
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.generateWeekRoutine
-import edu.kit.ifv.mobitopp.actitopp.steps.step10.FIRST_TOUR_HISTOGRAM
-import edu.kit.ifv.mobitopp.actitopp.steps.step10.SECOND_TOUR_HISTOGRAM
-import edu.kit.ifv.mobitopp.actitopp.steps.step10.TourStartByHistogramsRelative
-import edu.kit.ifv.mobitopp.actitopp.steps.step10.TourStartWithPreference
-import edu.kit.ifv.mobitopp.actitopp.steps.step10.assignFirstTourStarts
-import edu.kit.ifv.mobitopp.actitopp.steps.step10.assignRemainingTourStarts
-import edu.kit.ifv.mobitopp.actitopp.steps.step10.assignSecondTourStarts
-import edu.kit.ifv.mobitopp.actitopp.steps.step7.FinalizedActivityPattern
-import edu.kit.ifv.mobitopp.actitopp.steps.step8.AssignMinorActivityDuration
-import edu.kit.ifv.mobitopp.actitopp.steps.step8.LEAD
-import edu.kit.ifv.mobitopp.actitopp.steps.step8.MAJOR
-import edu.kit.ifv.mobitopp.actitopp.steps.step8.StandardStep8B
-import edu.kit.ifv.mobitopp.actitopp.steps.step8.assignFirstMainActivities
-import edu.kit.ifv.mobitopp.actitopp.steps.step8.assignMinorActivities
-import edu.kit.ifv.mobitopp.actitopp.steps.step8.assignSecondaryMainActivities
-import edu.kit.ifv.mobitopp.actitopp.steps.step9.StandardPreferredTourStart
-import edu.kit.ifv.mobitopp.actitopp.steps.step9.assignPreferredTourStart
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
+import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.choicemodels.FIRST_TOUR_HISTOGRAM
+import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.SECOND_TOUR_HISTOGRAM
+import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.TourStartByHistogramsRelative
+import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.TourStartWithPreference
+import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.assignFirstTourStarts
+import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.assignRemainingTourStarts
+import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.assignSecondTourStarts
+import edu.kit.ifv.mobitopp.actitopp.timebudgets.FinalizedActivityPattern
+import edu.kit.ifv.mobitopp.actitopp.plandurations.AssignMinorActivityDuration
+import edu.kit.ifv.mobitopp.actitopp.plandurations.choicemodels.LEAD
+import edu.kit.ifv.mobitopp.actitopp.plandurations.choicemodels.MAJOR
+import edu.kit.ifv.mobitopp.actitopp.plandurations.StandardStep8B
+import edu.kit.ifv.mobitopp.actitopp.plandurations.assignFirstMainActivities
+import edu.kit.ifv.mobitopp.actitopp.plandurations.assignMinorActivities
+import edu.kit.ifv.mobitopp.actitopp.plandurations.assignSecondaryMainActivities
+import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.StandardPreferredTourStart
+import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.assignPreferredTourStart
 
 
 fun interface MobilityPlanGeneration {
@@ -53,28 +53,17 @@ class DefaultPlanGeneration : MobilityPlanGeneration {
 }
 
 class StandardStructureGeneration(val rng: RNGHelper) : MobilityPlanGeneration {
-    val sideActivityStrategy = StandardImplementation(rng)
-    val spawnMainActivities = {rng: RNGHelper, person: IPerson, routine: WeekRoutine ->
-        SpawnWeek(rng, person, routine)
-    }
+    private val sideActivityStrategy = StandardImplementation(rng)
+    private val spawnMainActivities = SpawnWeek(rng)
+    private val spawnSideTours: SpawnSideTours = LegacySpawnSideTours(rng)
     override fun generate(person: IPerson, amountOfDays: Int): MobilityPlan {
 
         val weekRoutine = person.generateWeekRoutine(rng)
         val mobilityStructure = MobilityStructure(person, weekRoutine)
         // Generate the main activities of each day
-        val spawnMainActivities = spawnMainActivities(rng, person, weekRoutine)
         spawnMainActivities.spawnMainActivities(mobilityStructure)
-//        val mainGenerator = SpawnWithRespect(rng, person, weekRoutine)
-//        repeat(amountOfDays) {
-//            mainGenerator.generateNewDay(mobilityStructure)
-////            mobilityStructure.determineNextMainActivity(rngKeeper = rng)
-//        }
         // Determine the amount of tours that precede & succeed the main tour.
-        val tourOutput = mobilityStructure.calculateTourAmounts(rngHelper = rng)
-
-        // Determine the main type of the subtours and load it into the pattern.
-        val generator = SideTourMainActivityGenerator(mobilityStructure, rng)
-        generator.loadSideTours(tourOutput)
+        spawnSideTours.spawnSideTours(mobilityStructure)
         sideActivityStrategy.spawnSideActivities(mobilityStructure)
         // Determine the amount of precursor and successor tours for each tour of the day
 

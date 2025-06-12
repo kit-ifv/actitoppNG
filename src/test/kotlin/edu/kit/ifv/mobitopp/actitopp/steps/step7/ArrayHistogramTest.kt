@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.steps.step7
 
 import edu.kit.ifv.mobitopp.actitopp.changes.Category
+import edu.kit.ifv.mobitopp.actitopp.timebudgets.ArrayHistogram
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.*
 import kotlin.io.path.Path

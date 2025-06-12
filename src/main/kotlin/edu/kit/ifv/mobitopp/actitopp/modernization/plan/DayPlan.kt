@@ -8,7 +8,7 @@ import edu.kit.ifv.mobitopp.actitopp.utils.Position
 import edu.kit.ifv.mobitopp.actitopp.modernization.MutableTourStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.linkByHomeActivity
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
-import edu.kit.ifv.mobitopp.actitopp.steps.step7.TimeBudgets
+import edu.kit.ifv.mobitopp.actitopp.timebudgets.TimeBudgets
 import edu.kit.ifv.mobitopp.actitopp.utils.foldUntil
 import edu.kit.ifv.mobitopp.actitopp.utils.rem
 import edu.kit.ifv.mobitopp.actitopp.utils.takeUntil

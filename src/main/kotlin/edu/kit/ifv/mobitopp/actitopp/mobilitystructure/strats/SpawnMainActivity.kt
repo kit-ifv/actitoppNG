@@ -15,19 +15,19 @@ fun interface SpawnMainActivity {
     fun generateNewDay(mobilityStructure: MobilityStructure)
 }
 
-class SpawnWithRespect(val rng: RNGHelper, val person: IPerson, val routine: WeekRoutine) : SpawnMainActivity {
+class SpawnWithRespect(val rng: RNGHelper) : SpawnMainActivity {
     override fun generateNewDay(mobilityStructure: MobilityStructure) {
         val nextDay = mobilityStructure.nextDay()
         val availableOptions = Step2Tracking.determineAvailableOptions(
             mobilityStructure.getTracker(),
-            PersonWithRoutine(person, routine),
+            mobilityStructure.weekRoutine,
             mainActivityChoiceModel.registeredOptions()
         )
         val activityType =
             mainActivityChoiceModel.select(
                 randomNumber = rng.randomValue,
                 options = availableOptions
-            ) { DaySituation(it, person, routine, nextDay.weekday) }
+            ) { DaySituation(it, mobilityStructure.weekRoutine, nextDay.weekday) }
         mobilityStructure.add(nextDay, activityType)
 
     }

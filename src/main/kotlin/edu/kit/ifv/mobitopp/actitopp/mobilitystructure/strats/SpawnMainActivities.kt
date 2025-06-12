@@ -11,9 +11,7 @@ fun interface SpawnMainActivities {
 
 class SpawnWeek(
     val rng: RNGHelper,
-    val person: IPerson,
-    val routine: WeekRoutine,
-    val dayStrategy: SpawnMainActivity = SpawnWithRespect(rng, person, routine)
+    private val dayStrategy: SpawnMainActivity = SpawnWithRespect(rng)
 ): SpawnMainActivities {
     override fun spawnMainActivities(input: MobilityStructure) {
         repeat(7) {
