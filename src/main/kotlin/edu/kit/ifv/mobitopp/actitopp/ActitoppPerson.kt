@@ -60,9 +60,6 @@ class ActitoppPerson@JvmOverloads constructor(
     override val isAllowedToWork: Boolean = true
     var weekPattern: HWeekPattern = HWeekPattern(this)
 
-    // TODO make RNG a bit more random, there could be overlaps in the hash generation.
-    val personalRNG: RNGHelper =
-        RNGHelper((household.householdIndex.hashCode() + persNrinHousehold.hashCode()).toLong())
 
     init {
         household.addHouseholdmember(this, persNrinHousehold)
@@ -113,13 +110,6 @@ class ActitoppPerson@JvmOverloads constructor(
     fun countDaysWithSpecificActivity(activityType: ActivityType): Int =
         weekPattern.countDaysWithSpecificActivity(activityType)
 
-    // Variables used for modeling of joint actions
-    // based on linear regression model to determine modeling order within the household
-    var probableshareofjointactions: Double = -1.0
-        private set
-
-    // List of joint actions to consider that are first created from other household members
-    private val jointActivitiesforConsideration: MutableList<HActivity> = mutableListOf()
 
 
     override val children0_10: Int
@@ -231,20 +221,12 @@ class ActitoppPerson@JvmOverloads constructor(
     fun categoryAlternative()  = ActivityType.OUTOFHOMEACTIVITY.associateWith { categoryAlternative(it) }
     fun categoryIndex(activityType: ActivityType) = get(activityType, "budget_category_index")
     fun budgetExact(activityType: ActivityType) = get(activityType, "budget_exact")
-    fun budgetExact() = ActivityType.OUTOFHOMEACTIVITY.associateWith { budgetExact(it) }
+
     @Deprecated("Never ever allow free access via strings, thats just bad design")
     fun getAttributefromMap(name: String): Double {
         return attributes[name]!!
     }
-    /**
-     * check existence of attribute
-     *
-     * @param name
-     * @return
-     */
-    fun existsAttributeinMap(name: String): Boolean {
-        return attributes[name] != null
-    }
+
 
 
     val attributesMap: DefaultDoubleMap<String>
@@ -253,44 +235,7 @@ class ActitoppPerson@JvmOverloads constructor(
          */
         get() = DefaultDoubleMap(attributes)
 
-    /**
-     * delete all attributes from map
-     */
-    fun clearAttributesMap() {
-        attributes.clear()
-    }
-// TODO this is the only reason why weekpattern could be null, and if we remove it we get a large benefit
-//    /**
-//     * delete weekpattern of person
-//     */
-//    fun clearWeekPattern() {
-//        weekPattern = null
-//    }
 
-    /**
-     * delete all joint actions to consider
-     */
-    fun clearJointActivitiesforConsideration() {
-        jointActivitiesforConsideration.clear()
-    }
-
-    /**
-     * calculates the probable share of joint actions based on person characteristics
-     * this share is used to determine the modeling order within the household
-     *
-     * @param fileBase
-     */
-    fun calculateProbableshareofjointactions(fileBase: ModelFileBase) {
-        // create attribute lookup
-
-        val lookup = AttributeLookup(this)
-
-        // create modeling object (97estimates.csv contains modeling information)
-        val regression = LinRegDefaultCalculation("97estimates", fileBase, lookup)
-
-        regression.initializeEstimates()
-        this.probableshareofjointactions = regression.calculateRegression()
-    }
 
 
     override fun toString(): String {
@@ -325,53 +270,9 @@ class ActitoppPerson@JvmOverloads constructor(
         return message.toString()
     }
 
-    /**
-     * create activity schedule for this person
-     *
-     * @param modelbase
-     * @param randomgenerator
-     * @throws InvalidPatternException
-     */
-    @Throws(InvalidPatternException::class)
-    fun generateSchedule(modelbase: ModelFileBase, randomgenerator: RNGHelper) {
-        //create an empty Default-Pattern //TODO perhaps just use a weekpattern.clear() call, if properly implemented
-        weekPattern = HWeekPattern(this)
 
-        if (age < 10) {
-//			System.err.println("actitopp can only create correct activity schedules for persons aged 10 years and older! - creating full-week home activity instead");
-            weekPattern.addHomeActivity(HActivity(weekPattern.getDay(0), ActivityType.HOME, 10080, 0))
-        } else {
-            val modelCoordinator = Coordinator(this, modelbase)
-            modelCoordinator.executeModel()
-        }
-    }
-    /**
-     * create activity schedule for this person using debug loggers to log results
-     *
-     * @param modelbase
-     * @param randomgenerator
-     * @param debugloggers
-     * @throws InvalidPatternException
-     */
-    @Throws(InvalidPatternException::class)
-    fun generateSchedule(modelbase: ModelFileBase, randomgenerator: RNGHelper, debugloggers: DebugLoggers) {
-        //create an empty Default-Pattern
-        weekPattern = HWeekPattern(this) //TODO perhaps just use a weekpattern.clear() call, if properly implemented
 
-        if (age < 10) {
-//			System.err.println("actitopp can only create correct activity schedules for persons aged 10 years and older! - creating full-week home activity instead");
-            weekPattern.addHomeActivity(HActivity(weekPattern.getDay(0), ActivityType.HOME, 10080, 0))
-        } else {
-            val modelCoordinator = Coordinator(this, modelbase, debugloggers)
-            modelCoordinator.executeModel()
-        }
-    }
 
-    val allJointActivitiesforConsideration: List<HActivity>
-        /**
-         * @return
-         */
-        get() = jointActivitiesforConsideration
 
 //    /**
 //     * @param aktliste
@@ -379,36 +280,6 @@ class ActitoppPerson@JvmOverloads constructor(
 //    fun setAllJointActivitiesforConsideration(aktliste: MutableList<HActivity>) {
 //        this.jointActivitiesforConsideration = aktliste
 //    }
-
-    /**
-     * add activity to list of joint actions to consider when there if no conflict
-     *
-     * @param act
-     */
-    fun addJointActivityforConsideration(act: HActivity) {
-        //make sure the activity is joint
-
-        assert(JointStatus.JOINTELEMENTS.contains(act.jointStatus)) { "no jointAct!" }
-
-        // check if there is already an activity at the same time
-        var activityconflict = false
-        for (tmpact in jointActivitiesforConsideration) {
-            if (act.overlaps(tmpact)) {
-                activityconflict = true
-                if (Configuration.debugenabled) {
-                    System.err.println("HH" + household.householdIndex + "/P" + persIndex + ": activity was not added as joint acticity due to conflict with existing activity!")
-                    System.err.println("act to add: $act")
-                    System.err.println("existing act: $tmpact")
-                }
-
-                break
-            }
-        }
-
-        if (!activityconflict) {
-            jointActivitiesforConsideration.add(act)
-        }
-    }
 
     /**
      * determines if a person is anyway employed (full time, part time or in vocational program)
@@ -429,41 +300,11 @@ class ActitoppPerson@JvmOverloads constructor(
     }
 
 
-    val isCommuterWithAtLeastOneMatchingTour: Boolean
-        get() {
-            if(!isAnywayEmployed() && !isinEducation()) return false
-            return weekPattern.days.any { day -> day.tours.any { tour ->
-                val mainActivityType = tour.getActivity(0).activityType
-                mainActivityType == ActivityType.WORK || mainActivityType == ActivityType.EDUCATION
-            } }
-        }
+
 
 
     companion object {
-        /**
-         * sort list of household members descending by their probable share of joint actions
-         *
-         * @param personList
-         */
-        fun sortPersonListOnProbabilityofJointActions_DESC(personList: List<ActitoppPerson>, fileBase: ModelFileBase) {
-            checkNotNull(personList) { "nothing to sort!" }
 
-            for (tmpperson in personList) {
-                tmpperson.calculateProbableshareofjointactions(fileBase)
-            }
-
-            Collections.sort(
-                personList
-            ) { person1, person2 ->
-                if (person1.probableshareofjointactions < person2.probableshareofjointactions) {
-                    +1
-                } else if (person1.probableshareofjointactions == person2.probableshareofjointactions) {
-                    0
-                } else {
-                    -1
-                }
-            }
-        }
 
         private var idCounter = 0
             get() = field.also { field++ }

@@ -2,32 +2,12 @@ package edu.kit.ifv.mobitopp
 
 import edu.kit.ifv.mobitopp.actitopp.ActiToppHousehold
 import edu.kit.ifv.mobitopp.actitopp.ActitoppPerson
-import edu.kit.ifv.mobitopp.actitopp.IO.DebugLoggers
-import edu.kit.ifv.mobitopp.actitopp.ModelFileBase
-import edu.kit.ifv.mobitopp.actitopp.RNGHelper
+import edu.kit.ifv.mobitopp.actitopp.modernization.DefaultPlanGeneration
+import edu.kit.ifv.mobitopp.actitopp.modernization.ModernizedActivity
 import kotlin.random.Random
 
-class LargeRun {
 
 
-    constructor(
-        householdIndex: Int,
-        children0_10: Int,
-        children_u18: Int,
-        areatype: Int,
-        numberofcarsinhousehold: Int,
-    )
-
-}
-
-class Limits {
-
-}
-
-private val fileBase = ModelFileBase()
-private val randomgenerator = RNGHelper(1234)
-
-private val debugloggers = DebugLoggers()
 private val random = Random(1)
 private fun generateHousehold(): ActiToppHousehold {
     return ActiToppHousehold(
@@ -61,14 +41,11 @@ fun ActiToppHousehold.generatePerson(number: Int): ActitoppPerson {
     )
 }
 
-fun ActitoppPerson.Companion.randomPerson(): ActitoppPerson {
-    return generateHousehold().generatePerson(1)
-}
+fun Collection<ActitoppPerson>.generateSchedules(): List<List<ModernizedActivity>> {
+    return withIndex().map { (index, person) ->
+        val householdPlan = DefaultPlanGeneration()
+        householdPlan.generate(person).finish().also { if (index % 100 == 0) println("Working on person $index done") }
 
-fun Collection<ActitoppPerson>.generateSchedules() {
-    withIndex().forEach { (index, person) ->
-        person.generateSchedule(fileBase, randomgenerator, debugloggers)
-            .also { if (index % 100 == 0) println("Working on person $index done") }
     }
 }
 

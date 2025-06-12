@@ -150,39 +150,6 @@ class HWeekPattern(
     }
 
 
-    fun printJointActivitiesList() {
-        val listtoprint = allJointActivities.sortedBy { it.startTimeWeekContext }
 
-        println("")
-        println(" -------------- list of joint activities --------------")
-        println("")
-
-        for (i in listtoprint.indices) {
-            val act = listtoprint[i]
-            println(i.toString() + " akt : " + act + " // creator: " + act.creatorPersonIndex)
-        }
-    }
-
-    /**
-     * @param act
-     */
-    fun addHomeActivity(act: HActivity) {
-        require(act.activityType == ActivityType.HOME) {
-            "no home activity"
-        }
-        homeactivitities.add(act)
-    }
-
-    /**
-     * check if pattern has activity overlaps
-     *
-     * @return
-     */
-    fun weekPatternisFreeofOverlaps(): Boolean {
-
-        val allActivities = this.allActivities.sortedBy { it.startTimeWeekContext }
-        return allActivities.zipWithNext().none { (first, second) -> first.overlaps(second) }
-
-    }
 
 }
