@@ -5,6 +5,7 @@ import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
 import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalIndexedValue
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.MutableTourStructure
+import edu.kit.ifv.mobitopp.actitopp.modernization.TourStructure
 
 fun interface GenerateSideTourActivities {
 

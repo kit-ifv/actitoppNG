@@ -12,6 +12,7 @@ import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.PlannedTourAmounts
 import edu.kit.ifv.mobitopp.actitopp.utils.Position
 import edu.kit.ifv.mobitopp.actitopp.modernization.MutableTourStructure
+import edu.kit.ifv.mobitopp.actitopp.modernization.TourStructure
 import edu.kit.ifv.mobitopp.actitopp.steps.ActivityAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.ActivityAttributesByElement
 import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributesFromElement

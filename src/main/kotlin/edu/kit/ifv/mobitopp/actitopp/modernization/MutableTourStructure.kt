@@ -10,6 +10,11 @@ import edu.kit.ifv.mobitopp.actitopp.utils.Position
 
 interface TourStructure : Collection<ActivityType>{
     fun mainActivityType(): ActivityType
+    fun elements(): Collection<ActivityType>
+
+    fun amountOfPrecursorElements(): Int
+    fun amountOfSuccessorElements(): Int
+    fun amountOfElements(): Int
 }
 
 

@@ -11,7 +11,7 @@ import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalIndexedValue
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.DurationDay
 import edu.kit.ifv.mobitopp.actitopp.modernization.ExampleAssign
-import edu.kit.ifv.mobitopp.actitopp.modernization.Generator
+import edu.kit.ifv.mobitopp.actitopp.modernization.SideTourMainActivityGenerator
 import edu.kit.ifv.mobitopp.actitopp.modernization.MobilityStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.PlannedTourAmounts
 import edu.kit.ifv.mobitopp.actitopp.modernization.Step5Generator
@@ -133,7 +133,7 @@ class Coordinator @JvmOverloads constructor(
 
 //        testTourAmountEquality(tourAmounts)
         executeStep4("4A")
-        val generator = Generator(mobilityStructure, randomGenerator)
+        val generator = SideTourMainActivityGenerator(mobilityStructure, randomGenerator)
         generator.loadSideTours(tourAmounts)
 
 //        testTourTypeEquality(patternStructure)
@@ -147,7 +147,7 @@ class Coordinator @JvmOverloads constructor(
         executeStep6("6A") // Determine Activity Type for all non main activities (?)
 
         val nextStep = ExampleAssign(mobilityStructure, randomGenerator)
-        step5output.assignDirectly(nextStep)
+//        step5output.assignDirectly(nextStep)
 
 //        testStep6Equality(patternStructure)
         createTripTimesforActivities() // TODO figure out if this legacy method does anything

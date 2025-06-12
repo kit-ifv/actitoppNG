@@ -12,10 +12,6 @@ import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.DaySituation
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.mainActivityChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.steps.step7.TimeBudgets
-import edu.kit.ifv.mobitopp.actitopp.utils.positiveModulus
-import java.time.DayOfWeek
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.days
 
 /**
  * Pattern keeps track of which days have been made working days, and education days and so on, as such, it will know
@@ -30,7 +26,9 @@ class MobilityStructure(
     private val activeDays: MutableList<ModifiableDayStructure> = mutableListOf()
     private val days: MutableCollection<DurationDay> = mutableListOf()
     private val dayStructure: MutableMap<DurationDay, DayStructure> = mutableMapOf()
-    private val activityTracker: ActivityDayTracker = ActivityDayTracker()
+    private val activityTracker: ActivityDayTrackerImpl = ActivityDayTrackerImpl(weekRoutine.routine)
+
+    fun getTracker() : ActivityDayTracker = activityTracker
 
     fun allDays(): Collection<DayStructure> {
         return dayStructure.values
@@ -46,34 +44,20 @@ class MobilityStructure(
     fun activityTypes(): List<ActivityType> {
         return activeDays.flatMap { it.elements().flatMap { it.elements() } }
     }
-    fun generateTrackedActivity(
-        day: DurationDay,
-        lambda: MobilityStructure.(DurationDay) -> ActivityType,
-    ): ActivityType {
-        val activityType = lambda(day)
-        activityTracker.add(
-            activityType,
-            day = day
-        )
-        return activityType
+    fun nextDay(): DurationDay {
+        return days.lastOrNull()?.next()?: DurationDay.FIRST
     }
-
-    fun DurationDay.shouldNotBeEducationDay(weekRoutine: WeekRoutine): Boolean {
-        return activityTracker.amountOfDaysWithActivity(ActivityType.EDUCATION) >= weekRoutine.amountOfEducationDays && this !in activityTracker.daysWithActivity(
-            ActivityType.EDUCATION
-        )
+    /**
+     * The spawnage of the daystructure should happen class internal, so that the daystructure can only be exposed in an appropriate wrapper.
+     */
+    fun add(day: DurationDay, activityType: ActivityType) {
+        dayStructure[day] = when (activityType) {
+            ActivityType.HOME -> HomeDay(day)
+            else -> day.spawnDayStructure(activityType).also { activeDays.add(it) }
+        }
+        days.add(day)
+        activityTracker.add(activityType, day)
     }
-
-    fun DurationDay.shouldNotBeWorkDay(weekRoutine: WeekRoutine): Boolean {
-        return activityTracker.amountOfDaysWithActivity(ActivityType.WORK) >= weekRoutine.amountOfWorkingDays && this !in activityTracker.daysWithActivity(
-            ActivityType.WORK
-        )
-    }
-
-    fun amountOfDaysWith(activityType: ActivityType): Int {
-        return activityTracker.amountOfDaysWithActivity(activityType)
-    }
-
     /**
      * This method operates by sideeffect, so maybe not the best solution
      */
@@ -81,7 +65,7 @@ class MobilityStructure(
         activityTypeFilter: ActivityTypeFilter = Step2Tracking,
         rngKeeper: RNGHelper,
     ): ActivityType {
-        val currentDay = days.lastOrNull()?.next() ?: DurationDay.FIRST
+        val currentDay = nextDay()
         days.add(currentDay)
         val activeOptions =
             activityTypeFilter.determineAvailableOptions(
@@ -91,7 +75,6 @@ class MobilityStructure(
             )
         return determineActivityFor(activeOptions, currentDay, rngKeeper)
     }
-
     private fun determineActivityFor(
         availableOptions: Set<ActivityType>,
         day: DurationDay,
@@ -118,6 +101,49 @@ class MobilityStructure(
         }
         return activityType
     }
+    /**
+     * Accessing a day structure should only occur in an appropriate wrapper structure, so that the operating logic can
+     * read proper statistics of the pattern, but remain sealed for modification, so that the added activities can be
+     * tracked.
+     */
+    fun get(durationDay: DurationDay): TrackedDayStructure? {
+        return null
+    }
+
+    fun elements(): Collection<TrackedDayStructure> {
+        return activeDays.map { TrackedDayStructure(activityTracker, it) }
+    }
+    fun generateTrackedActivity(
+        day: DurationDay,
+        lambda: MobilityStructure.(DurationDay) -> ActivityType,
+    ): ActivityType {
+        val activityType = lambda(day)
+        activityTracker.add(
+            activityType,
+            day = day
+        )
+        return activityType
+    }
+
+    fun DurationDay.shouldNotBeEducationDay(weekRoutine: WeekRoutine): Boolean {
+        return activityTracker.amountOfDaysWithActivity(ActivityType.EDUCATION) >= weekRoutine.amountOfEducationDays && this !in activityTracker.daysWithActivity(
+            ActivityType.EDUCATION
+        )
+    }
+
+    fun DurationDay.shouldNotBeWorkDay(weekRoutine: WeekRoutine): Boolean {
+        return activityTracker.amountOfDaysWithActivity(ActivityType.WORK) >= weekRoutine.amountOfWorkingDays && this !in activityTracker.daysWithActivity(
+            ActivityType.WORK
+        )
+    }
+
+
+    fun amountOfDaysWith(activityType: ActivityType): Int {
+        return activityTracker.amountOfDaysWithActivity(activityType)
+    }
+
+
+
 
     /**
      * Since absolutely no decision in Step 8+ checks whether the previous day is a Home Day and the home day just
@@ -136,32 +162,6 @@ class MobilityStructure(
 
 }
 
-class Generator(
-    private val mobilityStructure: MobilityStructure,
-    val rngHelper: RNGHelper,
-) {
-
-    private val mainActivityOfSideTours: AssignMainActivityOfSideTour =
-        AssignByUtilityFunction(mobilityStructure, rngHelper)
-
-    fun generateSideTours(tourAmounts: Map<DurationDay, PlannedTourAmounts>): Map<ModifiableDayStructure, Pair<List<ActivityType>, List<ActivityType>>> {
-        return mobilityStructure.mobileDays().associateWith {
-            val input =
-                DayWithPlans(it,
-                    mobilityStructure.weekRoutine,
-                    tourAmounts[it.startTimeDay] ?: PlannedTourAmounts.NONE)
-            mainActivityOfSideTours.generateSideTourActivities(input)
-        }
-    }
-
-    fun loadSideTours(tourAmounts: Map<DurationDay, PlannedTourAmounts>) {
-        val targets = generateSideTours(tourAmounts)
-        targets.forEach { dayStructure, (prec, succ) ->
-            dayStructure.loadPrecursors(prec)
-            dayStructure.loadSuccessors(succ)
-        }
-    }
-}
 
 fun interface ActivityTypeFilter {
     fun determineAvailableOptions(
@@ -179,23 +179,23 @@ object Step2Tracking : ActivityTypeFilter {
     ): Set<ActivityType> {
         val (person, routine) = personWithRoutine
         val availableOptions = initialOptions.toMutableSet()
-        if (tracker.amountOfDaysWithActivity(ActivityType.WORK) >= routine.amountOfWorkingDays && person.isAnywayEmployed()) availableOptions.remove(
-            ActivityType.WORK
-        )
-        if (tracker.amountOfDaysWithActivity(ActivityType.EDUCATION) >= routine.amountOfEducationDays && person.isinEducation()) availableOptions.remove(
-            ActivityType.EDUCATION
-        )
+        if(tracker.isSaturated(ActivityType.WORK)&& person.isAnywayEmployed()) availableOptions.remove(ActivityType.WORK)
+        if(tracker.isSaturated(ActivityType.EDUCATION)&& person.isinEducation()) availableOptions.remove(ActivityType.EDUCATION)
         return availableOptions
     }
+}
+
+interface ActivityDayTracker {
+    fun isSaturated(activityType: ActivityType): Boolean
 }
 
 /**
  * Track the days that have one or more of a planned activity with a given type, so that the activity determiner can
  * check how many days are already assigned to say work: (Like 5 Work days for a regular week)
  */
-class ActivityDayTracker {
+class ActivityDayTrackerImpl(val weekRoutine: WeekRoutine) : ActivityDayTracker {
     private val daysWithActivities: MutableMap<ActivityType, MutableSet<DurationDay>> =
-        mutableMapOf<ActivityType, MutableSet<DurationDay>>()
+        mutableMapOf()
 
     fun add(activityType: ActivityType, day: DurationDay) {
         daysWithActivities.getOrPut(activityType) {
@@ -203,58 +203,22 @@ class ActivityDayTracker {
         }.add(day)
     }
 
+    fun add(activityTypes: Collection<ActivityType>, day: DurationDay) {
+        activityTypes.toSet().forEach {
+            add(it, day)
+        }
+    }
+
+    fun shouldNotBe(activityType: ActivityType, durationDay: DurationDay): Boolean {
+
+        if(durationDay in daysWithActivities[activityType].orEmpty()) {return false}
+        return isSaturated(activityType)
+    }
+    override fun isSaturated(activityType: ActivityType): Boolean {
+        return amountOfDaysWithActivity(activityType) >= weekRoutine[activityType]
+    }
     fun amountOfDaysWithActivity(activityType: ActivityType): Int = daysWithActivities[activityType]?.size ?: 0
     fun daysWithActivity(activityType: ActivityType): Set<DurationDay> = daysWithActivities[activityType] ?: emptySet()
 }
 
 
-
-/**
- * A wrapper class around duration that holds both the exact duration start point when a day starts and the information
- * which weekday is represented. Once sufficient refactors have been done, this class could probably be removed and simply
- * replaced with an extension function that determines the weekday from a duration.
- * TODO note that [startOfDay] is absolute.
- */
-class DurationDay private constructor(
-    val startOfDay: Duration,
-    var lowerBoundJointTours: Int = 0,
-    var lowerBoundJointActivities: Int = 0,
-) :Comparable<DurationDay>{
-    constructor(dayIndex: Int) : this(dayIndex.days)
-
-    val weekday: DayOfWeek = DayOfWeek.of(startOfDay.inWholeDays.toInt().positiveModulus(7) + 1)
-
-    fun next(): DurationDay {
-        return DurationDay(startOfDay + 1.days)
-    }
-
-    fun previous(): DurationDay {
-        return DurationDay(startOfDay - 1.days)
-    }
-
-    fun spawnDayStructure(mainActivityType: ActivityType): ModifiableDayStructure {
-        return ModifiableDayStructure(this, MutableTourStructure(mainActivityType))
-    }
-
-    companion object {
-        val FIRST: DurationDay = DurationDay(0)
-    }
-
-    /**
-     * Compares this object with the specified object for order. Returns zero if this object is equal
-     * to the specified [other] object, a negative number if it's less than [other], or a positive number
-     * if it's greater than [other].
-     */
-    override fun compareTo(other: DurationDay): Int {
-        return startOfDay.compareTo(other.startOfDay)
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (other !is DurationDay) return false
-        return startOfDay == other.startOfDay
-    }
-
-    override fun hashCode(): Int {
-        return startOfDay.hashCode()
-    }
-}

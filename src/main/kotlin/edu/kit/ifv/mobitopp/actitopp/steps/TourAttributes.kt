@@ -9,6 +9,7 @@ import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalIndexedValue
 import edu.kit.ifv.mobitopp.actitopp.utils.Position
 import edu.kit.ifv.mobitopp.actitopp.modernization.MutableTourStructure
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
+import edu.kit.ifv.mobitopp.actitopp.modernization.TourStructure
 import org.jetbrains.annotations.TestOnly
 
 interface TourPositionAttributes {
@@ -76,7 +77,7 @@ class TourPositionAttributesByIndex(val absoluteIndex: Int, val position: Positi
 }
 
 class TourAttributesByStructAndNumbers(
-    private val indexedTour: BidirectionalIndexedValue<MutableTourStructure>,
+    private val indexedTour: BidirectionalIndexedValue<TourStructure>,
     val precursorActivityCount: Int,
     val successorActivityCount:Int,
 
@@ -142,7 +143,7 @@ class TourAttributesByStructAndNumbers(
     }
 }
 
-class TourAttributesByIndexedStructure(private val indexedTour: BidirectionalIndexedValue<MutableTourStructure>) :
+class TourAttributesByIndexedStructure(private val indexedTour: BidirectionalIndexedValue<TourStructure>) :
     TourAttributes, TourPositionAttributes, ActivityAmountAttributes {
 
     override fun isFirstTourOfDay(): Boolean {

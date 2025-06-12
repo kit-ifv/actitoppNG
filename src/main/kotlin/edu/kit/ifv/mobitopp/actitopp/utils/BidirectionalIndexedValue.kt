@@ -7,7 +7,7 @@ package edu.kit.ifv.mobitopp.actitopp.utils
  * Also the element knows its position relative to the main element.
  */
 
-class BidirectionalIndexedValue<T>(
+class BidirectionalIndexedValue<out T>(
 
     val absoluteIndex: Int,
     val offset: Int,

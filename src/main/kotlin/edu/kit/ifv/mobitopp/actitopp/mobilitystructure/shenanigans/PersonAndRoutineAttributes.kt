@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans
 
 import edu.kit.ifv.mobitopp.actitopp.HDay
+import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
@@ -13,6 +14,7 @@ import edu.kit.ifv.mobitopp.actitopp.steps.PersonAttributesFromElement
 import edu.kit.ifv.mobitopp.actitopp.steps.RoutineAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.RoutineAttributesFromElement
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceSituation
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
 import java.time.DayOfWeek
 
 
@@ -33,6 +35,10 @@ class DaySituation private constructor(
     DayAttributes by dayAttributesFromElement {
     constructor(choice: ActivityType, personRoutine: PersonWithRoutine, week: DayOfWeek): this(
         choice, PersonAndRoutineFrom(personRoutine), DayAttributesFromWeekday(week)
+    )
+
+    constructor(choice: ActivityType, person: IPerson, routine: WeekRoutine, week: DayOfWeek): this(
+        choice, PersonWithRoutine(person, routine), week
     )
 
 }

@@ -20,6 +20,7 @@ import edu.kit.ifv.mobitopp.actitopp.steps.TourAttributesByElement
 import edu.kit.ifv.mobitopp.actitopp.steps.TourAttributesByIndexedStructure
 import edu.kit.ifv.mobitopp.actitopp.steps.TourPositionAttributes
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
+import edu.kit.ifv.mobitopp.actitopp.modernization.TourStructure
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceSituation
 
 

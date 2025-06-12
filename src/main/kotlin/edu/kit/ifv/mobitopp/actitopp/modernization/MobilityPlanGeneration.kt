@@ -3,6 +3,7 @@ package edu.kit.ifv.mobitopp.actitopp.modernization
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.STATIC_HISTOGRAMS
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.SpawnWithRespect
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MobilityPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.StandardCommuteDurations
 import edu.kit.ifv.mobitopp.actitopp.spawnRandomGenerator
@@ -54,14 +55,16 @@ class StandardStructureGeneration(val rng: RNGHelper) : MobilityPlanGeneration {
         val weekRoutine = person.generateWeekRoutine(rng)
         val mobilityStructure = MobilityStructure(person, weekRoutine)
         // Generate the main activities of each day
+        val mainGenerator = SpawnWithRespect(rng, person, weekRoutine)
         repeat(amountOfDays) {
-            mobilityStructure.determineNextMainActivity(rngKeeper = rng)
+            mainGenerator.generateNewDay(mobilityStructure)
+//            mobilityStructure.determineNextMainActivity(rngKeeper = rng)
         }
         // Determine the amount of tours that precede & succeed the main tour.
         val tourOutput = mobilityStructure.calculateTourAmounts(rngHelper = rng)
 
         // Determine the main type of the subtours and load it into the pattern.
-        val generator = Generator(mobilityStructure, rng)
+        val generator = SideTourMainActivityGenerator(mobilityStructure, rng)
         generator.loadSideTours(tourOutput)
 
         // Determine the amount of precursor and successor tours for each tour of the day

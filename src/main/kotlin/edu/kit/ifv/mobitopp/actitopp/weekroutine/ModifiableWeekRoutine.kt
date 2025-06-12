@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine
 
 import edu.kit.ifv.mobitopp.actitopp.IPerson
+import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import org.jetbrains.annotations.TestOnly
 import kotlin.properties.Delegates
 
@@ -38,6 +39,18 @@ interface WeekRoutine {
     val amountOfImmobileDays: Int
     val averageAmountOfTours: Int
     val averageAmountOfActivities: Int
+
+    operator fun get(activityType: ActivityType): Int {
+        return when(activityType) {
+            ActivityType.EDUCATION -> amountOfEducationDays
+            ActivityType.WORK -> amountOfWorkingDays
+            ActivityType.LEISURE -> amountOfLeisureDays
+            ActivityType.SHOPPING -> amountOfShoppingDays
+            ActivityType.TRANSPORT -> amountOfServiceDays
+            ActivityType.HOME -> amountOfImmobileDays
+            else -> throw UnsupportedOperationException("the week routine has no field to track $activityType")
+        }
+    }
 }
 
 data class WeekRoutineImpl(
