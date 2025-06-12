@@ -67,6 +67,15 @@ class HomeDay private constructor(
     override fun toDayPlan(movingDayPlanInput: MovingDayPlanInput): MutableDayPlan {
         return HomeDayPlan(startTimeDay)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if(other !is DayStructure) return false
+        return startTimeDay == other.startTimeDay
+    }
+
+    override fun hashCode(): Int {
+        return startTimeDay.hashCode()
+    }
 }
 
 class ModifiableDayStructure(override val startTimeDay: DurationDay, mainTourStructure: MutableTourStructure) :
@@ -108,6 +117,15 @@ class ModifiableDayStructure(override val startTimeDay: DurationDay, mainTourStr
             indexedElements(),
             movingDayPlanInput
         )
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if(other !is DayStructure) return false
+        return startTimeDay == other.startTimeDay
+    }
+
+    override fun hashCode(): Int {
+        return startTimeDay.hashCode()
     }
 }
 

@@ -56,7 +56,7 @@ class ActivitySituation private constructor(
         choice: ActivityType,
         personWithRoutine: PersonWithRoutine,
         dayStructure: DayStructure,
-        tourStructure: BidirectionalIndexedValue<MutableTourStructure>,
+        tourStructure: BidirectionalIndexedValue<TourStructure>,
         position: Position,
         plannedTourAmounts: PlannedTourAmounts,
     ) : this(

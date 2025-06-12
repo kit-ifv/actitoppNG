@@ -19,9 +19,9 @@ class DayAmountTracker(val day: DayStructure, val rngHelper: RNGHelper, val pers
     private val successorGenerator = FollowingSpawns(rngHelper)
     private val predecessorGenerator = PrecedingSpawns(rngHelper)
 
-    private val map: MutableMap<BidirectionalIndexedValue<MutableTourStructure>, Int> = mutableMapOf()
+    private val map: MutableMap<BidirectionalIndexedValue<TourStructure>, Int> = mutableMapOf()
 
-    fun generatePredecessors(indexedTours: Collection<BidirectionalIndexedValue<MutableTourStructure>>): Map<BidirectionalIndexedValue<MutableTourStructure>, Int> {
+    fun generatePredecessors(indexedTours: Collection<BidirectionalIndexedValue<TourStructure>>): Map<BidirectionalIndexedValue<TourStructure>, Int> {
         val predecessorActivityAmounts = indexedTours.associateWith {
             generatePredecessorActivityAmounts(it, calculateMinimumAmount()).also { amount ->
                 remainingPlacements -= amount
@@ -33,7 +33,7 @@ class DayAmountTracker(val day: DayStructure, val rngHelper: RNGHelper, val pers
         return predecessorActivityAmounts
     }
 
-    fun generateSuccessors(indexedTours: Collection<BidirectionalIndexedValue<MutableTourStructure>>): Map<BidirectionalIndexedValue<MutableTourStructure>, Int> {
+    fun generateSuccessors(indexedTours: Collection<BidirectionalIndexedValue<TourStructure>>): Map<BidirectionalIndexedValue<TourStructure>, Int> {
         val successorActivityAmounts = indexedTours.associateWith {
             generateSuccessorActivityAmounts(it, calculateMinimumAmount()).also { amount ->
                 remainingPlacements -= amount
@@ -47,7 +47,7 @@ class DayAmountTracker(val day: DayStructure, val rngHelper: RNGHelper, val pers
     }
 
     private fun generatePredecessorActivityAmounts(
-        input: BidirectionalIndexedValue<MutableTourStructure>,
+        input: BidirectionalIndexedValue<TourStructure>,
         minimumAmount: Int,
     ): Int {
 
@@ -64,7 +64,7 @@ class DayAmountTracker(val day: DayStructure, val rngHelper: RNGHelper, val pers
     }
 
     private fun generateSuccessorActivityAmounts(
-        input: BidirectionalIndexedValue<MutableTourStructure>,
+        input: BidirectionalIndexedValue<TourStructure>,
         minimumAmount: Int,
     ): Int {
 

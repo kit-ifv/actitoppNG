@@ -15,10 +15,10 @@ class Step5Generator(
     val map = relevantDays.associateWith {
         DayAmountTracker(it, rngHelper, personWithRoutine)
     }
-    private val dayMap: Map<DayStructure, Collection<BidirectionalIndexedValue<MutableTourStructure>>> = relevantDays.associateWith {
+    private val dayMap: Map<DayStructure, Collection<BidirectionalIndexedValue<TourStructure>>> = relevantDays.associateWith {
         it.indexedElements()
     }
-    private val output: Map<DayStructure, Map<BidirectionalIndexedValue<MutableTourStructure>, ModifiablePlannedTourAmounts>> =
+    private val output: Map<DayStructure, Map<BidirectionalIndexedValue<TourStructure>, ModifiablePlannedTourAmounts>> =
         relevantDays.associateWith {
             dayMap.getValue(it).associateWith { ModifiablePlannedTourAmounts() }
         }
@@ -43,7 +43,7 @@ class Step5Generator(
         }
     }
 
-    fun output(): Map<DayStructure, Map<BidirectionalIndexedValue<MutableTourStructure>, PlannedTourAmounts>> {
+    fun output(): Map<DayStructure, Map<BidirectionalIndexedValue<TourStructure>, PlannedTourAmounts>> {
         return output
     }
 }

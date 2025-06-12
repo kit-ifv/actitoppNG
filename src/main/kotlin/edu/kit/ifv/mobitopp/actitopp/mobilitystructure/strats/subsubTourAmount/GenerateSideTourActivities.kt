@@ -16,7 +16,7 @@ data class SideTourActivityInput(
     val person: IPerson,
     val routine: WeekRoutine,
     val currentDay: DayStructure,
-    val tour: BidirectionalIndexedValue<MutableTourStructure>,
+    val tour: BidirectionalIndexedValue<TourStructure>,
     val minimumAmountOfActivities: Int,
     val amountOfActivitiesBeforeMainAct: Int,
 )

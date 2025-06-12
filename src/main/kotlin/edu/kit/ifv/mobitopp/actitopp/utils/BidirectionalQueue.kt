@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.utils
 
-abstract class BidirectionalQueue<T>(mainElement: T) : BidirectionalCollection<T> {
+abstract class BidirectionalQueue<T: Any>(mainElement: T) : BidirectionalCollection<T> {
     private val queue: ArrayDeque<T> = ArrayDeque()
     private var offset = 0
 

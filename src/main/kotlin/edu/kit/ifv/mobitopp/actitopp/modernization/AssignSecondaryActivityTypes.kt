@@ -10,7 +10,7 @@ import edu.kit.ifv.mobitopp.actitopp.utils.Position
 
 data class SecondaryActInput(
     val dayStructure: DayStructure,
-    val tourStructure: BidirectionalIndexedValue<MutableTourStructure>,
+    val tourStructure: BidirectionalIndexedValue<TourStructure>,
     val plannedTourAmounts: PlannedTourAmounts,
 )
 
@@ -20,12 +20,13 @@ interface AssignSecondaryActivityTypes {
     fun assignDirectly(input: SecondaryActInput) {
         val (predecessors, successors) = generateSecondaryActivityTypes(input)
         val tour = input.tourStructure.element
-        tour.loadPrecursors(predecessors)
-        tour.loadSuccessors(successors)
+        TODO("DIsabled for refactor")
+//        tour.loadPrecursors(predecessors)
+//        tour.loadSuccessors(successors)
     }
 }
 
-fun Map<DayStructure, Map<BidirectionalIndexedValue<MutableTourStructure>, PlannedTourAmounts>>.assignDirectly(strategy: AssignSecondaryActivityTypes) {
+fun Map<DayStructure, Map<BidirectionalIndexedValue<TourStructure>, PlannedTourAmounts>>.assignDirectly(strategy: AssignSecondaryActivityTypes) {
     entries.forEach { (day, tourMap) ->
         tourMap.forEach { (tour, plannedTourAmounts) ->
             strategy.assignDirectly(SecondaryActInput(day, tour, plannedTourAmounts))

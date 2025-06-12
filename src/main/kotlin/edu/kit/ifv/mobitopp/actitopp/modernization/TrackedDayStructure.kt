@@ -52,6 +52,14 @@ class TrackedDayStructure(private val activityDayTracker: ActivityDayTrackerImpl
             BidirectionalIndexedValue(absoluteIndex, offset, tracked)
             }
     }
+
+    override fun equals(other: Any?): Boolean {
+        return dayStructure == other
+    }
+
+    override fun hashCode(): Int {
+        return dayStructure.hashCode()
+    }
 }
 
 class TrackedTourStructure(private val durationDay: DurationDay, private val activityDayTracker: ActivityDayTrackerImpl, val original: MutableTourStructure) : TourStructure by original {
@@ -66,5 +74,13 @@ class TrackedTourStructure(private val durationDay: DurationDay, private val act
     fun loadSuccessors(activityTypes: Collection<ActivityType>) {
         original.loadSuccessors(activityTypes)
         activityDayTracker.add(activityTypes, day = durationDay)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return original == other
+    }
+
+    override fun hashCode(): Int {
+        return original.hashCode()
     }
 }

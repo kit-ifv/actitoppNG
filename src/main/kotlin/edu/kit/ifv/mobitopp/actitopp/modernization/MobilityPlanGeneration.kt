@@ -71,9 +71,18 @@ class StandardStructureGeneration(val rng: RNGHelper) : MobilityPlanGeneration {
         val step5Gen = Step5Generator(mobilityStructure, rng)
         step5Gen.calculate()
         val step5output = step5Gen.output()
-
         val nextStep = ExampleAssign(mobilityStructure, rng)
-        step5output.assignDirectly(nextStep)
+        mobilityStructure.elements().forEach { day ->
+            day.trackedElements().forEach { element ->
+                val plan = step5output[day]?.get(element)?: PlannedTourAmounts.NONE
+                val (precursors, successors) = nextStep.generateSecondaryActivityTypes(SecondaryActInput(day, element, plan))
+                element.element.loadPrecursors(precursors)
+                element.element.loadSuccessors(successors)
+            }
+        }
+
+
+//        step5output.assignDirectly(nextStep)
 
 
         val budget = STATIC_HISTOGRAMS.determineTimeBudgets(rng, person, FinalizedActivityPattern.fromModernPattern(mobilityStructure))
