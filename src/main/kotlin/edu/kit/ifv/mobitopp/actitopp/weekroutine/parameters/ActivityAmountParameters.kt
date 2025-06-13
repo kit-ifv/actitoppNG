@@ -2,14 +2,74 @@ package edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters
 
 
 data class ActivityAmountSet(
+    val optionList: List<ActivityAmountParameters>,
 
-    val option2: ActivityAmountParameters,
-    val option3: ActivityAmountParameters,
-    val option4: ActivityAmountParameters,
-    val option5: ActivityAmountParameters,
-    val option6: ActivityAmountParameters,
 
-    )
+    ) : Map<Int, ActivityAmountParameters> {
+
+    val option2: ActivityAmountParameters = optionList[0]
+    val option3: ActivityAmountParameters = optionList[1]
+    val option4: ActivityAmountParameters = optionList[2]
+    val option5: ActivityAmountParameters = optionList[3]
+    val option6: ActivityAmountParameters = optionList[4]
+
+    override operator fun get(index: Int): ActivityAmountParameters {
+        return optionList.getOrNull(index - 2)?: ActivityAmountParameters.EMPTY
+    }
+
+    companion object {
+        operator fun invoke(
+            option2: ActivityAmountParameters,
+            option3: ActivityAmountParameters,
+            option4: ActivityAmountParameters,
+            option5: ActivityAmountParameters,
+            option6: ActivityAmountParameters,
+        ): ActivityAmountSet {
+            return ActivityAmountSet(
+                listOf(option2, option3, option4, option5, option6)
+            )
+        }
+    }
+
+    override val size: Int = optionList.size
+
+    /**
+     * Returns a read-only [Set] of all key/value pairs in this map.
+     */
+    override val entries: Set<Map.Entry<Int, ActivityAmountParameters>>
+        get() = TODO("Not yet implemented")
+
+    /**
+     * Returns a read-only [Set] of all keys in this map.
+     */
+    override val keys: Set<Int> = optionList.indices.toSet()
+
+    /**
+     * Returns a read-only [Collection] of all values in this map. Note that this collection may contain duplicate values.
+     */
+    override val values: Collection<ActivityAmountParameters> = optionList
+
+    /**
+     * Returns `true` if the map is empty (contains no elements), `false` otherwise.
+     */
+    override fun isEmpty(): Boolean {
+        return optionList.isEmpty()
+    }
+
+    /**
+     * Returns `true` if the map maps one or more keys to the specified [value].
+     */
+    override fun containsValue(value: ActivityAmountParameters): Boolean {
+        return optionList.contains(value)
+    }
+
+    /**
+     * Returns `true` if the map contains the specified [key].
+     */
+    override fun containsKey(key: Int): Boolean {
+        return key in optionList.indices
+    }
+}
 
 data class ActivityAmountParameters(
     val base: Double,
@@ -25,7 +85,14 @@ data class ActivityAmountParameters(
     val pendeln_0bis5km: Double,
     val haushalthatkinderunter10: Double,
 
-    )
+    ) {
+    companion object {
+        val EMPTY = ActivityAmountParameters(0.0,
+            0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0)
+    }
+}
 
 val DefaultActivityAmountParameters = ActivityAmountSet(
     option2 = ActivityAmountParameters(
