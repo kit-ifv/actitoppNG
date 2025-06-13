@@ -27,7 +27,7 @@ class ActiToppHousehold @JvmOverloads constructor(
 
 
     private val householdmembers: MutableMap<Int, ActitoppPerson> = mutableMapOf()
-    
+
     /**
      * @return the householdmembers
      */
@@ -74,36 +74,6 @@ class ActiToppHousehold @JvmOverloads constructor(
          * @return the numberofpersonsinhousehold
          */
         get() = householdmembers.size
-
-
-
-
-    override fun toString(): String {
-        val message = StringBuffer()
-
-        message.append("\n household information")
-
-        message.append("\n - HH-index : ")
-        message.append(householdIndex)
-
-        message.append("\n - #HH-members : ")
-        message.append(numberofPersonsinHousehold)
-
-        message.append("\n - #children 0-10 : ")
-        message.append(children0_10)
-
-        message.append("\n - #children <18 : ")
-        message.append(children_u18)
-
-        message.append("\n - area type : ")
-        message.append(areatype)
-
-        message.append("\n - #car in HH : ")
-        message.append(numberofcarsinhousehold)
-
-        return message.toString()
-    }
-
 
 
 

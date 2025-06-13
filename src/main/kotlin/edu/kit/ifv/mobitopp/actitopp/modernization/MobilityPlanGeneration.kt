@@ -9,7 +9,7 @@ import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.SpawnWeek
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.StandardImplementation
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MobilityPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.StandardCommuteDurations
-import edu.kit.ifv.mobitopp.actitopp.spawnRandomGenerator
+
 
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.generateWeekRoutine
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.choicemodels.FIRST_TOUR_HISTOGRAM

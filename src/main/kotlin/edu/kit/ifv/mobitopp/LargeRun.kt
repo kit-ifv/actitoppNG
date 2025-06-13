@@ -32,7 +32,6 @@ fun ActiToppHousehold.generatePerson(number: Int): ActitoppPerson {
     return ActitoppPerson(
         household = this,
         persNrinHousehold = number,
-        persIndex = number,
         age = random.nextInt(0, 100),
         employmentCode = random.nextInt(0, 42),
         genderCode = random.nextInt(0, 3),
