@@ -1,7 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters
 
 
-
 data class ServiceDaySet(
     override val option1: ServiceDayParameters,
     override val option2: ServiceDayParameters,
@@ -10,7 +9,7 @@ data class ServiceDaySet(
     override val option5: ServiceDayParameters,
     override val option6: ServiceDayParameters,
     override val option7: ServiceDayParameters,
-): WeekRoutineParameterSet<ServiceDayParameters>
+) : WeekRoutineParameterSet<ServiceDayParameters>
 
 data class ServiceDayParameters(
     val base: Double,
@@ -23,7 +22,7 @@ data class ServiceDayParameters(
     val areaTypeIsConurbation: Double,
     val householdAmountYouths: Double,
     val householdHasChildren: Double,
-    val isMale: Double
+    val isMale: Double,
 )
 
 val DefaultServiceParameters = ServiceDaySet(

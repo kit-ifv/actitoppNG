@@ -14,9 +14,10 @@ fun interface SelectMinorActivityDuration {
     fun getDuration(input: MobilityPlanInputs): Duration
 }
 
-class AssignMinorActivityDuration(val rngHelper: RNGHelper,
-                                  private val histogram: ActivityDurationHistograms<ParameterCollectionStep8J> = MINOR
-): SelectMinorActivityDuration {
+class AssignMinorActivityDuration(
+    val rngHelper: RNGHelper,
+    private val histogram: ActivityDurationHistograms<ParameterCollectionStep8J> = MINOR,
+) : SelectMinorActivityDuration {
     override fun getDuration(input: MobilityPlanInputs): Duration {
         return input.run {
             val bounds = dayPlan.activityDurationBounds(activity)

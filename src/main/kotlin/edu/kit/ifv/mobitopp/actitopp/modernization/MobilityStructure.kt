@@ -2,16 +2,16 @@ package edu.kit.ifv.mobitopp.actitopp.modernization
 
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.mainActivityChoiceModel
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.DaySituation
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.ActualMobilityPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.DetermineTripDuration
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MobilityPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.StayAtHomePlan
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.DaySituation
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.mainActivityChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.TimeBudgets
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
 
 /**
  * Pattern keeps track of which days have been made working days, and education days and so on, as such, it will know
@@ -28,7 +28,7 @@ class MobilityStructure(
     private val dayStructure: MutableMap<DurationDay, DayStructure> = mutableMapOf()
     private val activityTracker: ActivityDayTrackerImpl = ActivityDayTrackerImpl(weekRoutine.routine)
 
-    fun getTracker() : ActivityDayTracker = activityTracker
+    fun getTracker(): ActivityDayTracker = activityTracker
 
     fun allDays(): Collection<DayStructure> {
         return dayStructure.values
@@ -41,12 +41,15 @@ class MobilityStructure(
     fun homeDays(): Set<DurationDay> {
         return days.toSet() - activeDays.map { it.startTimeDay }.toSet()
     }
+
     fun activityTypes(): List<ActivityType> {
         return activeDays.flatMap { it.elements().flatMap { it.elements() } }
     }
+
     fun nextDay(): DurationDay {
-        return days.lastOrNull()?.next()?: DurationDay.FIRST
+        return days.lastOrNull()?.next() ?: DurationDay.FIRST
     }
+
     /**
      * The spawnage of the daystructure should happen class internal, so that the daystructure can only be exposed in an appropriate wrapper.
      */
@@ -58,6 +61,7 @@ class MobilityStructure(
         days.add(day)
         activityTracker.add(activityType, day)
     }
+
     /**
      * This method operates by sideeffect, so maybe not the best solution
      */
@@ -75,6 +79,7 @@ class MobilityStructure(
             )
         return determineActivityFor(activeOptions, currentDay, rngKeeper)
     }
+
     private fun determineActivityFor(
         availableOptions: Set<ActivityType>,
         day: DurationDay,
@@ -101,6 +106,7 @@ class MobilityStructure(
         }
         return activityType
     }
+
     /**
      * Accessing a day structure should only occur in an appropriate wrapper structure, so that the operating logic can
      * read proper statistics of the pattern, but remain sealed for modification, so that the added activities can be
@@ -113,6 +119,7 @@ class MobilityStructure(
     fun elements(): Collection<TrackedDayStructure> {
         return activeDays.map { TrackedDayStructure(activityTracker, it) }
     }
+
     fun generateTrackedActivity(
         day: DurationDay,
         lambda: MobilityStructure.(DurationDay) -> ActivityType,
@@ -141,8 +148,6 @@ class MobilityStructure(
     fun amountOfDaysWith(activityType: ActivityType): Int {
         return activityTracker.amountOfDaysWithActivity(activityType)
     }
-
-
 
 
     /**
@@ -179,8 +184,8 @@ object Step2Tracking : ActivityTypeFilter {
     ): Set<ActivityType> {
         val (person, routine) = personWithRoutine
         val availableOptions = initialOptions.toMutableSet()
-        if(tracker.isSaturated(ActivityType.WORK)&& person.isAnywayEmployed()) availableOptions.remove(ActivityType.WORK)
-        if(tracker.isSaturated(ActivityType.EDUCATION)&& person.isinEducation()) availableOptions.remove(ActivityType.EDUCATION)
+        if (tracker.isSaturated(ActivityType.WORK) && person.isAnywayEmployed()) availableOptions.remove(ActivityType.WORK)
+        if (tracker.isSaturated(ActivityType.EDUCATION) && person.isinEducation()) availableOptions.remove(ActivityType.EDUCATION)
         return availableOptions
     }
 }
@@ -211,12 +216,16 @@ class ActivityDayTrackerImpl(val weekRoutine: WeekRoutine) : ActivityDayTracker 
 
     fun shouldNotBe(activityType: ActivityType, durationDay: DurationDay): Boolean {
 
-        if(durationDay in daysWithActivities[activityType].orEmpty()) {return false}
+        if (durationDay in daysWithActivities[activityType].orEmpty()) {
+            return false
+        }
         return isSaturated(activityType)
     }
+
     override fun isSaturated(activityType: ActivityType): Boolean {
         return amountOfDaysWithActivity(activityType) >= weekRoutine[activityType]
     }
+
     fun amountOfDaysWithActivity(activityType: ActivityType): Int = daysWithActivities[activityType]?.size ?: 0
     fun daysWithActivity(activityType: ActivityType): Set<DurationDay> = daysWithActivities[activityType] ?: emptySet()
 }

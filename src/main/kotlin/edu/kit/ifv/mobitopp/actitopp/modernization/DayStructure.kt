@@ -15,31 +15,40 @@ import kotlin.time.Duration
 /**
  * The day structure contains the current tour structures that will be present on a given day, this is a readonly view.
  */
-interface DayStructure :Comparable<DayStructure> {
+interface DayStructure : Comparable<DayStructure> {
     val startTimeDay: DurationDay
     val weekday: DayOfWeek
-    val duration : Duration
+    val duration: Duration
 
     override fun compareTo(other: DayStructure): Int {
         return startTimeDay.compareTo(other.startTimeDay)
     }
+
     fun isHomeDay(): Boolean
     fun mainActivityType(): ActivityType
     fun amountOfPrecursorElements(): Int
     fun amountOfSuccessorElements(): Int
     fun amountOfElements(): Int
+
     // TODO elements could probably be an iterator
     fun elements(): Collection<MutableTourStructure>
     fun indexedElements(): Collection<BidirectionalIndexedValue<MutableTourStructure>>
     fun amountOfActivities() = elements().sumOf { it.size }
-    fun getPlannedTourAmounts():PlannedTourAmounts = PlannedTourAmounts(amountOfPrecursorElements(), amountOfSuccessorElements())
+    fun getPlannedTourAmounts(): PlannedTourAmounts =
+        PlannedTourAmounts(amountOfPrecursorElements(), amountOfSuccessorElements())
 
     operator fun contains(activityType: ActivityType): Boolean {
         return elements().any { activityType in it }
     }
-    val minimumAmountOfToursByJointActions: Int get() {throw UnsupportedOperationException("Nope")}
-    val minimumAmountOfActivitiesByJointActions: Int get() {throw UnsupportedOperationException("Nope")}
 
+    val minimumAmountOfToursByJointActions: Int
+        get() {
+            throw UnsupportedOperationException("Nope")
+        }
+    val minimumAmountOfActivitiesByJointActions: Int
+        get() {
+            throw UnsupportedOperationException("Nope")
+        }
 
 
     fun toDayPlan(movingDayPlanInput: MovingDayPlanInput): MutableDayPlan
@@ -47,10 +56,12 @@ interface DayStructure :Comparable<DayStructure> {
 
 class HomeDay private constructor(
     val tourStructureCollection: Collection<TourStructure>,
-    override val startTimeDay: DurationDay) : DayStructure {
+    override val startTimeDay: DurationDay,
+) : DayStructure {
     override fun isHomeDay(): Boolean = true
 
-    constructor(startTimeDay: DurationDay): this(emptyList(), startTimeDay)
+    constructor(startTimeDay: DurationDay) : this(emptyList(), startTimeDay)
+
     override val weekday: DayOfWeek = startTimeDay.weekday
     override val duration: Duration = startTimeDay.startOfDay
     override fun mainActivityType(): ActivityType = ActivityType.HOME
@@ -69,7 +80,7 @@ class HomeDay private constructor(
     }
 
     override fun equals(other: Any?): Boolean {
-        if(other !is DayStructure) return false
+        if (other !is DayStructure) return false
         return startTimeDay == other.startTimeDay
     }
 
@@ -85,8 +96,10 @@ class ModifiableDayStructure(override val startTimeDay: DurationDay, mainTourStr
     override fun isHomeDay(): Boolean = false
     override val weekday: DayOfWeek = startTimeDay.weekday
     override val duration = startTimeDay.startOfDay
+
     // TODO maybe protect this field from modification, right now it is just a template holder for 3A
     override var minimumAmountOfToursByJointActions: Int = 0
+
     // TODO, joint action modelling should not be interweaved with normal structures.
     override val minimumAmountOfActivitiesByJointActions: Int = 0
     fun loadPrecursors(activityTypes: Collection<ActivityType>) {
@@ -120,7 +133,7 @@ class ModifiableDayStructure(override val startTimeDay: DurationDay, mainTourStr
     }
 
     override fun equals(other: Any?): Boolean {
-        if(other !is DayStructure) return false
+        if (other !is DayStructure) return false
         return startTimeDay == other.startTimeDay
     }
 

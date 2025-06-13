@@ -3,8 +3,8 @@ package edu.kit.ifv.mobitopp.actitopp.modernization
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.ActivitySituation
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.step6WithParams
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.ActivitySituation
 import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalIndexedValue
 import edu.kit.ifv.mobitopp.actitopp.utils.Position
 
@@ -64,9 +64,11 @@ class ExampleAssign(
                     ActivityType.EDUCATION
                 )
                 val converter: (ActivityType) -> ActivitySituation = {
-                    ActivitySituation(it, personWithRoutine,
+                    ActivitySituation(
+                        it, personWithRoutine,
                         input.dayStructure,
-                        input.tourStructure, position, input.plannedTourAmounts)
+                        input.tourStructure, position, input.plannedTourAmounts
+                    )
                 }
                 val rnd = rngHelper.randomValue
                 step6WithParams.select(availableOptions, rnd, converter)

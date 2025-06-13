@@ -32,7 +32,7 @@ val ParametersStep8A = ParameterCollectionStep8A(
 )
 
 data class ParameterCollectionStep8A(
-    val no: ParameterStep8A
+    val no: ParameterStep8A,
 )
 
 data class ParameterStep8A(
@@ -63,4 +63,4 @@ data class ParameterStep8A(
     val tourhat2akt: Double,
     val tourhat3akt: Double,
 
-)
+    )

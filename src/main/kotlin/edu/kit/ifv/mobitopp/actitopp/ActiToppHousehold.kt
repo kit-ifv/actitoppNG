@@ -12,8 +12,8 @@ class ActiToppHousehold @JvmOverloads constructor(
     val children_u18: Int,
     areatypeCode: Int,
     val numberofcarsinhousehold: Int = 0,
-) : ModernizedHousehold{
-    val householdIndex: Int = ActiToppHousehold.ID
+) : ModernizedHousehold {
+    val householdIndex: Int = ID
 
     val areatype = AreaType.fromCode(areatypeCode)
     override val members: List<IPerson>
@@ -21,6 +21,7 @@ class ActiToppHousehold @JvmOverloads constructor(
     override val areaType: AreaType = areatype
     override val numberOfCars: Int = numberofcarsinhousehold
     override val id: Int = householdIndex
+
     /**
      * @return the householdIndex
      */
@@ -74,7 +75,6 @@ class ActiToppHousehold @JvmOverloads constructor(
          * @return the numberofpersonsinhousehold
          */
         get() = householdmembers.size
-
 
 
     companion object {

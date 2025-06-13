@@ -1,12 +1,13 @@
 package edu.kit.ifv.mobitopp.actitopp.modernization
 
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
-import edu.kit.ifv.mobitopp.actitopp.modernization.plan.DetermineTripDuration
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
+import edu.kit.ifv.mobitopp.actitopp.modernization.plan.DetermineTripDuration
 import edu.kit.ifv.mobitopp.actitopp.utils.Position
 import kotlinx.serialization.Serializable
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
+
 sealed interface Action {
     val startTime: Duration?
     val duration: Duration?
@@ -15,17 +16,19 @@ sealed interface Action {
     fun shortString(): String
 
     fun inconsistent(): Boolean {
-        return startTime?.let { startTime -> endTime?.let { startTime > it }}?: false
+        return startTime?.let { startTime -> endTime?.let { startTime > it } } ?: false
     }
 }
 
 interface MutableAction {
     var startTime: Duration?
 }
-interface MutableLinkedAction: MutableAction, LinkedAction {
+
+interface MutableLinkedAction : MutableAction, LinkedAction {
     override val previous: MutableLinkedAction?
     override val next: MutableLinkedAction?
 }
+
 interface LinkedAction : Action {
     val previous: LinkedAction?
     val next: LinkedAction?
@@ -33,7 +36,7 @@ interface LinkedAction : Action {
     fun estimatedDuration(defaultDuration: Map<ActivityType, Duration>): Duration
 
     fun isConsistent(): Boolean {
-        if(inconsistent()) return false
+        if (inconsistent()) return false
         val next = this.next
         val endTime = this.endTime
         val startTime = next?.startTime
@@ -54,7 +57,7 @@ interface Activity : Action {
 
 
     override fun shortString(): String {
-        return "${activityType.typeasChar}[${startTime?.inWholeMinutes?:"?"}, ${endTime?.inWholeMinutes?:"?"}] (${duration?.inWholeMinutes})"
+        return "${activityType.typeasChar}[${startTime?.inWholeMinutes ?: "?"}, ${endTime?.inWholeMinutes ?: "?"}] (${duration?.inWholeMinutes})"
     }
 }
 
@@ -69,17 +72,17 @@ interface MutableActivity : Activity, MutableAction {
 operator fun Duration.plus(nullable: Duration?): Duration {
     return nullable?.let { it + this } ?: this
 }
+
 @Serializable
 data class ModernizedActivity(
     override val activityType: ActivityType,
     override var startTime: Duration? = null,
     override var duration: Duration? = null,
-    override val position: Position
+    override val position: Position,
 ) : MutableActivity {
 
 
     override val endTime get() = startTime?.let { it + duration }
-
 
 
 }
@@ -96,6 +99,7 @@ class LinkedActivity(
     override val next: ModernizedTrip?
         get() = nextTrip
     val previousActivity get() = previousTrip?.previousActivity
+
     /**
      * If the duration is not yet set, estimate the duration based on the amount of occurences of a given
      * activity during a day.
@@ -119,9 +123,11 @@ class LinkedActivity(
     fun iterator(): Sequence<LinkedAction> {
         return LinkedActionIterator(this).asSequence()
     }
+
     fun mutableIterator(): Sequence<MutableLinkedAction> {
         return MutableLinkedActionIterator(this).asSequence()
     }
+
     fun activityIterator(): Sequence<LinkedActivity> {
         return LinkedActivityIterator(this).asSequence()
     }
@@ -150,7 +156,7 @@ class MutableLinkedActionIterator(start: MutableLinkedAction) : Iterator<Mutable
     }
 }
 
-class LinkedActivityIterator(start: LinkedActivity): Iterator<LinkedActivity> {
+class LinkedActivityIterator(start: LinkedActivity) : Iterator<LinkedActivity> {
     private var current: LinkedActivity? = start
     override fun hasNext(): Boolean {
         return current != null
@@ -210,7 +216,7 @@ class ModernizedTrip(
     init {
 
         require(!(previousActivity.activityType == ActivityType.HOME && nextActivity.activityType == ActivityType.HOME)) {
-         " This is bad"
+            " This is bad"
         }
     }
 

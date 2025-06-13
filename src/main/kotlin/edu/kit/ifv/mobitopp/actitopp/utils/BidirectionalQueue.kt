@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.utils
 
-abstract class BidirectionalQueue<T: Any>(mainElement: T) : BidirectionalCollection<T> {
+abstract class BidirectionalQueue<T : Any>(mainElement: T) : BidirectionalCollection<T> {
     private val queue: ArrayDeque<T> = ArrayDeque()
     private var offset = 0
 
@@ -35,6 +35,7 @@ abstract class BidirectionalQueue<T: Any>(mainElement: T) : BidirectionalCollect
     override fun precursors(): Collection<T> {
         return queue.subList(0, offset)
     }
+
     override fun successors(): Collection<T> {
         return queue.subList(offset + 1, queue.size)
     }

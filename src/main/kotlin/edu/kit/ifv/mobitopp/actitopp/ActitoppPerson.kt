@@ -8,17 +8,16 @@ import edu.kit.ifv.mobitopp.actitopp.enums.isStudentOrAzubi
 import kotlin.math.max
 
 
-
 data class PersonAttributes(
     val gender: Gender,
     val employment: Employment,
     val age: Int,
     val commuteDistanceWork: Double? = null,
     val commuteDistanceEducation: Double? = null,
-    val isAllowedToWork: Boolean = true
+    val isAllowedToWork: Boolean = true,
 )
 
-class ActitoppPerson@JvmOverloads constructor(
+class ActitoppPerson @JvmOverloads constructor(
     val household: ActiToppHousehold,
     val persNrinHousehold: Int,
     override val age: Int,
@@ -26,7 +25,7 @@ class ActitoppPerson@JvmOverloads constructor(
     genderCode: Int,
     override val commutingdistance_work: Double = 0.0,
     override val commutingdistance_education: Double = .0,
-) :IPerson {
+) : IPerson {
 
     init {
         household.addHouseholdmember(this, persNrinHousehold)
@@ -42,7 +41,6 @@ class ActitoppPerson@JvmOverloads constructor(
     override val isAllowedToWork: Boolean = true
 
 
-
     override val children0_10: Int = household.children0_10
 
     override val children_u18: Int = household.children_u18
@@ -55,11 +53,7 @@ class ActitoppPerson@JvmOverloads constructor(
 
     override fun isAnywayEmployed(): Boolean = employment.isEmployedAnywhere()
 
-    override fun isinEducation(): Boolean  = employment.isStudentOrAzubi()
-
-
-
-
+    override fun isinEducation(): Boolean = employment.isStudentOrAzubi()
 
 
     companion object {

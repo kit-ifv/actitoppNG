@@ -13,10 +13,11 @@ import kotlin.time.toDuration
 /**
  * Similar behaviour to [Duration.inWholeMinutes] but it always rounds up instead of down.
  */
-val Duration.ceilWholeMinutes:Int get() {
-    val double = this.toDouble(DurationUnit.MINUTES)
-    return ceil(double).toInt()
-}
+val Duration.ceilWholeMinutes: Int
+    get() {
+        val double = this.toDouble(DurationUnit.MINUTES)
+        return ceil(double).toInt()
+    }
 
 operator fun Duration.rem(that: Duration): Duration {
     return (this.toDouble(DurationUnit.MINUTES) % that.toDouble(DurationUnit.MINUTES)).minutes
@@ -26,7 +27,7 @@ fun Duration.ceil(unit: DurationUnit): Duration {
     return ceil(this.toDouble(unit)).toDuration(unit)
 }
 
-fun Duration.round(unit: DurationUnit) : Duration {
+fun Duration.round(unit: DurationUnit): Duration {
     return this.toDouble(unit).roundToLong().toDuration(unit)
 }
 
@@ -40,7 +41,7 @@ inline fun <T> Iterable<T>.sumOf(selector: (T) -> Duration): Duration {
 
 inline operator fun Boolean.times(other: Double): Double = this.D * other
 inline operator fun Boolean.times(other: Int): Int = this.I * other
-inline val Boolean.D get() = if(this) 1.0 else 0.0
+inline val Boolean.D get() = if (this) 1.0 else 0.0
 fun Int.positiveModulus(modulo: Int): Int {
     val result = this % modulo
     return if (result < 0) result + modulo else result

@@ -1,11 +1,10 @@
 package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.subsubTourAmount
 
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
-import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalIndexedValue
-import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
-import edu.kit.ifv.mobitopp.actitopp.modernization.MutableTourStructure
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
+import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.TourStructure
+import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalIndexedValue
 
 /**
  * Keep track of the amount of "activities" placed within the day, to avoid the side effect shenanigans of the legacy
@@ -42,6 +41,7 @@ class DayAmountTracker(val day: DayStructure, val rngHelper: RNGHelper, val pers
         }
         return successorActivityAmounts
     }
+
     private fun calculateMinimumAmount(): Int {
         return (remainingPlacements.toDouble() / counter).toInt()
     }

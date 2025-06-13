@@ -1,4 +1,5 @@
 package edu.kit.ifv.mobitopp.actitopp.utilityFunctions
+
 import kotlin.math.sign
 
 /**

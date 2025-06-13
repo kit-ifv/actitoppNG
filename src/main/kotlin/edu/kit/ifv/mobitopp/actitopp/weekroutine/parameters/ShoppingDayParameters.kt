@@ -1,7 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters
 
 
-
 data class ShoppingDaySet(
     override val option1: ShoppingDayParameters,
     override val option2: ShoppingDayParameters,

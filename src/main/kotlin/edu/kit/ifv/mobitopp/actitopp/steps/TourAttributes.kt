@@ -2,12 +2,9 @@ package edu.kit.ifv.mobitopp.actitopp.steps
 
 
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
+import edu.kit.ifv.mobitopp.actitopp.modernization.TourStructure
 import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalIndexedValue
 import edu.kit.ifv.mobitopp.actitopp.utils.Position
-import edu.kit.ifv.mobitopp.actitopp.modernization.MutableTourStructure
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
-import edu.kit.ifv.mobitopp.actitopp.modernization.TourStructure
-import org.jetbrains.annotations.TestOnly
 
 interface TourPositionAttributes {
     // These are all day attributes
@@ -76,9 +73,9 @@ class TourPositionAttributesByIndex(val absoluteIndex: Int, val position: Positi
 class TourAttributesByStructAndNumbers(
     private val indexedTour: BidirectionalIndexedValue<TourStructure>,
     val precursorActivityCount: Int,
-    val successorActivityCount:Int,
+    val successorActivityCount: Int,
 
-    ) : TourAttributes, TourPositionAttributes,  ActivityAmountAttributes{
+    ) : TourAttributes, TourPositionAttributes, ActivityAmountAttributes {
     override fun tourMainActivityIsWork(): Boolean {
         return indexedTour.element.mainActivityType() == ActivityType.WORK
     }
@@ -136,7 +133,7 @@ class TourAttributesByStructAndNumbers(
     }
 
     override fun numActivitiesBeforeMainActivityIs3(): Boolean {
-        return indexedTour.element.amountOfPrecursorElements() + precursorActivityCount ==3
+        return indexedTour.element.amountOfPrecursorElements() + precursorActivityCount == 3
     }
 }
 

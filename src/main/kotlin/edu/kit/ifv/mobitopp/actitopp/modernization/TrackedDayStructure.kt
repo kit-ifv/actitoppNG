@@ -11,7 +11,10 @@ import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
  * changes, since once the activity is allowed to be added to a day, additional activities of the same type would
  * be allowed anyways, since the day is classified as valid target for these activities now anyways.
  */
-class TrackedDayStructure(private val activityDayTracker: ActivityDayTrackerImpl, private val dayStructure: ModifiableDayStructure): DayStructure by dayStructure {
+class TrackedDayStructure(
+    private val activityDayTracker: ActivityDayTrackerImpl,
+    private val dayStructure: ModifiableDayStructure,
+) : DayStructure by dayStructure {
 
 
     fun change(durationDay: DurationDay, weekRoutine: WeekRoutine) {
@@ -50,7 +53,7 @@ class TrackedDayStructure(private val activityDayTracker: ActivityDayTrackerImpl
             val offset = it.offset
             val tracked = TrackedTourStructure(dayStructure.startTimeDay, activityDayTracker, original)
             BidirectionalIndexedValue(absoluteIndex, offset, tracked)
-            }
+        }
     }
 
     override fun equals(other: Any?): Boolean {
@@ -62,15 +65,21 @@ class TrackedDayStructure(private val activityDayTracker: ActivityDayTrackerImpl
     }
 }
 
-class TrackedTourStructure(private val durationDay: DurationDay, private val activityDayTracker: ActivityDayTrackerImpl, val original: MutableTourStructure) : TourStructure by original {
+class TrackedTourStructure(
+    private val durationDay: DurationDay,
+    private val activityDayTracker: ActivityDayTrackerImpl,
+    val original: MutableTourStructure,
+) : TourStructure by original {
     fun addPrecursor(activityType: ActivityType) {
         original.addPrecursor(activityType)
         activityDayTracker.add(activityType, durationDay)
     }
+
     fun loadPrecursors(activityTypes: Collection<ActivityType>) {
         original.loadPrecursors(activityTypes)
         activityDayTracker.add(activityTypes, day = durationDay)
     }
+
     fun loadSuccessors(activityTypes: Collection<ActivityType>) {
         original.loadSuccessors(activityTypes)
         activityDayTracker.add(activityTypes, day = durationDay)

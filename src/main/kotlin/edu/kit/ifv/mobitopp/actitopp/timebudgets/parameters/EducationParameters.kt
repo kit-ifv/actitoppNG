@@ -58,13 +58,13 @@ val EducationBudget = EducationBudgetSet(
     )
 )
 
-data class EducationBudgetSet (
+data class EducationBudgetSet(
     val category1: EducationBudgetParameters,
     val category2: EducationBudgetParameters,
     val category3: EducationBudgetParameters,
     val category5: EducationBudgetParameters,
     val category6: EducationBudgetParameters,
-    )
+)
 
 data class EducationBudgetParameters(
     val base: Double,
@@ -77,4 +77,4 @@ data class EducationBudgetParameters(
     val tagemit_eakt_4: Double,
     val tagemit_eakt_5: Double,
 
-)
+    )

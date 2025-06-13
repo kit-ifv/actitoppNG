@@ -7,7 +7,6 @@ import edu.kit.ifv.mobitopp.actitopp.modernization.ModernizedActivity
 import kotlin.random.Random
 
 
-
 private val random = Random(1)
 private fun generateHousehold(): ActiToppHousehold {
     return ActiToppHousehold(

@@ -133,4 +133,4 @@ data class SideTourSuccessorParameters(
     val mean_3akt: Double,
 
 
-)
+    )

@@ -19,21 +19,20 @@ abstract class DefaultSideTourDeterminer<P>(
         return precedingInput.run {
 
 
-                val availableOptions = determineAvailableOptions(day, precedingInput.personInfo.routine)
+            val availableOptions = determineAvailableOptions(day, precedingInput.personInfo.routine)
 
-                val rnd = rngHelper.randomValue
-                val converter: (Int) -> PreviousDaySituation = {
-                    createChoiceSituation(
-                        choice = it,
-                        dayTourPlan = currentPlannedTourAmounts,
-                        previousTourPlan = previousPlannedTourAmounts,
-                        day = day,
-                        personWithRoutine = personInfo
-                        )
+            val rnd = rngHelper.randomValue
+            val converter: (Int) -> PreviousDaySituation = {
+                createChoiceSituation(
+                    choice = it,
+                    dayTourPlan = currentPlannedTourAmounts,
+                    previousTourPlan = previousPlannedTourAmounts,
+                    day = day,
+                    personWithRoutine = personInfo
+                )
 
-                }
-                choiceModel.select(availableOptions, rnd, converter)
-
+            }
+            choiceModel.select(availableOptions, rnd, converter)
 
 
         }
@@ -42,7 +41,7 @@ abstract class DefaultSideTourDeterminer<P>(
     abstract fun update(day: ModifiablePlannedTourAmounts, result: Int)
     private fun determineAvailableOptions(day: DayStructure, routine: WeekRoutine): Set<Int> {
         // If the main activity is staying home, there should not be the option to choose any other subtour
-        if(day.isHomeDay()) return setOf(0)
+        if (day.isHomeDay()) return setOf(0)
 
         val availableOptions = choiceModel.registeredOptions().toMutableSet()
         val amountOfTours = day.amountOfPrecursorElements()
@@ -66,6 +65,7 @@ abstract class DefaultSideTourDeterminer<P>(
         }
         return availableOptions
     }
+
     abstract fun determineMinimumAmountOfTours(remainingNumberOfTours: Int): Int
     open fun createChoiceSituation(
         choice: Int,

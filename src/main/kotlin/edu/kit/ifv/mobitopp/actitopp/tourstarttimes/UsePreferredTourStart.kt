@@ -3,8 +3,8 @@ package edu.kit.ifv.mobitopp.actitopp.tourstarttimes
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.modernization.durations.MobilityPlanInputs
-import edu.kit.ifv.mobitopp.actitopp.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitopp.plandurations.BooleanDecisionWithPreferenceCategory
+import edu.kit.ifv.mobitopp.actitopp.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.parameters.ParameterStep10A
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.parameters.ParametersStep10A
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
@@ -44,10 +44,10 @@ class UseStartViaChoiceModel(private val rngKeeper: RNGHelper) : UsePreferredTou
         ).initializeWithParameters(ParametersStep10A)
 
     override fun usePreferredTourStart(input: MobilityPlanInputs, preferredHistogram: ArrayHistogram): Boolean {
-        if(!input.person.isAnywayEmployed() && !input.person.isinEducation()) return false
+        if (!input.person.isAnywayEmployed() && !input.person.isinEducation()) return false
         // TODO make this boolean expression more readable via de morgan
-        if(input.tourMainActivityType !in setOf(ActivityType.WORK, ActivityType.EDUCATION)) return false
-        if(input.mobilityPlan.mainActivityMap[ActivityType.WORK]?.isNotEmpty() == true || input.mobilityPlan.mainActivityMap[ActivityType.EDUCATION]?.isNotEmpty() == true) {
+        if (input.tourMainActivityType !in setOf(ActivityType.WORK, ActivityType.EDUCATION)) return false
+        if (input.mobilityPlan.mainActivityMap[ActivityType.WORK]?.isNotEmpty() == true || input.mobilityPlan.mainActivityMap[ActivityType.EDUCATION]?.isNotEmpty() == true) {
             val converter: (Boolean) -> BooleanDecisionWithPreferenceCategory = {
                 BooleanDecisionWithPreferenceCategory(it, input, preferredHistogram)
             }

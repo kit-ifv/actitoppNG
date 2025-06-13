@@ -30,7 +30,7 @@ object Configuration {
      * i.e: when disabled, different steps (e.g. 8A) will be skipped
      *
      */
-    
+
     var coordinated_modelling: Boolean = true
 
     /*
@@ -38,7 +38,6 @@ object Configuration {
      */
     //TODO try to get joint actions back to work
     var modelJointActions: Boolean = true
-
 
 
     /*
@@ -96,7 +95,7 @@ object Configuration {
     /*
      * steps that use weighted random draw (wrd) modeling
      */
-    
+
     var wrdsteps: HashMap<String, Int> = HashMap()
 
     init {
@@ -118,7 +117,7 @@ object Configuration {
     /*
      * steps that use linear regression modeling
      */
-    
+
     var linregsteps_filenames = HashSet<String>()
 
     init {
@@ -159,7 +158,7 @@ object Configuration {
     val HOME_TIME_TIMECLASSES_UB: IntArray = intArrayOf(14, 29, 59, 119, 179, 239, 299, 359, 419, 1440)
 
     // activity durations for home activity - number of categories
-    
+
     val NUMBER_OF_HOME_DURATION_CLASSES: Int = HOME_TIME_TIMECLASSES_LB.size
 
 
@@ -177,7 +176,7 @@ object Configuration {
         intArrayOf(119, 239, 359, 419, 479, 539, 599, 659, 779, 899, 959, 1019, 1079, 1199, 1319, 1439)
 
     // start time for first tour of the day - number of categories
-    
+
     val NUMBER_OF_FIRST_START_TIME_CLASSES: Int = FIRST_TOUR_START_TIMECLASSES_LB.size
 
 
@@ -194,7 +193,7 @@ object Configuration {
         intArrayOf(539, 659, 779, 839, 899, 959, 1019, 1079, 1139, 1199, 1439)
 
     // start time for second and third tour of the day - number of categories
-    
+
     val NUMBER_OF_SECTHR_START_TIME_CLASSES: Int = SECTHR_TOUR_START_TIMECLASSES_LB.size
 
 

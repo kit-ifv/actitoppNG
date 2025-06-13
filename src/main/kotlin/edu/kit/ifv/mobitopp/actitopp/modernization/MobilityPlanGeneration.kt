@@ -1,5 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.modernization
 
+
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.STATIC_HISTOGRAMS
@@ -9,26 +10,24 @@ import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.SpawnWeek
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.StandardImplementation
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MobilityPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.StandardCommuteDurations
-
-
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.generateWeekRoutine
-import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.choicemodels.FIRST_TOUR_HISTOGRAM
-import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.SECOND_TOUR_HISTOGRAM
-import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.TourStartByHistogramsRelative
-import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.TourStartWithPreference
-import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.assignFirstTourStarts
-import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.assignRemainingTourStarts
-import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.assignSecondTourStarts
-import edu.kit.ifv.mobitopp.actitopp.timebudgets.FinalizedActivityPattern
 import edu.kit.ifv.mobitopp.actitopp.plandurations.AssignMinorActivityDuration
-import edu.kit.ifv.mobitopp.actitopp.plandurations.choicemodels.LEAD
-import edu.kit.ifv.mobitopp.actitopp.plandurations.choicemodels.MAJOR
 import edu.kit.ifv.mobitopp.actitopp.plandurations.StandardStep8B
 import edu.kit.ifv.mobitopp.actitopp.plandurations.assignFirstMainActivities
 import edu.kit.ifv.mobitopp.actitopp.plandurations.assignMinorActivities
 import edu.kit.ifv.mobitopp.actitopp.plandurations.assignSecondaryMainActivities
+import edu.kit.ifv.mobitopp.actitopp.plandurations.choicemodels.LEAD
+import edu.kit.ifv.mobitopp.actitopp.plandurations.choicemodels.MAJOR
+import edu.kit.ifv.mobitopp.actitopp.timebudgets.FinalizedActivityPattern
+import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.SECOND_TOUR_HISTOGRAM
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.StandardPreferredTourStart
+import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.TourStartByHistogramsRelative
+import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.TourStartWithPreference
+import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.assignFirstTourStarts
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.assignPreferredTourStart
+import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.assignRemainingTourStarts
+import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.assignSecondTourStarts
+import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.choicemodels.FIRST_TOUR_HISTOGRAM
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.generateWeekRoutine
 
 
 fun interface MobilityPlanGeneration {
@@ -67,27 +66,33 @@ class StandardStructureGeneration(val rng: RNGHelper) : MobilityPlanGeneration {
         sideActivityStrategy.spawnSideActivities(mobilityStructure)
         // Determine the amount of precursor and successor tours for each tour of the day
 
-        val budget = STATIC_HISTOGRAMS.determineTimeBudgets(rng, person, FinalizedActivityPattern.fromModernPattern(mobilityStructure))
-        return mobilityStructure.toPlan(StandardCommuteDurations.STANDARD_ASSIGNMENT, budget)?: MobilityPlan.stayAtHomePlan(person, amountOfDays)
+        val budget = STATIC_HISTOGRAMS.determineTimeBudgets(
+            rng,
+            person,
+            FinalizedActivityPattern.fromModernPattern(mobilityStructure)
+        )
+        return mobilityStructure.toPlan(StandardCommuteDurations.STANDARD_ASSIGNMENT, budget)
     }
 }
 
 fun interface MobilityPlanDurationAssignment {
     fun assignDurations(mobilityPlan: MobilityPlan)
 }
-class  StandardDurationAssignment(val rng: RNGHelper): MobilityPlanDurationAssignment {
+
+class StandardDurationAssignment(val rng: RNGHelper) : MobilityPlanDurationAssignment {
     override fun assignDurations(mobilityPlan: MobilityPlan) {
-        mobilityPlan.assignFirstMainActivities(StandardStep8B(rng, LEAD,))
-        mobilityPlan.assignSecondaryMainActivities(StandardStep8B(rng, MAJOR, ))
-        mobilityPlan.assignMinorActivities(AssignMinorActivityDuration(rng, ))
+        mobilityPlan.assignFirstMainActivities(StandardStep8B(rng, LEAD))
+        mobilityPlan.assignSecondaryMainActivities(StandardStep8B(rng, MAJOR))
+        mobilityPlan.assignMinorActivities(AssignMinorActivityDuration(rng))
 
     }
 }
+
 fun interface MobilityPlanStartTimeAssignment {
     fun assignStartTimes(mobilityPlan: MobilityPlan)
 }
 
-class StandardStartTimeAssignment(val rng: RNGHelper) : MobilityPlanStartTimeAssignment{
+class StandardStartTimeAssignment(val rng: RNGHelper) : MobilityPlanStartTimeAssignment {
     override fun assignStartTimes(mobilityPlan: MobilityPlan) {
         val preferredHistogram = mobilityPlan.assignPreferredTourStart(StandardPreferredTourStart(rng))
 

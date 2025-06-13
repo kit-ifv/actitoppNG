@@ -5,4 +5,5 @@ package edu.kit.ifv.mobitopp.actitopp
  *
  * @author Tim Hilgert
  */
-class WRDModelDistributionInformation(private val distributionElements: Map<Int, Int> =mapOf()): Map<Int, Int> by distributionElements
+class WRDModelDistributionInformation(private val distributionElements: Map<Int, Int> = mapOf()) :
+    Map<Int, Int> by distributionElements

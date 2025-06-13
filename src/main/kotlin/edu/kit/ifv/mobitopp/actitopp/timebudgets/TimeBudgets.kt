@@ -26,11 +26,11 @@ data class TimeBudgets(
 ) {
     fun toDayTimeBudget(dailyOccurrences: Map<ActivityType, Int>): TimeBudgets {
         return TimeBudgets(
-            workBudget = safeDivide(workBudget ,dailyOccurrences.getOrDefault(ActivityType.WORK, 0)),
-            educationBudget = safeDivide(educationBudget ,dailyOccurrences.getOrDefault(ActivityType.EDUCATION, 0)),
-            leisureBudget = safeDivide(leisureBudget ,dailyOccurrences.getOrDefault(ActivityType.LEISURE, 0)),
-            shoppingBudget = safeDivide(shoppingBudget ,dailyOccurrences.getOrDefault(ActivityType.SHOPPING, 0)),
-            transportBudget = safeDivide(transportBudget ,dailyOccurrences.getOrDefault(ActivityType.TRANSPORT, 0)),
+            workBudget = safeDivide(workBudget, dailyOccurrences.getOrDefault(ActivityType.WORK, 0)),
+            educationBudget = safeDivide(educationBudget, dailyOccurrences.getOrDefault(ActivityType.EDUCATION, 0)),
+            leisureBudget = safeDivide(leisureBudget, dailyOccurrences.getOrDefault(ActivityType.LEISURE, 0)),
+            shoppingBudget = safeDivide(shoppingBudget, dailyOccurrences.getOrDefault(ActivityType.SHOPPING, 0)),
+            transportBudget = safeDivide(transportBudget, dailyOccurrences.getOrDefault(ActivityType.TRANSPORT, 0)),
             workCategory = workCategory,
             educationCategory = educationCategory,
             leisureCategory = leisureCategory,
@@ -38,11 +38,13 @@ data class TimeBudgets(
             transportCategory = transportCategory,
         )
     }
-    private fun safeDivide(numerator: Duration, denominator: Int) : Duration {
-        if(numerator == Duration.ZERO) return Duration.ZERO
-        if(denominator == 0) return Duration.INFINITE
+
+    private fun safeDivide(numerator: Duration, denominator: Int): Duration {
+        if (numerator == Duration.ZERO) return Duration.ZERO
+        if (denominator == 0) return Duration.INFINITE
         return numerator / denominator
     }
+
     operator fun get(activityType: ActivityType): Duration {
         return when (activityType) {
             ActivityType.WORK -> workBudget
@@ -67,7 +69,7 @@ data class TimeBudgets(
 
         }
     }
-    
+
     companion object {
         val NONE = TimeBudgets(
             Duration.ZERO,
@@ -79,11 +81,13 @@ data class TimeBudgets(
             Category.NONE_CHOSEN,
             Category.NONE_CHOSEN,
             Category.NONE_CHOSEN,
-            Category.NONE_CHOSEN,)
+            Category.NONE_CHOSEN,
+        )
     }
 }
 
 val NO_TIME: Pair<Duration, Category> = Duration.ZERO to Category.NONE_CHOSEN
+
 class HistogramPerActivity(
     val workHistograms: WorkHistograms = WorkHistograms.fromResourcePath(),
     val educationHistograms: EducationHistograms = EducationHistograms.fromResourcePath(),
@@ -98,17 +102,19 @@ class HistogramPerActivity(
         person: IPerson,
         finalizedActivityPattern: FinalizedActivityPattern,
     ): TimeBudgets {
-        val workSelection = if (finalizedActivityPattern.workDays == 0 ) NO_TIME else
-            workHistograms.select(rngKeeper.randomValue,
-            rngKeeper.randomValue, finalizedActivityPattern, person)
+        val workSelection = if (finalizedActivityPattern.workDays == 0) NO_TIME else
+            workHistograms.select(
+                rngKeeper.randomValue,
+                rngKeeper.randomValue, finalizedActivityPattern, person
+            )
         val educationSelection = if (finalizedActivityPattern.educationDays == 0) NO_TIME else
-        educationHistograms.select(rngKeeper.randomValue, rngKeeper.randomValue, finalizedActivityPattern, person)
+            educationHistograms.select(rngKeeper.randomValue, rngKeeper.randomValue, finalizedActivityPattern, person)
         val leisureSelection = if (finalizedActivityPattern.leisureDays == 0) NO_TIME else
-        leisureHistograms.select(rngKeeper.randomValue, rngKeeper.randomValue, finalizedActivityPattern, person)
+            leisureHistograms.select(rngKeeper.randomValue, rngKeeper.randomValue, finalizedActivityPattern, person)
         val shoppingSelection = if (finalizedActivityPattern.shoppingDays == 0) NO_TIME else
-        shoppingHistograms.select(rngKeeper.randomValue, rngKeeper.randomValue, finalizedActivityPattern, person)
+            shoppingHistograms.select(rngKeeper.randomValue, rngKeeper.randomValue, finalizedActivityPattern, person)
         val transportSelection = if (finalizedActivityPattern.transportDays == 0) NO_TIME else
-        transportHistograms.select(rngKeeper.randomValue, rngKeeper.randomValue, finalizedActivityPattern, person)
+            transportHistograms.select(rngKeeper.randomValue, rngKeeper.randomValue, finalizedActivityPattern, person)
         return TimeBudgets(
             workBudget = workSelection.first,
             workCategory = workSelection.second,
@@ -122,7 +128,6 @@ class HistogramPerActivity(
             transportCategory = transportSelection.second,
         )
     }
-
 
 
     private fun HistogramSelection.select(

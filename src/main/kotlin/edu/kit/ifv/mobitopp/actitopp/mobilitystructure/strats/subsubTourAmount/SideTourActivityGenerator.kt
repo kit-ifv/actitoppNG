@@ -1,10 +1,10 @@
 package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.subsubTourAmount
 
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SideTourPrecursorSet
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SideTourSuccessorSet
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.step5AWithParams
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.step5BWithParams
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SideTourPrecursorSet
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SideTourSuccessorSet
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.TourSituationInt
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ParametrizedDiscreteChoiceModel
 
@@ -18,7 +18,14 @@ abstract class SideTourActivityGenerator<P>(
         options.removeIf { it < input.minimumAmountOfActivities }
 
         val converter: (Int) -> TourSituationInt = {
-            TourSituationInt(it, input.person, input.routine, input.currentDay, input.tour, input.amountOfActivitiesBeforeMainAct)
+            TourSituationInt(
+                it,
+                input.person,
+                input.routine,
+                input.currentDay,
+                input.tour,
+                input.amountOfActivitiesBeforeMainAct
+            )
         }
         val rnd = rngHelper.randomValue
         return choiceModel.select(options, rnd, converter)
@@ -27,12 +34,8 @@ abstract class SideTourActivityGenerator<P>(
 
 class PrecedingSpawns(rngHelper: RNGHelper) : SideTourActivityGenerator<SideTourPrecursorSet>(
     rngHelper, step5AWithParams,
-) {
-
-}
+)
 
 class FollowingSpawns(rngHelper: RNGHelper) : SideTourActivityGenerator<SideTourSuccessorSet>(
     rngHelper, step5BWithParams,
-) {
-
-}
+)

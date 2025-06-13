@@ -5,9 +5,9 @@ import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
 import edu.kit.ifv.mobitopp.actitopp.utils.times
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.ShoppingDaySet
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.DefaultShoppingParameters
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.ShoppingDayParameters
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.ShoppingDaySet
 
 val step1DWithParams = ModifiableDiscreteChoiceModel<Int, PersonSituation, ShoppingDaySet>(AllocatedLogit.create {
 

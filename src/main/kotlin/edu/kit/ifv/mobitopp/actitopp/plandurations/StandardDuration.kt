@@ -10,9 +10,10 @@ fun interface StandardDuration {
     fun getAssignedStandardDuration(input: MobilityPlanInputs): Boolean
 }
 
-class UtilityFunctionAssignment(val rngHelper: RNGHelper,
-                                private val choiceModel: SealedDiscreteChoiceModel<Boolean, BooleanDecisionSituation> = firstActivityUsesStandardDuration
-): StandardDuration {
+class UtilityFunctionAssignment(
+    val rngHelper: RNGHelper,
+    private val choiceModel: SealedDiscreteChoiceModel<Boolean, BooleanDecisionSituation> = firstActivityUsesStandardDuration,
+) : StandardDuration {
     override fun getAssignedStandardDuration(input: MobilityPlanInputs): Boolean {
         val randomNumber = rngHelper.randomValue
 

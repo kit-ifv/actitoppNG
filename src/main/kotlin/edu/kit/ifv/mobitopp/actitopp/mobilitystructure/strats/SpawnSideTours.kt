@@ -9,7 +9,7 @@ fun interface SpawnSideTours {
     fun spawnSideTours(input: MobilityStructure)
 }
 
-class LegacySpawnSideTours(val rng: RNGHelper): SpawnSideTours {
+class LegacySpawnSideTours(val rng: RNGHelper) : SpawnSideTours {
 
     override fun spawnSideTours(input: MobilityStructure) {
 

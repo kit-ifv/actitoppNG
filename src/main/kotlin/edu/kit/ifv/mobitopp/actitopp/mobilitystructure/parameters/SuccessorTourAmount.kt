@@ -149,5 +149,5 @@ data class SuccessorTourAmountParameters(
     val averageAmountOfToursIs1: Double,
     val averageAmountOfToursIs2: Double,
     val previousDayHas0TourAfterMainAct: Double,
-    val previousDayHas1TourAfterMainAct: Double
+    val previousDayHas1TourAfterMainAct: Double,
 )

@@ -7,7 +7,7 @@ package edu.kit.ifv.mobitopp.actitopp.utils
  * Also the element knows its position relative to the main element.
  */
 
-class BidirectionalIndexedValue<out T:Any>(
+class BidirectionalIndexedValue<out T : Any>(
 
     val absoluteIndex: Int,
     val offset: Int,
@@ -23,6 +23,7 @@ class BidirectionalIndexedValue<out T:Any>(
         if (other !is BidirectionalIndexedValue<*>) return false
         return (element == other.element)
     }
+
     override fun hashCode(): Int {
         return element.hashCode()
     }

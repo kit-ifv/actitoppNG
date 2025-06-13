@@ -503,6 +503,7 @@ data class ParameterCollectionStep8J(
 ) {
 
     operator fun get(index: Int) = parameters[index]
+
     constructor(
         first: ParameterStep8J,
         second: ParameterStep8J,

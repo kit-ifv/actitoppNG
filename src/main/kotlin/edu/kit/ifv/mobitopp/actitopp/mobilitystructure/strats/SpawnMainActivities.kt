@@ -1,9 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats
 
-import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.modernization.MobilityStructure
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
 
 fun interface SpawnMainActivities {
     fun spawnMainActivities(input: MobilityStructure)
@@ -11,8 +9,8 @@ fun interface SpawnMainActivities {
 
 class SpawnWeek(
     val rng: RNGHelper,
-    private val dayStrategy: SpawnMainActivity = SpawnWithRespect(rng)
-): SpawnMainActivities {
+    private val dayStrategy: SpawnMainActivity = SpawnWithRespect(rng),
+) : SpawnMainActivities {
     override fun spawnMainActivities(input: MobilityStructure) {
         repeat(7) {
             dayStrategy.generateNewDay(input)

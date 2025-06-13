@@ -5,26 +5,26 @@ import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
 import edu.kit.ifv.mobitopp.actitopp.utils.times
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.ServiceDaySet
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.DefaultServiceParameters
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.ServiceDayParameters
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.ServiceDaySet
 
 val step1EWithParams = ModifiableDiscreteChoiceModel<Int, PersonSituation, ServiceDaySet>(AllocatedLogit.create {
 
-    option(1, parameters = {option1}) { standardUtilityFunction(this, it) }
-    option(2, parameters = {option2}) { standardUtilityFunction(this, it) }
-    option(3, parameters = {option3}) { standardUtilityFunction(this, it) }
-    option(4, parameters = {option4}) { standardUtilityFunction(this, it) }
-    option(5, parameters = {option5}) { standardUtilityFunction(this, it) }
-    option(6, parameters = {option6}) { standardUtilityFunction(this, it) }
-    option(7, parameters = {option7}) { standardUtilityFunction(this, it) }
+    option(1, parameters = { option1 }) { standardUtilityFunction(this, it) }
+    option(2, parameters = { option2 }) { standardUtilityFunction(this, it) }
+    option(3, parameters = { option3 }) { standardUtilityFunction(this, it) }
+    option(4, parameters = { option4 }) { standardUtilityFunction(this, it) }
+    option(5, parameters = { option5 }) { standardUtilityFunction(this, it) }
+    option(6, parameters = { option6 }) { standardUtilityFunction(this, it) }
+    option(7, parameters = { option7 }) { standardUtilityFunction(this, it) }
     option(0) {
         0.0
     }
 }
 ).initializeWithParameters(DefaultServiceParameters)
 
-private val standardUtilityFunction:  ServiceDayParameters.(PersonSituation) -> Double = {
+private val standardUtilityFunction: ServiceDayParameters.(PersonSituation) -> Double = {
     base +
             (it.isFulltimeEmployee()) * employmentIsFulltime +
             (it.isParttimeEmployee()) * employmentIsParttime +

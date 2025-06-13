@@ -2,9 +2,9 @@ package edu.kit.ifv.mobitopp.actitopp.modernization
 
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.PlannedTourMap
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.sideTourAmounts.GenerateSideToursFollowing
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.sideTourAmounts.GenerateSideToursPreceeding
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.PlannedTourMap
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.sideTourAmounts.PrecedingInput
 
 
@@ -23,17 +23,19 @@ interface PlannedTourAmounts {
         }
     }
 }
+
 // TODO rename, since this is now used in both day -> tour prec/succ and in tour -> act prec&succ
 data class ModifiablePlannedTourAmounts(
     override var precursorAmount: Int = 0,
     override var successorAmount: Int = 0,
-): PlannedTourAmounts
+) : PlannedTourAmounts
 
 
 data class ModifiableStructureWithPreviousDay(
     val currentDay: ModifiableDayStructure,
     val previousDay: DayStructure?,
 )
+
 /**
  * For each day we will generate the amount of precursor and successor tours. This is equivalent to the legacy steps
  * 3A and 3B. Since the information of the previous day is passed on towards the calculation of the next day, we need
@@ -42,9 +44,11 @@ data class ModifiableStructureWithPreviousDay(
  * TODO define an interface to allow for different strategies to determine the planned tour amounts, because some maniac
  *   may use completely new attributes to determine the number of tours.
  */
-class TourAmountTracker(initialDayStructures: Collection<DayStructure>,
-                        val person: PersonWithRoutine,
-                        val rngHelper: RNGHelper) {
+class TourAmountTracker(
+    initialDayStructures: Collection<DayStructure>,
+    val person: PersonWithRoutine,
+    val rngHelper: RNGHelper,
+) {
     // Irealy wish that I could find a better solution than to allow every field to be modifiable, because home activities
     // should not have a modifiable field for tour amounts, but since it is private whatever
     private val map: PlannedTourMap = PlannedTourMap(initialDayStructures)
@@ -62,6 +66,7 @@ class TourAmountTracker(initialDayStructures: Collection<DayStructure>,
         generateSuccessorTourAmounts(targets)
         return map.readOnly()
     }
+
     /** step 3A
      *
      */
@@ -71,10 +76,12 @@ class TourAmountTracker(initialDayStructures: Collection<DayStructure>,
             val currentPlan = map.getModifiablePlannedTourAmounts(it)
             val previousDayPlan = map.getPreviousPlannedTourAmounts(it)
             val result = generator.generate(
-                PrecedingInput(person,
-                it,
-                currentPlan,
-                previousDayPlan)
+                PrecedingInput(
+                    person,
+                    it,
+                    currentPlan,
+                    previousDayPlan
+                )
             )
             generator.update(currentPlan, result)
             result
@@ -90,10 +97,12 @@ class TourAmountTracker(initialDayStructures: Collection<DayStructure>,
             val currentPlan = map.getModifiablePlannedTourAmounts(it)
             val previousDayPlan = map.getPreviousPlannedTourAmounts(it)
             val result = generator.generate(
-                PrecedingInput(person,
-                it,
-                currentPlan,
-                previousDayPlan)
+                PrecedingInput(
+                    person,
+                    it,
+                    currentPlan,
+                    previousDayPlan
+                )
             )
             generator.update(currentPlan, result)
             result

@@ -12,25 +12,25 @@ import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.WorkDaySet
 
 val defaultWorkDayChoiceModel = ModifiableDiscreteChoiceModel<Int, PersonSituation, WorkDaySet>(AllocatedLogit.create {
 
-    option(1, parameters = {option1}, { standardUtilityFunction(this, it) })
-    option(2, parameters = {option2}, { standardUtilityFunction(this, it) })
-    option(3, parameters = {option3}, { standardUtilityFunction(this, it) })
-    option(4, parameters = {option4}, { standardUtilityFunction(this, it) })
-    option(5, parameters = {option5}, { standardUtilityFunction(this, it) })
-    option(6, parameters = {option6}, { standardUtilityFunction(this, it) })
-    option(7, parameters = {option7}, { standardUtilityFunction(this, it) })
+    option(1, parameters = { option1 }, { standardUtilityFunction(this, it) })
+    option(2, parameters = { option2 }, { standardUtilityFunction(this, it) })
+    option(3, parameters = { option3 }, { standardUtilityFunction(this, it) })
+    option(4, parameters = { option4 }, { standardUtilityFunction(this, it) })
+    option(5, parameters = { option5 }, { standardUtilityFunction(this, it) })
+    option(6, parameters = { option6 }, { standardUtilityFunction(this, it) })
+    option(7, parameters = { option7 }, { standardUtilityFunction(this, it) })
     option(0) {
         0.0
     }
-    
+
 }).initializeWithParameters(DefaultWorkParameters)
 
-private val standardUtilityFunction:  WorkDayParameters.(PersonSituation) -> Double = {
+private val standardUtilityFunction: WorkDayParameters.(PersonSituation) -> Double = {
     base +
             (it.isFulltimeEmployee()) * employmentFullTime +
             (it.isParttimeEmployee()) * employmentPartTime +
             (it.isStudent()) * employmentStudent +
-            (it.isVocational()) * employmentVocational+
+            (it.isVocational()) * employmentVocational +
 
             (it.isAged10To17()) * ageIn10to17 +
             (it.isAged18To25()) * ageIn18To25 +

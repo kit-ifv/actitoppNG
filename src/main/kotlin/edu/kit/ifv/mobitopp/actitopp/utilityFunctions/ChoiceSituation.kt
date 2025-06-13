@@ -1,4 +1,5 @@
 package edu.kit.ifv.mobitopp.actitopp.utilityFunctions
+
 /**
  * A choice situation may contain additional appended information but is basically only a wrapper for [X]
  * Thus the equals and hash implementaion of that type can be used for mapping to a certain utility function.

@@ -14,6 +14,7 @@ import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1KWithParams
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1LWithParams
 
 typealias ChoiceModel = SealedDiscreteChoiceModel<Int, PersonSituation>
+
 /**
  * The standard implementation to generate a week routine. Using choice models and mutable fields. Note that the
  * execution order is important, because the choice models take into account the selection of preceding decisions.

@@ -123,12 +123,13 @@ class ModifiableDiscreteChoiceModel<X : Any, SIT : ChoiceSituation<X>, P>(
             )
         ).choice
     }
+
     fun probabilities(parameters: P, converter: (X) -> SIT): Map<X, Double> {
         return probabilities(distributionFunction.options, parameters, converter)
     }
 
     fun probabilities(options: Set<X>, parameters: P, converter: (X) -> SIT): Map<X, Double> {
-        return probabilities(options.map(converter).toSet(),parameters).mapKeys { it.key.choice }
+        return probabilities(options.map(converter).toSet(), parameters).mapKeys { it.key.choice }
     }
 
     fun registeredOptions() = distributionFunction.options
@@ -157,13 +158,13 @@ class KnownDiscreteChoiceModel<X : Any, SIT : ChoiceSituation<X>, P>(
 
 interface SealedDiscreteChoiceModel<X : Any, SIT : ChoiceSituation<X>> {
     fun select(converter: (X) -> SIT): X
-    fun select(options: Set<X>, converter: (X) -> SIT) : X
-    fun select(randomNumber: Double, converter: (X) -> SIT) :X
-    fun select(options: Set<X>, randomNumber: Double, converter: (X) -> SIT) :X
-    fun utilities(converter: (X) -> SIT) :Map<X, Double>
-    fun utilities(options: Set<X>, converter: (X) -> SIT) :Map<X, Double>
-    fun probabilities(converter: (X) -> SIT) :Map<X, Double>
-    fun probabilities(options: Set<X>, converter: (X) -> SIT) :Map<X, Double>
+    fun select(options: Set<X>, converter: (X) -> SIT): X
+    fun select(randomNumber: Double, converter: (X) -> SIT): X
+    fun select(options: Set<X>, randomNumber: Double, converter: (X) -> SIT): X
+    fun utilities(converter: (X) -> SIT): Map<X, Double>
+    fun utilities(options: Set<X>, converter: (X) -> SIT): Map<X, Double>
+    fun probabilities(converter: (X) -> SIT): Map<X, Double>
+    fun probabilities(options: Set<X>, converter: (X) -> SIT): Map<X, Double>
 }
 
 class ParametrizedDiscreteChoiceModel<X : Any, SIT : ChoiceSituation<X>, P>(
@@ -173,16 +174,24 @@ class ParametrizedDiscreteChoiceModel<X : Any, SIT : ChoiceSituation<X>, P>(
 
     override fun select(converter: (X) -> SIT) = original.select(parameters, converter)
     override fun select(options: Set<X>, converter: (X) -> SIT) = original.select(options, parameters, converter)
-    override fun select(randomNumber: Double, converter: (X) -> SIT) = original.select(parameters, randomNumber, converter)
-    override fun select(options: Set<X>, randomNumber: Double, converter: (X) -> SIT) = original.select(options, parameters, randomNumber, converter)
+    override fun select(randomNumber: Double, converter: (X) -> SIT) =
+        original.select(parameters, randomNumber, converter)
+
+    override fun select(options: Set<X>, randomNumber: Double, converter: (X) -> SIT) =
+        original.select(options, parameters, randomNumber, converter)
+
     override fun utilities(converter: (X) -> SIT) = original.utilities(parameters, converter)
     override fun utilities(options: Set<X>, converter: (X) -> SIT) = original.utilities(options, parameters, converter)
     override fun probabilities(converter: (X) -> SIT) = original.probabilities(parameters, converter)
-    override fun probabilities(options: Set<X>, converter: (X) -> SIT) = original.probabilities(options, parameters, converter)
-    fun selectInjected(situation: (X) -> SIT, injections: Map<X, (Double) -> Double>): X = original.selectInjected(parameters, situation, injections)
+    override fun probabilities(options: Set<X>, converter: (X) -> SIT) =
+        original.probabilities(options, parameters, converter)
+
+    fun selectInjected(situation: (X) -> SIT, injections: Map<X, (Double) -> Double>): X =
+        original.selectInjected(parameters, situation, injections)
+
     fun registeredOptions() = original.registeredOptions()
 
-    fun utilityFunction(option:X) = original.utilityFunction(option)
+    fun utilityFunction(option: X) = original.utilityFunction(option)
 }
 
 fun <X : Any, SIT : ChoiceSituation<X>, PARAMS> ModifiableDiscreteChoiceModel<X, SIT, PARAMS>.initializeWithParameters(

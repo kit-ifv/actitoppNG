@@ -552,6 +552,7 @@ data class ParameterCollectionStep8B(
 ) {
 
     operator fun get(index: Int): ParameterStep8B = parameters[index]
+
     constructor(
         first: ParameterStep8B,
         second: ParameterStep8B,
@@ -587,7 +588,7 @@ data class ParameterCollectionStep8B(
             fifteenth
         )
     )
-    }
+}
 
 
 data class ParameterStep8B(

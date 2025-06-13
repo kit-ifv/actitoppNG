@@ -89,4 +89,4 @@ data class LeisureBudgetParameters(
     val tagemit_lakt_4: Double,
     val tagemit_lakt_5: Double,
 
-)
+    )

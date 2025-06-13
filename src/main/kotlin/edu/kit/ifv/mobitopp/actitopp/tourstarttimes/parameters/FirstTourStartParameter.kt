@@ -1,7 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.tourstarttimes.parameters
 
 data class ParameterCollectionStep10M(
-    val parameters: List<ParameterStep10M>
+    val parameters: List<ParameterStep10M>,
 ) {
 
     companion object {
@@ -73,7 +73,7 @@ data class ParameterStep10M(
     val haupttour_education: Double,
     val touristhaupttour: Double,
 
-)
+    )
 
 val ParametersStep10M = ParameterCollectionStep10M.create(
     first = ParameterStep10M(

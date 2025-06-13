@@ -1,8 +1,8 @@
 package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels
 
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.PrecursorTourAmountSet
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.DefaultPrecursorTourParameters
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.PrecursorTourAmountParameters
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.PrecursorTourAmountSet
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.PreviousDaySituation
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel

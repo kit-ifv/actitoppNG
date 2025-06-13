@@ -15,7 +15,7 @@ interface IPerson {
     val numberofcarsinhousehold: Int
     val isAllowedToWork: Boolean
     val commutingdistance_work: Double
-    val commutingdistance_education : Double
+    val commutingdistance_education: Double
 
     val id: Int
 

@@ -1,8 +1,8 @@
 package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels
 
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SideTourSuccessorSet
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.DefaultSideTourSuccessorParameters
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SideTourSuccessorParameters
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SideTourSuccessorSet
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.TourSituationInt
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
@@ -25,22 +25,22 @@ val step5BWithParams =
 
 private val standardUtilityFunction: SideTourSuccessorParameters.(TourSituationInt) -> Double = {
     base +
-            (it.isBeforeMainTour()) * tourliegtvorhaupttour+
-            (it.isAfterMainTour()) * tourliegtnachhaupttour+
-            (it.numActivitiesBeforeMainActivityIs1()) * anzaktvorhauptaktist1+
-            (it.numActivitiesBeforeMainActivityIs2()) * anzaktvorhauptaktist2+
-            (it.numActivitiesBeforeMainActivityIs3()) * anzaktvorhauptaktist3+
-            (it.tourMainActivityIsWork()) * tourtyp_work+
-            (it.tourMainActivityIsEducation()) * tourtyp_education+
-            (it.isSaturday()) * tag_sa+
-            (it.isSunday()) * tag_so+
-            (it.isAged18To35()) * alter_18bis35+
-            (it.isAged36To50()) * alter_36bis50+
-            (it.isAged51To60()) * alter_51bis60+
-            (it.amountOfToursIs1()) * taghat1tour+
-            (it.amountOfToursIs2()) * taghat2touren+
-            (it.averageAmountOfActivitiesIs1()) * mean_1akt+
-            (it.averageAmountOfActivitiesIs2()) * mean_2akt+
+            (it.isBeforeMainTour()) * tourliegtvorhaupttour +
+            (it.isAfterMainTour()) * tourliegtnachhaupttour +
+            (it.numActivitiesBeforeMainActivityIs1()) * anzaktvorhauptaktist1 +
+            (it.numActivitiesBeforeMainActivityIs2()) * anzaktvorhauptaktist2 +
+            (it.numActivitiesBeforeMainActivityIs3()) * anzaktvorhauptaktist3 +
+            (it.tourMainActivityIsWork()) * tourtyp_work +
+            (it.tourMainActivityIsEducation()) * tourtyp_education +
+            (it.isSaturday()) * tag_sa +
+            (it.isSunday()) * tag_so +
+            (it.isAged18To35()) * alter_18bis35 +
+            (it.isAged36To50()) * alter_36bis50 +
+            (it.isAged51To60()) * alter_51bis60 +
+            (it.amountOfToursIs1()) * taghat1tour +
+            (it.amountOfToursIs2()) * taghat2touren +
+            (it.averageAmountOfActivitiesIs1()) * mean_1akt +
+            (it.averageAmountOfActivitiesIs2()) * mean_2akt +
             (it.averageAmountOfActivitiesIs3()) * mean_3akt
 
 }

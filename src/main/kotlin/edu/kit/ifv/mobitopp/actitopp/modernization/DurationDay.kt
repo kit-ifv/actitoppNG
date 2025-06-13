@@ -16,7 +16,7 @@ class DurationDay private constructor(
     val startOfDay: Duration,
     var lowerBoundJointTours: Int = 0,
     var lowerBoundJointActivities: Int = 0,
-) :Comparable<DurationDay>{
+) : Comparable<DurationDay> {
     constructor(dayIndex: Int) : this(dayIndex.days)
 
     val weekday: DayOfWeek = DayOfWeek.of(startOfDay.inWholeDays.toInt().positiveModulus(7) + 1)

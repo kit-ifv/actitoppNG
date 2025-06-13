@@ -1,7 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters
 
 
-
 data class ActivityAmountSet(
 
     val option2: ActivityAmountParameters,
@@ -26,7 +25,7 @@ data class ActivityAmountParameters(
     val pendeln_0bis5km: Double,
     val haushalthatkinderunter10: Double,
 
-)
+    )
 
 val DefaultActivityAmountParameters = ActivityAmountSet(
     option2 = ActivityAmountParameters(

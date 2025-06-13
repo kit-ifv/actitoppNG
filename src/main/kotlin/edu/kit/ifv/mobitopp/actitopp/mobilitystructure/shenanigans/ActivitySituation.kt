@@ -3,11 +3,8 @@ package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans
 
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
-import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalIndexedValue
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.PlannedTourAmounts
-import edu.kit.ifv.mobitopp.actitopp.utils.Position
-import edu.kit.ifv.mobitopp.actitopp.modernization.MutableTourStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.TourStructure
 import edu.kit.ifv.mobitopp.actitopp.steps.ActivityAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributesFromStructure
@@ -15,9 +12,10 @@ import edu.kit.ifv.mobitopp.actitopp.steps.FullyQualifiedDayStructureAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.RoutineAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.TourAttributes
-
 import edu.kit.ifv.mobitopp.actitopp.steps.TourAttributesByStructAndNumbers
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceSituation
+import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalIndexedValue
+import edu.kit.ifv.mobitopp.actitopp.utils.Position
 
 
 class ActivitySituation private constructor(
@@ -32,7 +30,6 @@ class ActivitySituation private constructor(
     ActivityAttributes by activityAttributes {
 
 
-
     constructor(
         choice: ActivityType,
         personWithRoutine: PersonWithRoutine,
@@ -44,7 +41,11 @@ class ActivitySituation private constructor(
         choice,
         PersonAndRoutineFrom(personWithRoutine),
         DayAttributesFromStructure(dayStructure),
-        TourAttributesByStructAndNumbers(tourStructure, plannedTourAmounts.precursorAmount, plannedTourAmounts.successorAmount),
+        TourAttributesByStructAndNumbers(
+            tourStructure,
+            plannedTourAmounts.precursorAmount,
+            plannedTourAmounts.successorAmount
+        ),
         ActivityAttributes { position == Position.BEFORE }
     )
 

@@ -1,7 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters
 
 
-
 data class TourAmountSet(
 
     val option2: TourAmountParameters,
@@ -24,7 +23,7 @@ data class TourAmountParameters(
     val commuteOver50km: Double,
     val commuteIn0To5Km: Double,
     val householdHasChildren: Double,
-    val isMale: Double
+    val isMale: Double,
 )
 
 val DefaultTourAmountParameters = TourAmountSet(

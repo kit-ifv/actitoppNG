@@ -24,11 +24,18 @@ class TourSituation private constructor(
     override val choice: ActivityType, personAndRoutineAttributes: PersonAndRoutineAttributes,
     dayAttributes: FullyQualifiedDayStructureAttributes, tourAttributes: TourPositionAttributes,
 ) :
-    ChoiceSituation<ActivityType>(), TourPositionAttributes by tourAttributes, PersonAttributes by personAndRoutineAttributes,
+    ChoiceSituation<ActivityType>(), TourPositionAttributes by tourAttributes,
+    PersonAttributes by personAndRoutineAttributes,
     RoutineAttributes by personAndRoutineAttributes, FullyQualifiedDayStructureAttributes by dayAttributes {
 
 
-    constructor(choice: ActivityType, person: IPerson, routine: WeekRoutine, day: DayStructure, tourAttributes: TourPositionAttributes): this(
+    constructor(
+        choice: ActivityType,
+        person: IPerson,
+        routine: WeekRoutine,
+        day: DayStructure,
+        tourAttributes: TourPositionAttributes,
+    ) : this(
         choice,
         PersonAndRoutineFrom(PersonWithRoutine(person, routine)),
         DayAttributesFromStructure(day),
@@ -36,6 +43,7 @@ class TourSituation private constructor(
     )
 
 }
+
 class TourSituationInt private constructor(
     override val choice: Int, personAndRoutineAttributes: PersonAndRoutineAttributes,
     dayAttributes: FullyQualifiedDayStructureAttributes, tourAttributes: TourAttributes,
@@ -43,16 +51,23 @@ class TourSituationInt private constructor(
 
     ) :
     ChoiceSituation<Int>(), TourAttributes by tourAttributes, PersonAttributes by personAndRoutineAttributes,
-    RoutineAttributes by personAndRoutineAttributes, FullyQualifiedDayStructureAttributes by dayAttributes, ActivityAmountAttributes by activityAmountAttributes {
+    RoutineAttributes by personAndRoutineAttributes, FullyQualifiedDayStructureAttributes by dayAttributes,
+    ActivityAmountAttributes by activityAmountAttributes {
 
-    constructor(choice: Int, person: IPerson, routine: WeekRoutine, day: DayStructure, tour: BidirectionalIndexedValue<TourStructure>, amountOfPrecursorActivities: Int): this(
+    constructor(
+        choice: Int,
+        person: IPerson,
+        routine: WeekRoutine,
+        day: DayStructure,
+        tour: BidirectionalIndexedValue<TourStructure>,
+        amountOfPrecursorActivities: Int,
+    ) : this(
         choice,
         PersonAndRoutineFrom(PersonWithRoutine(person, routine)),
         DayAttributesFromStructure(day),
         TourAttributesByIndexedStructure(tour),
         ActivityAmountByNumber(amountOfPrecursorActivities),
     )
-
 
 
 }

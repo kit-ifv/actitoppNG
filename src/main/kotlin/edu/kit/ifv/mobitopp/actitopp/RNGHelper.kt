@@ -7,9 +7,11 @@ interface RNGHelper {
     val randomValue: Double
     val generationCounter: Int
     fun copy(): RNGHelper
+
     @Deprecated("Pure int index based should never occur, use a wrapper")
     fun getRandomPersonKey(size: Int): Int
     fun getRandomValueBetween(from: Int, to: Int): Int
+
     companion object {
         operator fun invoke(seed: Long) = RNGHelperImpl(seed)
     }
@@ -21,10 +23,11 @@ interface RNGHelper {
 class RNGHelperImpl private constructor(
 
     val seed: Long,
-    private val rng : Random
-): RNGHelper {
+    private val rng: Random,
+) : RNGHelper {
 
-    constructor(seed: Long): this(seed = seed, rng = Random(seed))
+    constructor(seed: Long) : this(seed = seed, rng = Random(seed))
+
     /**
      * @return
      */
@@ -80,8 +83,8 @@ class RNGHelperImpl private constructor(
 
     fun synchronize(other: RNGHelper) {
         val difference = abs(generationCounter - other.generationCounter)
-        if(difference == 0) return
-        if(generationCounter < other.generationCounter) {
+        if (difference == 0) return
+        if (generationCounter < other.generationCounter) {
             repeat(difference) {
                 this.randomValue
             }
@@ -102,9 +105,8 @@ class RNGHelperImpl private constructor(
 }
 
 
-
 fun RNGHelper.getRandomValues(amount: Int): List<Double> {
-    return (0..<amount).map{
+    return (0..<amount).map {
         randomValue
     }
 }
@@ -113,7 +115,7 @@ fun RNGHelper.getRandomValues(amount: Int): List<Double> {
  * The randomness of legacy actitopp is stepped through in a nondecipherable way, so we track the randomness generated,
  * and pull the values if needed.
  */
-class RNGKeeper(val original: RNGHelper): RNGHelper by original {
+class RNGKeeper(val original: RNGHelper) : RNGHelper by original {
     val tracker: MutableMap<String, ArrayDeque<Double>> = mutableMapOf()
     fun generate(id: String): Double {
         val rnd = original.randomValue

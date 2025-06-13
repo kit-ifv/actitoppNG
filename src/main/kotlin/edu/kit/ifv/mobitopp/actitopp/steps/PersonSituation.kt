@@ -1,6 +1,5 @@
 package edu.kit.ifv.mobitopp.actitopp.steps
 
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.ModifiableWeekRoutine
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.enums.AreaType
 import edu.kit.ifv.mobitopp.actitopp.enums.Employment
@@ -12,6 +11,7 @@ import edu.kit.ifv.mobitopp.actitopp.enums.isParttime
 import edu.kit.ifv.mobitopp.actitopp.enums.isStudent
 import edu.kit.ifv.mobitopp.actitopp.enums.isStudentOrAzubi
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceSituation
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.ModifiableWeekRoutine
 
 /**
  * This interface is a rewrite of the actitoppPersonParameters Enum, and exists only to be able to cross reference the
@@ -65,7 +65,7 @@ class PersonAttributesFromElement(val person: IPerson) : PersonAttributes {
     override fun isAged36To50() = person.age in 36..50
     override fun isAged51To60() = person.age in 51..60
     override fun isAged61To70() = person.age in 61..70
-    override fun isAged18To35(): Boolean  = person.age in 18..35
+    override fun isAged18To35(): Boolean = person.age in 18..35
     override fun areaTypeRural() = person.areatype == AreaType.RURAL
     override fun areaTypeConurbation() = person.areatype == AreaType.CONURBATION
     override fun hasChildrenInHousehold() = person.children0_10 > 0
@@ -80,7 +80,7 @@ class PersonAttributesFromElement(val person: IPerson) : PersonAttributes {
     override fun commuteOver50km() = person.maxCommute > 50.0
     override fun amountOfPKW(): Int = person.numberofcarsinhousehold
 
-    override     fun isEmployedAnywhere(): Boolean = person.employment.isEmployedAnywhere()
+    override fun isEmployedAnywhere(): Boolean = person.employment.isEmployedAnywhere()
     override fun isStudentOrAzubi(): Boolean {
         return person.employment.isStudentOrAzubi()
     }
@@ -90,13 +90,17 @@ class PersonAttributesFromElement(val person: IPerson) : PersonAttributes {
 class PersonSituation private constructor(
     override val choice: Int,
     private val modifiableWeekRoutine: ModifiableWeekRoutine,
-    val person : IPerson,
+    val person: IPerson,
     attributes: PersonAttributesFromElement,
 ) : ChoiceSituation<Int>(), PersonAttributes by attributes {
 
 
-    constructor(choice: Int, modifiableWeekRoutine: ModifiableWeekRoutine, person: IPerson): this(choice, modifiableWeekRoutine, person, PersonAttributesFromElement(person))
-
+    constructor(choice: Int, modifiableWeekRoutine: ModifiableWeekRoutine, person: IPerson) : this(
+        choice,
+        modifiableWeekRoutine,
+        person,
+        PersonAttributesFromElement(person)
+    )
 
 
     fun amountOfWorkingDays() = modifiableWeekRoutine.amountOfWorkingDays

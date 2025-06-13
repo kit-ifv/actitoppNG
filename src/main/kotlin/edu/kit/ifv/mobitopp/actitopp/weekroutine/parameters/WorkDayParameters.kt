@@ -11,7 +11,7 @@ data class WorkDaySet(
     override val option5: WorkDayParameters,
     override val option6: WorkDayParameters,
     override val option7: WorkDayParameters,
-): WeekRoutineParameterSet<WorkDayParameters>
+) : WeekRoutineParameterSet<WorkDayParameters>
 
 /**
  * This class lists all the parameters that influence the utility of a concrete decision for the amount of work days

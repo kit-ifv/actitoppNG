@@ -1,4 +1,5 @@
 package edu.kit.ifv.mobitopp.actitopp.utilityFunctions
+
 interface OptionBasedSituationBuilder<X : Any, SIT : ChoiceSituation<X>, PARAMS> {
     /**
      * Checking whether a situation is equal to a certain element x is a concretization of the more general
@@ -34,12 +35,14 @@ interface OptionBasedSituationBuilder<X : Any, SIT : ChoiceSituation<X>, PARAMS>
         }
         addUtilityFunctionByIdentifier(option, internalUtilityFunction)
     }
+
     /**
      * Add the convenience method to add a bunch of options, zipped with the parameters when referencing the same utility function
      */
     fun <P> bulk(options: Map<X, (PARAMS) -> P>, utilityFunction: P.(SIT) -> Double) {
-        bulk(options.entries.map{it.key to it.value}, utilityFunction)
+        bulk(options.entries.map { it.key to it.value }, utilityFunction)
     }
+
     fun <P> bulk(options: Collection<Pair<X, (PARAMS) -> P>>, utilityFunction: P.(SIT) -> Double) {
         options.forEach { (option, conversion) ->
             val internalUtilityFunction = UtilityFunction { alternative: SIT, parameterObject: PARAMS ->
@@ -52,6 +55,7 @@ interface OptionBasedSituationBuilder<X : Any, SIT : ChoiceSituation<X>, PARAMS>
         }
 
     }
+
     /**
      * Theoretically you can also specify options via their Situation instantiations, but that seems weird
      */

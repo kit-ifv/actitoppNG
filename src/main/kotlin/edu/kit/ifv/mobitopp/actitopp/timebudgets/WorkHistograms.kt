@@ -3,8 +3,8 @@ package edu.kit.ifv.mobitopp.actitopp.timebudgets
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAttributesFromElement
-import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.WorkBudgetSet
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.WorkBudgetParameters
+import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.WorkBudgetSet
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.WorkBudgets
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceSituation
@@ -28,23 +28,27 @@ class WorkHistograms(
     val histogram8: ArrayHistogram,
     val histogram9: ArrayHistogram,
 
-    ): HistogramSelection {
+    ) : HistogramSelection {
 
-    override fun select(randomNumber: Double, finalizedActivityPattern: FinalizedActivityPattern, person: IPerson): ArrayHistogram {
+    override fun select(
+        randomNumber: Double,
+        finalizedActivityPattern: FinalizedActivityPattern,
+        person: IPerson,
+    ): ArrayHistogram {
         return choiceModel.select(randomNumber) { WorkChoiceSituation(it, finalizedActivityPattern, person) }
     }
 
     private val choiceModel = ModifiableDiscreteChoiceModel<ArrayHistogram, WorkChoiceSituation, WorkBudgetSet>(
-        AllocatedLogit.create { 
-            option(histogram1, parameters = {category1}) { standardUtilityFunction(this, it) }
-            option(histogram2, parameters = {category2}) { standardUtilityFunction(this, it) }
-            option(histogram3, parameters = {category3}) { standardUtilityFunction(this, it) }
-            option(histogram4, parameters = {category4}) { standardUtilityFunction(this, it) }
-            option(histogram5, parameters = {category5}) { standardUtilityFunction(this, it) }
-            option(histogram6, parameters = {category6}) { standardUtilityFunction(this, it) }
-            option(histogram7) {0.0}
-            option(histogram8, parameters = {category8}) { standardUtilityFunction(this, it) }
-            option(histogram9, parameters = {category9}) { standardUtilityFunction(this, it) }
+        AllocatedLogit.create {
+            option(histogram1, parameters = { category1 }) { standardUtilityFunction(this, it) }
+            option(histogram2, parameters = { category2 }) { standardUtilityFunction(this, it) }
+            option(histogram3, parameters = { category3 }) { standardUtilityFunction(this, it) }
+            option(histogram4, parameters = { category4 }) { standardUtilityFunction(this, it) }
+            option(histogram5, parameters = { category5 }) { standardUtilityFunction(this, it) }
+            option(histogram6, parameters = { category6 }) { standardUtilityFunction(this, it) }
+            option(histogram7) { 0.0 }
+            option(histogram8, parameters = { category8 }) { standardUtilityFunction(this, it) }
+            option(histogram9, parameters = { category9 }) { standardUtilityFunction(this, it) }
 
         }
     ).initializeWithParameters(WorkBudgets)
@@ -65,30 +69,40 @@ class WorkHistograms(
         }
     }
 }
+
 private val standardUtilityFunction: WorkBudgetParameters.(WorkChoiceSituation) -> Double = {
-    base+
-            (it.amountOfWorkActivitiesInWeek()) * anzakt_woche_w+
-            (it.amountOfEducationActivitiesInWeek()) * anzakt_woche_e+
-            (it.isFulltimeEmployee()) * beruf_vollzeit+
-            (it.isParttimeEmployee()) * beruf_teilzeit+
-            (it.isStudent()) * beruf_schueler+
-            (it.isVocational()) * beruf_azubi+
-            (it.isMale()) * male+
-            (it.isAged18To25()) * alter_18bis25+
-            (it.isAged26To35()) * alter_26bis35+
-            (it.isAged36To50()) * alter_36bis50+
-            (it.isAged51To60()) * alter_51bis60+
-            (it.amountOfDaysWithWorkActivityIs1()) * tagemit_wakt_1+
-            (it.amountOfDaysWithWorkActivityIs2()) * tagemit_wakt_2+
-            (it.amountOfDaysWithWorkActivityIs3()) * tagemit_wakt_3+
-            (it.amountOfDaysWithWorkActivityIs4()) * tagemit_wakt_4+
-            (it.amountOfDaysWithWorkActivityIs5()) * tagemit_wakt_5+
+    base +
+            (it.amountOfWorkActivitiesInWeek()) * anzakt_woche_w +
+            (it.amountOfEducationActivitiesInWeek()) * anzakt_woche_e +
+            (it.isFulltimeEmployee()) * beruf_vollzeit +
+            (it.isParttimeEmployee()) * beruf_teilzeit +
+            (it.isStudent()) * beruf_schueler +
+            (it.isVocational()) * beruf_azubi +
+            (it.isMale()) * male +
+            (it.isAged18To25()) * alter_18bis25 +
+            (it.isAged26To35()) * alter_26bis35 +
+            (it.isAged36To50()) * alter_36bis50 +
+            (it.isAged51To60()) * alter_51bis60 +
+            (it.amountOfDaysWithWorkActivityIs1()) * tagemit_wakt_1 +
+            (it.amountOfDaysWithWorkActivityIs2()) * tagemit_wakt_2 +
+            (it.amountOfDaysWithWorkActivityIs3()) * tagemit_wakt_3 +
+            (it.amountOfDaysWithWorkActivityIs4()) * tagemit_wakt_4 +
+            (it.amountOfDaysWithWorkActivityIs5()) * tagemit_wakt_5 +
             (it.amountOfDaysWithWorkActivityIs6()) * tagemit_wakt_6
 }
 
 
-class WorkChoiceSituation private constructor(override val choice: ArrayHistogram, val personAttributes: PersonAttributes, val patternAttributes: FinalizedPatternAttributes) :
-    ChoiceSituation<ArrayHistogram>(), PersonAttributes by personAttributes, FinalizedPatternAttributes by patternAttributes {
-        constructor(choice: ArrayHistogram, finalizedPattern: FinalizedActivityPattern, person: IPerson): this(choice, PersonAttributesFromElement(person), PatternAttributesByElement(finalizedPattern))
+class WorkChoiceSituation private constructor(
+    override val choice: ArrayHistogram,
+    val personAttributes: PersonAttributes,
+    val patternAttributes: FinalizedPatternAttributes,
+) :
+    ChoiceSituation<ArrayHistogram>(), PersonAttributes by personAttributes,
+    FinalizedPatternAttributes by patternAttributes {
+    constructor(choice: ArrayHistogram, finalizedPattern: FinalizedActivityPattern, person: IPerson) : this(
+        choice,
+        PersonAttributesFromElement(person),
+        PatternAttributesByElement(finalizedPattern)
+    )
 
 }

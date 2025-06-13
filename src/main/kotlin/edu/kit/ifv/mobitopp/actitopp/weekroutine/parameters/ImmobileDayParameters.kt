@@ -95,7 +95,7 @@ data class ParameterCollectionStep1F(
     override val option5: ParametersStep1F,
     override val option6: ParametersStep1F,
     override val option7: ParametersStep1F,
-): WeekRoutineParameterSet<ParametersStep1F>
+) : WeekRoutineParameterSet<ParametersStep1F>
 
 data class ParametersStep1F(
     val base: Double,

@@ -1,14 +1,14 @@
 package edu.kit.ifv.mobitopp.actitopp.modernization
 
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.DetermineTripDuration
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.StandardCommuteDurations
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.TourPlan
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalQueue
 import edu.kit.ifv.mobitopp.actitopp.utils.Position
 
-interface TourStructure : Collection<ActivityType>{
+interface TourStructure : Collection<ActivityType> {
     fun mainActivityType(): ActivityType
     fun elements(): Collection<ActivityType>
 

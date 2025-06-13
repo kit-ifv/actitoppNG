@@ -10,6 +10,7 @@ enum class AreaType(val code: Int) {
     METROPOLITAN(4),
     CONURBATION(5),
     UNKNOWN(-1);
+
     companion object {
         fun fromCode(code: Int): AreaType {
             return entries.firstOrNull { it.code == code } ?: UNKNOWN

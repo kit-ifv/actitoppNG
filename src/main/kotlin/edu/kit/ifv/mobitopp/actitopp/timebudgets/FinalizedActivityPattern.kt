@@ -22,7 +22,7 @@ interface FinalizedActivityPattern {
     val leisureActivities: Int
     val shoppingActivities: Int
     val transportActivities: Int
-    
+
     companion object {
 
         fun fromModernPattern(mobilityStructure: MobilityStructure): FinalizedActivityPatternImpl {
@@ -33,11 +33,11 @@ interface FinalizedActivityPattern {
                 leisureDays = mobilityStructure.amountOfDaysWith(ActivityType.LEISURE),
                 shoppingDays = mobilityStructure.amountOfDaysWith(ActivityType.SHOPPING),
                 transportDays = mobilityStructure.amountOfDaysWith(ActivityType.TRANSPORT),
-                workActivities =  activityMap[ActivityType.WORK]?:0,
-                educationActivities = activityMap[ActivityType.EDUCATION]?:0,
-                leisureActivities = activityMap[ActivityType.LEISURE]?:0,
-                shoppingActivities = activityMap[ActivityType.SHOPPING]?:0,
-                transportActivities = activityMap[ActivityType.TRANSPORT]?:0,
+                workActivities = activityMap[ActivityType.WORK] ?: 0,
+                educationActivities = activityMap[ActivityType.EDUCATION] ?: 0,
+                leisureActivities = activityMap[ActivityType.LEISURE] ?: 0,
+                shoppingActivities = activityMap[ActivityType.SHOPPING] ?: 0,
+                transportActivities = activityMap[ActivityType.TRANSPORT] ?: 0,
             )
         }
     }
@@ -90,7 +90,7 @@ interface FinalizedPatternAttributes {
     fun amountOfDaysWithTransportActivityIs1(): Boolean
 }
 
-class PatternAttributesByElement(val element: FinalizedActivityPattern): FinalizedPatternAttributes {
+class PatternAttributesByElement(val element: FinalizedActivityPattern) : FinalizedPatternAttributes {
     override fun amountOfWorkActivitiesInWeek(): Int {
         return element.workActivities
     }
@@ -98,6 +98,7 @@ class PatternAttributesByElement(val element: FinalizedActivityPattern): Finaliz
     override fun amountOfEducationActivitiesInWeek(): Int {
         return element.educationActivities
     }
+
     override fun amountOfLeisureActivitiesInWeek(): Int = element.leisureActivities
     override fun amountOfShoppingActivitiesInWeek(): Int = element.shoppingActivities
     override fun amountOfTransportActivitiesInWeek(): Int = element.transportActivities

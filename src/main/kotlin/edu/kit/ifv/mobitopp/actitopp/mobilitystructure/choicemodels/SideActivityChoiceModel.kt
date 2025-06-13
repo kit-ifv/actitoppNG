@@ -1,9 +1,9 @@
 package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels
 
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SideActivitySet
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.DefaultSideActivityParameters
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SideActivityParameters
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SideActivitySet
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.ActivitySituation
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel

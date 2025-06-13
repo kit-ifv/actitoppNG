@@ -7,7 +7,7 @@ import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributesFromStructure
 import edu.kit.ifv.mobitopp.actitopp.steps.DayStructureAttributes
 
 
-interface PreviousDayAttributes  {
+interface PreviousDayAttributes {
     fun previousDayHasNoBeforeTour(): Boolean
     fun previousDayHasOneBeforeTour(): Boolean
     fun previousDayHasNoAfterTour(): Boolean
@@ -22,12 +22,11 @@ class PreviousDayAttributesNumeric(
 ) : PreviousDayAttributes, DayStructureAttributes by dayAttributes {
 
 
-
     constructor(
         dayStructure: DayStructure,
         plannedTourAmounts: PlannedTourAmounts?,
 
-    ):this(
+        ) : this(
         dayAttributes = DayAttributesFromStructure(dayStructure),
         previousDayBeforeTours = plannedTourAmounts?.precursorAmount,
         previousDayAfterTours = plannedTourAmounts?.successorAmount,

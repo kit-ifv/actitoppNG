@@ -11,7 +11,7 @@ fun interface SpawnSideActivities {
     fun spawnSideActivities(input: MobilityStructure)
 }
 
-class StandardImplementation(val rng: RNGHelper): SpawnSideActivities {
+class StandardImplementation(val rng: RNGHelper) : SpawnSideActivities {
 
     override fun spawnSideActivities(input: MobilityStructure) {
         val amountGeneration = Step5Generator(input, rng)
@@ -20,8 +20,14 @@ class StandardImplementation(val rng: RNGHelper): SpawnSideActivities {
         input.elements().forEach { day ->
             day.trackedElements().forEach { indexedTour ->
                 val originalTour = indexedTour.element
-                val plan = amounts[day]?.get(indexedTour)?: PlannedTourAmounts.NONE
-                val (precursors, successors) = activityTypeGeneration.generateSecondaryActivityTypes(SecondaryActInput(day, indexedTour, plan))
+                val plan = amounts[day]?.get(indexedTour) ?: PlannedTourAmounts.NONE
+                val (precursors, successors) = activityTypeGeneration.generateSecondaryActivityTypes(
+                    SecondaryActInput(
+                        day,
+                        indexedTour,
+                        plan
+                    )
+                )
                 originalTour.loadPrecursors(precursors)
                 originalTour.loadSuccessors(successors)
             }

@@ -2,13 +2,13 @@ package edu.kit.ifv.mobitopp.actitopp.modernization.plan
 
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.DurationDay
 import edu.kit.ifv.mobitopp.actitopp.modernization.LinkedAction
 import edu.kit.ifv.mobitopp.actitopp.modernization.LinkedActivity
 import edu.kit.ifv.mobitopp.actitopp.modernization.ModernizedActivity
 import edu.kit.ifv.mobitopp.actitopp.modernization.linkByHomeActivity
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.TimeBudgets
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
@@ -25,13 +25,14 @@ interface MobilityPlan {
     val timeBudgets: TimeBudgets
     val person: IPerson
 
-    val mainActivityMap : Map<ActivityType, List<LinkedActivity>>
-    val regularActivities : Map<ActivityType, Boolean>
+    val mainActivityMap: Map<ActivityType, List<LinkedActivity>>
+    val regularActivities: Map<ActivityType, Boolean>
     fun finish(): List<ModernizedActivity>
     fun isConsistent() = true
     fun extrudeHomeActivities() {
 
     }
+
     companion object {
         fun stayAtHomePlan(person: IPerson, amountOfDays: Int): MobilityPlan {
             return StayAtHomePlan((0..<amountOfDays).map { HomeDayPlan(DurationDay(it)) }, person)
@@ -40,7 +41,7 @@ interface MobilityPlan {
     }
 }
 
-class StayAtHomePlan(override val homePlans: Collection<HomeDayPlan>,     override val person: IPerson) : MobilityPlan {
+class StayAtHomePlan(override val homePlans: Collection<HomeDayPlan>, override val person: IPerson) : MobilityPlan {
 
     private val singularHomeActivity = LinkedActivity.homeDay().apply {
         startTime = Duration.ZERO
@@ -60,7 +61,8 @@ class StayAtHomePlan(override val homePlans: Collection<HomeDayPlan>,     overri
     override val regularActivities: Map<ActivityType, Boolean> = emptyMap()
 
     companion object {
-        fun create(days: Collection<DurationDay>, person: IPerson) =  StayAtHomePlan(days.map { HomeDayPlan(it) }, person)
+        fun create(days: Collection<DurationDay>, person: IPerson) =
+            StayAtHomePlan(days.map { HomeDayPlan(it) }, person)
     }
 }
 

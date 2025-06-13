@@ -1,11 +1,10 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine
 
-import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import org.jetbrains.annotations.TestOnly
 import kotlin.properties.Delegates
 
-class ModifiableWeekRoutine() {
+class ModifiableWeekRoutine {
     var amountOfWorkingDays: Int by Delegates.notNull()
     var amountOfEducationDays: Int by Delegates.notNull()
     var amountOfLeisureDays: Int by Delegates.notNull()
@@ -41,7 +40,7 @@ interface WeekRoutine {
     val averageAmountOfActivities: Int
 
     operator fun get(activityType: ActivityType): Int {
-        return when(activityType) {
+        return when (activityType) {
             ActivityType.EDUCATION -> amountOfEducationDays
             ActivityType.WORK -> amountOfWorkingDays
             ActivityType.LEISURE -> amountOfLeisureDays
@@ -62,8 +61,7 @@ data class WeekRoutineImpl(
     override val amountOfImmobileDays: Int,
     override val averageAmountOfTours: Int,
     override val averageAmountOfActivities: Int,
-): WeekRoutine {
-
+) : WeekRoutine {
 
 
     /**

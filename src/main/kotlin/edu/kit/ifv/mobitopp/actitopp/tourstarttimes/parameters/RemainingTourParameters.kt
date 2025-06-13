@@ -21,10 +21,10 @@ data class ParameterStep10S(
     val endetourvorher_Std_20: Double,
     val beruf_schueler: Double,
 
-)
+    )
 
 data class ParameterCollectionStep10S(
-    val parameters:List<ParameterStep10S>,
+    val parameters: List<ParameterStep10S>,
 ) {
     companion object {
         fun create(

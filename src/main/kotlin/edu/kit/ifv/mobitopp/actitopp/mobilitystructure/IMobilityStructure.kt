@@ -9,5 +9,5 @@ import java.util.NavigableSet
 interface IMobilityStructure {
     val days: NavigableSet<DayStructure>
 
-    fun toPlan(tripDuration: DetermineTripDuration, timeBudgets: TimeBudgets) : MobilityPlan
+    fun toPlan(tripDuration: DetermineTripDuration, timeBudgets: TimeBudgets): MobilityPlan
 }

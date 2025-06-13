@@ -1,7 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters
 
 
-
 data class EducationDaySet(
     override val option1: EducationDayParameters,
     override val option2: EducationDayParameters,
@@ -10,7 +9,7 @@ data class EducationDaySet(
     override val option5: EducationDayParameters,
     override val option6: EducationDayParameters,
     override val option7: EducationDayParameters,
-): WeekRoutineParameterSet<EducationDayParameters>
+) : WeekRoutineParameterSet<EducationDayParameters>
 
 data class EducationDayParameters(
     val base: Double,
@@ -21,7 +20,7 @@ data class EducationDayParameters(
     val ageIn18To25: Double,
     val ageIn26To35: Double,
     val ageIn36To50: Double,
-    val amountOfWorkingDays: Double
+    val amountOfWorkingDays: Double,
 )
 
 

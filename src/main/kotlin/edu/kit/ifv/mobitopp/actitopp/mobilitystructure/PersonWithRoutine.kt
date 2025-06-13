@@ -6,7 +6,7 @@ import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
 data class PersonWithRoutine(
     val person: IPerson,
     val routine: WeekRoutine,
-): IPerson by person{
+) : IPerson by person {
 
 
     fun amountOfWorkingDays() = routine.amountOfWorkingDays

@@ -1,12 +1,9 @@
 package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.sideTourAmounts
 
 
-import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
-import edu.kit.ifv.mobitopp.actitopp.modernization.ModifiableDayStructure
-import edu.kit.ifv.mobitopp.actitopp.modernization.PlannedTourAmounts
-import edu.kit.ifv.mobitopp.actitopp.modernization.MutableTourStructure
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
-import kotlin.math.sign
+import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
+import edu.kit.ifv.mobitopp.actitopp.modernization.PlannedTourAmounts
 
 data class PrecedingInput(
     val personInfo: PersonWithRoutine,

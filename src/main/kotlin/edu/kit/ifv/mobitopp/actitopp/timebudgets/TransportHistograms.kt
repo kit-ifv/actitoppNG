@@ -1,8 +1,8 @@
 package edu.kit.ifv.mobitopp.actitopp.timebudgets
 
 import edu.kit.ifv.mobitopp.actitopp.IPerson
-import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.TransportBudgetSet
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.TransportBudgetParameters
+import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.TransportBudgetSet
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.TransportBudgets
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
@@ -18,8 +18,13 @@ class TransportHistograms(
     val histogram4: ArrayHistogram,
 ) : HistogramSelection {
 
-    override fun select(randomNumber: Double, finalizedActivityPattern: FinalizedActivityPattern, person: IPerson): ArrayHistogram {
-        val converter: (ArrayHistogram) -> WorkChoiceSituation = { WorkChoiceSituation(it, finalizedActivityPattern, person) }
+    override fun select(
+        randomNumber: Double,
+        finalizedActivityPattern: FinalizedActivityPattern,
+        person: IPerson,
+    ): ArrayHistogram {
+        val converter: (ArrayHistogram) -> WorkChoiceSituation =
+            { WorkChoiceSituation(it, finalizedActivityPattern, person) }
         return choiceModel.select(randomNumber, converter)
     }
 

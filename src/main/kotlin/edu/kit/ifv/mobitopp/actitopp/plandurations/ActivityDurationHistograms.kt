@@ -9,7 +9,6 @@ import edu.kit.ifv.mobitopp.actitopp.enums.isParttime
 import edu.kit.ifv.mobitopp.actitopp.enums.isStudent
 import edu.kit.ifv.mobitopp.actitopp.enums.isStudentOrAzubi
 import edu.kit.ifv.mobitopp.actitopp.modernization.Activity
-import edu.kit.ifv.mobitopp.actitopp.utils.Position
 import edu.kit.ifv.mobitopp.actitopp.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.DayPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MobilityPlan
@@ -24,6 +23,7 @@ import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ParametrizedDiscreteChoice
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.UtilityFunction
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.selectNew
+import edu.kit.ifv.mobitopp.actitopp.utils.Position
 import edu.kit.ifv.mobitopp.actitopp.utils.sumOf
 import java.nio.file.Path
 import java.time.DayOfWeek
@@ -429,7 +429,7 @@ open class PlanSituation<P : Any>(
 
     fun dauer_akt_vorht_tag_1bis120(): Boolean {
         return dayPlan.tourPlans.filter { it.position == Position.BEFORE }
-            .sumOf { it.activityDurationsWithTrips ?: Duration.ZERO } in 1.minutes..<120.minutes
+            .sumOf { it.activityDurationsWithTrips } in 1.minutes..<120.minutes
     }
 
     fun anztourenvorhaupttour() = dayPlan.tourPlans.count { it.position == Position.BEFORE }
@@ -438,19 +438,19 @@ open class PlanSituation<P : Any>(
 
     fun endetourvorher_Std_13() = dayPlan.endOfPreviousTour(tourPlan) in 13.hours..<14.hours
 
-    fun endetourvorher_Std_14() =dayPlan.endOfPreviousTour(tourPlan)in 14.hours..<15.hours
+    fun endetourvorher_Std_14() = dayPlan.endOfPreviousTour(tourPlan) in 14.hours..<15.hours
 
-    fun endetourvorher_Std_15() =dayPlan.endOfPreviousTour(tourPlan)in 15.hours..<16.hours
+    fun endetourvorher_Std_15() = dayPlan.endOfPreviousTour(tourPlan) in 15.hours..<16.hours
 
-    fun endetourvorher_Std_16() =dayPlan.endOfPreviousTour(tourPlan)in 16.hours..<17.hours
+    fun endetourvorher_Std_16() = dayPlan.endOfPreviousTour(tourPlan) in 16.hours..<17.hours
 
-    fun endetourvorher_Std_17() =dayPlan.endOfPreviousTour(tourPlan) in 17.hours..<18.hours
+    fun endetourvorher_Std_17() = dayPlan.endOfPreviousTour(tourPlan) in 17.hours..<18.hours
 
-    fun endetourvorher_Std_18() =dayPlan.endOfPreviousTour(tourPlan)in 18.hours..<19.hours
+    fun endetourvorher_Std_18() = dayPlan.endOfPreviousTour(tourPlan) in 18.hours..<19.hours
 
-    fun endetourvorher_Std_19() =dayPlan.endOfPreviousTour(tourPlan) in 19.hours..<20.hours
+    fun endetourvorher_Std_19() = dayPlan.endOfPreviousTour(tourPlan) in 19.hours..<20.hours
 
-    fun endetourvorher_Std_20() =dayPlan.endOfPreviousTour(tourPlan) in 20.hours..<21.hours
+    fun endetourvorher_Std_20() = dayPlan.endOfPreviousTour(tourPlan) in 20.hours..<21.hours
 
     fun dauer_akt_in_tour_0bis2std() = tourPlan.activityDurations in 0.hours..<2.hours
     fun dauer_akt_in_tour_2bis4std() = tourPlan.activityDurations in 2.hours..<4.hours
@@ -535,11 +535,11 @@ class BooleanDecisionWithPreferenceCategory(
     input
 ) {
     fun std_start_T1_6_7_Uhr(): Boolean {
-        return preferredHistogram.start in (6.hours -15.minutes)..(6.hours + 15.minutes) // SOme buffer because the histograms could theroretically not have an entry precisely for 6 hours
+        return preferredHistogram.start in (6.hours - 15.minutes)..(6.hours + 15.minutes) // SOme buffer because the histograms could theroretically not have an entry precisely for 6 hours
     }
 
     fun std_start_T1_7_8_Uhr(): Boolean {
-        return preferredHistogram.start in (7.hours -15.minutes)..(7.hours + 15.minutes) // SOme buffer
+        return preferredHistogram.start in (7.hours - 15.minutes)..(7.hours + 15.minutes) // SOme buffer
     }
 }
 

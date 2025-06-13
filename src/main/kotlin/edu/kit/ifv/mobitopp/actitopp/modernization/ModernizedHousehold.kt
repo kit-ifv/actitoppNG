@@ -25,7 +25,6 @@ class StandardHouseholdPlan(private val planGeneration: MobilityPlanGeneration) 
 }
 
 
-
 //class MutableHousehold(override val areaType: AreaType, override val numberOfCars: Int): ModernizedHousehold {
 //    override val members: MutableList<IPerson> = mutableListOf()
 //}

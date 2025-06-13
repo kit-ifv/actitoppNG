@@ -27,9 +27,12 @@ enum class Employment(val code: Int) {
 fun Employment.isParttime(): Boolean {
     return this == Employment.PARTTIME || this == Employment.UNKNOWN_21 || this == Employment.MARGINAL
 }
-fun Employment.isEarning() = this == Employment.FULLTIME || this == Employment.PARTTIME || this == Employment.UNKNOWN_21 || this == Employment.MARGINAL
+
+fun Employment.isEarning() =
+    this == Employment.FULLTIME || this == Employment.PARTTIME || this == Employment.UNKNOWN_21 || this == Employment.MARGINAL
+
 fun Employment.isNotEarning() = this == Employment.UNOCCUPIED || this == Employment.HOUSEKEEPER
 fun Employment.isEmployedAnywhere() = this.isEarning() || this == Employment.VOCATIONAL
-fun Employment.isStudentOrAzubi() =  this == Employment.VOCATIONAL || this.isStudent()
+fun Employment.isStudentOrAzubi() = this == Employment.VOCATIONAL || this.isStudent()
 fun Employment.isStudent() =
     this == Employment.STUDENT || this == Employment.STUDENT_PRIMARY || this == Employment.STUDENT_SECONDARY || this == Employment.STUDENT_TERTIARY

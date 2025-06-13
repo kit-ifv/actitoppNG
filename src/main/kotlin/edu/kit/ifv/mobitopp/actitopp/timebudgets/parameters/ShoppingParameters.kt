@@ -76,4 +76,4 @@ data class ShoppingBudgetParameters(
     val tagemit_sakt_3: Double,
     val tagemit_sakt_4: Double,
 
-)
+    )

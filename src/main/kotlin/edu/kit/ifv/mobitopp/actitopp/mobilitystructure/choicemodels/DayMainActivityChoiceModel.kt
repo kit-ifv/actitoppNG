@@ -1,10 +1,10 @@
 package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels
 
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.DaySituation
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.DayMainActivityParameters
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.DayMainActivitySet
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.DefaultDayMainActivityParameters
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.DayMainActivityParameters
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.DaySituation
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters

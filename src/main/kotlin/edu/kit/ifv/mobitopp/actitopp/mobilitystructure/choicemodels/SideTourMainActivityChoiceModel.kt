@@ -1,9 +1,9 @@
 package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels
 
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SideTourMainActivitySet
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.DefaultSideTourMainActivityParameters
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SideTourMainActivityParameters
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SideTourMainActivitySet
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.TourSituation
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel

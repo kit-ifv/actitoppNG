@@ -2,8 +2,8 @@ package edu.kit.ifv.mobitopp.actitopp.tourstarttimes
 
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.modernization.durations.MobilityPlanInputs
-import edu.kit.ifv.mobitopp.actitopp.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitopp.plandurations.MainDurationSituation
+import edu.kit.ifv.mobitopp.actitopp.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.choicemodels.FIRST_TOUR_HISTOGRAM
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel

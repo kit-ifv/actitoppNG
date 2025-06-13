@@ -17,7 +17,7 @@ import kotlin.time.Duration.Companion.minutes
  * from file. Since we would like to perform the parsing process only once, we need some form of modifcation protection
  * so that the read content remain the same.
  */
-class ModifiableArrayHistogram (offset: Int = 0, probabilities: DoubleArray, categoryIndex: Category) : ArrayHistogram(
+class ModifiableArrayHistogram(offset: Int = 0, probabilities: DoubleArray, categoryIndex: Category) : ArrayHistogram(
     offset,
     probabilities,
     categoryIndex
@@ -57,14 +57,16 @@ open class ArrayHistogram protected constructor(
     protected val offset: Int = 0,
     protected val probabilities: DoubleArray = doubleArrayOf(0.0),
     val categoryIndex: Category,
-): Comparable<Int> {
+) : Comparable<Int> {
     constructor(offset: Int, values: Collection<Number>, categoryIndex: Category) : this(
         offset,
         values.map { it.toDouble() / values.sumOf { it.toDouble() } }.toDoubleArray(),
         categoryIndex,
     )
+
     @Transient
     protected val size = probabilities.size
+
     @Transient
     private val _cumulativeSum: DoubleArray = DoubleArray(probabilities.size)
     val start = offset.minutes
@@ -90,11 +92,13 @@ open class ArrayHistogram protected constructor(
     operator fun contains(duration: Duration): Boolean {
         return duration.inWholeMinutes.toInt() in this
     }
+
     fun intersects(bounds: ClosedRange<Duration>): Boolean {
-        if(bounds.start > this.end) return false
-        if(bounds.endInclusive < this.start) return false
+        if (bounds.start > this.end) return false
+        if (bounds.endInclusive < this.start) return false
         return true
     }
+
     /**
      * Once copied, you may start modifying to your hearts content, but until then the histogram stays readonly.
      */
@@ -109,7 +113,7 @@ open class ArrayHistogram protected constructor(
             probabilities = probabilities.copyOfRange(trimmedStartIndex, trimmedEndIndex),
             categoryIndex = categoryIndex,
 
-        )
+            )
     }
 
     operator fun get(index: Int): Double {
@@ -122,7 +126,11 @@ open class ArrayHistogram protected constructor(
     /**
      * Instead of passing absolute bounds, you can also specify relative bounds. The result will however still be absolute
      */
-    fun selectRelative(randomNumber: Double, lowerBoundRelative: Int? = null, upperBoundRelative: Int? = null): Duration {
+    fun selectRelative(
+        randomNumber: Double,
+        lowerBoundRelative: Int? = null,
+        upperBoundRelative: Int? = null,
+    ): Duration {
         return selectInt(randomNumber, lowerBoundRelative?.let { it + offset }, upperBoundRelative?.let { it + offset })
     }
 
@@ -136,7 +144,7 @@ open class ArrayHistogram protected constructor(
             val index = it - offset
             if (index > 0) index - 1 else null
         }
-        val ub = upperBoundInclusive?.let { min(it - offset, size -1) } ?: (size - 1)
+        val ub = upperBoundInclusive?.let { min(it - offset, size - 1) } ?: (size - 1)
 
         require(randomNumber in 0.0..1.0) {
             "Input is not a probability as random Number $randomNumber"
@@ -148,12 +156,20 @@ open class ArrayHistogram protected constructor(
 
         return (_cumulativeSum.indexBinarySearch(affineRandomNumber, lb ?: 0, ub) + offset).minutes
     }
-    fun select(randomNumber: Double, bounds: ClosedRange<Duration>) = select(randomNumber, bounds.start, bounds.endInclusive)
-    fun select(randomNumber: Double, lowerBoundInclusive: Duration? = null, upperBoundInclusive: Duration? = null): Duration {
+
+    fun select(randomNumber: Double, bounds: ClosedRange<Duration>) =
+        select(randomNumber, bounds.start, bounds.endInclusive)
+
+    fun select(
+        randomNumber: Double,
+        lowerBoundInclusive: Duration? = null,
+        upperBoundInclusive: Duration? = null,
+    ): Duration {
         val lb = lowerBoundInclusive?.ceilWholeMinutes
         val ub = upperBoundInclusive?.inWholeMinutes?.toInt()
         return selectInt(randomNumber, lb, ub)
     }
+
     /**
      * Affine transform the target number so that the interval of 0..1 is mapped to lower..upper
      */
@@ -167,8 +183,8 @@ open class ArrayHistogram protected constructor(
      * if it's greater than [other].
      */
     override fun compareTo(other: Int): Int {
-        if(end < other.minutes) return -1
-        if(start > other.minutes) return 1
+        if (end < other.minutes) return -1
+        if (start > other.minutes) return 1
         return 0
     }
 
@@ -178,9 +194,14 @@ open class ArrayHistogram protected constructor(
 
     companion object {
         // The +1 is correct, the histogram path names do not match the reference numbers in the choice models... for some reason....
-        fun fromPath(path: Path) = fromWRDDistribution(loadDistributionInformationFromFile(path)
-        ,path.name.split('_').last().split('.').first().toInt() + 1).trim()
-        fun fromWRDDistribution(modelDistribution: WRDModelDistributionInformation, categoryIndex: Int): ArrayHistogram {
+        fun fromPath(path: Path) = fromWRDDistribution(
+            loadDistributionInformationFromFile(path), path.name.split('_').last().split('.').first().toInt() + 1
+        ).trim()
+
+        fun fromWRDDistribution(
+            modelDistribution: WRDModelDistributionInformation,
+            categoryIndex: Int,
+        ): ArrayHistogram {
             require(modelDistribution.keys.size == modelDistribution.keys.max() - modelDistribution.keys.min() + 1) {
                 "Mismatch in the construction, some entries maybe missing?"
             }
@@ -190,7 +211,7 @@ open class ArrayHistogram protected constructor(
                 modelDistribution.values.map { it.toDouble() / sum }.toDoubleArray(),
                 Category(categoryIndex),
 
-            )
+                )
         }
     }
 }
