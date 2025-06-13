@@ -4,15 +4,7 @@ import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.enums.JointStatus
 import edu.kit.ifv.mobitopp.actitopp.enums.TripStatus
 
-/**
- * A Trip in actitopp has:
- * @property activity an activity from which the trip is spawned
- * @property duration a duration encoded in a naked int. Presumed unit is minutes. TODO make duration instead.
- */
-interface Trip {
-    val activity: HActivity
-    var duration: Int
-}
+
 /**
  * @author Tim Hilgert
  */

@@ -1,6 +1,5 @@
 package edu.kit.ifv.mobitopp.actitopp
 
-import edu.kit.ifv.mobitopp.actitopp.IO.DebugLoggers
 import edu.kit.ifv.mobitopp.actitopp.enums.AreaType
 import edu.kit.ifv.mobitopp.actitopp.modernization.ModernizedHousehold
 

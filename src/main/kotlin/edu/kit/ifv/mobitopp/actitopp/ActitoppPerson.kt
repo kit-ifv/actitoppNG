@@ -1,6 +1,5 @@
 package edu.kit.ifv.mobitopp.actitopp
 
-import edu.kit.ifv.mobitopp.actitopp.IO.DebugLoggers
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.enums.AreaType
 import edu.kit.ifv.mobitopp.actitopp.enums.Employment
@@ -58,7 +57,7 @@ class ActitoppPerson@JvmOverloads constructor(
     override val gender: Gender = Gender.fromCode(genderCode)
     override val employment: Employment = Employment.fromInt(employmentCode)
     override val isAllowedToWork: Boolean = true
-    var weekPattern: HWeekPattern = HWeekPattern(this)
+    var weekPattern = HWeekPattern(this)
 
 
     init {
@@ -97,7 +96,7 @@ class ActitoppPerson@JvmOverloads constructor(
      */
     // stores all activity information of the week pattern
 
-    fun days() = weekPattern.days
+    fun days() =weekPattern.days
 
     /**
      * Robin: This function delegates the call to the weekpattern, which should not be exposed
