@@ -1,6 +1,5 @@
 package edu.kit.ifv.mobitopp.actitopp.modernization.plan
 
-import edu.kit.ifv.mobitopp.actitopp.Configuration
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.utils.round
@@ -21,7 +20,7 @@ interface DetermineTripDuration {
     fun everyOtherTourTrip(person: IPerson, activityType: ActivityType): Duration
 }
 
-class StandardCommuteDurations(private val standardTripDuration: Duration = Configuration.FIXED_TRIP_TIME_ESTIMATOR) :
+class StandardCommuteDurations(private val standardTripDuration: Duration = 15.minutes) :
     DetermineTripDuration {
 
 

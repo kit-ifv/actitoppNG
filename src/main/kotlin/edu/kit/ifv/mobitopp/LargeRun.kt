@@ -2,6 +2,8 @@ package edu.kit.ifv.mobitopp
 
 import edu.kit.ifv.mobitopp.actitopp.ActiToppHousehold
 import edu.kit.ifv.mobitopp.actitopp.ActitoppPerson
+import edu.kit.ifv.mobitopp.actitopp.PersonAttributes
+import edu.kit.ifv.mobitopp.actitopp.enums.AreaType
 import edu.kit.ifv.mobitopp.actitopp.modernization.DefaultPlanGeneration
 import edu.kit.ifv.mobitopp.actitopp.modernization.ModernizedActivity
 import kotlin.random.Random
@@ -12,7 +14,7 @@ private fun generateHousehold(): ActiToppHousehold {
     return ActiToppHousehold(
         random.nextInt(0, 10),
         random.nextInt(0, 10),
-        random.nextInt(0, 10),
+        AreaType.fromCode(random.nextInt(0, 10)),
         random.nextInt(0, 10)
     )
 }
@@ -23,19 +25,14 @@ fun generateHouseholds(amount: Int): List<ActiToppHousehold> {
 
 fun ActiToppHousehold.generatePersons(amount: Int): List<ActitoppPerson> {
     return (0..<amount).map {
-        this.generatePerson(it)
+        this.generatePerson()
     }
 }
 
-fun ActiToppHousehold.generatePerson(number: Int): ActitoppPerson {
+fun ActiToppHousehold.generatePerson(): ActitoppPerson {
     return ActitoppPerson(
         household = this,
-        persNrinHousehold = number,
-        age = random.nextInt(0, 100),
-        employmentCode = random.nextInt(0, 42),
-        genderCode = random.nextInt(0, 3),
-        commutingdistance_work = random.nextDouble(),
-        commutingdistance_education = random.nextDouble()
+        attributes = PersonAttributes.random(random),
     )
 }
 

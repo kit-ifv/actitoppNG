@@ -1,14 +1,16 @@
 package edu.kit.ifv.mobitopp.actitopp.timebudgets
 
 import edu.kit.ifv.mobitopp.actitopp.IO.loadDistributionInformationFromFile
-import edu.kit.ifv.mobitopp.actitopp.WRDModelDistributionInformation
 import edu.kit.ifv.mobitopp.actitopp.changes.Category
+import edu.kit.ifv.mobitopp.actitopp.utils.affineTransform
 import edu.kit.ifv.mobitopp.actitopp.utils.ceilWholeMinutes
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import java.nio.file.Path
 import kotlin.io.path.name
+import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.roundToInt
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
@@ -140,21 +142,32 @@ open class ArrayHistogram protected constructor(
      * the
      */
     fun selectInt(randomNumber: Double, lowerBoundInclusive: Int? = null, upperBoundInclusive: Int? = null): Duration {
-        val lb = lowerBoundInclusive?.let {
-            val index = it - offset
-            if (index > 0) index - 1 else null
-        }
-        val ub = upperBoundInclusive?.let { min(it - offset, size - 1) } ?: (size - 1)
-
         require(randomNumber in 0.0..1.0) {
             "Input is not a probability as random Number $randomNumber"
         }
-        val lowerCumulativeProbability = lb?.let { _cumulativeSum[it] } ?: 0.0
+
+        val lb = lowerBoundInclusive?.let {
+            val index = it - offset
+            max(index, 0)
+        } ?: 0
+        val ub = upperBoundInclusive?.let { min(it - offset, size - 1) } ?: (size - 1)
+
+        // We require the cumulative sum up to the current lower bound, which is stored in the field before the current index
+        // If this field does not exist(because the index is 0) the cumulative sum before that element must be .0
+        val lowerCumulativeProbability = _cumulativeSum.getOrNull(lb - 1)?: 0.0
+
         val upperCumulativeProbability = _cumulativeSum[ub]
-        // TODO add protection in case the probabilities of all elements in the range are 0, because the affine transformation will most likely produce a NaN
+        if(lowerCumulativeProbability == upperCumulativeProbability) {
+            /* This is the emergency situation. All elements in the targeted selection have a selection probability of
+                0.0. In this scenario a number is picked uniformly between the lower bound and upper bound. Since
+                the random number is known, we can use an affine transformation for the result.
+            */
+            val emergency = randomNumber.affineTransform(lb.toDouble(), ub.toDouble()).roundToInt()
+            return (emergency + offset).minutes
+        }
         val affineRandomNumber = randomNumber.affineTransform(lowerCumulativeProbability, upperCumulativeProbability)
 
-        return (_cumulativeSum.indexBinarySearch(affineRandomNumber, lb ?: 0, ub) + offset).minutes
+        return (_cumulativeSum.indexBinarySearch(affineRandomNumber, lb, ub) + offset).minutes
     }
 
     fun select(randomNumber: Double, bounds: ClosedRange<Duration>) =
@@ -170,12 +183,7 @@ open class ArrayHistogram protected constructor(
         return selectInt(randomNumber, lb, ub)
     }
 
-    /**
-     * Affine transform the target number so that the interval of 0..1 is mapped to lower..upper
-     */
-    private fun Double.affineTransform(lower: Double, upper: Double): Double {
-        return (upper - lower) * this + lower
-    }
+
 
     /**
      * Compares this object with the specified object for order. Returns zero if this object is equal
@@ -199,7 +207,7 @@ open class ArrayHistogram protected constructor(
         ).trim()
 
         fun fromWRDDistribution(
-            modelDistribution: WRDModelDistributionInformation,
+            modelDistribution:  Map<Int, Int>,
             categoryIndex: Int,
         ): ArrayHistogram {
             require(modelDistribution.keys.size == modelDistribution.keys.max() - modelDistribution.keys.min() + 1) {

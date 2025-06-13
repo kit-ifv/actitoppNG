@@ -1,15 +1,20 @@
-package edu.kit.ifv.mobitopp.actitopp.steps.step7
+package edu.kit.ifv.mobitopp.actitopp
 
 import edu.kit.ifv.mobitopp.actitopp.changes.Category
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.ArrayHistogram
-import kotlinx.serialization.json.Json
+import edu.kit.ifv.mobitopp.actitopp.utils.affineTransform
+import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.params.provider.CsvFileSource
+import org.junit.jupiter.params.provider.CsvSource
 import kotlin.io.path.Path
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
 class ArrayHistogramTest {
+    private val histogram = ArrayHistogram(offset = 0, listOf(1, 1, 1, 1, 1), Category(1))
     @Test
     fun boundedSelectionTakesProperElements() {
         val histogram = ArrayHistogram(offset = 0, listOf(1, 1, 1, 1, 1), Category(1))
@@ -39,11 +44,48 @@ class ArrayHistogramTest {
         assertContentEquals(originalProbabilities, histogram.probabilities())
 
     }
+    @ParameterizedTest
+    @CsvSource(
+        "0.0, 0, 5, 0",
+        "0.33, 1, 3, 1",
+        "0.00, 1, 3, 1",
+        "0.00, 3, 4, 3",
+        "0.01, 3, 4, 3",
+        "0.00, 2, 4, 2",
+        "0.33, 2, 4, 2",
+        "0.1, 2, 4, 2",
+        "0.99, 2, 4, 4",
 
-    @Test
-    fun theCorrespondence() {
-        val histogram = ArrayHistogram.fromPath(Path("src/main/resources/edu/kit/ifv/mobitopp/actitopp/mopv14_withpkwhh/10N_KAT_4.csv"))
-        val otherHistogram = Json.decodeFromString<ArrayHistogram>(Json.encodeToString(histogram))
-        println(Json.encodeToString(histogram))
+
+    )
+    fun uniformBoundChecks(randomNumber: Double, lowerBound: Double, upperBound: Double, expected: Int) {
+        val lb = lowerBound.minutes
+        val ub = upperBound.minutes
+        val result = expected.minutes
+        assertEquals(result, histogram.select(randomNumber, lb, ub))
     }
+    @Test
+    fun affineTransformation() {
+        assertEquals(0.5.affineTransform(0.8, 1.0), 0.9)
+        assertEquals(0.2.affineTransform(0.0, 10.0), 2.0)
+    }
+    @Test
+    fun emergencyBehaviour() {
+        val histogram = ArrayHistogram(
+            offset = 0,
+            values = listOf(0, 0, 0, 0, 1),
+            categoryIndex = Category.NONE_CHOSEN
+        )
+        val selection = histogram.selectInt(0.2, 2, 3)
+        assertEquals(selection, 1.minutes)
+    }
+
+    private data class HistogramTestInput(
+        val randomNumber: Double,
+        val lowerBoundInclusive: Duration,
+        val upperBoundInclusive: Duration,
+        val expected: Duration,
+    )
+
+
 }

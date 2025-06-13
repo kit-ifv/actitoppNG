@@ -49,3 +49,8 @@ fun Int.positiveModulus(modulo: Int): Int {
 
 fun <K, V> SortedMap<K, V>.lastValue(): V = this.getValue(lastKey())
 fun <K, V> SortedMap<K, V>.firstValue(): V = this.getValue(firstKey())
+
+
+fun Double.affineTransform(lower: Double, upper: Double): Double {
+    return (upper - lower) * this + lower
+}

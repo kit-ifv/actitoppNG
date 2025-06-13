@@ -1,80 +1,28 @@
 package edu.kit.ifv.mobitopp.actitopp
 
 import edu.kit.ifv.mobitopp.actitopp.enums.AreaType
-import edu.kit.ifv.mobitopp.actitopp.modernization.ModernizedHousehold
+import edu.kit.ifv.mobitopp.actitopp.modernization.IHousehold
 
 /**
  * @author Tim Hilgert
  */
-class ActiToppHousehold @JvmOverloads constructor(
+class ActiToppHousehold(
 
     val children0_10: Int,
     val children_u18: Int,
-    areatypeCode: Int,
+    override val areaType: AreaType,
     val numberofcarsinhousehold: Int = 0,
-) : ModernizedHousehold {
-    val householdIndex: Int = ID
+) : IHousehold {
 
-    val areatype = AreaType.fromCode(areatypeCode)
-    override val members: List<IPerson>
-        get() = householdmembersasList
-    override val areaType: AreaType = areatype
+
     override val numberOfCars: Int = numberofcarsinhousehold
-    override val id: Int = householdIndex
-
-    /**
-     * @return the householdIndex
-     */
+    override val id: Int = ID
+    override fun amountOfYoungMinors(): Int = children0_10
+    override fun amountOfAllMinors() = children_u18
 
 
-    private val householdmembers: MutableMap<Int, ActitoppPerson> = mutableMapOf()
-
-    /**
-     * @return the householdmembers
-     */
-    fun getHouseholdmembersDeprecated(): Map<Int, ActitoppPerson> {
-        return householdmembers
-    }
-
-    val householdmembersasList: List<ActitoppPerson>
-        /**
-         * @return the householdmembers
-         */
-        get() {
-            val tmpliste: MutableList<ActitoppPerson> = ArrayList()
-
-            for ((_, value) in getHouseholdmembersDeprecated()) {
-                tmpliste.add(value)
-            }
-
-            return tmpliste
-        }
-
-    /**
-     * @param persnrinhousehold
-     * @return the person in the household
-     */
-    fun getHouseholdMember(persnrinhousehold: Int): ActitoppPerson {
-        val tmpperson =
-            checkNotNull(getHouseholdmembersDeprecated()[persnrinhousehold]) { "Person does not exist in this household!" }
-        return tmpperson
-    }
-
-    /**
-     * @param member
-     * @param persnr
-     */
-    fun addHouseholdmember(member: ActitoppPerson, persnr: Int) {
-        assert(householdmembers[persnr] == null) { "Householdmember using this identifier already exists - persnr $persnr" }
-        householdmembers[persnr] = member
-    }
-
-
-    val numberofPersonsinHousehold: Int
-        /**
-         * @return the numberofpersonsinhousehold
-         */
-        get() = householdmembers.size
+    override val members: MutableList<IPerson> = mutableListOf()
+    fun add(person: IPerson) = members.add(person)
 
 
     companion object {

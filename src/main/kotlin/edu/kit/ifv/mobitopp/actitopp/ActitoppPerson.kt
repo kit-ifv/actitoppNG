@@ -6,6 +6,7 @@ import edu.kit.ifv.mobitopp.actitopp.enums.Gender
 import edu.kit.ifv.mobitopp.actitopp.enums.isEmployedAnywhere
 import edu.kit.ifv.mobitopp.actitopp.enums.isStudentOrAzubi
 import kotlin.math.max
+import kotlin.random.Random
 
 
 data class PersonAttributes(
@@ -15,29 +16,40 @@ data class PersonAttributes(
     val commuteDistanceWork: Double? = null,
     val commuteDistanceEducation: Double? = null,
     val isAllowedToWork: Boolean = true,
-)
+) {
+    companion object {
+        fun random(rng: Random): PersonAttributes {
+            return PersonAttributes(
+                age = rng.nextInt(0, 100),
+                employment = Employment.fromInt(rng.nextInt(0, 42)),
+                gender = Gender.fromCode(rng.nextInt(0, 3)),
+                commuteDistanceWork = rng.nextDouble(),
+                commuteDistanceEducation = rng.nextDouble()
+            )
+        }
+    }
+}
 
-class ActitoppPerson @JvmOverloads constructor(
+class ActitoppPerson(
     val household: ActiToppHousehold,
-    val persNrinHousehold: Int,
-    override val age: Int,
-    employmentCode: Int,
-    genderCode: Int,
-    override val commutingdistance_work: Double = 0.0,
-    override val commutingdistance_education: Double = .0,
+    val attributes: PersonAttributes,
 ) : IPerson {
 
     init {
-        household.addHouseholdmember(this, persNrinHousehold)
+        household.add(this)
     }
+
+    override val age: Int = attributes.age
+    override val commutingdistance_work: Double = attributes.commuteDistanceWork ?: .0
+    override val commutingdistance_education: Double = attributes.commuteDistanceEducation ?:.0
 
     override val maxCommute: Double =
         max(commutingdistance_work, commutingdistance_education)
 
     override val id: Int = idCounter
 
-    override val gender: Gender = Gender.fromCode(genderCode)
-    override val employment: Employment = Employment.fromInt(employmentCode)
+    override val gender: Gender = attributes.gender
+    override val employment: Employment = attributes.employment
     override val isAllowedToWork: Boolean = true
 
 
@@ -46,7 +58,7 @@ class ActitoppPerson @JvmOverloads constructor(
     override val children_u18: Int = household.children_u18
 
 
-    override val areatype: AreaType = household.areatype
+    override val areatype: AreaType = household.areaType
 
 
     override val numberofcarsinhousehold: Int = household.numberofcarsinhousehold
