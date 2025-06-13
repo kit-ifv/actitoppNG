@@ -27,20 +27,7 @@ class ActiToppHousehold @JvmOverloads constructor(
 
 
     private val householdmembers: MutableMap<Int, ActitoppPerson> = mutableMapOf()
-
-    fun clone(): ActiToppHousehold {
-        val clone = ActiToppHousehold(
-            this.children0_10,
-            this.children_u18,
-            this.areatype.code,
-            this.numberofcarsinhousehold
-        )
-        householdmembersasList.forEach {
-            clone.addHouseholdmember(it, it.persNrinHousehold)
-        }
-        return clone
-    }
-
+    
     /**
      * @return the householdmembers
      */
@@ -89,17 +76,6 @@ class ActiToppHousehold @JvmOverloads constructor(
         get() = householdmembers.size
 
 
-    /**
-     * resets all modeling results for this household
-     */
-    //TODO rebuild this method, but replace clearing the week pattern by something useful, rather than just setting null
-//    fun resetHouseholdModelingResults() {
-//        for (actperson in householdmembersasList) {
-//            actperson.clearAttributesMap()
-//            actperson.clearWeekPattern()
-//            actperson.clearJointActivitiesforConsideration()
-//        }
-//    }
 
 
     override fun toString(): String {

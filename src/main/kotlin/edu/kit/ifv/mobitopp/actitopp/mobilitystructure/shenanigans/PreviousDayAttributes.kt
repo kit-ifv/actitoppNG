@@ -1,9 +1,8 @@
 package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans
 
-import edu.kit.ifv.mobitopp.actitopp.HDay
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.PlannedTourAmounts
-import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributesFromElement
+
 import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributesFromStructure
 import edu.kit.ifv.mobitopp.actitopp.steps.DayStructureAttributes
 
@@ -23,16 +22,6 @@ class PreviousDayAttributesNumeric(
 ) : PreviousDayAttributes, DayStructureAttributes by dayAttributes {
 
 
-    constructor(
-        day: HDay,
-        previousDayBeforeTours: Int?,
-        previousDayAfterTours: Int?,
-
-    ): this(
-        DayAttributesFromElement(day),
-        previousDayBeforeTours,
-        previousDayAfterTours
-    )
 
     constructor(
         dayStructure: DayStructure,

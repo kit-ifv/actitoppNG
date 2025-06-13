@@ -1,6 +1,5 @@
 package edu.kit.ifv.mobitopp.actitopp.timebudgets
 
-import edu.kit.ifv.mobitopp.actitopp.HWeekPattern
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.modernization.MobilityStructure
 
@@ -25,20 +24,6 @@ interface FinalizedActivityPattern {
     val transportActivities: Int
     
     companion object {
-        fun fromLegacyPattern(weekPattern: HWeekPattern): FinalizedActivityPatternImpl {
-            return FinalizedActivityPatternImpl(
-                workDays = weekPattern.days.count { it.hasActivity(ActivityType.WORK)},
-                educationDays = weekPattern.days.count { it.hasActivity(ActivityType.EDUCATION)},
-                leisureDays = weekPattern.days.count { it.hasActivity(ActivityType.LEISURE)},
-                shoppingDays = weekPattern.days.count { it.hasActivity(ActivityType.SHOPPING)},
-                transportDays = weekPattern.days.count { it.hasActivity(ActivityType.TRANSPORT)},
-                workActivities = weekPattern.allActivities.count { it.activityType == ActivityType.WORK },
-                educationActivities = weekPattern.allActivities.count { it.activityType == ActivityType.EDUCATION },
-                leisureActivities = weekPattern.allActivities.count { it.activityType == ActivityType.LEISURE },
-                shoppingActivities = weekPattern.allActivities.count { it.activityType == ActivityType.SHOPPING },
-                transportActivities = weekPattern.allActivities.count { it.activityType == ActivityType.TRANSPORT }
-            )
-        }
 
         fun fromModernPattern(mobilityStructure: MobilityStructure): FinalizedActivityPatternImpl {
             val activityMap = mobilityStructure.activityTypes().groupBy { it }.mapValues { it.value.size }

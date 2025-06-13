@@ -1,16 +1,13 @@
 package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.sideTourAmounts
 
-import edu.kit.ifv.mobitopp.actitopp.HDay
-import edu.kit.ifv.mobitopp.actitopp.HTour
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
-import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.PreviousDaySituation
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.ModifiablePlannedTourAmounts
 import edu.kit.ifv.mobitopp.actitopp.modernization.PlannedTourAmounts
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.PreviousDaySituation
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ParametrizedDiscreteChoiceModel
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
 import kotlin.math.max
 
 abstract class DefaultSideTourDeterminer<P>(
@@ -69,7 +66,6 @@ abstract class DefaultSideTourDeterminer<P>(
         }
         return availableOptions
     }
-    abstract fun spawnTour(day: HDay): HTour
     abstract fun determineMinimumAmountOfTours(remainingNumberOfTours: Int): Int
     open fun createChoiceSituation(
         choice: Int,

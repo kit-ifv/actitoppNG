@@ -1,27 +1,23 @@
 package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans
 
-import edu.kit.ifv.mobitopp.actitopp.HDay
-import edu.kit.ifv.mobitopp.actitopp.HTour
+
 import edu.kit.ifv.mobitopp.actitopp.IPerson
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
-import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalIndexedValue
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
-import edu.kit.ifv.mobitopp.actitopp.modernization.MutableTourStructure
+import edu.kit.ifv.mobitopp.actitopp.modernization.TourStructure
 import edu.kit.ifv.mobitopp.actitopp.steps.ActivityAmountAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.ActivityAmountByNumber
-import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributesFromElement
 import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributesFromStructure
 import edu.kit.ifv.mobitopp.actitopp.steps.FullyQualifiedDayStructureAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.RoutineAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.TourAttributes
-import edu.kit.ifv.mobitopp.actitopp.steps.TourAttributesByElement
 import edu.kit.ifv.mobitopp.actitopp.steps.TourAttributesByIndexedStructure
 import edu.kit.ifv.mobitopp.actitopp.steps.TourPositionAttributes
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
-import edu.kit.ifv.mobitopp.actitopp.modernization.TourStructure
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceSituation
+import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalIndexedValue
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
 
 
 class TourSituation private constructor(

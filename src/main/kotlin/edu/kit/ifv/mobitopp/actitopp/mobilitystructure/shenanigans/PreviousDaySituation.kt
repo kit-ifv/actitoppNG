@@ -1,14 +1,10 @@
 package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans
 
-import edu.kit.ifv.mobitopp.actitopp.ActitoppPerson
-import edu.kit.ifv.mobitopp.actitopp.HDay
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
-import edu.kit.ifv.mobitopp.actitopp.amountOfPreviousTours
+
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.DurationDay
 import edu.kit.ifv.mobitopp.actitopp.modernization.ModifiablePlannedTourAmounts
 import edu.kit.ifv.mobitopp.actitopp.modernization.PlannedTourAmounts
-import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributesFromElement
 import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributesFromStructure
 import edu.kit.ifv.mobitopp.actitopp.steps.DayStructureAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.PartialTourLayoutAttributes

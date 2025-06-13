@@ -1,12 +1,12 @@
 package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans
 
-import edu.kit.ifv.mobitopp.actitopp.HDay
+
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributes
-import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributesFromElement
+
 import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributesFromStructure
 import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributesFromWeekday
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAttributes

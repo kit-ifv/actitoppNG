@@ -1,7 +1,5 @@
 package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.sideTourAmounts
 
-import edu.kit.ifv.mobitopp.actitopp.HDay
-import edu.kit.ifv.mobitopp.actitopp.HTour
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.PrecursorTourAmountSet
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.precursorAmountChoiceModel
@@ -19,9 +17,6 @@ class GenerateSideToursPreceeding(rngHelper: RNGHelper,
         return remainingNumberOfTours / 2
     }
 
-    override fun spawnTour(day: HDay): HTour {
-        return day.generatePrecedingTour()
-    }
 
     override fun update(day: ModifiablePlannedTourAmounts, result: Int) {
         day.precursorAmount = result

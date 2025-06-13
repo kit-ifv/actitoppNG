@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.steps
 
-import edu.kit.ifv.mobitopp.actitopp.HDay
+
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.DurationDay
@@ -43,24 +43,6 @@ fun interface PartialTourLayoutAttributes {
 }
 
 
-
-class DayAttributesFromElement(private val element: HDay) :  PartialTourLayoutAttributes, DayStructureAttributes, FullyQualifiedDayStructureAttributes {
-    override fun isMonday() = element.weekday == DayOfWeek.MONDAY
-    override fun isTuesday() = element.weekday == DayOfWeek.TUESDAY
-    override fun isWednesday() = element.weekday == DayOfWeek.WEDNESDAY
-    override fun isThursday() = element.weekday == DayOfWeek.THURSDAY
-    override fun isFriday() = element.weekday == DayOfWeek.FRIDAY
-    override fun isSaturday() = element.weekday == DayOfWeek.SATURDAY
-    override fun isSunday() = element.weekday == DayOfWeek.SUNDAY
-    override fun isStandardWorkingDay(): Boolean = element.weekday in DayOfWeek.MONDAY..DayOfWeek.FRIDAY
-    override fun amountOfBeforeTours(): Int = -1 * element.lowestTourIndex
-    override fun amountOfToursIs1(): Boolean = element.amountOfTours == 1
-    override fun amountOfToursIs2(): Boolean = element.amountOfTours == 2
-    override fun dayMainActivityIsWork(): Boolean = element.mainTourType == ActivityType.WORK
-    override fun dayMainActivityIsEducation(): Boolean = element.mainTourType == ActivityType.EDUCATION
-    override fun dayMainActivityIsShopping(): Boolean = element.mainTourType == ActivityType.SHOPPING
-    override fun dayMainActivityIsTransport(): Boolean = element.mainTourType == ActivityType.TRANSPORT
-}
 
 class DayAttributesFromStructure(private val element: DayStructure):  PartialTourLayoutAttributes, DayStructureAttributes, FullyQualifiedDayStructureAttributes {
 
