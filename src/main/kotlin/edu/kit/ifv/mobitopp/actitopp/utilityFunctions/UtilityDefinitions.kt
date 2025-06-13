@@ -85,6 +85,10 @@ fun interface DistributionFunction<SIT, PARAMS> {
 
 }
 
+fun interface LimitedDistributionFunction<X> {
+    fun calculateProbabilities(evaluators: Map<X, Double>): Map<X, Double>
+}
+
 fun interface UtilityFunctionAssociation<SIT, PARAMS> {
     fun associateFunction(to: SIT): UtilityFunction<SIT, PARAMS>
 }

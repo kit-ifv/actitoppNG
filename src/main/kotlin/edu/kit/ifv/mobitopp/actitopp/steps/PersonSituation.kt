@@ -12,6 +12,7 @@ import edu.kit.ifv.mobitopp.actitopp.enums.isStudent
 import edu.kit.ifv.mobitopp.actitopp.enums.isStudentOrAzubi
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceSituation
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.ModifiableWeekRoutine
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
 
 /**
  * This interface is a rewrite of the actitoppPersonParameters Enum, and exists only to be able to cross reference the
@@ -89,13 +90,13 @@ class PersonAttributesFromElement(val person: IPerson) : PersonAttributes {
 
 class PersonSituation private constructor(
     override val choice: Int,
-    private val modifiableWeekRoutine: ModifiableWeekRoutine,
+    private val modifiableWeekRoutine: WeekRoutine,
     val person: IPerson,
     attributes: PersonAttributesFromElement,
 ) : ChoiceSituation<Int>(), PersonAttributes by attributes {
 
 
-    constructor(choice: Int, modifiableWeekRoutine: ModifiableWeekRoutine, person: IPerson) : this(
+    constructor(choice: Int, modifiableWeekRoutine: WeekRoutine, person: IPerson) : this(
         choice,
         modifiableWeekRoutine,
         person,

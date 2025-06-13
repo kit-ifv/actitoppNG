@@ -2,9 +2,13 @@ package edu.kit.ifv.mobitopp.actitopp.utilityFunctions
 
 import kotlin.math.exp
 
-class Logit<X, P> : DistributionFunction<X, P> {
+class Logit<X, P> : DistributionFunction<X, P>, LimitedDistributionFunction<X> {
 
     override fun calculateProbabilities(evaluators: Map<X, Double>, parameters: P): Map<X, Double> {
+        return calculateProbabilities(evaluators)
+    }
+
+    override fun calculateProbabilities(evaluators: Map<X, Double>): Map<X, Double> {
         val currentExp = evaluators.entries.associate {
             it.key to
                     exp(it.value)

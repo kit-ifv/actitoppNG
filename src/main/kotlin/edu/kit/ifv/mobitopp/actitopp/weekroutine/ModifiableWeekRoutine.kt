@@ -4,15 +4,15 @@ import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import org.jetbrains.annotations.TestOnly
 import kotlin.properties.Delegates
 
-class ModifiableWeekRoutine {
-    var amountOfWorkingDays: Int by Delegates.notNull()
-    var amountOfEducationDays: Int by Delegates.notNull()
-    var amountOfLeisureDays: Int by Delegates.notNull()
-    var amountOfShoppingDays: Int by Delegates.notNull()
-    var amountOfServiceDays: Int by Delegates.notNull()
-    var amountOfImmobileDays: Int by Delegates.notNull()
-    var averageAmountOfTours: Int by Delegates.notNull()
-    var averageAmountOfActivities: Int by Delegates.notNull()
+class ModifiableWeekRoutine: WeekRoutine {
+    override var amountOfWorkingDays: Int by Delegates.notNull()
+    override var amountOfEducationDays: Int by Delegates.notNull()
+    override var amountOfLeisureDays: Int by Delegates.notNull()
+    override var amountOfShoppingDays: Int by Delegates.notNull()
+    override var amountOfServiceDays: Int by Delegates.notNull()
+    override var amountOfImmobileDays: Int by Delegates.notNull()
+    override var averageAmountOfTours: Int by Delegates.notNull()
+    override var averageAmountOfActivities: Int by Delegates.notNull()
 
     fun toWeekRoutine(): WeekRoutine {
         return WeekRoutineImpl(
