@@ -23,7 +23,7 @@ class ArrayHistogramTest {
 
         assertEquals(histogram.select(0.5), 2.minutes)
 
-        assertEquals(histogram.selectInt(0.45, lowerBoundInclusive = 0, upperBoundInclusive = 1), 0.minutes)
+        assertEquals(histogram.select(0.45, lowerBoundInclusive = 0.minutes, upperBoundInclusive = 1.minutes), 0.minutes)
     }
 
     @Test
@@ -76,7 +76,7 @@ class ArrayHistogramTest {
             values = listOf(0, 0, 0, 0, 1),
             categoryIndex = Category.NONE_CHOSEN
         )
-        val selection = histogram.selectInt(0.2, 2, 3)
+        val selection = histogram.select(0.2, 2.minutes, 3.minutes)
         assertEquals(selection, 1.minutes)
     }
 

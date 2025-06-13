@@ -121,10 +121,9 @@ open class ActivityDurationHistograms<P>(
 
         val concreteHistogram = selectHistogram(rnd1, bounds, converter) ?: return emergencyBehaviour(bounds, rnd2)
 
-        val output = concreteHistogram.selectInt(
+        val output = concreteHistogram.select(
             rnd2,
-            bounds.start.inWholeMinutes.toInt(),
-            bounds.endInclusive.inWholeMinutes.toInt()
+            bounds
         )
         return output
     }

@@ -126,22 +126,11 @@ open class ArrayHistogram protected constructor(
     }
 
     /**
-     * Instead of passing absolute bounds, you can also specify relative bounds. The result will however still be absolute
-     */
-    fun selectRelative(
-        randomNumber: Double,
-        lowerBoundRelative: Int? = null,
-        upperBoundRelative: Int? = null,
-    ): Duration {
-        return selectInt(randomNumber, lowerBoundRelative?.let { it + offset }, upperBoundRelative?.let { it + offset })
-    }
-
-    /**
      * Pick a value from the histogram using a random number between 0.0 and 1.0 as input, the random number is then
-     * transformed using an affine translation to match the probabiliy range of the cumulative sum of the elements within
+     * transformed using an affine translation to match the probability range of the cumulative sum of the elements within
      * the
      */
-    fun selectInt(randomNumber: Double, lowerBoundInclusive: Int? = null, upperBoundInclusive: Int? = null): Duration {
+    private fun selectInt(randomNumber: Double, lowerBoundInclusive: Int? = null, upperBoundInclusive: Int? = null): Duration {
         require(randomNumber in 0.0..1.0) {
             "Input is not a probability as random Number $randomNumber"
         }

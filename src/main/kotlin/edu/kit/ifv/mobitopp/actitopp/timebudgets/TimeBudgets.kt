@@ -137,6 +137,6 @@ class HistogramPerActivity(
         person: IPerson,
     ): Pair<Duration, Category> {
         val histogram = select(firstRnd, finalizedActivityPattern, person)
-        return histogram.selectInt(secondRnd) to histogram.categoryIndex
+        return histogram.select(secondRnd) to histogram.categoryIndex
     }
 }
