@@ -15,6 +15,7 @@ class Logit<X, P> : DistributionFunction<X, P> {
     }
 }
 
+
 class ChangableUtilityFunction<X, P>(private var utilityFunction: UtilityFunction<X, P>) : UtilityFunction<X, P> {
     fun changeTo(new: UtilityFunction<X, P>) {
         utilityFunction = new
@@ -34,13 +35,14 @@ class AllocatedLogit<X : Any, SIT : ChoiceSituation<X>, P>(
     private val optionsMap: Map<X, ChangableUtilityFunction<SIT, P>>,
     override var rules: List<Pair<(SIT) -> Boolean, ChangableUtilityFunction<SIT, P>>>,
     override val name: String = "Unnamed allocated logit",
+    private val logit: Logit<SIT, P>,
 
     ) : RuleBasedAssociation<X, SIT, P>, ModifiableDistributionFunction<X, SIT, P> {
     override val options = optionsMap.keys
     override val translation: Map<X, UtilityFunction<SIT, P>> = optionsMap
 
     override fun calculateProbabilities(evaluators: Map<SIT, Double>, parameters: P): Map<SIT, Double> {
-        return Logit<SIT, P>().calculateProbabilities(evaluators, parameters)
+        return logit.calculateProbabilities(evaluators, parameters)
     }
 
     override fun translation(target: SIT): UtilityFunction<SIT, P> {
@@ -86,7 +88,7 @@ class AllocatedLogit<X : Any, SIT : ChoiceSituation<X>, P>(
             val builder = LogitBuilder<X, SIT, PARAMS>(options)
             builder.apply(lambda)
 
-            return AllocatedLogit(builder.options, builder.rules, name = name)
+            return AllocatedLogit(builder.options, builder.rules, name = name, Logit())
         }
 
         fun <X : Any, SIT : ChoiceSituation<X>, PARAMS> create(

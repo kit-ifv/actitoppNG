@@ -6,6 +6,11 @@ import edu.kit.ifv.mobitopp.actitopp.PersonAttributes
 import edu.kit.ifv.mobitopp.actitopp.enums.AreaType
 import edu.kit.ifv.mobitopp.actitopp.modernization.DefaultPlanGeneration
 import edu.kit.ifv.mobitopp.actitopp.modernization.ModernizedActivity
+import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.runBlocking
 import kotlin.random.Random
 
 
@@ -36,17 +41,29 @@ fun ActiToppHousehold.generatePerson(): ActitoppPerson {
     )
 }
 
-fun Collection<ActitoppPerson>.generateSchedules(): List<List<ModernizedActivity>> {
-    return withIndex().map { (index, person) ->
-        val householdPlan = DefaultPlanGeneration()
-        householdPlan.generate(person).finish().also { if (index % 100 == 0) println("Working on person $index done") }
+suspend fun Collection<ActitoppPerson>.generateSchedules(): List<List<ModernizedActivity>> = coroutineScope {
 
-    }
+
+    this@generateSchedules.withIndex().map { (index, person) ->
+        async(Default) {
+            val householdPlan = DefaultPlanGeneration()
+            val schedule = householdPlan.generate(person).finish()
+            if (index % 100 == 0) println("Working on person $index done")
+            schedule
+        }
+    }.awaitAll()
+//    return withIndex().map { (index, person) ->
+//        val householdPlan = DefaultPlanGeneration()
+//        householdPlan.generate(person).finish().also { if (index % 100 == 0) println("Working on person $index done") }
+//
+//    }
 }
 
 fun main() {
-    val targets = generateHouseholds(1000).flatMap { it.generatePersons(5) }
+    val targets = generateHouseholds(10000).flatMap { it.generatePersons(5) }
 
+    runBlocking {
+        targets.generateSchedules()
+    }
 
-    targets.generateSchedules()
 }
