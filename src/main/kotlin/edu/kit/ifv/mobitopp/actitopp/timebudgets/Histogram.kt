@@ -4,6 +4,7 @@ import edu.kit.ifv.mobitopp.actitopp.IO.loadDistributionInformationFromFile
 import edu.kit.ifv.mobitopp.actitopp.changes.Category
 import edu.kit.ifv.mobitopp.actitopp.utils.affineTransform
 import edu.kit.ifv.mobitopp.actitopp.utils.ceilWholeMinutes
+import edu.kit.ifv.mobitopp.actitopp.utils.indexBinarySearch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import java.nio.file.Path
@@ -66,6 +67,7 @@ open class ArrayHistogram protected constructor(
         categoryIndex,
     )
 
+
     @Transient
     protected val size = probabilities.size
 
@@ -78,7 +80,6 @@ open class ArrayHistogram protected constructor(
         cumulate()
     }
 
-    fun probabilities() = probabilities.toList()
     protected fun cumulate() {
         var counter = 0.0
         probabilities.withIndex().forEach { (index, probability) ->
@@ -86,6 +87,8 @@ open class ArrayHistogram protected constructor(
             counter += probability
         }
     }
+    fun probabilities() = probabilities.toList()
+
 
     operator fun contains(position: Int): Boolean {
         return position in offset..<offset + size
@@ -146,17 +149,21 @@ open class ArrayHistogram protected constructor(
         val lowerCumulativeProbability = _cumulativeSum.getOrNull(lb - 1)?: 0.0
 
         val upperCumulativeProbability = _cumulativeSum[ub]
-        if(lowerCumulativeProbability == upperCumulativeProbability) {
+        val selectionIndex = if(lowerCumulativeProbability == upperCumulativeProbability) {
             /* This is the emergency situation. All elements in the targeted selection have a selection probability of
                 0.0. In this scenario a number is picked uniformly between the lower bound and upper bound. Since
                 the random number is known, we can use an affine transformation for the result.
             */
             val emergency = randomNumber.affineTransform(lb.toDouble(), ub.toDouble()).roundToInt()
-            return (emergency + offset).minutes
+            emergency
+        } else {
+            val affineRandomNumber = randomNumber.affineTransform(lowerCumulativeProbability, upperCumulativeProbability)
+            _cumulativeSum.indexBinarySearch(affineRandomNumber, lb, ub)
         }
-        val affineRandomNumber = randomNumber.affineTransform(lowerCumulativeProbability, upperCumulativeProbability)
 
-        return (_cumulativeSum.indexBinarySearch(affineRandomNumber, lb, ub) + offset).minutes
+
+
+        return (selectionIndex + offset).minutes
     }
 
     fun select(randomNumber: Double, bounds: ClosedRange<Duration>) =
@@ -213,14 +220,4 @@ open class ArrayHistogram protected constructor(
     }
 }
 
-/**
- * In case we don't need the insertion, but are just interested in the position, we can invert the index of binary search
- */
-fun DoubleArray.indexBinarySearch(element: Double, fromIndex: Int = 0, toIndex: Int = size): Int {
-    val binarySearch = binarySearch(element, fromIndex, toIndex)
-    return binarySearch.indexOfSearch()
-}
 
-fun Int.indexOfSearch(): Int {
-    return if (this < 0) -this - 1 else this
-}

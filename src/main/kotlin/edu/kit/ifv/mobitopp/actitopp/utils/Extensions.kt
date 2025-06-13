@@ -54,3 +54,15 @@ fun <K, V> SortedMap<K, V>.firstValue(): V = this.getValue(firstKey())
 fun Double.affineTransform(lower: Double, upper: Double): Double {
     return (upper - lower) * this + lower
 }
+
+/**
+ * In case we don't need the insertion, but are just interested in the position, we can invert the index of binary search
+ */
+fun DoubleArray.indexBinarySearch(element: Double, fromIndex: Int = 0, toIndex: Int = size): Int {
+    val binarySearch = binarySearch(element, fromIndex, toIndex)
+    return binarySearch.indexOfSearch()
+}
+
+fun Int.indexOfSearch(): Int {
+    return if (this < 0) -this - 1 else this
+}

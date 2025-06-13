@@ -15,7 +15,7 @@ import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MobilityPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.TourPlan
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.TimeBudgets
-import edu.kit.ifv.mobitopp.actitopp.timebudgets.indexOfSearch
+
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceSituation
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
@@ -24,6 +24,7 @@ import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.UtilityFunction
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.selectNew
 import edu.kit.ifv.mobitopp.actitopp.utils.Position
+import edu.kit.ifv.mobitopp.actitopp.utils.indexOfSearch
 import edu.kit.ifv.mobitopp.actitopp.utils.sumOf
 import java.nio.file.Path
 import java.time.DayOfWeek
