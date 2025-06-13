@@ -1,6 +1,9 @@
 package edu.kit.ifv.mobitopp.actitopp
 
 import edu.kit.ifv.mobitopp.actitopp.changes.Category
+import edu.kit.ifv.mobitopp.actitopp.plandurations.choicemodels.LEAD
+import edu.kit.ifv.mobitopp.actitopp.plandurations.choicemodels.MAJOR
+import edu.kit.ifv.mobitopp.actitopp.plandurations.choicemodels.MINOR
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitopp.utils.affineTransform
 import org.junit.jupiter.params.ParameterizedTest
@@ -77,15 +80,20 @@ class ArrayHistogramTest {
             categoryIndex = Category.NONE_CHOSEN
         )
         val selection = histogram.select(0.2, 2.minutes, 3.minutes)
-        assertEquals(selection, 1.minutes)
+        assertEquals(selection, 2.minutes)
     }
-
-    private data class HistogramTestInput(
-        val randomNumber: Double,
-        val lowerBoundInclusive: Duration,
-        val upperBoundInclusive: Duration,
-        val expected: Duration,
-    )
-
+    @Test
+    fun assertCategoryEquality() {
+        val lead = LEAD
+        val major = MAJOR
+        val minor = MINOR
+        lead.histograms.withIndex().forEach { (i, it) ->
+            assertEquals(it.categoryIndex, major.histograms[i].categoryIndex)
+            assertEquals(it.categoryIndex, minor.histograms[i].categoryIndex)
+            assertEquals(it.start, major.histograms[i].start)
+            assertEquals(it.start, minor.histograms[i].start)
+        }
+        println(lead)
+    }
 
 }

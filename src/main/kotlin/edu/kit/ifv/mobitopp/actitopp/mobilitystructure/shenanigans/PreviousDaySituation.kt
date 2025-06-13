@@ -32,8 +32,6 @@ class PlannedTourMap(
         return mapping[day.startTimeDay]
     }
 
-    fun getCurrentPlannedPrecursorTours(day: DayStructure) = getModifiablePlannedTourAmounts(day).precursorAmount
-
     fun readOnly(): Map<DurationDay, PlannedTourAmounts> = mapping
 }
 

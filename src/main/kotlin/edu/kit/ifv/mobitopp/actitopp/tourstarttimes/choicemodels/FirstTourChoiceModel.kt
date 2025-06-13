@@ -8,7 +8,8 @@ import edu.kit.ifv.mobitopp.actitopp.plandurations.generateHistogram
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.parameters.ParameterCollectionStep10M
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.parameters.ParameterStep10M
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.parameters.ParametersStep10M
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.times
+
+import edu.kit.ifv.mobitopp.actitopp.utils.times
 
 private val firstTourStartUtility: ParameterStep10M.(MainDurationSituation) -> Double = {
     base +

@@ -29,7 +29,7 @@ fun <T> Iterator<T>.takeUntil(predicate: (T) -> Boolean): List<T> {
 }
 
 fun <T> Sequence<T>.takeUntil(predicate: (T) -> Boolean): Sequence<T> {
-    return sequence<T> {
+    return sequence {
         for (item in this@takeUntil) {
             yield(item)
             if (predicate(item)) {

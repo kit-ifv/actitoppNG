@@ -63,8 +63,6 @@ class DayAttributesFromStructure(private val element: DayStructure) : PartialTou
 
 class DayAttributesFromWeekday(private val element: DayOfWeek) : DayAttributes {
 
-    constructor(element: DurationDay) : this(element.weekday)
-
     override fun isMonday(): Boolean = element == DayOfWeek.MONDAY
     override fun isTuesday(): Boolean = element == DayOfWeek.TUESDAY
     override fun isWednesday(): Boolean = element == DayOfWeek.WEDNESDAY

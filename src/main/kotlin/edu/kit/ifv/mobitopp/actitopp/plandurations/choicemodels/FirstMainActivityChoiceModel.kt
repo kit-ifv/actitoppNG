@@ -7,7 +7,7 @@ import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ParametrizedDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.times
+import edu.kit.ifv.mobitopp.actitopp.utils.times
 
 val firstActivityUsesStandardDuration: ParametrizedDiscreteChoiceModel<Boolean, BooleanDecisionSituation, ParameterCollectionStep8A> =
     ModifiableDiscreteChoiceModel<Boolean, BooleanDecisionSituation, ParameterCollectionStep8A>(

@@ -1,6 +1,5 @@
 package edu.kit.ifv.mobitopp.actitopp.timebudgets
 
-import edu.kit.ifv.mobitopp.actitopp.IO.loadDistributionInformationFromFile
 import edu.kit.ifv.mobitopp.actitopp.changes.Category
 import edu.kit.ifv.mobitopp.actitopp.utils.affineTransform
 import edu.kit.ifv.mobitopp.actitopp.utils.ceilWholeMinutes
@@ -8,7 +7,9 @@ import edu.kit.ifv.mobitopp.actitopp.utils.indexBinarySearch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import java.nio.file.Path
+import kotlin.io.path.exists
 import kotlin.io.path.name
+import kotlin.io.path.useLines
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -221,3 +222,19 @@ open class ArrayHistogram protected constructor(
 }
 
 
+private fun loadDistributionInformationFromFile(path: Path):  Map<Int, Int> {
+    require(path.exists()) {
+        "The path $path does not exist."
+    }
+    return path.useLines { lines ->
+        val map = lines.drop(1).associate { line ->
+            val split = line.split(";")
+            val slot = split[0].toInt()
+            val amount = split[1].toInt()
+            slot to amount
+        }
+        map
+    }
+
+
+}

@@ -61,7 +61,7 @@ class ActitoppPerson(
     override val areatype: AreaType = household.areaType
 
 
-    override val numberofcarsinhousehold: Int = household.numberofcarsinhousehold
+    override val numberofcarsinhousehold: Int = household.numberOfCars
 
     override fun isAnywayEmployed(): Boolean = employment.isEmployedAnywhere()
 

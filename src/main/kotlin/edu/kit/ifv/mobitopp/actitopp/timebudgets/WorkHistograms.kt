@@ -10,7 +10,7 @@ import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceSituation
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.times
+import edu.kit.ifv.mobitopp.actitopp.utils.times
 import java.nio.file.Path
 import kotlin.io.path.Path
 

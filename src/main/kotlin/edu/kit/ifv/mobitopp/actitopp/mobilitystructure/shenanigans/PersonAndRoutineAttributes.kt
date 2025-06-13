@@ -35,10 +35,6 @@ class DaySituation private constructor(
         choice, PersonAndRoutineFrom(personRoutine), DayAttributesFromWeekday(week)
     )
 
-    constructor(choice: ActivityType, person: IPerson, routine: WeekRoutine, week: DayOfWeek) : this(
-        choice, PersonWithRoutine(person, routine), week
-    )
-
 }
 
 

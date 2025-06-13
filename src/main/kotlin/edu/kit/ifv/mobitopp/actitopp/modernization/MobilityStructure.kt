@@ -62,23 +62,6 @@ class MobilityStructure(
         activityTracker.add(activityType, day)
     }
 
-    /**
-     * This method operates by sideeffect, so maybe not the best solution
-     */
-    fun determineNextMainActivity(
-        activityTypeFilter: ActivityTypeFilter = Step2Tracking,
-        rngKeeper: RNGHelper,
-    ): ActivityType {
-        val currentDay = nextDay()
-        days.add(currentDay)
-        val activeOptions =
-            activityTypeFilter.determineAvailableOptions(
-                activityTracker,
-                weekRoutine,
-                mainActivityChoiceModel.registeredOptions()
-            )
-        return determineActivityFor(activeOptions, currentDay, rngKeeper)
-    }
 
     private fun determineActivityFor(
         availableOptions: Set<ActivityType>,
@@ -214,13 +197,6 @@ class ActivityDayTrackerImpl(val weekRoutine: WeekRoutine) : ActivityDayTracker 
         }
     }
 
-    fun shouldNotBe(activityType: ActivityType, durationDay: DurationDay): Boolean {
-
-        if (durationDay in daysWithActivities[activityType].orEmpty()) {
-            return false
-        }
-        return isSaturated(activityType)
-    }
 
     override fun isSaturated(activityType: ActivityType): Boolean {
         return amountOfDaysWithActivity(activityType) >= weekRoutine[activityType]

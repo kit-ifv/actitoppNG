@@ -73,42 +73,5 @@ interface OptionBasedSituationBuilder<X : Any, SIT : ChoiceSituation<X>, PARAMS>
 
 interface RuleBasedSituationBuilder<X : Any, SIT : ChoiceSituation<X>, PARAMS> {
     fun addUtilityFunctionByRule(rule: (SIT) -> Boolean, utilityFunction: UtilityFunction<SIT, PARAMS>)
-
-    fun <P> rule(rule: (SIT) -> Boolean, parameters: PARAMS.() -> P, utilityFunction: P.(SIT) -> Double) {
-        val internalUtilityFunction = UtilityFunction { alternative: SIT, parameterObject: PARAMS ->
-            utilityFunction.invoke(
-                parameterObject.parameters(),
-                alternative
-            )
-        }
-        addUtilityFunctionByRule(rule, internalUtilityFunction)
-    }
-
-    fun rule(rule: (SIT) -> Boolean, utilityFunction: PARAMS.(SIT) -> Double) {
-        val internalUtilityFunction = UtilityFunction { alternative: SIT, parameterObject: PARAMS ->
-            utilityFunction.invoke(
-                parameterObject,
-                alternative
-            )
-        }
-        addUtilityFunctionByRule(rule, internalUtilityFunction)
-    }
-
-    fun ruleForAll(utilityFunction: PARAMS.(SIT) -> Double) {
-        rule({ true }, utilityFunction)
-    }
-
-    fun <P> ruleForAll(parameters: PARAMS.() -> P, utilityFunction: P.(SIT) -> Double) {
-        rule({ true }, parameters, utilityFunction)
-    }
 }
 
-/**
- * These functions should reside in the package where utility functions are built, so that they are available
- * whereever someone creates a utility function, without needing to import.
- */
-inline val Boolean.D get() = if (this) 1.0 else 0.0
-inline val Boolean.I get() = if (this) 1 else 0
-operator fun Boolean.times(double: Double): Double {
-    return this.D * double
-}

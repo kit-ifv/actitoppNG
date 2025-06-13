@@ -17,7 +17,6 @@ class StandardStep8B<P>(
 
     private val useStandardDuration: StandardDuration = UtilityFunctionAssignment(rng),
 ) : SelectMainActivityDuration, SelectMajorActivityDuration {
-    private val taintedHistograms = histogram.taint()
     private val taintedHistogramMap = ActivityType.OUTOFHOMEACTIVITY.associateWith { histogram.taint() }
     private val fixedTypes = EnumSet.of(ActivityType.WORK, ActivityType.EDUCATION)
     override fun getDuration(input: MobilityPlanInputs): Duration {

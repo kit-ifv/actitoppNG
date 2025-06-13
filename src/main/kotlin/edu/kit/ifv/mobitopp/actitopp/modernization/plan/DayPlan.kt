@@ -90,7 +90,7 @@ data class MovingDayPlanInput(
 )
 
 /**
- * Note [timeBudgets] is specific for the day, the mobility plan shares the budget between the days
+ * Note timeBudgets is specific for the day, the mobility plan shares the budget between the days
  */
 class MovingDayPlan(
     val activities: List<LinkedActivity>,
@@ -147,8 +147,6 @@ class MovingDayPlan(
             .withDefault {
                 ActivityType.HOME.defaultActivityTime.minutes / amountOfActivities
             }
-    val amountOfTours = tourPlans.size
-
     // Amount of tours in plan, since amount of activities is handled above
     override val activityBudget: Map<ActivityType, Duration> = activities.groupBy { it.activityType }
         .mapValues { (timeBudgets[it.key] / it.value.size).coerceIn(1.minutes, 1440.minutes) }

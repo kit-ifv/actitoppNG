@@ -14,8 +14,6 @@ import kotlin.time.Duration.Companion.days
  */
 class DurationDay private constructor(
     val startOfDay: Duration,
-    var lowerBoundJointTours: Int = 0,
-    var lowerBoundJointActivities: Int = 0,
 ) : Comparable<DurationDay> {
     constructor(dayIndex: Int) : this(dayIndex.days)
 

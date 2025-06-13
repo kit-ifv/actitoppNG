@@ -11,7 +11,7 @@ import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalQueue
 import java.time.DayOfWeek
 import kotlin.time.Duration
 
-// TODO seal interface once HDay is killed
+
 /**
  * The day structure contains the current tour structures that will be present on a given day, this is a readonly view.
  */
@@ -54,13 +54,11 @@ interface DayStructure : Comparable<DayStructure> {
     fun toDayPlan(movingDayPlanInput: MovingDayPlanInput): MutableDayPlan
 }
 
-class HomeDay private constructor(
-    val tourStructureCollection: Collection<TourStructure>,
+class HomeDay(
     override val startTimeDay: DurationDay,
 ) : DayStructure {
     override fun isHomeDay(): Boolean = true
 
-    constructor(startTimeDay: DurationDay) : this(emptyList(), startTimeDay)
 
     override val weekday: DayOfWeek = startTimeDay.weekday
     override val duration: Duration = startTimeDay.startOfDay
@@ -91,8 +89,6 @@ class HomeDay private constructor(
 
 class ModifiableDayStructure(override val startTimeDay: DurationDay, mainTourStructure: MutableTourStructure) :
     BidirectionalQueue<MutableTourStructure>(mainTourStructure), DayStructure {
-    constructor(dayIndex: Int, mainTourStructure: MutableTourStructure) : this(DurationDay(dayIndex), mainTourStructure)
-
     override fun isHomeDay(): Boolean = false
     override val weekday: DayOfWeek = startTimeDay.weekday
     override val duration = startTimeDay.startOfDay
@@ -113,7 +109,9 @@ class ModifiableDayStructure(override val startTimeDay: DurationDay, mainTourStr
             addSuccessor(MutableTourStructure(it))
         }
     }
-
+    override fun amountOfPrecursorElements(): Int = precursors().size
+    override fun amountOfSuccessorElements(): Int = successors().size
+    override fun amountOfElements(): Int = size
     override fun mainActivityType(): ActivityType = mainTourActivityType()
     private fun mainTourActivityType(): ActivityType {
         return this[0][0]

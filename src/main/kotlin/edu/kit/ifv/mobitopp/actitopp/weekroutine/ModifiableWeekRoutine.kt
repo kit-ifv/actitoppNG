@@ -61,25 +61,7 @@ data class WeekRoutineImpl(
     override val amountOfImmobileDays: Int,
     override val averageAmountOfTours: Int,
     override val averageAmountOfActivities: Int,
-) : WeekRoutine {
-
-
-    /**
-     * To enable testing, we need to be able to load the person attributes based on the Person Week Routine.
-     */
-    @TestOnly
-    // TODO this is only required for testing against the legacy code base, once established this can be removed.
-    fun loadToAttributeMap(attributeMap: MutableMap<String, Double>) {
-        attributeMap["anztage_w"] = amountOfWorkingDays.toDouble()
-        attributeMap["anztage_e"] = amountOfEducationDays.toDouble()
-        attributeMap["anztage_l"] = amountOfLeisureDays.toDouble()
-        attributeMap["anztage_s"] = amountOfShoppingDays.toDouble()
-        attributeMap["anztage_t"] = amountOfServiceDays.toDouble()
-        attributeMap["anztage_immobil"] = amountOfImmobileDays.toDouble()
-        attributeMap["anztourentag_mean"] = averageAmountOfTours.toDouble()
-        attributeMap["anzakttag_mean"] = averageAmountOfActivities.toDouble()
-    }
-}
+) : WeekRoutine
 
 
 

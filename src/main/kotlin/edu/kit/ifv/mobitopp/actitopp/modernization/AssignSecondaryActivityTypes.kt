@@ -16,23 +16,6 @@ data class SecondaryActInput(
 
 interface AssignSecondaryActivityTypes {
     fun generateSecondaryActivityTypes(input: SecondaryActInput): Pair<List<ActivityType>, List<ActivityType>>
-
-    fun assignDirectly(input: SecondaryActInput) {
-        val (predecessors, successors) = generateSecondaryActivityTypes(input)
-        val tour = input.tourStructure.element
-        TODO("DIsabled for refactor")
-//        tour.loadPrecursors(predecessors)
-//        tour.loadSuccessors(successors)
-    }
-}
-
-fun Map<DayStructure, Map<BidirectionalIndexedValue<TourStructure>, PlannedTourAmounts>>.assignDirectly(strategy: AssignSecondaryActivityTypes) {
-    entries.forEach { (day, tourMap) ->
-        tourMap.forEach { (tour, plannedTourAmounts) ->
-            strategy.assignDirectly(SecondaryActInput(day, tour, plannedTourAmounts))
-        }
-    }
-
 }
 
 class ExampleAssign(

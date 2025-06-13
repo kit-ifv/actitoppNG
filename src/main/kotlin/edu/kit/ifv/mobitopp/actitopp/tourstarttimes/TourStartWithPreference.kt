@@ -12,7 +12,7 @@ class TourStartWithPreference<P>(
     private val rng: RNGHelper,
     private val startTimeHistograms: ActivityDurationHistograms<P>,
     override val preferredTourStart: ArrayHistogram? = null,
-    private val usePreferredTourStart: Boolean,
+    usePreferredTourStart: Boolean,
 ) :
     SelectTourStartWithPreference {
     val strategy = UseStartViaChoiceModel(rng)

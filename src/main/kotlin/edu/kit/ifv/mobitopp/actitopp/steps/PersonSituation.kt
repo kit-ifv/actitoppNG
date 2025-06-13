@@ -107,33 +107,6 @@ class PersonSituation private constructor(
     fun amountOfLeisureDays() = modifiableWeekRoutine.amountOfLeisureDays
     fun amountOfEducationDays() = modifiableWeekRoutine.amountOfEducationDays
     fun amountOfShoppingDays() = modifiableWeekRoutine.amountOfShoppingDays
-    fun amountOfServiceDays() = modifiableWeekRoutine.amountOfServiceDays
 
-
-    fun debug(): String {
-        return mapOf(
-            "householdHasChildrenBelow10" to householdHasChildrenBelow10(),
-            "isFulltimeEmployee" to isFulltimeEmployee(),
-            "isParttimeEmployee" to isParttimeEmployee(),
-            "isEarningMoney" to isEarningMoney(),
-            "isNotEarningMoney" to isNotEarningMoney(),
-            "isStudent" to isStudent(),
-            "isRetired" to isRetired(),
-            "isVocational" to isVocational(),
-            "isAged10To17" to isAged10To17(),
-            "isAged18To25" to isAged18To25(),
-            "isAged26To35" to isAged26To35(),
-            "isAged36To50" to isAged36To50(),
-            "isAged51To60" to isAged51To60(),
-            "isAged61To70" to isAged61To70(),
-            "areaTypeRural" to areaTypeRural(),
-            "areaTypeConurbation" to areaTypeConurbation(),
-            "hasChildrenInHousehold" to hasChildrenInHousehold(),
-            "amountOfChildrenInHousehold" to amountOfChildrenInHousehold(),
-            "hasYouthsInHousehold" to hasYouthsInHousehold(),
-            "amountOfYouthsInHousehold" to amountOfYouthsInHousehold(),
-            "isMale" to isMale(),
-        ).entries.joinToString(separator = "\n") { "${it.key}: ${it.value}" }
-    }
 }
 

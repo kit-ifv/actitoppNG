@@ -6,7 +6,7 @@ import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.subsubTourAmount.D
 import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalIndexedValue
 
 class Step5Generator(
-    private val mobilityStructure: MobilityStructure,
+    mobilityStructure: MobilityStructure,
 
     val rngHelper: RNGHelper,
 ) {
@@ -42,10 +42,6 @@ class Step5Generator(
             }
 
         }
-        return output
-    }
-
-    fun output(): Map<DayStructure, Map<BidirectionalIndexedValue<TourStructure>, PlannedTourAmounts>> {
         return output
     }
 }

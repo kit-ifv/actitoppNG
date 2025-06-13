@@ -17,25 +17,6 @@ class TrackedDayStructure(
 ) : DayStructure by dayStructure {
 
 
-    fun change(durationDay: DurationDay, weekRoutine: WeekRoutine) {
-//        activityDayTracker.isSaturated(
-//            ActivityType.WORK,
-//            weekRoutine = weekRoutine,
-//            durationDay = durationDay
-//        )
-//        dayStructure.mainActivityType()
-    }
-
-    fun addSuccessor(activityType: ActivityType) {
-        dayStructure.addSuccessor(MutableTourStructure(activityType))
-        activityDayTracker.add(activityType, day = dayStructure.startTimeDay)
-    }
-
-    fun addPrecursor(activityType: ActivityType) {
-        dayStructure.addPrecursor(MutableTourStructure(activityType))
-        activityDayTracker.add(activityType, day = dayStructure.startTimeDay)
-    }
-
     fun loadSuccessors(activityTypes: Collection<ActivityType>) {
         dayStructure.loadSuccessors(activityTypes)
         activityDayTracker.add(activityTypes, day = dayStructure.startTimeDay)
@@ -70,10 +51,6 @@ class TrackedTourStructure(
     private val activityDayTracker: ActivityDayTrackerImpl,
     val original: MutableTourStructure,
 ) : TourStructure by original {
-    fun addPrecursor(activityType: ActivityType) {
-        original.addPrecursor(activityType)
-        activityDayTracker.add(activityType, durationDay)
-    }
 
     fun loadPrecursors(activityTypes: Collection<ActivityType>) {
         original.loadPrecursors(activityTypes)

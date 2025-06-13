@@ -7,7 +7,8 @@ import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.EducationBudgetSet
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.times
+import edu.kit.ifv.mobitopp.actitopp.utils.times
+
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import java.nio.file.Path

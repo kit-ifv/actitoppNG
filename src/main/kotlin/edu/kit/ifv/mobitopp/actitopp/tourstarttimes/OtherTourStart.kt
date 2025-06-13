@@ -10,7 +10,7 @@ import edu.kit.ifv.mobitopp.actitopp.plandurations.generateHistogram
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.parameters.ParameterCollectionStep10S
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.parameters.ParameterStep10S
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.parameters.ParametersStep10S
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.times
+import edu.kit.ifv.mobitopp.actitopp.utils.times
 import kotlin.time.Duration
 
 

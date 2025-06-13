@@ -97,8 +97,6 @@ class ActualMobilityPlan(
 
     override fun finish(): List<ModernizedActivity> = startHomeAnchor.activityIterator().map { it.original }.toList()
 
-    fun outOfHomeActivities() = activities.filter { it.activityType != ActivityType.HOME }
-    val activityMap: Map<ActivityType, List<LinkedActivity>> get() = activities.groupBy { it.activityType }
     override val mainActivityMap: Map<ActivityType, List<LinkedActivity>>
         get() = dayPlans.flatMap { it.tourPlans.map { it.mainActivity } }.groupBy { it.activityType }
 
@@ -121,14 +119,6 @@ class ActualMobilityPlan(
         }
     }
 
-
-    fun filterInconsistent(): List<LinkedAction> {
-        return startHomeAnchor.iterator().filter { !it.isConsistent() }.toList()
-    }
-
-    fun fullPrint() {
-        println(startHomeAnchor.iterator().joinToString(separator = "\n") { it.shortString() })
-    }
 
     override fun extrudeHomeActivities() {
         startHomeAnchor.startTime = Duration.ZERO

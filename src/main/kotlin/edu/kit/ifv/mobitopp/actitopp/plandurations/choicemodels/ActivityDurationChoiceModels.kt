@@ -10,7 +10,8 @@ import edu.kit.ifv.mobitopp.actitopp.plandurations.parameters.ParameterStep8J
 import edu.kit.ifv.mobitopp.actitopp.plandurations.parameters.ParametersStep8B
 import edu.kit.ifv.mobitopp.actitopp.plandurations.parameters.ParametersStep8D
 import edu.kit.ifv.mobitopp.actitopp.plandurations.parameters.ParametersStep8J
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.times
+import edu.kit.ifv.mobitopp.actitopp.utils.times
+
 
 private val minorFunction: ParameterStep8J.(MainDurationSituation) -> Double = {
     base +

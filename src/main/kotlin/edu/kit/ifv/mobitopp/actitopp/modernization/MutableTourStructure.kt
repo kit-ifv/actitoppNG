@@ -13,7 +13,6 @@ interface TourStructure : Collection<ActivityType> {
     fun elements(): Collection<ActivityType>
 
     fun amountOfPrecursorElements(): Int
-    fun amountOfSuccessorElements(): Int
     fun amountOfElements(): Int
 }
 

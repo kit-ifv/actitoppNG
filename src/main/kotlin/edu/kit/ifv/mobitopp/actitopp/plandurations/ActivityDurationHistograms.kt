@@ -49,13 +49,6 @@ open class ActivityDurationHistograms<P>(
         ((range.endInclusive - range.start) * rng + range.start).inWholeMinutes.minutes
     },
 ) {
-    fun categoryFor(duration: Duration): Category {
-        return histograms.first { duration in it }.categoryIndex
-    }
-
-    fun categoryFor(int: Int): Category {
-        return histograms.first { int in it }.categoryIndex
-    }
 
     /**
      * Find the proper histogram, select between histogram and neighbors, where main histogram gets a 1.1 boost.

@@ -3,6 +3,7 @@ package edu.kit.ifv.mobitopp.actitopp.modernization
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.PlannedTourMap
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.sideTourAmounts.DefaultSideTourDeterminer
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.sideTourAmounts.GenerateSideToursFollowing
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.sideTourAmounts.GenerateSideToursPreceeding
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.sideTourAmounts.PrecedingInput
@@ -30,11 +31,6 @@ data class ModifiablePlannedTourAmounts(
     override var successorAmount: Int = 0,
 ) : PlannedTourAmounts
 
-
-data class ModifiableStructureWithPreviousDay(
-    val currentDay: ModifiableDayStructure,
-    val previousDay: DayStructure?,
-)
 
 /**
  * For each day we will generate the amount of precursor and successor tours. This is equivalent to the legacy steps
@@ -72,20 +68,7 @@ class TourAmountTracker(
      */
     private fun generatePredecessorTourAmounts(targets: List<DayStructure>): List<Int> {
         val generator = GenerateSideToursPreceeding(rngHelper)
-        return targets.map {
-            val currentPlan = map.getModifiablePlannedTourAmounts(it)
-            val previousDayPlan = map.getPreviousPlannedTourAmounts(it)
-            val result = generator.generate(
-                PrecedingInput(
-                    person,
-                    it,
-                    currentPlan,
-                    previousDayPlan
-                )
-            )
-            generator.update(currentPlan, result)
-            result
-        }
+        return generateTourAmounts(targets, generator)
     }
 
     /**
@@ -93,10 +76,14 @@ class TourAmountTracker(
      */
     private fun generateSuccessorTourAmounts(targets: List<DayStructure>): List<Int> {
         val generator = GenerateSideToursFollowing(rngHelper)
+        return generateTourAmounts(targets, generator)
+    }
+
+    private fun <P> generateTourAmounts(targets: List<DayStructure>, strategy: DefaultSideTourDeterminer<P>): List<Int> {
         return targets.map {
             val currentPlan = map.getModifiablePlannedTourAmounts(it)
             val previousDayPlan = map.getPreviousPlannedTourAmounts(it)
-            val result = generator.generate(
+            val result = strategy.generate(
                 PrecedingInput(
                     person,
                     it,
@@ -104,7 +91,7 @@ class TourAmountTracker(
                     previousDayPlan
                 )
             )
-            generator.update(currentPlan, result)
+            strategy.update(currentPlan, result)
             result
         }
     }
