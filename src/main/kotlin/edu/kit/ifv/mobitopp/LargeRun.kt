@@ -52,11 +52,6 @@ suspend fun Collection<ActitoppPerson>.generateSchedules(): List<List<Modernized
             schedule
         }
     }.awaitAll()
-//    return withIndex().map { (index, person) ->
-//        val householdPlan = DefaultPlanGeneration()
-//        householdPlan.generate(person).finish().also { if (index % 100 == 0) println("Working on person $index done") }
-//
-//    }
 }
 
 fun main() {

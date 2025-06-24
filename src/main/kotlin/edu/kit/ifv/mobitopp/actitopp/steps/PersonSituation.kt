@@ -1,7 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.steps
 
 import edu.kit.ifv.mobitopp.actitopp.IPerson
-import edu.kit.ifv.mobitopp.actitopp.enums.AreaType
 import edu.kit.ifv.mobitopp.actitopp.enums.Employment
 import edu.kit.ifv.mobitopp.actitopp.enums.Gender
 import edu.kit.ifv.mobitopp.actitopp.enums.isEarning
@@ -11,7 +10,6 @@ import edu.kit.ifv.mobitopp.actitopp.enums.isParttime
 import edu.kit.ifv.mobitopp.actitopp.enums.isStudent
 import edu.kit.ifv.mobitopp.actitopp.enums.isStudentOrAzubi
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceSituation
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.ModifiableWeekRoutine
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
 
 /**
@@ -35,19 +33,12 @@ interface PersonAttributes {
     fun isAged51To60(): Boolean
     fun isAged61To70(): Boolean
     fun isAged18To35(): Boolean
-//    fun areaTypeRural(): Boolean
-//    fun areaTypeConurbation(): Boolean
-//    fun hasChildrenInHousehold(): Boolean
-//    fun amountOfChildrenInHousehold(): Int
-//    fun hasYouthsInHousehold(): Boolean
-//    fun amountOfYouthsInHousehold(): Int
     fun isMale(): Boolean
     fun commuteIn0To5km(): Boolean
     fun commuteIn5To10km(): Boolean
     fun commuteIn10To20km(): Boolean
     fun commuteIn20To50km(): Boolean
     fun commuteOver50km(): Boolean
-//    fun amountOfPKW(): Int
 }
 
 class PersonAttributesFromElement(val person: IPerson) : PersonAttributes {
@@ -66,19 +57,6 @@ class PersonAttributesFromElement(val person: IPerson) : PersonAttributes {
     override fun isAged51To60() = person.age in 51..60
     override fun isAged61To70() = person.age in 61..70
     override fun isAged18To35(): Boolean = person.age in 18..35
-
-    // These are household attributes
-//    override fun areaTypeRural() = person.areatype == AreaType.RURAL
-//    override fun areaTypeConurbation() = person.areatype == AreaType.CONURBATION
-//    override fun hasChildrenInHousehold() = person.children0_10 > 0
-//    override fun amountOfChildrenInHousehold() = person.children0_10
-//    override fun hasYouthsInHousehold() = person.children_u18 > 0
-//    override fun amountOfYouthsInHousehold() = person.children_u18
-//    override fun householdHasChildrenBelow10() = person.children0_10 > 0
-//    override fun amountOfPKW(): Int = person.numberofcarsinhousehold
-    // End household attributes
-
-
     override fun isMale() = person.gender == Gender.MALE
     override fun commuteIn0To5km() = person.maxCommute in 0.0..5.0
     override fun commuteIn5To10km() = person.maxCommute in 5.0..10.0
@@ -96,26 +74,26 @@ class PersonAttributesFromElement(val person: IPerson) : PersonAttributes {
 
 class PersonSituation private constructor(
     override val choice: Int,
-    private val modifiableWeekRoutine: WeekRoutine,
+    private val weekRoutine: WeekRoutine,
     val person: IPerson,
     attributes: PersonAttributesFromElement,
     householdAttributes: HouseholdAttributes,
 ) : ChoiceSituation<Int>(), PersonAttributes by attributes, HouseholdAttributes by householdAttributes {
 
 
-    constructor(choice: Int, modifiableWeekRoutine: WeekRoutine, person: IPerson) : this(
+    constructor(choice: Int, weekRoutine: WeekRoutine, person: IPerson) : this(
         choice,
-        modifiableWeekRoutine,
+        weekRoutine,
         person,
         PersonAttributesFromElement(person),
         HouseholdAttributesFromElement(person.household)
     )
 
 
-    fun amountOfWorkingDays() = modifiableWeekRoutine.amountOfWorkingDays
-    fun amountOfLeisureDays() = modifiableWeekRoutine.amountOfLeisureDays
-    fun amountOfEducationDays() = modifiableWeekRoutine.amountOfEducationDays
-    fun amountOfShoppingDays() = modifiableWeekRoutine.amountOfShoppingDays
+    fun amountOfWorkingDays() = weekRoutine.amountOfWorkingDays
+    fun amountOfLeisureDays() = weekRoutine.amountOfLeisureDays
+    fun amountOfEducationDays() = weekRoutine.amountOfEducationDays
+    fun amountOfShoppingDays() = weekRoutine.amountOfShoppingDays
 
 }
 

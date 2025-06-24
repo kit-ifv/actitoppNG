@@ -1,10 +1,13 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine
 
-import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
-import org.jetbrains.annotations.TestOnly
 import kotlin.properties.Delegates
 
-class ModifiableWeekRoutine: WeekRoutine {
+/**
+ * This class provides a mutable state of a [WeekRoutine]. The fields are deliberately set to Delegates.notNull() instead
+ * of = 0. This way preemptive access of uninitialized fields causes an error, rather than a silent calculation with 0.
+ * (We assume that this silent calculation mismatch is not desired, and thus guarded with errors)
+ */
+class ModifiableWeekRoutine : WeekRoutine {
     override var amountOfWorkingDays: Int by Delegates.notNull()
     override var amountOfEducationDays: Int by Delegates.notNull()
     override var amountOfLeisureDays: Int by Delegates.notNull()
@@ -13,55 +16,7 @@ class ModifiableWeekRoutine: WeekRoutine {
     override var amountOfImmobileDays: Int by Delegates.notNull()
     override var averageAmountOfTours: Int by Delegates.notNull()
     override var averageAmountOfActivities: Int by Delegates.notNull()
-
-    fun toWeekRoutine(): WeekRoutine {
-        return WeekRoutineImpl(
-            amountOfWorkingDays = amountOfWorkingDays,
-            amountOfEducationDays = amountOfEducationDays,
-            amountOfLeisureDays = amountOfLeisureDays,
-            amountOfShoppingDays = amountOfShoppingDays,
-            amountOfServiceDays = amountOfServiceDays,
-            amountOfImmobileDays = amountOfImmobileDays,
-            averageAmountOfTours = averageAmountOfTours,
-            averageAmountOfActivities = averageAmountOfActivities
-        )
-    }
 }
-
-
-interface WeekRoutine {
-    val amountOfWorkingDays: Int
-    val amountOfEducationDays: Int
-    val amountOfLeisureDays: Int
-    val amountOfShoppingDays: Int
-    val amountOfServiceDays: Int
-    val amountOfImmobileDays: Int
-    val averageAmountOfTours: Int
-    val averageAmountOfActivities: Int
-
-    operator fun get(activityType: ActivityType): Int {
-        return when (activityType) {
-            ActivityType.EDUCATION -> amountOfEducationDays
-            ActivityType.WORK -> amountOfWorkingDays
-            ActivityType.LEISURE -> amountOfLeisureDays
-            ActivityType.SHOPPING -> amountOfShoppingDays
-            ActivityType.TRANSPORT -> amountOfServiceDays
-            ActivityType.HOME -> amountOfImmobileDays
-            else -> throw UnsupportedOperationException("the week routine has no field to track $activityType")
-        }
-    }
-}
-
-data class WeekRoutineImpl(
-    override val amountOfWorkingDays: Int,
-    override val amountOfEducationDays: Int,
-    override val amountOfLeisureDays: Int,
-    override val amountOfShoppingDays: Int,
-    override val amountOfServiceDays: Int,
-    override val amountOfImmobileDays: Int,
-    override val averageAmountOfTours: Int,
-    override val averageAmountOfActivities: Int,
-) : WeekRoutine
 
 
 

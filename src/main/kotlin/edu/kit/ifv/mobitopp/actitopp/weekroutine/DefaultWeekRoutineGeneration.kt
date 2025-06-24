@@ -19,6 +19,16 @@ typealias ChoiceModel = SealedDiscreteChoiceModel<Int, PersonSituation>
  * The standard implementation to generate a week routine. Using choice models and mutable fields. Note that the
  * execution order is important, because the choice models take into account the selection of preceding decisions.
  *
+ * This implementation uses choice models to generate the amount of days in the following order:
+ * Work, Education, Leisure, Shopping, Service, Home, Average amount of tours, Average amount of activities.
+ *
+ * Since the underlying choice models require the incomplete state of the [WeekRoutine] for the utility calculation (for example the
+ * amount of work days influence the decision of the amount of education days) We utilize the [ModifiableWeekRoutine]
+ * subclass where the fields can be manipulated, so that the incomplete information can be passed on to the subsequent
+ * choice model steps.
+ *
+ * Note that this is an implementation detail for these particular choice models and the [GenerateWeekRoutine] interface
+ * will return a read-only [WeekRoutine] as final output.
  */
 class DefaultWeekRoutineGeneration(
     private val workDayChoiceModel: ChoiceModel = defaultWorkDayChoiceModel,
@@ -31,7 +41,7 @@ class DefaultWeekRoutineGeneration(
     private val averageAmountOfActivitiesChoiceModel: ChoiceModel = step1LWithParams,
 ) : GenerateWeekRoutine {
     override fun generate(person: IPerson, rng: RNGHelper): WeekRoutine {
-        return ModifiableWeekRoutine().run {
+        return ModifiableWeekRoutine().apply {
 
             val converter: (Int) -> PersonSituation = { PersonSituation(it, this, person) }
             amountOfWorkingDays = workDayChoiceModel.select(rng.randomValue, converter)
@@ -42,7 +52,6 @@ class DefaultWeekRoutineGeneration(
             amountOfImmobileDays = immobileDayChoiceModel.select(rng.randomValue, converter)
             averageAmountOfTours = averageAmountOfTourChoiceModel.select(rng.randomValue, converter)
             averageAmountOfActivities = averageAmountOfActivitiesChoiceModel.select(rng.randomValue, converter)
-            toWeekRoutine()
         }
     }
 }

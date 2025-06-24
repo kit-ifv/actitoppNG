@@ -1,14 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.utilityFunctions
 
-import edu.kit.ifv.mobitopp.actitopp.ActiToppHousehold
-import edu.kit.ifv.mobitopp.actitopp.enums.AreaType
-import edu.kit.ifv.mobitopp.actitopp.steps.PersonSituation
-import edu.kit.ifv.mobitopp.actitopp.utils.times
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutineImpl
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1LWithParams
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.ActivityAmountParameters
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.DefaultActivityAmountParameters
-import edu.kit.ifv.mobitopp.generatePerson
+
 
 
 class ArrayDiscreteChoiceModel<X, Y: Any, P> (
