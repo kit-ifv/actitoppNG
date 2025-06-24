@@ -36,7 +36,11 @@ fun interface UsePreferredTourStart {
  *
  * 1) The person must be employed or in education.
  * 2) The main activity of the tour must be either [WORK][ActivityType.WORK] or [EDUCATION][ActivityType.EDUCATION]
- * 3) The person must have an activity of [WORK][ActivityType.WORK] or [EDUCATION][ActivityType.EDUCATION] in their plan.
+ *
+ * In the legacy implementation there was a deprecated step 3)
+ * The person must have an activity of [WORK][ActivityType.WORK] or [EDUCATION][ActivityType.EDUCATION] in their plan.
+ *
+ * However since condition 2 implies 3, this code has been removed in this implementation.
  */
 class UseStartViaChoiceModel(private val rngKeeper: RNGHelper) : UsePreferredTourStart {
     private val choiceModel =
@@ -65,25 +69,15 @@ class UseStartViaChoiceModel(private val rngKeeper: RNGHelper) : UsePreferredTou
         ).initializeWithParameters(ParametersStep10A)
 
     override fun usePreferredTourStart(input: MobilityPlanInputs, preferredHistogram: ArrayHistogram): Boolean {
-        // This implementation tests against Work and Education as activities with a fixed tour start time
         val relevantActivities = setOf(ActivityType.WORK, ActivityType.EDUCATION)
         if (!input.person.isAnywayEmployed() && !input.person.isinEducation()) return false
         if (input.tourMainActivityType !in relevantActivities) return false
-        // If any of the main activities in the mobility plan match the relevant activities, then this code may determine
-        // whether the person has a preferred tour start. (Even if the person employment and main activity type mismatch)
-        val hasRelevantActivities = input.mobilityPlan.mainActivityMap.run {
-            relevantActivities.any {
-                getOrDefault(it, emptyList()).isNotEmpty()
-            }
+        val converter: (Boolean) -> BooleanDecisionWithPreferenceCategory = {
+            BooleanDecisionWithPreferenceCategory(it, input, preferredHistogram)
         }
-        if (hasRelevantActivities) {
-            val converter: (Boolean) -> BooleanDecisionWithPreferenceCategory = {
-                BooleanDecisionWithPreferenceCategory(it, input, preferredHistogram)
-            }
-            val rnd = rngKeeper.randomValue
-            return choiceModel.select(rnd, converter)
-        }
-        return false
+        val rnd = rngKeeper.randomValue
+        return choiceModel.select(rnd, converter)
+
 
     }
 }
