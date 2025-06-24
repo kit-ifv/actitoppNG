@@ -1,6 +1,5 @@
 package edu.kit.ifv.mobitopp.actitopp
 
-import edu.kit.ifv.mobitopp.actitopp.enums.AreaType
 import edu.kit.ifv.mobitopp.actitopp.enums.Employment
 import edu.kit.ifv.mobitopp.actitopp.enums.Gender
 import edu.kit.ifv.mobitopp.actitopp.enums.isEmployedAnywhere
@@ -40,11 +39,11 @@ class ActitoppPerson(
     }
 
     override val age: Int = attributes.age
-    override val commutingdistance_work: Double = attributes.commuteDistanceWork ?: .0
-    override val commutingdistance_education: Double = attributes.commuteDistanceEducation ?:.0
+    override val commutingdistanceWork: Double = attributes.commuteDistanceWork ?: .0
+    override val commutingdistanceEducation: Double = attributes.commuteDistanceEducation ?:.0
 
     override val maxCommute: Double =
-        max(commutingdistance_work, commutingdistance_education)
+        max(commutingdistanceWork, commutingdistanceEducation)
 
     override val id: Int = idCounter
 

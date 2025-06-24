@@ -1,6 +1,5 @@
 package edu.kit.ifv.mobitopp.actitopp
 
-import edu.kit.ifv.mobitopp.actitopp.enums.AreaType
 import edu.kit.ifv.mobitopp.actitopp.enums.Employment
 import edu.kit.ifv.mobitopp.actitopp.enums.Gender
 import edu.kit.ifv.mobitopp.actitopp.modernization.IHousehold
@@ -11,8 +10,8 @@ interface IPerson {
     val gender: Gender
     val maxCommute: Double
     val isAllowedToWork: Boolean
-    val commutingdistance_work: Double
-    val commutingdistance_education: Double
+    val commutingdistanceWork: Double
+    val commutingdistanceEducation: Double
 
     val id: Int
     val household: IHousehold

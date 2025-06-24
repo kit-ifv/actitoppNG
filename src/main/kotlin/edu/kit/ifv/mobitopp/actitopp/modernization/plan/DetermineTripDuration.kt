@@ -42,20 +42,20 @@ class StandardCommuteDurations(private val standardTripDuration: Duration = 15.m
         person: IPerson,
     ) = when {
         activityType == ActivityType.WORK && person.hasWorkCommuteInfo() -> {
-            person.commutingdistance_work.kilometers.calculateCommuteDuration(::commuteSpeedWork)
+            person.commutingdistanceWork.kilometers.calculateCommuteDuration(::commuteSpeedWork)
         }
 
         activityType == ActivityType.EDUCATION && person.hasEducationCommuteInfo()
 
             -> {
-            person.commutingdistance_education.kilometers.calculateCommuteDuration(::commuteSpeedEducation)
+            person.commutingdistanceEducation.kilometers.calculateCommuteDuration(::commuteSpeedEducation)
         }
 
         else -> everyOtherTourTrip(person, activityType)
     }
 
 
-    fun Distance.calculateCommuteDuration(functor: (Distance) -> Speed): Duration {
+    private fun Distance.calculateCommuteDuration(functor: (Distance) -> Speed): Duration {
         val speed = functor(this)
         val duration = this / speed
         return duration.coerceAtLeast(1.minutes).round(DurationUnit.MINUTES)
@@ -82,12 +82,9 @@ class StandardCommuteDurations(private val standardTripDuration: Duration = 15.m
             else -> 21.kmh
         }
     }
+    private fun IPerson.hasWorkCommuteInfo() = commutingdistanceWork != 0.0
 
-
-    // TODO commutingdistance_work could be nullable instead of 0.0
-    private fun IPerson.hasWorkCommuteInfo() = commutingdistance_work != 0.0
-
-    private fun IPerson.hasEducationCommuteInfo() = commutingdistance_education != 0.0
+    private fun IPerson.hasEducationCommuteInfo() = commutingdistanceEducation != 0.0
 
     companion object {
         val STANDARD_ASSIGNMENT = StandardCommuteDurations()

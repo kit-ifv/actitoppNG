@@ -1,5 +1,10 @@
 package edu.kit.ifv.mobitopp.actitopp.utils
 
+/**
+ * The [Position] enum should encapsulate whether an event such as a tour or activity takes place before/after the main
+ * element. This behaves similar to the original index implementation which compared against the sign of the index integer
+ * to determine the position.
+ */
 enum class Position {
     BEFORE, MAIN, AFTER;
 

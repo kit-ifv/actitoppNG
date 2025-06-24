@@ -54,7 +54,6 @@ abstract class DefaultSideTourDeterminer<P>(
             // before the main activity, and the other half after the remaining tour.
             it < minimumNumberOfTours
         }
-        // TODO this block only triggers in the coordinated modelling phase, otherwise it can be omitted
         val avgAmountTours = routine.averageAmountOfTours
 
         // I have no clue why the original code only limits the available options if the number of tours is 1, 2 (but not 3 or any other option)

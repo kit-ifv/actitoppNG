@@ -11,6 +11,7 @@ import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalIndexedValue
 import edu.kit.ifv.mobitopp.actitopp.utils.Position
 import edu.kit.ifv.mobitopp.actitopp.utils.foldUntil
 import edu.kit.ifv.mobitopp.actitopp.utils.rem
+import edu.kit.ifv.mobitopp.actitopp.utils.sumOf
 import edu.kit.ifv.mobitopp.actitopp.utils.takeUntil
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
@@ -108,10 +109,8 @@ class MovingDayPlan(
 
     override val durationOfMainActivities: Duration by lazy {
         mainActivities().sumOf {
-            it.duration?.toDouble(DurationUnit.MINUTES) ?: throw IllegalArgumentException(
-                "Somehow a main activity has not yet received a duration, so the sum over the main activities cannot be calculated."
-            )
-        }.minutes
+            it.duration ?: throw IllegalStateException("Cannot evalutate duration, some activities have not yet received a duration")
+        }
     }
     override var firstActivity: LinkedActivity = activities.first()
     override var lastActivity: LinkedActivity = activities.last()
@@ -121,11 +120,9 @@ class MovingDayPlan(
 
     // Throw an error if the duration of any activity is not set, this scenario cannot be handled
     private val _durationOfActivities by lazy {
-        // TODO 1) Define a .sumOf() over Duration, to avoid the double conversion
         activities.sumOf {
-            it.duration?.toDouble(DurationUnit.MINUTES)
-                ?: throw IllegalStateException("The duration of activities can only be calculated after each activity of the day has been assigned a duration")
-        }.minutes
+            it.duration ?: throw IllegalStateException("Cannot evaluate duration of activities, if some have not yet been assigned a duration")
+        }
     }
 
     override fun durationOfActivities(): Duration {
@@ -177,7 +174,6 @@ class MovingDayPlan(
 
         // Similarly, a successor with a fixed time is a better bound for the potential end time of this element, but if nothing
         // has a fixed time, the end of the day is the fallback.
-        // TODO verify that a very large latest Start time doesnt break stuff.
         val endDuration =
             if (disregardDayEnd) (durationDay.startOfDay + 1.days + 3.hours) else (durationDay.startOfDay + 1.days)
         val latestStartTime = (fixedSuccessor?.startTime ?: endDuration) -
@@ -226,7 +222,7 @@ class HomeDayPlan(override val durationDay: DurationDay) : MutableDayPlan, List<
         emptyMap<ActivityType, Duration>().withDefault { 0.minutes }
 
     override fun activityTimeBounds(linkedActivity: LinkedActivity, disregardDayEnd: Boolean): ClosedRange<Duration> {
-        TODO("Not yet implemented")
+        throw UnsupportedOperationException("A home day has no bounds for other activities")
     }
 
     override fun activityDurationBounds(linkedActivity: LinkedActivity): ClosedRange<Duration> {
