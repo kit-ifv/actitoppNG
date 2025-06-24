@@ -3,9 +3,6 @@ package edu.kit.ifv.mobitopp.actitopp
 import edu.kit.ifv.mobitopp.actitopp.enums.AreaType
 import edu.kit.ifv.mobitopp.actitopp.modernization.IHousehold
 
-/**
- * @author Tim Hilgert
- */
 class ActiToppHousehold(
 
     val children0_10: Int,

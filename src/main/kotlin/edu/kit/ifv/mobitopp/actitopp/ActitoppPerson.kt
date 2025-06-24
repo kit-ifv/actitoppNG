@@ -31,7 +31,7 @@ data class PersonAttributes(
 }
 
 class ActitoppPerson(
-    val household: ActiToppHousehold,
+    override val household: ActiToppHousehold,
     val attributes: PersonAttributes,
 ) : IPerson {
 
@@ -51,17 +51,6 @@ class ActitoppPerson(
     override val gender: Gender = attributes.gender
     override val employment: Employment = attributes.employment
     override val isAllowedToWork: Boolean = true
-
-
-    override val children0_10: Int = household.children0_10
-
-    override val children_u18: Int = household.children_u18
-
-
-    override val areatype: AreaType = household.areaType
-
-
-    override val numberofcarsinhousehold: Int = household.numberOfCars
 
     override fun isAnywayEmployed(): Boolean = employment.isEmployedAnywhere()
 

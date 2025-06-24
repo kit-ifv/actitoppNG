@@ -6,6 +6,8 @@ import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributesFromWeekday
+import edu.kit.ifv.mobitopp.actitopp.steps.HouseholdAttributes
+import edu.kit.ifv.mobitopp.actitopp.steps.HouseholdAttributesFromElement
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAttributesFromElement
 import edu.kit.ifv.mobitopp.actitopp.steps.RoutineAttributes
@@ -27,12 +29,14 @@ class DaySituation private constructor(
 
     private val personAttributesFromElement: PersonAndRoutineAttributes,
     private val dayAttributesFromElement: DayAttributes,
+    private val householdAttributesFromElement: HouseholdAttributes,
 ) :
     ChoiceSituation<ActivityType>(), PersonAttributes by personAttributesFromElement,
     RoutineAttributes by personAttributesFromElement,
-    DayAttributes by dayAttributesFromElement {
+    DayAttributes by dayAttributesFromElement,
+HouseholdAttributes by householdAttributesFromElement{
     constructor(choice: ActivityType, personRoutine: PersonWithRoutine, week: DayOfWeek) : this(
-        choice, PersonAndRoutineFrom(personRoutine), DayAttributesFromWeekday(week)
+        choice, PersonAndRoutineFrom(personRoutine), DayAttributesFromWeekday(week), HouseholdAttributesFromElement(personRoutine.household)
     )
 
 }

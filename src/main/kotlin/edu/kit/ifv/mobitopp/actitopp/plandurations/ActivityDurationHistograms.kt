@@ -245,7 +245,7 @@ open class PlanSituation<P : Any>(
         return mobilityPlan.dayPlans.count { it.tourPlans.last().position == Position.AFTER }
     }
 
-    fun householdHasYouths() = person.children_u18 > 0
+    fun householdHasYouths() = person.household.amountOfAllMinors() > 0
     fun anztagemit_tourenvorht(): Int {
         // TODO this number is also fixed once the mobility Plan is formulated.
         return mobilityPlan.dayPlans.count { it.tourPlans.first().position == Position.BEFORE }

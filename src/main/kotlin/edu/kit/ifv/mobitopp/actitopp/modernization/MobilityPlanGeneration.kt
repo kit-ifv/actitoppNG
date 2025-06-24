@@ -3,7 +3,6 @@ package edu.kit.ifv.mobitopp.actitopp.modernization
 
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
-import edu.kit.ifv.mobitopp.actitopp.STATIC_HISTOGRAMS
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.LegacySpawnSideTours
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.SpawnSideTours
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.SpawnWeek
@@ -18,6 +17,7 @@ import edu.kit.ifv.mobitopp.actitopp.plandurations.assignSecondaryMainActivities
 import edu.kit.ifv.mobitopp.actitopp.plandurations.choicemodels.LEAD
 import edu.kit.ifv.mobitopp.actitopp.plandurations.choicemodels.MAJOR
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.FinalizedActivityPattern
+import edu.kit.ifv.mobitopp.actitopp.timebudgets.HistogramPerActivity
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.SECOND_TOUR_HISTOGRAM
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.StandardPreferredTourStart
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.TourStartByHistogramsRelative
@@ -51,7 +51,7 @@ class DefaultPlanGeneration : MobilityPlanGeneration {
     }
 }
 
-class StandardStructureGeneration(val rng: RNGHelper) : MobilityPlanGeneration {
+class StandardStructureGeneration(val rng: RNGHelper, private val histograms: HistogramPerActivity = HistogramPerActivity.DEFAULT) : MobilityPlanGeneration {
     private val sideActivityStrategy = StandardImplementation(rng)
     private val spawnMainActivities = SpawnWeek(rng)
     private val spawnSideTours: SpawnSideTours = LegacySpawnSideTours(rng)
@@ -66,7 +66,7 @@ class StandardStructureGeneration(val rng: RNGHelper) : MobilityPlanGeneration {
         sideActivityStrategy.spawnSideActivities(mobilityStructure)
         // Determine the amount of precursor and successor tours for each tour of the day
 
-        val budget = STATIC_HISTOGRAMS.determineTimeBudgets(
+        val budget = histograms.determineTimeBudgets(
             rng,
             person,
             FinalizedActivityPattern.fromModernPattern(mobilityStructure)

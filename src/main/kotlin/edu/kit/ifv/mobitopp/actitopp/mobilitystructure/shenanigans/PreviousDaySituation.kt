@@ -8,6 +8,8 @@ import edu.kit.ifv.mobitopp.actitopp.modernization.ModifiablePlannedTourAmounts
 import edu.kit.ifv.mobitopp.actitopp.modernization.PlannedTourAmounts
 import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributesFromStructure
 import edu.kit.ifv.mobitopp.actitopp.steps.DayStructureAttributes
+import edu.kit.ifv.mobitopp.actitopp.steps.HouseholdAttributes
+import edu.kit.ifv.mobitopp.actitopp.steps.HouseholdAttributesFromElement
 import edu.kit.ifv.mobitopp.actitopp.steps.PartialTourLayoutAttributes
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceSituation
 
@@ -41,9 +43,11 @@ class PreviousDaySituation private constructor(
     val pAttr: PersonAndRoutineAttributes,
     val plannedTourAttributes: PartialTourLayoutAttributes,
     val structureAttributes: DayStructureAttributes,
+    val householdAttributes: HouseholdAttributes
 ) : ChoiceSituation<Int>(), PreviousDayAttributes by previousDayAttributes,
     PersonAndRoutineAttributes by pAttr, PartialTourLayoutAttributes by plannedTourAttributes,
-    DayStructureAttributes by structureAttributes {
+    DayStructureAttributes by structureAttributes,
+HouseholdAttributes by householdAttributes {
 
 
     constructor(
@@ -61,6 +65,7 @@ class PreviousDaySituation private constructor(
         pAttr = PersonAndRoutineFrom(personWithRoutine),
         plannedTourAttributes = PartialTourLayoutAttributes { plannedPrecursorTours },
         structureAttributes = DayAttributesFromStructure(day),
+        householdAttributes = HouseholdAttributesFromElement(personWithRoutine.household)
     )
 
 

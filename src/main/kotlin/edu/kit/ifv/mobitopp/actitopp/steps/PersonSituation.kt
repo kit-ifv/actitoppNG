@@ -19,7 +19,6 @@ import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
  * code. Once the rewrite is complete most of these conditions could be inlined in the utility functions.
  */
 interface PersonAttributes {
-    fun householdHasChildrenBelow10(): Boolean
     fun isFulltimeEmployee(): Boolean
     fun isParttimeEmployee(): Boolean
     fun isEarningMoney(): Boolean
@@ -36,23 +35,23 @@ interface PersonAttributes {
     fun isAged51To60(): Boolean
     fun isAged61To70(): Boolean
     fun isAged18To35(): Boolean
-    fun areaTypeRural(): Boolean
-    fun areaTypeConurbation(): Boolean
-    fun hasChildrenInHousehold(): Boolean
-    fun amountOfChildrenInHousehold(): Int
-    fun hasYouthsInHousehold(): Boolean
-    fun amountOfYouthsInHousehold(): Int
+//    fun areaTypeRural(): Boolean
+//    fun areaTypeConurbation(): Boolean
+//    fun hasChildrenInHousehold(): Boolean
+//    fun amountOfChildrenInHousehold(): Int
+//    fun hasYouthsInHousehold(): Boolean
+//    fun amountOfYouthsInHousehold(): Int
     fun isMale(): Boolean
     fun commuteIn0To5km(): Boolean
     fun commuteIn5To10km(): Boolean
     fun commuteIn10To20km(): Boolean
     fun commuteIn20To50km(): Boolean
     fun commuteOver50km(): Boolean
-    fun amountOfPKW(): Int
+//    fun amountOfPKW(): Int
 }
 
 class PersonAttributesFromElement(val person: IPerson) : PersonAttributes {
-    override fun householdHasChildrenBelow10() = person.children0_10 > 0
+
     override fun isFulltimeEmployee() = person.employment == Employment.FULLTIME
     override fun isParttimeEmployee() = person.employment.isParttime()
     override fun isEarningMoney() = person.employment.isEarning()
@@ -67,19 +66,26 @@ class PersonAttributesFromElement(val person: IPerson) : PersonAttributes {
     override fun isAged51To60() = person.age in 51..60
     override fun isAged61To70() = person.age in 61..70
     override fun isAged18To35(): Boolean = person.age in 18..35
-    override fun areaTypeRural() = person.areatype == AreaType.RURAL
-    override fun areaTypeConurbation() = person.areatype == AreaType.CONURBATION
-    override fun hasChildrenInHousehold() = person.children0_10 > 0
-    override fun amountOfChildrenInHousehold() = person.children0_10
-    override fun hasYouthsInHousehold() = person.children_u18 > 0
-    override fun amountOfYouthsInHousehold() = person.children_u18
+
+    // These are household attributes
+//    override fun areaTypeRural() = person.areatype == AreaType.RURAL
+//    override fun areaTypeConurbation() = person.areatype == AreaType.CONURBATION
+//    override fun hasChildrenInHousehold() = person.children0_10 > 0
+//    override fun amountOfChildrenInHousehold() = person.children0_10
+//    override fun hasYouthsInHousehold() = person.children_u18 > 0
+//    override fun amountOfYouthsInHousehold() = person.children_u18
+//    override fun householdHasChildrenBelow10() = person.children0_10 > 0
+//    override fun amountOfPKW(): Int = person.numberofcarsinhousehold
+    // End household attributes
+
+
     override fun isMale() = person.gender == Gender.MALE
     override fun commuteIn0To5km() = person.maxCommute in 0.0..5.0
     override fun commuteIn5To10km() = person.maxCommute in 5.0..10.0
     override fun commuteIn10To20km() = person.maxCommute in 10.0..20.0
     override fun commuteIn20To50km() = person.maxCommute in 2.0..50.0
     override fun commuteOver50km() = person.maxCommute > 50.0
-    override fun amountOfPKW(): Int = person.numberofcarsinhousehold
+
 
     override fun isEmployedAnywhere(): Boolean = person.employment.isEmployedAnywhere()
     override fun isStudentOrAzubi(): Boolean {
@@ -93,14 +99,16 @@ class PersonSituation private constructor(
     private val modifiableWeekRoutine: WeekRoutine,
     val person: IPerson,
     attributes: PersonAttributesFromElement,
-) : ChoiceSituation<Int>(), PersonAttributes by attributes {
+    householdAttributes: HouseholdAttributes,
+) : ChoiceSituation<Int>(), PersonAttributes by attributes, HouseholdAttributes by householdAttributes {
 
 
     constructor(choice: Int, modifiableWeekRoutine: WeekRoutine, person: IPerson) : this(
         choice,
         modifiableWeekRoutine,
         person,
-        PersonAttributesFromElement(person)
+        PersonAttributesFromElement(person),
+        HouseholdAttributesFromElement(person.household)
     )
 
 

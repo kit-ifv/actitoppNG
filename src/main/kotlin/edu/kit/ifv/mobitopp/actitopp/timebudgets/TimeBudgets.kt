@@ -89,11 +89,11 @@ data class TimeBudgets(
 val NO_TIME: Pair<Duration, Category> = Duration.ZERO to Category.NONE_CHOSEN
 
 class HistogramPerActivity(
-    val workHistograms: WorkHistograms = WorkHistograms.fromResourcePath(),
-    val educationHistograms: EducationHistograms = EducationHistograms.fromResourcePath(),
-    val leisureHistograms: LeisureHistograms = LeisureHistograms.fromResourcePath(),
-    val shoppingHistograms: ShoppingHistograms = ShoppingHistograms.fromResourcePath(),
-    val transportHistograms: TransportHistograms = TransportHistograms.fromResourcePath(),
+    val workHistograms: WorkHistograms,
+    val educationHistograms: EducationHistograms,
+    val leisureHistograms: LeisureHistograms,
+    val shoppingHistograms: ShoppingHistograms,
+    val transportHistograms: TransportHistograms,
 ) {
 
 
@@ -138,5 +138,21 @@ class HistogramPerActivity(
     ): Pair<Duration, Category> {
         val histogram = select(firstRnd, finalizedActivityPattern, person)
         return histogram.select(secondRnd) to histogram.categoryIndex
+    }
+
+    companion object {
+        /**
+         * Initialize the Histograms from files only once, as reading the files is rather time consuming.
+         */
+        val DEFAULT by lazy {
+            HistogramPerActivity(
+                workHistograms = WorkHistograms.fromResourcePath(),
+                educationHistograms = EducationHistograms.fromResourcePath(),
+                leisureHistograms = LeisureHistograms.fromResourcePath(),
+                shoppingHistograms = ShoppingHistograms.fromResourcePath(),
+                transportHistograms = TransportHistograms.fromResourcePath(),
+
+                )
+        }
     }
 }
