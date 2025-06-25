@@ -16,18 +16,9 @@ open class DiscreteChoiceModel<X : Any, SIT : ChoiceAlternative<X>, P>(
 ) {
 
     var callback: (Map<SIT, Double>) -> Unit = {
-//        it.keys.forEach { k -> println(k) }
-//        println(it.entries.map { it.key.choice to it.value })
+
     }
 
-    fun select(alternatives: Set<SIT>, parameters: P): X {
-        return selectionFunction.calculateSelection(
-            distributionFunction.calculateDebug(
-                alternatives,
-                parameters
-            ).also { callback(it) }
-        ).choice
-    }
 
     fun select(alternatives: Set<SIT>, parameters: P, randomNumber: Double): X {
         return SelectionFunction<SIT> { it.select(randomNumber) }.calculateSelection(
@@ -39,16 +30,11 @@ open class DiscreteChoiceModel<X : Any, SIT : ChoiceAlternative<X>, P>(
     }
 
 
-    fun select(singularOption: SIT, parameters: P): X = select(setOf(singularOption), parameters)
 
-    fun probabilities(alternatives: Set<SIT>, parameters: P) = distributionFunction.calculateProbabilities(
-        alternatives,
-        parameters
-    )
 }
 
 class ModifiableDiscreteChoiceModel<X : Any, SIT : ChoiceAlternative<X>, P>(
-    override val distributionFunction: ModifiableDistributionFunction<X, SIT, P>,
+    override val distributionFunction: OptionDistributionFunction<X, SIT, P>,
     override var selectionFunction: SelectionFunction<SIT> = SelectionFunction {
         it.select(
             GlobalRandomizer.nextDouble()
@@ -59,17 +45,6 @@ class ModifiableDiscreteChoiceModel<X : Any, SIT : ChoiceAlternative<X>, P>(
     selectionFunction = selectionFunction
 ) {
 
-
-    fun utilities(parameters: P, converter: (X) -> SIT): Map<X, Double> {
-        return utilities(distributionFunction.options, parameters, converter)
-    }
-
-    fun utilities(options: Set<X>, parameters: P, converter: (X) -> SIT): Map<X, Double> {
-        return options.associateWith {
-            val alternative = converter(it)
-            distributionFunction.translation(alternative).calculateUtility(alternative, parameters)
-        }
-    }
 
 
     fun select(parameters: P, randomNumber: Double, situation: (X) -> SIT): X {
@@ -95,19 +70,12 @@ class ModifiableDiscreteChoiceModel<X : Any, SIT : ChoiceAlternative<X>, P>(
         ).choice
     }
 
-    fun probabilities(parameters: P, converter: (X) -> SIT): Map<X, Double> {
-        return probabilities(distributionFunction.options, parameters, converter)
-    }
 
-    fun probabilities(options: Set<X>, parameters: P, converter: (X) -> SIT): Map<X, Double> {
-        return probabilities(options.map(converter).toSet(), parameters).mapKeys { it.key.choice }
-    }
+
 
     fun registeredOptions() = distributionFunction.options
 
-    fun utilityFunction(option: X): UtilityFunction<SIT, P> {
-        return distributionFunction.translation.getValue(option)
-    }
+
 }
 
 

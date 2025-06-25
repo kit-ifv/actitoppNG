@@ -63,6 +63,7 @@ open class ActivityDurationHistograms<P>(
         val mainHistogram = histograms[index]
         val previousHistogram = histograms.getOrNull(index - 1)
         val nextHistogram = histograms.getOrNull(index + 1)
+
         val selectedHistogram = choiceModel.selectNew(randomValue, converter) {
             previousHistogram?.let {
                 if (it.intersects(bounds)) {

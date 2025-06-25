@@ -20,28 +20,13 @@ class Logit<X, P> : DistributionFunction<X, P>, LimitedDistributionFunction<X> {
 }
 
 
-class ChangableUtilityFunction<X, P>(private var utilityFunction: UtilityFunction<X, P>) : UtilityFunction<X, P> {
-    fun changeTo(new: UtilityFunction<X, P>) {
-        utilityFunction = new
-    }
-
-    override fun calculateUtility(alternative: X, parameterObject: P): Double {
-        return utilityFunction.calculateUtility(alternative, parameterObject)
-    }
-
-}
-
-fun <X, P> UtilityFunction<X, P>.toMutableFunction(): ChangableUtilityFunction<X, P> {
-    return ChangableUtilityFunction(this)
-}
-
 class AllocatedLogit<X : Any, SIT : ChoiceAlternative<X>, P>(
-    private val optionsMap: Map<X, ChangableUtilityFunction<SIT, P>>,
-    override var rules: List<Pair<(SIT) -> Boolean, ChangableUtilityFunction<SIT, P>>>,
+    private val optionsMap: Map<X, UtilityFunction<SIT, P>>,
+    override var rules: List<Pair<(SIT) -> Boolean, UtilityFunction<SIT, P>>>,
     override val name: String = "Unnamed allocated logit",
     private val logit: Logit<SIT, P>,
 
-    ) : RuleBasedAssociation<X, SIT, P>, ModifiableDistributionFunction<X, SIT, P> {
+    ) : RuleBasedAssociation<X, SIT, P>, OptionDistributionFunction<X, SIT, P> {
     override val options = optionsMap.keys
     override val translation: Map<X, UtilityFunction<SIT, P>> = optionsMap
 
@@ -53,11 +38,6 @@ class AllocatedLogit<X : Any, SIT : ChoiceAlternative<X>, P>(
         return super<RuleBasedAssociation>.translation(target)
     }
 
-    override fun modify(option: X, lambda: (UtilityFunction<SIT, P>) -> UtilityFunction<SIT, P>) {
-        val originalUtilityFunction = optionsMap[option] ?: return
-        val newFunction = lambda(originalUtilityFunction)
-        originalUtilityFunction.changeTo(newFunction)
-    }
 
     companion object {
 
@@ -65,22 +45,21 @@ class AllocatedLogit<X : Any, SIT : ChoiceAlternative<X>, P>(
 
         class LogitBuilder<X : Any, SIT : ChoiceAlternative<X>, PARAMS>(preknownOptions: Collection<X>) :
             OptionBasedSituationBuilder<X, SIT, PARAMS>, RuleBasedSituationBuilder<X, SIT, PARAMS> {
-            val rules: MutableList<Pair<(SIT) -> Boolean, ChangableUtilityFunction<SIT, PARAMS>>> = mutableListOf()
-            val options: MutableMap<X, ChangableUtilityFunction<SIT, PARAMS>> =
-                preknownOptions.associateWith { UtilityFunction<SIT, PARAMS> { _, _ -> 0.0 }.toMutableFunction() }
+            val rules: MutableList<Pair<(SIT) -> Boolean, UtilityFunction<SIT, PARAMS>>> = mutableListOf()
+            val options: MutableMap<X, UtilityFunction<SIT, PARAMS>> =
+                preknownOptions.associateWith { UtilityFunction<SIT, PARAMS> { _, _ -> 0.0 } }
                     .toMutableMap()
 
             override fun addUtilityFunctionByIdentifier(x: X, utilityFunction: UtilityFunction<SIT, PARAMS>) {
-                val mutableUtilityFunction = utilityFunction.toMutableFunction()
-                rules.add({ sit: SIT -> sit.choice == x } to mutableUtilityFunction)
-                options[x] = mutableUtilityFunction
+                rules.add({ sit: SIT -> sit.choice == x } to utilityFunction)
+                options[x] = utilityFunction
             }
 
             override fun addUtilityFunctionByRule(
                 rule: (SIT) -> Boolean,
                 utilityFunction: UtilityFunction<SIT, PARAMS>,
             ) {
-                rules.add(rule to utilityFunction.toMutableFunction())
+                rules.add(rule to utilityFunction)
             }
         }
 
@@ -103,13 +82,3 @@ class AllocatedLogit<X : Any, SIT : ChoiceAlternative<X>, P>(
 }
 
 
-fun <SIT, PARAMS> DistributionFunction<SIT, PARAMS>.calculateProbability(
-    map: Map<SIT, UtilityFunction<SIT, PARAMS>>,
-    params: PARAMS,
-): Map<SIT, Double> {
-    return this.calculateProbabilities(map.mapValues { it.value.calculateUtility(it.key, params) }, params)
-}
-
-fun <SIT, PARAMS> UtilityFunction<SIT, PARAMS>.modifyTemporary(lambda: (UtilityFunction<SIT, PARAMS>) -> UtilityFunction<SIT, PARAMS>): UtilityFunction<SIT, PARAMS> {
-    return lambda(this)
-}

@@ -35,31 +35,11 @@ interface ExtractableDistributionFunction<X : Any, SIT : ChoiceAlternative<X>, P
         )
     }
 
-    fun calculateProbabilitiesInjected(
-        alternatives: Set<InjectedSituation<SIT>>,
-        parameters: PARAMS,
-    ): Map<SIT, Double> {
-        return calculateProbabilities(
-            alternatives.associate {
-                it.situation to
-                        it.injection(translation(it.situation).calculateUtility(it.situation, parameters))
 
-            },
-            parameters
-        )
-    }
 
 }
 
-data class InjectedSituation<SIT>(
-    val situation: SIT,
-    val injection: (Double) -> Double = { it },
-)
 
-interface ModifiableDistributionFunction<X : Any, SIT : ChoiceAlternative<X>, PARAMS> :
-    OptionDistributionFunction<X, SIT, PARAMS> {
-    fun modify(option: X, lambda: (UtilityFunction<SIT, PARAMS>) -> UtilityFunction<SIT, PARAMS>)
-}
 
 fun <X : Any, SIT : ChoiceAlternative<X>, PARAMS> ExtractableDistributionFunction<X, SIT, PARAMS>.calculateDebug(
     alternatives: Set<SIT>,
@@ -93,12 +73,6 @@ fun interface UtilityFunctionAssociation<SIT, PARAMS> {
     fun associateFunction(to: SIT): UtilityFunction<SIT, PARAMS>
 }
 
-interface MapBasedAssociation<SIT, PARAMS> : UtilityFunctionAssociation<SIT, PARAMS> {
-    val map: Map<SIT, UtilityFunction<SIT, PARAMS>>
-    override fun associateFunction(to: SIT): UtilityFunction<SIT, PARAMS> {
-        return map[to] ?: throw NoSuchElementException("No utility function located for $to")
-    }
-}
 
 interface RuleBasedAssociation<X : Any, SIT : ChoiceAlternative<X>, PARAMS> :
     UtilityFunctionAssociation<SIT, PARAMS>,
