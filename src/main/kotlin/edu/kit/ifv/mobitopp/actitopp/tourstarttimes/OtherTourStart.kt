@@ -4,17 +4,18 @@ import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitopp.plandurations.ActivityDurationHistograms
 import edu.kit.ifv.mobitopp.actitopp.plandurations.Identifier
-import edu.kit.ifv.mobitopp.actitopp.plandurations.MainDurationSituation
+import edu.kit.ifv.mobitopp.actitopp.plandurations.MainDurationAlternative
 import edu.kit.ifv.mobitopp.actitopp.plandurations.durationHistogramsFromResourcePath
 import edu.kit.ifv.mobitopp.actitopp.plandurations.generateHistogram
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.parameters.ParameterCollectionStep10S
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.parameters.ParameterStep10S
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.parameters.ParametersStep10S
+import edu.kit.ifv.mobitopp.actitopp.utils.minus
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 import kotlin.time.Duration
 
 
-private val standardUtilityFunction10S: ParameterStep10S.(MainDurationSituation) -> Double = {
+private val standardUtilityFunction10S: ParameterStep10S.(MainDurationAlternative) -> Double = {
     base +
 
             (it.touristhaupttour()) * touristhaupttour +
@@ -38,9 +39,7 @@ private val standardUtilityFunction10S: ParameterStep10S.(MainDurationSituation)
 
 }
 
-operator fun ClosedRange<Duration>.minus(duration: Duration): ClosedRange<Duration> {
-    return (start - duration)..(endInclusive - duration)
-}
+
 
 class TourStartByHistogramsRelative<P>(
     private val rng: RNGHelper,
@@ -54,7 +53,7 @@ class TourStartByHistogramsRelative<P>(
         val rnd1 = rng.randomValue
         val rnd2 = rng.randomValue
         return startTimeHistograms.select(rnd1, rnd2, relativeBounds) {
-            MainDurationSituation(it, input)
+            MainDurationAlternative(it, input)
         } + startTime
     }
 

@@ -35,7 +35,7 @@ fun <X, P> UtilityFunction<X, P>.toMutableFunction(): ChangableUtilityFunction<X
     return ChangableUtilityFunction(this)
 }
 
-class AllocatedLogit<X : Any, SIT : ChoiceSituation<X>, P>(
+class AllocatedLogit<X : Any, SIT : ChoiceAlternative<X>, P>(
     private val optionsMap: Map<X, ChangableUtilityFunction<SIT, P>>,
     override var rules: List<Pair<(SIT) -> Boolean, ChangableUtilityFunction<SIT, P>>>,
     override val name: String = "Unnamed allocated logit",
@@ -63,7 +63,7 @@ class AllocatedLogit<X : Any, SIT : ChoiceSituation<X>, P>(
 
         private const val DEFAULT_NAME = "Unnamed MNL model"
 
-        class LogitBuilder<X : Any, SIT : ChoiceSituation<X>, PARAMS>(preknownOptions: Collection<X>) :
+        class LogitBuilder<X : Any, SIT : ChoiceAlternative<X>, PARAMS>(preknownOptions: Collection<X>) :
             OptionBasedSituationBuilder<X, SIT, PARAMS>, RuleBasedSituationBuilder<X, SIT, PARAMS> {
             val rules: MutableList<Pair<(SIT) -> Boolean, ChangableUtilityFunction<SIT, PARAMS>>> = mutableListOf()
             val options: MutableMap<X, ChangableUtilityFunction<SIT, PARAMS>> =
@@ -84,7 +84,7 @@ class AllocatedLogit<X : Any, SIT : ChoiceSituation<X>, P>(
             }
         }
 
-        fun <X : Any, SIT : ChoiceSituation<X>, PARAMS> create(
+        fun <X : Any, SIT : ChoiceAlternative<X>, PARAMS> create(
             options: Collection<X>,
             name: String = DEFAULT_NAME,
             lambda: LogitBuilder<X, SIT, PARAMS>.() -> Unit,
@@ -95,7 +95,7 @@ class AllocatedLogit<X : Any, SIT : ChoiceSituation<X>, P>(
             return AllocatedLogit(builder.options, builder.rules, name = name, Logit())
         }
 
-        fun <X : Any, SIT : ChoiceSituation<X>, PARAMS> create(
+        fun <X : Any, SIT : ChoiceAlternative<X>, PARAMS> create(
             name: String = DEFAULT_NAME,
             lambda: LogitBuilder<X, SIT, PARAMS>.() -> Unit,
         ): AllocatedLogit<X, SIT, PARAMS> = create(emptySet(), name, lambda)

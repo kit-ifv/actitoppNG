@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels
 
-import edu.kit.ifv.mobitopp.actitopp.steps.PersonSituation
+import edu.kit.ifv.mobitopp.actitopp.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
@@ -10,7 +10,7 @@ import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.TourAmountParameters
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.TourAmountSet
 
 
-val step1KWithParams = ModifiableDiscreteChoiceModel<Int, PersonSituation, TourAmountSet>(AllocatedLogit.create {
+val step1KWithParams = ModifiableDiscreteChoiceModel<Int, PersonAlternative, TourAmountSet>(AllocatedLogit.create {
     option(1) {
         0.0
     }
@@ -21,7 +21,7 @@ val step1KWithParams = ModifiableDiscreteChoiceModel<Int, PersonSituation, TourA
 ).initializeWithParameters(DefaultTourAmountParameters)
 
 
-private val standardUtilityFunction: TourAmountParameters.(PersonSituation) -> Double = {
+private val standardUtilityFunction: TourAmountParameters.(PersonAlternative) -> Double = {
     base +
             (it.isFulltimeEmployee()) * employmentFulltime +
             (it.isParttimeEmployee()) * employmentParttime +

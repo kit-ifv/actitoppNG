@@ -47,9 +47,7 @@ class TourPlan private constructor(
         val firstAct = first()
         firstAct.startTime = duration + (firstAct.previousTrip?.duration?.ceil(DurationUnit.MINUTES) ?: ZERO)
         // The previous home activity now has a fixed start time. TODO set the end time instead, that way we dont need to subtract the duration
-        previousHomeActivity.let {
-            it.startTime = duration - (it.duration ?: throw NoSuchElementException("This should not happen"))
-        }
+        previousHomeActivity.endTime = duration
         previousHomeActivity.mutableIterator().takeUntil { it == nextHomeActivity }.forEach {
             if (it.startTime == null) {
                 it.startTime = it.previous?.endTime ?: throw NoSuchElementException("Should not be null")

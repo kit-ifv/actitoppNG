@@ -2,7 +2,7 @@ package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats
 
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.mainActivityChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.DaySituation
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.DayAlternative
 import edu.kit.ifv.mobitopp.actitopp.modernization.MobilityStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.Step2Tracking
 
@@ -22,7 +22,7 @@ class SpawnWithRespect(val rng: RNGHelper) : SpawnMainActivity {
             mainActivityChoiceModel.select(
                 randomNumber = rng.randomValue,
                 options = availableOptions
-            ) { DaySituation(it, mobilityStructure.weekRoutine, nextDay.weekday) }
+            ) { DayAlternative(it, mobilityStructure.weekRoutine, nextDay.weekday) }
         mobilityStructure.add(nextDay, activityType)
 
     }

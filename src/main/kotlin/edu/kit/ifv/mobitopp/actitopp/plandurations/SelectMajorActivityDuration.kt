@@ -25,7 +25,7 @@ class AssignMinorActivityDuration(
             val rnd1 = rngHelper.randomValue
             val rnd2 = rngHelper.randomValue
             histogram.select(rnd1, rnd2, bounds) {
-                MainDurationSituation(
+                MainDurationAlternative(
                     choice = it,
                     this
                 )

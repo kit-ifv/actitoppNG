@@ -6,7 +6,7 @@ fun interface SelectionFunction<X> {
     fun calculateSelection(options: Map<X, Double>): X
 }
 
-open class DiscreteChoiceModel<X : Any, SIT : ChoiceSituation<X>, P>(
+open class DiscreteChoiceModel<X : Any, SIT : ChoiceAlternative<X>, P>(
     open val distributionFunction: ExtractableDistributionFunction<X, SIT, P>,
     open val selectionFunction: SelectionFunction<SIT> = SelectionFunction {
         it.select(
@@ -47,7 +47,7 @@ open class DiscreteChoiceModel<X : Any, SIT : ChoiceSituation<X>, P>(
     )
 }
 
-class ModifiableDiscreteChoiceModel<X : Any, SIT : ChoiceSituation<X>, P>(
+class ModifiableDiscreteChoiceModel<X : Any, SIT : ChoiceAlternative<X>, P>(
     override val distributionFunction: ModifiableDistributionFunction<X, SIT, P>,
     override var selectionFunction: SelectionFunction<SIT> = SelectionFunction {
         it.select(
@@ -111,14 +111,14 @@ class ModifiableDiscreteChoiceModel<X : Any, SIT : ChoiceSituation<X>, P>(
 }
 
 
-interface SealedDiscreteChoiceModel<X : Any, SIT : ChoiceSituation<X>> {
+interface SealedDiscreteChoiceModel<X : Any, SIT : ChoiceAlternative<X>> {
     fun select(converter: (X) -> SIT): X
     fun select(options: Set<X>, converter: (X) -> SIT): X
     fun select(randomNumber: Double, converter: (X) -> SIT): X
     fun select(options: Set<X>, randomNumber: Double, converter: (X) -> SIT): X
 }
 
-class ParametrizedDiscreteChoiceModel<X : Any, SIT : ChoiceSituation<X>, P>(
+class ParametrizedDiscreteChoiceModel<X : Any, SIT : ChoiceAlternative<X>, P>(
     val original: ModifiableDiscreteChoiceModel<X, SIT, P>,
     var parameters: P,
 ) : SealedDiscreteChoiceModel<X, SIT> {
@@ -137,7 +137,7 @@ class ParametrizedDiscreteChoiceModel<X : Any, SIT : ChoiceSituation<X>, P>(
 
 }
 
-fun <X : Any, SIT : ChoiceSituation<X>, PARAMS> ModifiableDiscreteChoiceModel<X, SIT, PARAMS>.initializeWithParameters(
+fun <X : Any, SIT : ChoiceAlternative<X>, PARAMS> ModifiableDiscreteChoiceModel<X, SIT, PARAMS>.initializeWithParameters(
     parameter: PARAMS,
 ): ParametrizedDiscreteChoiceModel<X, SIT, PARAMS> {
     return ParametrizedDiscreteChoiceModel(this, parameter)

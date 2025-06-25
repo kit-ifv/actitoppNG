@@ -9,7 +9,7 @@ import edu.kit.ifv.mobitopp.actitopp.enums.isNotEarning
 import edu.kit.ifv.mobitopp.actitopp.enums.isParttime
 import edu.kit.ifv.mobitopp.actitopp.enums.isStudent
 import edu.kit.ifv.mobitopp.actitopp.enums.isStudentOrAzubi
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceSituation
+import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceAlternative
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
 
 /**
@@ -72,13 +72,13 @@ class PersonAttributesFromElement(val person: IPerson) : PersonAttributes {
 }
 
 
-class PersonSituation private constructor(
+class PersonAlternative private constructor(
     override val choice: Int,
     private val weekRoutine: WeekRoutine,
     val person: IPerson,
     attributes: PersonAttributesFromElement,
     householdAttributes: HouseholdAttributes,
-) : ChoiceSituation<Int>(), PersonAttributes by attributes, HouseholdAttributes by householdAttributes {
+) : ChoiceAlternative<Int>(), PersonAttributes by attributes, HouseholdAttributes by householdAttributes {
 
 
     constructor(choice: Int, weekRoutine: WeekRoutine, person: IPerson) : this(

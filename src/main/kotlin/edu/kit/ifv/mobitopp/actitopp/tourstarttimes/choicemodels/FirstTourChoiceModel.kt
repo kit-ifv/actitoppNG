@@ -2,7 +2,7 @@ package edu.kit.ifv.mobitopp.actitopp.tourstarttimes.choicemodels
 
 import edu.kit.ifv.mobitopp.actitopp.plandurations.ActivityDurationHistograms
 import edu.kit.ifv.mobitopp.actitopp.plandurations.Identifier
-import edu.kit.ifv.mobitopp.actitopp.plandurations.MainDurationSituation
+import edu.kit.ifv.mobitopp.actitopp.plandurations.MainDurationAlternative
 import edu.kit.ifv.mobitopp.actitopp.plandurations.durationHistogramsFromResourcePath
 import edu.kit.ifv.mobitopp.actitopp.plandurations.generateHistogram
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.parameters.ParameterCollectionStep10M
@@ -11,7 +11,7 @@ import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.parameters.ParametersStep10M
 
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 
-private val firstTourStartUtility: ParameterStep10M.(MainDurationSituation) -> Double = {
+private val firstTourStartUtility: ParameterStep10M.(MainDurationAlternative) -> Double = {
     base +
             (it.beruf_vollzeit()) * beruf_vollzeit +
             (it.beruf_teilzeit()) * beruf_teilzeit +

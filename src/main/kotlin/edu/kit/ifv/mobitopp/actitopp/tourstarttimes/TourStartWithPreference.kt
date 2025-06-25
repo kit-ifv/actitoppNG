@@ -3,7 +3,7 @@ package edu.kit.ifv.mobitopp.actitopp.tourstarttimes
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitopp.plandurations.ActivityDurationHistograms
-import edu.kit.ifv.mobitopp.actitopp.plandurations.MainDurationSituation
+import edu.kit.ifv.mobitopp.actitopp.plandurations.MainDurationAlternative
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.ArrayHistogram
 import kotlin.time.Duration
 
@@ -36,7 +36,7 @@ class TourStartWithPreference<P>(
 
         }
         return startTimeHistograms.select(rnd1, rnd2, bounds) {
-            MainDurationSituation(it, input)
+            MainDurationAlternative(it, input)
         }
     }
 }

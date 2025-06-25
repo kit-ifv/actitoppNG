@@ -29,12 +29,12 @@ class EducationHistograms(
         finalizedActivityPattern: FinalizedActivityPattern,
         person: IPerson,
     ): ArrayHistogram {
-        return choiceModel.select(randomNumber) { WorkChoiceSituation(it, finalizedActivityPattern, person) }
+        return choiceModel.select(randomNumber) { WorkChoiceAlternative(it, finalizedActivityPattern, person) }
     }
 
     @Transient
     private val choiceModel =
-        ModifiableDiscreteChoiceModel<ArrayHistogram, WorkChoiceSituation, EducationBudgetSet>(AllocatedLogit.create {
+        ModifiableDiscreteChoiceModel<ArrayHistogram, WorkChoiceAlternative, EducationBudgetSet>(AllocatedLogit.create {
             option(histogram1, parameters = { category1 }) { standardUtilityFunction(this, it) }
             option(histogram2, parameters = { category2 }) { standardUtilityFunction(this, it) }
             option(histogram3, parameters = { category3 }) { standardUtilityFunction(this, it) }
@@ -58,7 +58,7 @@ class EducationHistograms(
     }
 }
 
-private val standardUtilityFunction: EducationBudgetParameters.(WorkChoiceSituation) -> Double = {
+private val standardUtilityFunction: EducationBudgetParameters.(WorkChoiceAlternative) -> Double = {
     base +
             (it.amountOfWorkActivitiesInWeek()) * anzakt_woche_w +
             (it.amountOfEducationActivitiesInWeek()) * anzakt_woche_e +

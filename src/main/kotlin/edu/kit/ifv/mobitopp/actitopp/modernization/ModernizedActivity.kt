@@ -20,8 +20,10 @@ sealed interface Action {
     }
 }
 
-interface MutableAction {
-    var startTime: Duration?
+interface MutableAction: Action {
+    override var startTime: Duration?
+    override var endTime: Duration?
+
 }
 
 interface MutableLinkedAction : MutableAction, LinkedAction {
@@ -82,8 +84,10 @@ data class ModernizedActivity(
 ) : MutableActivity {
 
 
-    override val endTime get() = startTime?.let { it + duration }
-
+    override var endTime get() = startTime?.let { it + duration }
+        set(value)  {
+            startTime = value?.let { it -duration!! }
+        }
 
 }
 
@@ -225,7 +229,10 @@ class ModernizedTrip(
     }
 
     override var startTime: Duration? = null
-    override val endTime: Duration? get() = startTime?.let { it + duration }
+    override var endTime: Duration? get() = startTime?.let { it + duration }
+        set(value) {
+            startTime = value?.let { it - duration }
+        }
     override val previous: LinkedActivity
         get() = previousActivity
     override val next: LinkedActivity

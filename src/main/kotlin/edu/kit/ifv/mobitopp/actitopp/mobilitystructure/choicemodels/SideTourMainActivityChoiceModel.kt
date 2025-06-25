@@ -4,14 +4,14 @@ import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.DefaultSideTourMainActivityParameters
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SideTourMainActivityParameters
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SideTourMainActivitySet
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.TourSituation
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.TourAlternative
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 
 val tourMainActivityChoiceModel =
-    ModifiableDiscreteChoiceModel<ActivityType, TourSituation, SideTourMainActivitySet>(AllocatedLogit.create {
+    ModifiableDiscreteChoiceModel<ActivityType, TourAlternative, SideTourMainActivitySet>(AllocatedLogit.create {
         option(ActivityType.WORK, parameters = { work }, { standardUtilityFunction(this, it) })
         option(ActivityType.EDUCATION, parameters = { education }, { standardUtilityFunction(this, it) })
         option(ActivityType.LEISURE) { 0.0 }
@@ -19,7 +19,7 @@ val tourMainActivityChoiceModel =
         option(ActivityType.TRANSPORT, parameters = { transport }, { standardUtilityFunction(this, it) })
 
     }).initializeWithParameters(DefaultSideTourMainActivityParameters)
-private val standardUtilityFunction: SideTourMainActivityParameters.(TourSituation) -> Double = {
+private val standardUtilityFunction: SideTourMainActivityParameters.(TourAlternative) -> Double = {
     base +
             (it.isFulltimeEmployee()) * employmentFullTime +
             (it.isParttimeEmployee()) * employmentPartTime +

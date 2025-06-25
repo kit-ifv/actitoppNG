@@ -29,6 +29,10 @@ fun Duration.round(unit: DurationUnit): Duration {
     return this.toDouble(unit).roundToLong().toDuration(unit)
 }
 
+operator fun ClosedRange<Duration>.minus(duration: Duration): ClosedRange<Duration> {
+    return (start - duration)..(endInclusive - duration)
+}
+
 inline fun <T> Iterable<T>.sumOf(selector: (T) -> Duration): Duration {
     var sum: Duration = Duration.ZERO
     for (element in this) {

@@ -15,16 +15,16 @@ import edu.kit.ifv.mobitopp.actitopp.steps.RoutineAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.TourAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.TourAttributesByIndexedStructure
 import edu.kit.ifv.mobitopp.actitopp.steps.TourPositionAttributes
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceSituation
+import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceAlternative
 import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalIndexedValue
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
 
 
-class TourSituation private constructor(
+class TourAlternative private constructor(
     override val choice: ActivityType, personAndRoutineAttributes: PersonAndRoutineAttributes,
     dayAttributes: FullyQualifiedDayStructureAttributes, tourAttributes: TourPositionAttributes,
 ) :
-    ChoiceSituation<ActivityType>(), TourPositionAttributes by tourAttributes,
+    ChoiceAlternative<ActivityType>(), TourPositionAttributes by tourAttributes,
     PersonAttributes by personAndRoutineAttributes,
     RoutineAttributes by personAndRoutineAttributes, FullyQualifiedDayStructureAttributes by dayAttributes {
 
@@ -44,13 +44,13 @@ class TourSituation private constructor(
 
 }
 
-class TourSituationInt private constructor(
+class TourAlternativeInt private constructor(
     override val choice: Int, personAndRoutineAttributes: PersonAndRoutineAttributes,
     dayAttributes: FullyQualifiedDayStructureAttributes, tourAttributes: TourAttributes,
     activityAmountAttributes: ActivityAmountAttributes,
 
     ) :
-    ChoiceSituation<Int>(), TourAttributes by tourAttributes, PersonAttributes by personAndRoutineAttributes,
+    ChoiceAlternative<Int>(), TourAttributes by tourAttributes, PersonAttributes by personAndRoutineAttributes,
     RoutineAttributes by personAndRoutineAttributes, FullyQualifiedDayStructureAttributes by dayAttributes,
     ActivityAmountAttributes by activityAmountAttributes {
 

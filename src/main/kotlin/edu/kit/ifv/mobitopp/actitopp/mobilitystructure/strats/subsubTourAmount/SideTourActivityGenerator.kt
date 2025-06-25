@@ -5,20 +5,20 @@ import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.step5AWithPa
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.step5BWithParams
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SideTourPrecursorSet
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SideTourSuccessorSet
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.TourSituationInt
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.TourAlternativeInt
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ParametrizedDiscreteChoiceModel
 
 abstract class SideTourActivityGenerator<P>(
     val rngHelper: RNGHelper,
-    val choiceModel: ParametrizedDiscreteChoiceModel<Int, TourSituationInt, P>,
+    val choiceModel: ParametrizedDiscreteChoiceModel<Int, TourAlternativeInt, P>,
 ) : GenerateSideTourActivities {
     override fun generateActivityAmount(input: SideTourActivityInput): Int {
 
         val options = choiceModel.registeredOptions().toMutableSet()
         options.removeIf { it < input.minimumAmountOfActivities }
 
-        val converter: (Int) -> TourSituationInt = {
-            TourSituationInt(
+        val converter: (Int) -> TourAlternativeInt = {
+            TourAlternativeInt(
                 it,
                 input.person,
                 input.routine,

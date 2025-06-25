@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels
 
-import edu.kit.ifv.mobitopp.actitopp.steps.PersonSituation
+import edu.kit.ifv.mobitopp.actitopp.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
@@ -9,7 +9,7 @@ import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.DefaultLeisureParame
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.LeisureDayParameters
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.LeisureDaySet
 
-val step1CWithParams = ModifiableDiscreteChoiceModel<Int, PersonSituation, LeisureDaySet>(AllocatedLogit.create {
+val step1CWithParams = ModifiableDiscreteChoiceModel<Int, PersonAlternative, LeisureDaySet>(AllocatedLogit.create {
 
     option(1, parameters = { option1 }) { standardUtilityFunction(this, it) }
     option(2, parameters = { option2 }) { standardUtilityFunction(this, it) }
@@ -23,7 +23,7 @@ val step1CWithParams = ModifiableDiscreteChoiceModel<Int, PersonSituation, Leisu
     }
 }
 ).initializeWithParameters(DefaultLeisureParameters)
-private val standardUtilityFunction: LeisureDayParameters.(PersonSituation) -> Double = {
+private val standardUtilityFunction: LeisureDayParameters.(PersonAlternative) -> Double = {
     base +
             (it.isEarningMoney()) * employmentIsEarning +
             (it.isStudent()) * emplomentStudent +

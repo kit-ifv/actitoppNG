@@ -2,7 +2,7 @@ package edu.kit.ifv.mobitopp.actitopp.weekroutine
 
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
-import edu.kit.ifv.mobitopp.actitopp.steps.PersonSituation
+import edu.kit.ifv.mobitopp.actitopp.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.SealedDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.defaultWorkDayChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1BWithParams
@@ -13,7 +13,7 @@ import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1FWithParams
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1KWithParams
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1LWithParams
 
-typealias ChoiceModel = SealedDiscreteChoiceModel<Int, PersonSituation>
+typealias ChoiceModel = SealedDiscreteChoiceModel<Int, PersonAlternative>
 
 /**
  * The standard implementation to generate a week routine. Using choice models and mutable fields. Note that the
@@ -43,7 +43,7 @@ class DefaultWeekRoutineGeneration(
     override fun generate(person: IPerson, rng: RNGHelper): WeekRoutine {
         return ModifiableWeekRoutine().apply {
 
-            val converter: (Int) -> PersonSituation = { PersonSituation(it, this, person) }
+            val converter: (Int) -> PersonAlternative = { PersonAlternative(it, this, person) }
             amountOfWorkingDays = workDayChoiceModel.select(rng.randomValue, converter)
             amountOfEducationDays = educationDayChoiceModel.select(rng.randomValue, converter)
             amountOfLeisureDays = leisureDayChoiceModel.select(rng.randomValue, converter)

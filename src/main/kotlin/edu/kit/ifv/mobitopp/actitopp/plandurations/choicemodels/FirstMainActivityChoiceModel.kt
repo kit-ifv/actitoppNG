@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.plandurations.choicemodels
 
-import edu.kit.ifv.mobitopp.actitopp.plandurations.BooleanDecisionSituation
+import edu.kit.ifv.mobitopp.actitopp.plandurations.BooleanDecisionAlternative
 import edu.kit.ifv.mobitopp.actitopp.plandurations.parameters.ParameterCollectionStep8A
 import edu.kit.ifv.mobitopp.actitopp.plandurations.parameters.ParametersStep8A
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
@@ -9,8 +9,8 @@ import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ParametrizedDiscreteChoice
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 
-val firstActivityUsesStandardDuration: ParametrizedDiscreteChoiceModel<Boolean, BooleanDecisionSituation, ParameterCollectionStep8A> =
-    ModifiableDiscreteChoiceModel<Boolean, BooleanDecisionSituation, ParameterCollectionStep8A>(
+val firstActivityUsesStandardDuration: ParametrizedDiscreteChoiceModel<Boolean, BooleanDecisionAlternative, ParameterCollectionStep8A> =
+    ModifiableDiscreteChoiceModel<Boolean, BooleanDecisionAlternative, ParameterCollectionStep8A>(
         AllocatedLogit.create {
             option(true) { 0.0 }
             option(false, parameters = { no }) {

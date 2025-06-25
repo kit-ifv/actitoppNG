@@ -44,7 +44,7 @@ class StandardStep8B<P>(
                 bounds,
                 meanActivityDuration
             ) {
-                MainDurationSituation(
+                MainDurationAlternative(
                     it,
                     this
                 )
@@ -62,7 +62,7 @@ class StandardStep8B<P>(
                 rng.randomValue,
                 bounds
             ) {
-                MainDurationSituation(
+                MainDurationAlternative(
                     it,
                     this
                 )

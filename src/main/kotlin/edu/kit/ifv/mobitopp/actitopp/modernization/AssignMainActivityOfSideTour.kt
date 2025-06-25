@@ -4,7 +4,7 @@ import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.tourMainActivityChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.TourSituation
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.TourAlternative
 import edu.kit.ifv.mobitopp.actitopp.steps.TourPositionAttributesByIndex
 import edu.kit.ifv.mobitopp.actitopp.utils.Position
 
@@ -52,7 +52,7 @@ class AssignByUtilityFunction(private val mobilityStructure: MobilityStructure, 
 
                 val rnd = rngHelper.randomValue
                 tourMainActivityChoiceModel.select(availableOptions, rnd) {
-                    TourSituation(
+                    TourAlternative(
                         it,
                         input.personWithRoutine.person,
                         input.personWithRoutine.routine,

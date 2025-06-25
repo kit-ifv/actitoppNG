@@ -25,11 +25,11 @@ class LeisureHistograms(
         finalizedActivityPattern: FinalizedActivityPattern,
         person: IPerson,
     ): ArrayHistogram {
-        return choiceModel.select(randomNumber) { WorkChoiceSituation(it, finalizedActivityPattern, person) }
+        return choiceModel.select(randomNumber) { WorkChoiceAlternative(it, finalizedActivityPattern, person) }
     }
 
 
-    private val choiceModel = ModifiableDiscreteChoiceModel<ArrayHistogram, WorkChoiceSituation, LeisureBudgetSet>(
+    private val choiceModel = ModifiableDiscreteChoiceModel<ArrayHistogram, WorkChoiceAlternative, LeisureBudgetSet>(
         AllocatedLogit.create {
             option(histogram1, parameters = { category1 }) { standardUtilityFunction(this, it) }
             option(histogram2, parameters = { category2 }) { standardUtilityFunction(this, it) }
@@ -56,7 +56,7 @@ class LeisureHistograms(
 
 }
 
-private val standardUtilityFunction: LeisureBudgetParameters.(WorkChoiceSituation) -> Double = {
+private val standardUtilityFunction: LeisureBudgetParameters.(WorkChoiceAlternative) -> Double = {
     base +
             (it.amountOfWorkActivitiesInWeek()) * anzakt_woche_w +
             (it.amountOfLeisureActivitiesInWeek()) * anzakt_woche_l +

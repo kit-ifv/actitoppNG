@@ -2,7 +2,7 @@ package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.sideTourAmounts
 
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.PreviousDaySituation
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.PreviousDayAlternative
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.ModifiablePlannedTourAmounts
 import edu.kit.ifv.mobitopp.actitopp.modernization.PlannedTourAmounts
@@ -12,7 +12,7 @@ import kotlin.math.max
 
 abstract class DefaultSideTourDeterminer<P>(
     val rngHelper: RNGHelper,
-    val choiceModel: ParametrizedDiscreteChoiceModel<Int, PreviousDaySituation, P>,
+    val choiceModel: ParametrizedDiscreteChoiceModel<Int, PreviousDayAlternative, P>,
 ) : GenerateSideTours {
     override fun generate(precedingInput: PrecedingInput): Int {
 
@@ -22,7 +22,7 @@ abstract class DefaultSideTourDeterminer<P>(
             val availableOptions = determineAvailableOptions(day, precedingInput.personInfo.routine)
 
             val rnd = rngHelper.randomValue
-            val converter: (Int) -> PreviousDaySituation = {
+            val converter: (Int) -> PreviousDayAlternative = {
                 createChoiceSituation(
                     choice = it,
                     dayTourPlan = currentPlannedTourAmounts,
@@ -72,7 +72,7 @@ abstract class DefaultSideTourDeterminer<P>(
         previousTourPlan: PlannedTourAmounts?,
         day: DayStructure,
         personWithRoutine: PersonWithRoutine,
-    ): PreviousDaySituation {
-        return PreviousDaySituation(choice, day, previousTourPlan, personWithRoutine, dayTourPlan.precursorAmount)
+    ): PreviousDayAlternative {
+        return PreviousDayAlternative(choice, day, previousTourPlan, personWithRoutine, dayTourPlan.precursorAmount)
     }
 }

@@ -7,7 +7,7 @@ import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.WorkBudgetParameters
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.WorkBudgetSet
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.WorkBudgets
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceSituation
+import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceAlternative
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
 import edu.kit.ifv.mobitopp.actitopp.utils.times
@@ -35,10 +35,10 @@ class WorkHistograms(
         finalizedActivityPattern: FinalizedActivityPattern,
         person: IPerson,
     ): ArrayHistogram {
-        return choiceModel.select(randomNumber) { WorkChoiceSituation(it, finalizedActivityPattern, person) }
+        return choiceModel.select(randomNumber) { WorkChoiceAlternative(it, finalizedActivityPattern, person) }
     }
 
-    private val choiceModel = ModifiableDiscreteChoiceModel<ArrayHistogram, WorkChoiceSituation, WorkBudgetSet>(
+    private val choiceModel = ModifiableDiscreteChoiceModel<ArrayHistogram, WorkChoiceAlternative, WorkBudgetSet>(
         AllocatedLogit.create {
             option(histogram1, parameters = { category1 }) { standardUtilityFunction(this, it) }
             option(histogram2, parameters = { category2 }) { standardUtilityFunction(this, it) }
@@ -70,7 +70,7 @@ class WorkHistograms(
     }
 }
 
-private val standardUtilityFunction: WorkBudgetParameters.(WorkChoiceSituation) -> Double = {
+private val standardUtilityFunction: WorkBudgetParameters.(WorkChoiceAlternative) -> Double = {
     base +
             (it.amountOfWorkActivitiesInWeek()) * anzakt_woche_w +
             (it.amountOfEducationActivitiesInWeek()) * anzakt_woche_e +
@@ -92,12 +92,12 @@ private val standardUtilityFunction: WorkBudgetParameters.(WorkChoiceSituation) 
 }
 
 
-class WorkChoiceSituation private constructor(
+class WorkChoiceAlternative private constructor(
     override val choice: ArrayHistogram,
     val personAttributes: PersonAttributes,
     val patternAttributes: FinalizedPatternAttributes,
 ) :
-    ChoiceSituation<ArrayHistogram>(), PersonAttributes by personAttributes,
+    ChoiceAlternative<ArrayHistogram>(), PersonAttributes by personAttributes,
     FinalizedPatternAttributes by patternAttributes {
     constructor(choice: ArrayHistogram, finalizedPattern: FinalizedActivityPattern, person: IPerson) : this(
         choice,

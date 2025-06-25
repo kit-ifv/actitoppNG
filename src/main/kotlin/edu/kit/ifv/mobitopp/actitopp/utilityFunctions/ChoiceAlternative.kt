@@ -4,11 +4,11 @@ package edu.kit.ifv.mobitopp.actitopp.utilityFunctions
  * A choice situation may contain additional appended information but is basically only a wrapper for [X]
  * Thus the equals and hash implementaion of that type can be used for mapping to a certain utility function.
  */
-abstract class ChoiceSituation<X : Any> {
+abstract class ChoiceAlternative<X : Any> {
     abstract val choice: X
 
     override fun equals(other: Any?): Boolean {
-        if (other !is ChoiceSituation<*>) return false
+        if (other !is ChoiceAlternative<*>) return false
         return choice == other.choice
     }
 

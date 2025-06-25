@@ -3,7 +3,7 @@ package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.DefaultSuccessorTourParameters
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SuccessorTourAmountParameters
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SuccessorTourAmountSet
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.PreviousDaySituation
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.PreviousDayAlternative
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
@@ -11,7 +11,7 @@ import edu.kit.ifv.mobitopp.actitopp.utils.times
 
 
 val successorAmountChoiceModel =
-    ModifiableDiscreteChoiceModel<Int, PreviousDaySituation, SuccessorTourAmountSet>(AllocatedLogit.create {
+    ModifiableDiscreteChoiceModel<Int, PreviousDayAlternative, SuccessorTourAmountSet>(AllocatedLogit.create {
         option(0) { 0.0 }
         option(1, parameters = { one }, {
             val util = standardUtilityFunction(this, it)
@@ -24,7 +24,7 @@ val successorAmountChoiceModel =
     }).initializeWithParameters(DefaultSuccessorTourParameters)
 
 
-private val standardUtilityFunction: SuccessorTourAmountParameters.(PreviousDaySituation) -> Double = {
+private val standardUtilityFunction: SuccessorTourAmountParameters.(PreviousDayAlternative) -> Double = {
     base +
             (it.isParttimeEmployee()) * employmentPartTime +
             (it.dayMainActivityIsWork()) * mainActivityIsWork +

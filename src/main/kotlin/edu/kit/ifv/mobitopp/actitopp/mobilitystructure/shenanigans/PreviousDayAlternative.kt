@@ -11,7 +11,7 @@ import edu.kit.ifv.mobitopp.actitopp.steps.DayStructureAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.HouseholdAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.HouseholdAttributesFromElement
 import edu.kit.ifv.mobitopp.actitopp.steps.PartialTourLayoutAttributes
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceSituation
+import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceAlternative
 
 
 class PlannedTourMap(
@@ -37,14 +37,14 @@ class PlannedTourMap(
     fun readOnly(): Map<DurationDay, PlannedTourAmounts> = mapping
 }
 
-class PreviousDaySituation private constructor(
+class PreviousDayAlternative private constructor(
     override val choice: Int,
     val previousDayAttributes: PreviousDayAttributes,
     val pAttr: PersonAndRoutineAttributes,
     val plannedTourAttributes: PartialTourLayoutAttributes,
     val structureAttributes: DayStructureAttributes,
     val householdAttributes: HouseholdAttributes
-) : ChoiceSituation<Int>(), PreviousDayAttributes by previousDayAttributes,
+) : ChoiceAlternative<Int>(), PreviousDayAttributes by previousDayAttributes,
     PersonAndRoutineAttributes by pAttr, PartialTourLayoutAttributes by plannedTourAttributes,
     DayStructureAttributes by structureAttributes,
 HouseholdAttributes by householdAttributes {

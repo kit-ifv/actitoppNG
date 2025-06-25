@@ -5,7 +5,7 @@ import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.mainActivityChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.DaySituation
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.DayAlternative
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.ActualMobilityPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.DetermineTripDuration
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MobilityPlan
@@ -71,8 +71,8 @@ class MobilityStructure(
 
         val randomNumber = rngHelper.randomValue
 
-        val converter: (ActivityType) -> DaySituation = {
-            DaySituation(
+        val converter: (ActivityType) -> DayAlternative = {
+            DayAlternative(
                 it,
                 weekRoutine,
                 day.weekday

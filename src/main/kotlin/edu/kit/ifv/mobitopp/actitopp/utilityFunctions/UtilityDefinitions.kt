@@ -10,7 +10,7 @@ fun interface UtilityFunction<SIT, PARAMS> {
 /**
  * An allocated function knows what options are available
  */
-interface OptionDistributionFunction<X : Any, SIT : ChoiceSituation<X>, PARAMS> :
+interface OptionDistributionFunction<X : Any, SIT : ChoiceAlternative<X>, PARAMS> :
     ExtractableDistributionFunction<X, SIT, PARAMS> {
     val options: Set<X> get() = translation.keys
     val translation: Map<X, UtilityFunction<SIT, PARAMS>>
@@ -24,7 +24,7 @@ interface OptionDistributionFunction<X : Any, SIT : ChoiceSituation<X>, PARAMS> 
 /**
  * If we have this class we have the ability to predetermine the utility function for a given situation SIT
  */
-interface ExtractableDistributionFunction<X : Any, SIT : ChoiceSituation<X>, PARAMS> :
+interface ExtractableDistributionFunction<X : Any, SIT : ChoiceAlternative<X>, PARAMS> :
     DistributionFunction<SIT, PARAMS> {
     val name get() = "Unnamed Distribution Function"
     fun translation(target: SIT): UtilityFunction<SIT, PARAMS>
@@ -56,12 +56,12 @@ data class InjectedSituation<SIT>(
     val injection: (Double) -> Double = { it },
 )
 
-interface ModifiableDistributionFunction<X : Any, SIT : ChoiceSituation<X>, PARAMS> :
+interface ModifiableDistributionFunction<X : Any, SIT : ChoiceAlternative<X>, PARAMS> :
     OptionDistributionFunction<X, SIT, PARAMS> {
     fun modify(option: X, lambda: (UtilityFunction<SIT, PARAMS>) -> UtilityFunction<SIT, PARAMS>)
 }
 
-fun <X : Any, SIT : ChoiceSituation<X>, PARAMS> ExtractableDistributionFunction<X, SIT, PARAMS>.calculateDebug(
+fun <X : Any, SIT : ChoiceAlternative<X>, PARAMS> ExtractableDistributionFunction<X, SIT, PARAMS>.calculateDebug(
     alternatives: Set<SIT>,
     parameters: PARAMS,
     callback: (Map<SIT, Double>) -> Unit = {
@@ -100,7 +100,7 @@ interface MapBasedAssociation<SIT, PARAMS> : UtilityFunctionAssociation<SIT, PAR
     }
 }
 
-interface RuleBasedAssociation<X : Any, SIT : ChoiceSituation<X>, PARAMS> :
+interface RuleBasedAssociation<X : Any, SIT : ChoiceAlternative<X>, PARAMS> :
     UtilityFunctionAssociation<SIT, PARAMS>,
     ExtractableDistributionFunction<X, SIT, PARAMS> {
     val rules: List<Pair<(SIT) -> Boolean, UtilityFunction<SIT, PARAMS>>>
@@ -118,7 +118,7 @@ interface RuleBasedAssociation<X : Any, SIT : ChoiceSituation<X>, PARAMS> :
     }
 }
 
-class UtilityCollector<X : Any, SIT : ChoiceSituation<X>, PARAMS>(
+class UtilityCollector<X : Any, SIT : ChoiceAlternative<X>, PARAMS>(
     val originalFunctions: (X) -> UtilityFunction<SIT, PARAMS>,
 ) {
     val registeredUtilityFunctions = mutableMapOf<X, UtilityFunction<SIT, PARAMS>>()
@@ -132,7 +132,7 @@ class UtilityCollector<X : Any, SIT : ChoiceSituation<X>, PARAMS>(
     }
 }
 
-fun <X : Any, SIT : ChoiceSituation<X>, PARAMS> OptionDistributionFunction<X, SIT, PARAMS>.selectNew(
+fun <X : Any, SIT : ChoiceAlternative<X>, PARAMS> OptionDistributionFunction<X, SIT, PARAMS>.selectNew(
     converter: (X) -> SIT,
     parameters: PARAMS,
     lambda: UtilityCollector<X, SIT, PARAMS>.() -> Unit,
@@ -149,7 +149,7 @@ fun <X : Any, SIT : ChoiceSituation<X>, PARAMS> OptionDistributionFunction<X, SI
 
 }
 
-fun <X : Any, SIT : ChoiceSituation<X>, PARAMS> ModifiableDiscreteChoiceModel<X, SIT, PARAMS>.selectNew(
+fun <X : Any, SIT : ChoiceAlternative<X>, PARAMS> ModifiableDiscreteChoiceModel<X, SIT, PARAMS>.selectNew(
     randomNumber: Double,
     converter: (X) -> SIT,
     parameters: PARAMS,
@@ -165,7 +165,7 @@ fun <X : Any, SIT : ChoiceSituation<X>, PARAMS> ModifiableDiscreteChoiceModel<X,
 
 }
 
-fun <X : Any, SIT : ChoiceSituation<X>, PARAMS> ParametrizedDiscreteChoiceModel<X, SIT, PARAMS>.selectNew(
+fun <X : Any, SIT : ChoiceAlternative<X>, PARAMS> ParametrizedDiscreteChoiceModel<X, SIT, PARAMS>.selectNew(
     randomNumber: Double,
     converter: (X) -> SIT,
     collector: UtilityCollector<X, SIT, PARAMS>.() -> Unit,

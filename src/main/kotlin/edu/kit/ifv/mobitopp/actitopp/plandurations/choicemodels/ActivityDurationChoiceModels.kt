@@ -1,7 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.plandurations.choicemodels
 
 import edu.kit.ifv.mobitopp.actitopp.plandurations.Identifier
-import edu.kit.ifv.mobitopp.actitopp.plandurations.MainDurationSituation
+import edu.kit.ifv.mobitopp.actitopp.plandurations.MainDurationAlternative
 import edu.kit.ifv.mobitopp.actitopp.plandurations.durationHistogramsFromResourcePath
 import edu.kit.ifv.mobitopp.actitopp.plandurations.generateHistogram
 import edu.kit.ifv.mobitopp.actitopp.plandurations.parameters.ParameterStep8B
@@ -13,7 +13,7 @@ import edu.kit.ifv.mobitopp.actitopp.plandurations.parameters.ParametersStep8J
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 
 
-private val minorFunction: ParameterStep8J.(MainDurationSituation) -> Double = {
+private val minorFunction: ParameterStep8J.(MainDurationAlternative) -> Double = {
     base +
             (it.dauer_hauptakt_tag_4bis6std()) * dauer_hauptakt_tag_4bis6std +
             (it.dauer_hauptakt_tag_6bis8std()) * dauer_hauptakt_tag_6bis8std +
@@ -47,7 +47,7 @@ private val minorFunction: ParameterStep8J.(MainDurationSituation) -> Double = {
             (it.tourliegtnachhaupttour()) * tourliegtnachhaupttour
 
 }
-private val standardUtilityFunction8D: ParameterStep8D.(MainDurationSituation) -> Double = {
+private val standardUtilityFunction8D: ParameterStep8D.(MainDurationAlternative) -> Double = {
     base +
             (it.mittl_zeit_akt_1bis14min()) * mittl_zeit_akt_1bis14min +
             (it.mittl_zeit_akt_15bis29min()) * mittl_zeit_akt_15bis29min +
@@ -82,7 +82,7 @@ private val standardUtilityFunction8D: ParameterStep8D.(MainDurationSituation) -
             (it.tourliegtnachhaupttour()) * tourliegtnachhaupttour
 
 }
-private val standardUtilityFunction8B: ParameterStep8B.(MainDurationSituation) -> Double = {
+private val standardUtilityFunction8B: ParameterStep8B.(MainDurationAlternative) -> Double = {
 
     base +
             (it.mittl_zeit_akt_60bis119min()) * mittl_zeit_akt_60bis119min +

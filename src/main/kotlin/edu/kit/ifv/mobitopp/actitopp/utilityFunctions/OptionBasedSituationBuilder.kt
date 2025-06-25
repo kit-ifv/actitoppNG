@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.utilityFunctions
 
-interface OptionBasedSituationBuilder<X : Any, SIT : ChoiceSituation<X>, PARAMS> {
+interface OptionBasedSituationBuilder<X : Any, SIT : ChoiceAlternative<X>, PARAMS> {
     /**
      * Checking whether a situation is equal to a certain element x is a concretization of the more general
      * concept of when to apply a rule.
@@ -71,7 +71,7 @@ interface OptionBasedSituationBuilder<X : Any, SIT : ChoiceSituation<X>, PARAMS>
     }
 }
 
-interface RuleBasedSituationBuilder<X : Any, SIT : ChoiceSituation<X>, PARAMS> {
+interface RuleBasedSituationBuilder<X : Any, SIT : ChoiceAlternative<X>, PARAMS> {
     fun addUtilityFunctionByRule(rule: (SIT) -> Boolean, utilityFunction: UtilityFunction<SIT, PARAMS>)
 }
 

@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels
 
-import edu.kit.ifv.mobitopp.actitopp.steps.PersonSituation
+import edu.kit.ifv.mobitopp.actitopp.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
@@ -10,7 +10,7 @@ import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.ActivityAmountSet
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.DefaultActivityAmountParameters
 
 
-val step1LWithParams = ModifiableDiscreteChoiceModel<Int, PersonSituation, ActivityAmountSet>(AllocatedLogit.create {
+val step1LWithParams = ModifiableDiscreteChoiceModel<Int, PersonAlternative, ActivityAmountSet>(AllocatedLogit.create {
     option(1) {
         0.0
     }
@@ -23,7 +23,7 @@ val step1LWithParams = ModifiableDiscreteChoiceModel<Int, PersonSituation, Activ
 ).initializeWithParameters(DefaultActivityAmountParameters)
 
 
-private val standardUtilityFunction: ActivityAmountParameters.(PersonSituation) -> Double = {
+private val standardUtilityFunction: ActivityAmountParameters.(PersonAlternative) -> Double = {
     base +
             (it.isParttimeEmployee()) * beruf_teilzeit +
             (it.isStudent()) * beruf_schueler +

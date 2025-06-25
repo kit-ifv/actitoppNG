@@ -4,7 +4,7 @@ import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.step6WithParams
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.ActivitySituation
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.ActivityAlternative
 import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalIndexedValue
 import edu.kit.ifv.mobitopp.actitopp.utils.Position
 
@@ -46,8 +46,8 @@ class ExampleAssign(
                 if (day.shouldNotBeEducationDay(routine)) availableOptions.remove(
                     ActivityType.EDUCATION
                 )
-                val converter: (ActivityType) -> ActivitySituation = {
-                    ActivitySituation(
+                val converter: (ActivityType) -> ActivityAlternative = {
+                    ActivityAlternative(
                         it, personWithRoutine,
                         input.dayStructure,
                         input.tourStructure, position, input.plannedTourAmounts

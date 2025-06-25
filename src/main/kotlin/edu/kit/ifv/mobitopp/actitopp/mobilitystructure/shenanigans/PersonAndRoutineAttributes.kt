@@ -1,7 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans
 
 
-import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributes
@@ -12,8 +11,7 @@ import edu.kit.ifv.mobitopp.actitopp.steps.PersonAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAttributesFromElement
 import edu.kit.ifv.mobitopp.actitopp.steps.RoutineAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.RoutineAttributesFromElement
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceSituation
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
+import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceAlternative
 import java.time.DayOfWeek
 
 
@@ -24,14 +22,14 @@ data class PersonAndRoutineFrom(
     private val person: PersonAttributes = PersonAttributesFromElement(element.person),
 ) : PersonAndRoutineAttributes, RoutineAttributes by routine, PersonAttributes by person
 
-class DaySituation private constructor(
+class DayAlternative private constructor(
     override val choice: ActivityType,
 
     private val personAttributesFromElement: PersonAndRoutineAttributes,
     private val dayAttributesFromElement: DayAttributes,
     private val householdAttributesFromElement: HouseholdAttributes,
 ) :
-    ChoiceSituation<ActivityType>(), PersonAttributes by personAttributesFromElement,
+    ChoiceAlternative<ActivityType>(), PersonAttributes by personAttributesFromElement,
     RoutineAttributes by personAttributesFromElement,
     DayAttributes by dayAttributesFromElement,
 HouseholdAttributes by householdAttributesFromElement{

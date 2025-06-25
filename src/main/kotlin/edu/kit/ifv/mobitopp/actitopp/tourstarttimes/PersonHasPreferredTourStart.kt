@@ -2,7 +2,7 @@ package edu.kit.ifv.mobitopp.actitopp.tourstarttimes
 
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.modernization.durations.MobilityPlanInputs
-import edu.kit.ifv.mobitopp.actitopp.plandurations.MainDurationSituation
+import edu.kit.ifv.mobitopp.actitopp.plandurations.MainDurationAlternative
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.choicemodels.FIRST_TOUR_HISTOGRAM
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
@@ -15,7 +15,7 @@ interface PersonPreferredTourStart {
     fun determinePreferredTourStart(input: MobilityPlanInputs): ArrayHistogram
 }
 
-private val standardUtilityFunction9A: ParameterStep9A.(MainDurationSituation) -> Double = {
+private val standardUtilityFunction9A: ParameterStep9A.(MainDurationAlternative) -> Double = {
     base +
             (it.isStudent()) * beruf_schueler +
             (it.householdHasYouths()) * haushalthatkinderunter18 +
@@ -217,7 +217,7 @@ data class ParameterStep9A(
 
 class StandardPreferredTourStart(private val rng: RNGHelper) : PersonPreferredTourStart {
     private val choiceModel =
-        ModifiableDiscreteChoiceModel<ArrayHistogram, MainDurationSituation, ParameterCollectionStep9A>(
+        ModifiableDiscreteChoiceModel<ArrayHistogram, MainDurationAlternative, ParameterCollectionStep9A>(
             AllocatedLogit.create {
 
                 bulk(
@@ -233,7 +233,7 @@ class StandardPreferredTourStart(private val rng: RNGHelper) : PersonPreferredTo
 
     override fun determinePreferredTourStart(input: MobilityPlanInputs): ArrayHistogram {
 
-        val converter: (ArrayHistogram) -> MainDurationSituation = { MainDurationSituation(it, input) }
+        val converter: (ArrayHistogram) -> MainDurationAlternative = { MainDurationAlternative(it, input) }
         val randomNumber = rng.randomValue
         return choiceModel.select(randomNumber, converter)
     }

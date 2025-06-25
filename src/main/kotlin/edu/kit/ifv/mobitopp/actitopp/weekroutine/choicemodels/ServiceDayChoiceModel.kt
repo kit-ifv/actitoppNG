@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels
 
-import edu.kit.ifv.mobitopp.actitopp.steps.PersonSituation
+import edu.kit.ifv.mobitopp.actitopp.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
@@ -9,7 +9,7 @@ import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.DefaultServiceParame
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.ServiceDayParameters
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.ServiceDaySet
 
-val step1EWithParams = ModifiableDiscreteChoiceModel<Int, PersonSituation, ServiceDaySet>(AllocatedLogit.create {
+val step1EWithParams = ModifiableDiscreteChoiceModel<Int, PersonAlternative, ServiceDaySet>(AllocatedLogit.create {
 
     option(1, parameters = { option1 }) { standardUtilityFunction(this, it) }
     option(2, parameters = { option2 }) { standardUtilityFunction(this, it) }
@@ -24,7 +24,7 @@ val step1EWithParams = ModifiableDiscreteChoiceModel<Int, PersonSituation, Servi
 }
 ).initializeWithParameters(DefaultServiceParameters)
 
-private val standardUtilityFunction: ServiceDayParameters.(PersonSituation) -> Double = {
+private val standardUtilityFunction: ServiceDayParameters.(PersonAlternative) -> Double = {
     base +
             (it.isFulltimeEmployee()) * employmentIsFulltime +
             (it.isParttimeEmployee()) * employmentIsParttime +

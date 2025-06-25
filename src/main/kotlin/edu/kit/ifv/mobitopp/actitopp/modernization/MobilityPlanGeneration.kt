@@ -18,12 +18,12 @@ import edu.kit.ifv.mobitopp.actitopp.plandurations.choicemodels.LEAD
 import edu.kit.ifv.mobitopp.actitopp.plandurations.choicemodels.MAJOR
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.FinalizedActivityPattern
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.HistogramPerActivity
-import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.SECOND_TOUR_HISTOGRAM
+import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.choicemodels.SECOND_TOUR_HISTOGRAM
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.StandardPreferredTourStart
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.TourStartByHistogramsRelative
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.TourStartWithPreference
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.UsePreferredTourStart
-import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.UseStartViaChoiceModel
+import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.PreferredStartViaChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.assignFirstTourStarts
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.assignPreferredTourStart
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.assignRemainingTourStarts
@@ -102,7 +102,7 @@ class StandardStartTimeAssignment(val rng: RNGHelper) : MobilityPlanStartTimeAss
             rng = rng,
             startTimeHistograms = FIRST_TOUR_HISTOGRAM,
             preferredTourStart = preferredHistogram,
-            strategy = UseStartViaChoiceModel(rng),
+            strategy = PreferredStartViaChoiceModel(rng),
         )
 
         val secondStrategy = TourStartWithPreference(

@@ -3,7 +3,7 @@ package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.DefaultSideTourPrecursorParameters
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SideTourPrecursorParameters
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SideTourPrecursorSet
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.TourSituationInt
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.TourAlternativeInt
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
@@ -11,7 +11,7 @@ import edu.kit.ifv.mobitopp.actitopp.utils.times
 
 
 val step5AWithParams =
-    ModifiableDiscreteChoiceModel<Int, TourSituationInt, SideTourPrecursorSet>(AllocatedLogit.create {
+    ModifiableDiscreteChoiceModel<Int, TourAlternativeInt, SideTourPrecursorSet>(AllocatedLogit.create {
         option(0) { 0.0 }
         option(1, parameters = { one }, {
             val util = standardUtilityFunction(this, it)
@@ -24,7 +24,7 @@ val step5AWithParams =
     }).initializeWithParameters(DefaultSideTourPrecursorParameters)
 
 
-private val standardUtilityFunction: SideTourPrecursorParameters.(TourSituationInt) -> Double = {
+private val standardUtilityFunction: SideTourPrecursorParameters.(TourAlternativeInt) -> Double = {
     base +
 
             (it.isBeforeMainTour()) * tourliegtvorhaupttour +

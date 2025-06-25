@@ -23,13 +23,13 @@ class TransportHistograms(
         finalizedActivityPattern: FinalizedActivityPattern,
         person: IPerson,
     ): ArrayHistogram {
-        val converter: (ArrayHistogram) -> WorkChoiceSituation =
-            { WorkChoiceSituation(it, finalizedActivityPattern, person) }
+        val converter: (ArrayHistogram) -> WorkChoiceAlternative =
+            { WorkChoiceAlternative(it, finalizedActivityPattern, person) }
         return choiceModel.select(randomNumber, converter)
     }
 
     private val choiceModel =
-        ModifiableDiscreteChoiceModel<ArrayHistogram, WorkChoiceSituation, TransportBudgetSet>(
+        ModifiableDiscreteChoiceModel<ArrayHistogram, WorkChoiceAlternative, TransportBudgetSet>(
             AllocatedLogit.create {
                 option(histogram1) { 0.0 }
                 option(histogram2, parameters = { category2 }) { standardUtilityFunction(this, it) }
@@ -52,7 +52,7 @@ class TransportHistograms(
 }
 
 
-private val standardUtilityFunction: TransportBudgetParameters.(WorkChoiceSituation) -> Double = {
+private val standardUtilityFunction: TransportBudgetParameters.(WorkChoiceAlternative) -> Double = {
     base +
             (it.amountOfWorkActivitiesInWeek()) * anzakt_woche_w +
             (it.amountOfShoppingActivitiesInWeek()) * anzakt_woche_s +

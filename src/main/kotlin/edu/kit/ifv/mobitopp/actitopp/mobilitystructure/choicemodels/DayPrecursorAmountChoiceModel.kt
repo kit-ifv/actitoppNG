@@ -3,14 +3,14 @@ package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.DefaultPrecursorTourParameters
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.PrecursorTourAmountParameters
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.PrecursorTourAmountSet
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.PreviousDaySituation
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.PreviousDayAlternative
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 
 val precursorAmountChoiceModel =
-    ModifiableDiscreteChoiceModel<Int, PreviousDaySituation, PrecursorTourAmountSet>(AllocatedLogit.create {
+    ModifiableDiscreteChoiceModel<Int, PreviousDayAlternative, PrecursorTourAmountSet>(AllocatedLogit.create {
         option(0) { 0.0 }
         option(1, parameters = { one }, {
             val util = standardUtilityFunction(this, it)
@@ -21,7 +21,7 @@ val precursorAmountChoiceModel =
         option(4, parameters = { four }, { standardUtilityFunction(this, it) })
         option(5, parameters = { five }, { standardUtilityFunction(this, it) })
     }).initializeWithParameters(DefaultPrecursorTourParameters)
-private val standardUtilityFunction: PrecursorTourAmountParameters.(PreviousDaySituation) -> Double = {
+private val standardUtilityFunction: PrecursorTourAmountParameters.(PreviousDayAlternative) -> Double = {
     base +
             (it.isFulltimeEmployee()) * employmentFullTime +
             (it.dayMainActivityIsWork()) * mainActivityIsWork +
