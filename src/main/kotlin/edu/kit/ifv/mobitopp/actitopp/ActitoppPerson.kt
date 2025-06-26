@@ -4,10 +4,11 @@ import edu.kit.ifv.mobitopp.actitopp.enums.Employment
 import edu.kit.ifv.mobitopp.actitopp.enums.Gender
 import edu.kit.ifv.mobitopp.actitopp.enums.isEmployedAnywhere
 import edu.kit.ifv.mobitopp.actitopp.enums.isStudentOrAzubi
+import kotlinx.serialization.Serializable
 import kotlin.math.max
 import kotlin.random.Random
 
-
+@Serializable
 data class PersonAttributes(
     val gender: Gender,
     val employment: Employment,
@@ -28,7 +29,6 @@ data class PersonAttributes(
         }
     }
 }
-
 class ActitoppPerson(
     override val household: ActiToppHousehold,
     val attributes: PersonAttributes,

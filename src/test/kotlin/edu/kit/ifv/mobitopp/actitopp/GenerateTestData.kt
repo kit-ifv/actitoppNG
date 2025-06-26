@@ -2,15 +2,14 @@ package edu.kit.ifv.mobitopp.actitopp
 
 import edu.kit.ifv.mobitopp.actitopp.modernization.DefaultPlanGeneration
 import edu.kit.ifv.mobitopp.actitopp.modernization.ModernizedActivity
-import edu.kit.ifv.mobitopp.generateHouseholds
-import edu.kit.ifv.mobitopp.generatePersons
+
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlin.io.path.Path
 import kotlin.io.path.writeText
 
 fun main() {
-    val targets = generateHouseholds(1000)
+    val targets = randomHouseholds(1000)
     targets.forEach {
 
         it.generatePersons(5)

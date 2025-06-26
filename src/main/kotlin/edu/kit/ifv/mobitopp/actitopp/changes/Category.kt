@@ -24,4 +24,6 @@ value class Category(private val category: Int) {
         // Sometimes no category is picked, this is the representative of that case
         val NONE_CHOSEN = Category(0)
     }
+
+    fun toInt()  = category
 }

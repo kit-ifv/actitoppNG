@@ -7,6 +7,7 @@ import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
  * the given time frame. (Usually a week). It also contains the average amount of tours and activities (per day)
  * that this person should perform in the analysis time frame.
  */
+
 interface WeekRoutine {
     val amountOfWorkingDays: Int
     val amountOfEducationDays: Int

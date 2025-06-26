@@ -1,7 +1,9 @@
 package edu.kit.ifv.mobitopp.actitopp.enums
 
+import kotlinx.serialization.Serializable
 import java.util.Collections
 import java.util.EnumSet
+@Serializable
 enum class ActivityType(val typeasChar: Char, val defaultActivityTime: Int = 278) {
     EDUCATION('E', 340),
     HOME('H'),

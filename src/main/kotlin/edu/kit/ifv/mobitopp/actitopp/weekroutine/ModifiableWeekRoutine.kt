@@ -1,5 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine
 
+import kotlinx.serialization.Serializable
 import kotlin.properties.Delegates
 
 /**
@@ -7,6 +8,7 @@ import kotlin.properties.Delegates
  * of = 0. This way preemptive access of uninitialized fields causes an error, rather than a silent calculation with 0.
  * (We assume that this silent calculation mismatch is not desired, and thus guarded with errors)
  */
+@Serializable
 class ModifiableWeekRoutine : WeekRoutine {
     override var amountOfWorkingDays: Int by Delegates.notNull()
     override var amountOfEducationDays: Int by Delegates.notNull()

@@ -217,12 +217,6 @@ class ModernizedTrip(
     val previousActivity: LinkedActivity,
     val nextActivity: LinkedActivity,
 ) : MutableLinkedAction {
-    init {
-
-        require(!(previousActivity.activityType == ActivityType.HOME && nextActivity.activityType == ActivityType.HOME)) {
-            " This is bad"
-        }
-    }
 
     override fun estimatedDuration(defaultDuration: Map<ActivityType, Duration>): Duration {
         return duration
