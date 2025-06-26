@@ -1,24 +1,22 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels
 
+import discreteChoice.structure.DiscreteStructure
+import discreteChoice.utility.multinomialLogit
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAlternative
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.DefaultTourAmountParameters
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.TourAmountParameters
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.TourAmountSet
 
 
-val step1KWithParams = ModifiableDiscreteChoiceModel<Int, PersonAlternative, TourAmountSet>(AllocatedLogit.create {
+val step1KWithParams = DiscreteStructure<Int, PersonAlternative, TourAmountSet> {
     option(1) {
         0.0
     }
     option(2, parameters = { option2 }) { standardUtilityFunction(this, it) }
     option(3, parameters = { option3 }) { standardUtilityFunction(this, it) }
     option(4, parameters = { option4 }) { standardUtilityFunction(this, it) }
-}
-).initializeWithParameters(DefaultTourAmountParameters)
+}.multinomialLogit("Average amount of tours per day in week routine ").build(DefaultTourAmountParameters)
 
 
 private val standardUtilityFunction: TourAmountParameters.(PersonAlternative) -> Double = {

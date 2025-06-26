@@ -38,7 +38,7 @@ class ExampleAssign(
         val routine = personWithRoutine.routine
         return map { absoluteIndex ->
             mobilityStructure.generateTrackedActivity(input.dayStructure.startTimeDay) {
-                val availableOptions = step6WithParams.registeredOptions().toMutableSet()
+                val availableOptions = step6WithParams.choices.toMutableSet()
                 if (!personWithRoutine.person.isAllowedToWork) availableOptions.remove(ActivityType.WORK)
                 if (day.shouldNotBeWorkDay(routine)) availableOptions.remove(
                     ActivityType.WORK
@@ -53,8 +53,7 @@ class ExampleAssign(
                         input.tourStructure, position, input.plannedTourAmounts
                     )
                 }
-                val rnd = rngHelper.randomValue
-                step6WithParams.select(availableOptions, rnd, converter)
+                step6WithParams.select(availableOptions, rngHelper, converter)
             }
         }
     }

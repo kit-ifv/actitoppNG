@@ -549,9 +549,9 @@ val ParametersStep8B = ParameterCollectionStep8B(
  */
 data class ParameterCollectionStep8B(
     val parameters: List<ParameterStep8B>,
-) {
+):List<ParameterStep8B> by parameters {
 
-    operator fun get(index: Int): ParameterStep8B = parameters[index]
+
 
     constructor(
         first: ParameterStep8B,

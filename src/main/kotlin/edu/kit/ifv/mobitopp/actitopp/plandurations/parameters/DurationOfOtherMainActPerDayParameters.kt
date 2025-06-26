@@ -515,8 +515,8 @@ val ParametersStep8D = ParameterCollectionStep8D(
 
 data class ParameterCollectionStep8D(
     val parameters: List<ParameterStep8D>,
-) {
-    operator fun get(index: Int) = parameters[index]
+):List<ParameterStep8D> by parameters {
+//    operator fun get(index: Int) = parameters[index]
 
     constructor(
         first: ParameterStep8D,

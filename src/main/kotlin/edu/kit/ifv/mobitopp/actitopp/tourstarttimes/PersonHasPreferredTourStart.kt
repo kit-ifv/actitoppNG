@@ -1,13 +1,14 @@
 package edu.kit.ifv.mobitopp.actitopp.tourstarttimes
 
+import discreteChoice.structure.DiscreteStructure
+import discreteChoice.structure.bulkList
+import discreteChoice.utility.multinomialLogit
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitopp.plandurations.MainDurationAlternative
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.choicemodels.FIRST_TOUR_HISTOGRAM
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
+import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.select
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 
 interface PersonPreferredTourStart {
@@ -158,8 +159,8 @@ val ParametersStep9A = ParameterCollectionStep9A.create(
 
 data class ParameterCollectionStep9A(
     val parameters: List<ParameterStep9A>,
-) {
-    operator fun get(index: Int) = parameters[index]
+): List<ParameterStep9A> by parameters {
+
 
     companion object {
         fun create(
@@ -217,24 +218,19 @@ data class ParameterStep9A(
 
 class StandardPreferredTourStart(private val rng: RNGHelper) : PersonPreferredTourStart {
     private val choiceModel =
-        ModifiableDiscreteChoiceModel<ArrayHistogram, MainDurationAlternative, ParameterCollectionStep9A>(
-            AllocatedLogit.create {
+        DiscreteStructure<ArrayHistogram, MainDurationAlternative, ParameterCollectionStep9A>{
 
-                bulk(
-                    FIRST_TOUR_HISTOGRAM.histograms.withIndex()
-                        .associate { (index, histogram) -> histogram to { p: ParameterCollectionStep9A -> p[index] } }) {
-                    standardUtilityFunction9A(
-                        this,
-                        it
-                    )
+                bulkList(
+                    FIRST_TOUR_HISTOGRAM.histograms
+                ) {
+                    standardUtilityFunction9A(this, it)
                 }
-            }
-        ).initializeWithParameters(ParametersStep9A)
+
+            }.multinomialLogit("Determine preferred histogram for the first tour of the day").build(ParametersStep9A)
 
     override fun determinePreferredTourStart(input: MobilityPlanInputs): ArrayHistogram {
 
         val converter: (ArrayHistogram) -> MainDurationAlternative = { MainDurationAlternative(it, input) }
-        val randomNumber = rng.randomValue
-        return choiceModel.select(randomNumber, converter)
+        return choiceModel.select(rng, converter)
     }
 }

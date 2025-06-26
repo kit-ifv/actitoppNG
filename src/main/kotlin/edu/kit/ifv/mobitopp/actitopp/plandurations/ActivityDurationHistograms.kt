@@ -1,5 +1,10 @@
 package edu.kit.ifv.mobitopp.actitopp.plandurations
 
+import discreteChoice.EnumeratedDiscreteChoiceModel
+import discreteChoice.models.ChoiceAlternative
+import discreteChoice.structure.DiscreteStructure
+import discreteChoice.structure.bulkList
+import discreteChoice.utility.multinomialLogit
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
@@ -14,14 +19,9 @@ import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MobilityPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.TourPlan
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.TimeBudgets
+import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.select
+import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.selectInjected
 
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceAlternative
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ParametrizedDiscreteChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.UtilityFunction
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.selectNew
 import edu.kit.ifv.mobitopp.actitopp.utils.Position
 import edu.kit.ifv.mobitopp.actitopp.utils.indexOfSearch
 import edu.kit.ifv.mobitopp.actitopp.utils.sumOf
@@ -30,6 +30,7 @@ import java.time.DayOfWeek
 import kotlin.io.path.Path
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.name
+import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
@@ -42,10 +43,10 @@ import kotlin.time.Duration.Companion.minutes
 open class ActivityDurationHistograms<P>(
     // TODO histograms could be a sorted Set, since they are supposed to cover respective ranges.
     open val histograms: List<ArrayHistogram>,
-    open val choiceModel: ParametrizedDiscreteChoiceModel<ArrayHistogram, MainDurationAlternative, P>,
-    val emergencyBehaviour: (ClosedRange<Duration>, Double) -> Duration = { range, rng ->
+    open val choiceModel: EnumeratedDiscreteChoiceModel<ArrayHistogram, MainDurationAlternative, P>,
+    val emergencyBehaviour: (ClosedRange<Duration>, Random) -> Duration = { range, rng ->
 
-        ((range.endInclusive - range.start) * rng + range.start).inWholeMinutes.minutes
+        ((range.endInclusive - range.start) * rng.nextDouble() + range.start).inWholeMinutes.minutes
     },
 ) {
 
@@ -54,7 +55,7 @@ open class ActivityDurationHistograms<P>(
      * Select duration from selected histogram.
      */
     fun chooseHistogramFromNeighbors(
-        randomValue: Double,
+        random: Random,
         duration: Duration,
         bounds: ClosedRange<Duration>,
         converter: (ArrayHistogram) -> MainDurationAlternative,
@@ -64,37 +65,17 @@ open class ActivityDurationHistograms<P>(
         val previousHistogram = histograms.getOrNull(index - 1)
         val nextHistogram = histograms.getOrNull(index + 1)
 
-        val selectedHistogram = choiceModel.selectNew(randomValue, converter) {
-            previousHistogram?.let {
-                if (it.intersects(bounds)) {
-                    option(it)
-                }
+        val choices = listOfNotNull(previousHistogram, mainHistogram, nextHistogram).filter { it.intersects(bounds) }.map(converter).toSet()
+        return choiceModel.selectInjected(choices, injections = mapOf(mainHistogram to {d: Double -> d *1.1 } ), random)
 
-            }
-            if (mainHistogram.intersects(bounds)) {
-                option(mainHistogram) { original ->
-                    UtilityFunction { a, b ->
-                        1.1 * original.calculateUtility(a, b)
-                    }
-                }
-            }
-
-            nextHistogram?.let {
-                if (it.intersects(bounds)) {
-                    option(it)
-                }
-
-            }
-        }
-        return selectedHistogram
     }
 
     fun select(rngHelper: RNGHelper, converter: (ArrayHistogram) -> MainDurationAlternative): Duration {
-        return choiceModel.select(rngHelper.randomValue, converter).select(rngHelper.randomValue)
+        return choiceModel.select(rngHelper, converter).select(rngHelper.nextDouble())
     }
 
     fun selectHistogram(
-        rnd1: Double,
+        random: Random,
         bounds: ClosedRange<Duration>,
         converter: (ArrayHistogram) -> MainDurationAlternative,
     ): ArrayHistogram? {
@@ -103,20 +84,19 @@ open class ActivityDurationHistograms<P>(
         if (options.isEmpty()) {
             return null
         }
-        return choiceModel.select(options, rnd1, converter)
+        return choiceModel.select(options, random, converter)
     }
 
     fun select(
-        rnd1: Double,
-        rnd2: Double,
+        random: Random,
         bounds: ClosedRange<Duration>,
         converter: (ArrayHistogram) -> MainDurationAlternative,
     ): Duration {
 
-        val concreteHistogram = selectHistogram(rnd1, bounds, converter) ?: return emergencyBehaviour(bounds, rnd2)
+        val concreteHistogram = selectHistogram(random, bounds, converter) ?: return emergencyBehaviour(bounds, random)
 
         val output = concreteHistogram.select(
-            rnd2,
+            random,
             bounds
         )
         return output
@@ -140,33 +120,31 @@ class TaintedActivityDurationHistograms<P>(
 
 
     fun selectAndTaint(
-        rngNumberOne: Double,
-        rngNumberTwo: Double,
+        random: Random,
         bounds: ClosedRange<Duration>,
         duration: Duration,
         converter: (ArrayHistogram) -> MainDurationAlternative,
     ): Duration {
 
-        val selectedHistogram = original.chooseHistogramFromNeighbors(rngNumberOne, duration, bounds, converter)
+        val selectedHistogram = original.chooseHistogramFromNeighbors(random, duration, bounds, converter)
         val taint = taintedHistograms.getValue(selectedHistogram)
 
 
-        return taint.select(rngNumberTwo, bounds).also {
+        return taint.select(random, bounds).also {
             taint.modify(it.inWholeMinutes.toInt())
         }
     }
 
     fun select(
-        rnd1: Double,
-        rnd2: Double,
+        random: Random,
         bounds: ClosedRange<Duration>,
         converter: (ArrayHistogram) -> MainDurationAlternative,
     ): Duration {
 
         val histogram =
-            original.selectHistogram(rnd1, bounds, converter) ?: return original.emergencyBehaviour(bounds, rnd2)
+            original.selectHistogram(random, bounds, converter) ?: return original.emergencyBehaviour(bounds, random)
         val taint = taintedHistograms.getValue(histogram)
-        return taint.select(rnd2, bounds)
+        return taint.select(random, bounds)
     }
 }
 
@@ -194,23 +172,17 @@ fun durationHistogramsFromResourcePath(
 
 }
 
-fun <P, T> P.generateHistogram(
+fun <P:List<T>, T> P.generateHistogram(
     histograms: List<ArrayHistogram>,
     utilityFunction: T.(MainDurationAlternative) -> Double,
     converter: (Int, P) -> (P) -> T,
 ): ActivityDurationHistograms<P> {
 
-    val mapper = histograms.withIndex().map { (index, histogram) ->
-        histogram to
-                converter(index, this)
-    }
-    val choiceModel = ModifiableDiscreteChoiceModel<ArrayHistogram, MainDurationAlternative, P>(
-        AllocatedLogit.create {
-            bulk(mapper) {
-                utilityFunction(this, it)
-            }
+    val choiceModel = DiscreteStructure<ArrayHistogram, MainDurationAlternative, P> {
+        bulkList(histograms) {
+            utilityFunction(this, it)
         }
-    ).initializeWithParameters(this)
+    }.multinomialLogit("Histogram selection Choice model").build(this)
 
     return ActivityDurationHistograms(histograms, choiceModel)
 

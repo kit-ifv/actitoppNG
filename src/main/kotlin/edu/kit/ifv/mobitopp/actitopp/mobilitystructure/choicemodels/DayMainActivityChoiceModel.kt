@@ -1,17 +1,16 @@
 package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels
 
+import discreteChoice.structure.DiscreteStructure
+import discreteChoice.utility.multinomialLogit
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.DayMainActivityParameters
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.DayMainActivitySet
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.DefaultDayMainActivityParameters
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.DayAlternative
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 
 val mainActivityChoiceModel =
-    ModifiableDiscreteChoiceModel<ActivityType, DayAlternative, DayMainActivitySet>(AllocatedLogit.create {
+    DiscreteStructure<ActivityType, DayAlternative, DayMainActivitySet>{
 
         option(ActivityType.WORK, parameters = { work }, {
             (if (it.isEmployedAnywhere() && it.isStandardWorkingDay()) 1.3 else 1.0) * standardUtilityFunction(
@@ -34,7 +33,7 @@ val mainActivityChoiceModel =
         }
 
 
-    }).initializeWithParameters(DefaultDayMainActivityParameters)
+    }.multinomialLogit("Main activity type of the day").build(DefaultDayMainActivityParameters)
 private val standardUtilityFunction: DayMainActivityParameters.(DayAlternative) -> Double = {
     base +
             (it.isFulltimeEmployee()) * employmentFullTime +

@@ -1,18 +1,18 @@
 package edu.kit.ifv.mobitopp.actitopp.timebudgets
 
+import discreteChoice.structure.DiscreteStructure
+import discreteChoice.utility.multinomialLogit
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.EducationBudget
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.EducationBudgetParameters
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.EducationBudgetSet
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
+import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.select
 import edu.kit.ifv.mobitopp.actitopp.utils.times
-
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import java.nio.file.Path
 import kotlin.io.path.Path
+import kotlin.random.Random
 
 @Serializable
 class EducationHistograms(
@@ -25,23 +25,23 @@ class EducationHistograms(
 ) : HistogramSelection {
 
     override fun select(
-        randomNumber: Double,
+        random: Random,
         finalizedActivityPattern: FinalizedActivityPattern,
         person: IPerson,
     ): ArrayHistogram {
-        return choiceModel.select(randomNumber) { WorkChoiceAlternative(it, finalizedActivityPattern, person) }
+        return choiceModel.select(random) { WorkChoiceAlternative(it, finalizedActivityPattern, person) }
     }
 
     @Transient
     private val choiceModel =
-        ModifiableDiscreteChoiceModel<ArrayHistogram, WorkChoiceAlternative, EducationBudgetSet>(AllocatedLogit.create {
+        DiscreteStructure<ArrayHistogram, WorkChoiceAlternative, EducationBudgetSet> {
             option(histogram1, parameters = { category1 }) { standardUtilityFunction(this, it) }
             option(histogram2, parameters = { category2 }) { standardUtilityFunction(this, it) }
             option(histogram3, parameters = { category3 }) { standardUtilityFunction(this, it) }
             option(histogram4) { 0.0 }
             option(histogram5, parameters = { category5 }) { standardUtilityFunction(this, it) }
             option(histogram6, parameters = { category6 }) { standardUtilityFunction(this, it) }
-        }).initializeWithParameters(EducationBudget)
+        }.multinomialLogit("Histogram selection for education duration").build(EducationBudget)
 
 
     companion object {

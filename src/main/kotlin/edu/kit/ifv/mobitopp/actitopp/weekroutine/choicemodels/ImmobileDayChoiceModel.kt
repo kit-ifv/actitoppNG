@@ -1,9 +1,8 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels
 
+import discreteChoice.structure.DiscreteStructure
+import discreteChoice.utility.multinomialLogit
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAlternative
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.ParameterCollectionStep1F
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.ParameterSet1F
@@ -11,7 +10,7 @@ import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.ParametersStep1F
 
 
 val step1FWithParams =
-    ModifiableDiscreteChoiceModel<Int, PersonAlternative, ParameterCollectionStep1F>(AllocatedLogit.create {
+    DiscreteStructure<Int, PersonAlternative, ParameterCollectionStep1F> {
 
         option(1, parameters = { option1 }) { standardUtilityFunction(this, it) }
         option(2, parameters = { option2 }) { standardUtilityFunction(this, it) }
@@ -25,8 +24,7 @@ val step1FWithParams =
         option(0) {
             0.0
         }
-    }
-    ).initializeWithParameters(ParameterSet1F)
+    }.multinomialLogit("Amount of immobile days (Home days) in week routine").build(ParameterSet1F)
 
 
 private val standardUtilityFunction: ParametersStep1F.(PersonAlternative) -> Double = {

@@ -1,16 +1,15 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels
 
+import discreteChoice.structure.DiscreteStructure
+import discreteChoice.utility.multinomialLogit
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAlternative
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.DefaultEducationParameters
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.EducationDayParameters
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.EducationDaySet
 
 
-val step1BWithParams = ModifiableDiscreteChoiceModel<Int, PersonAlternative, EducationDaySet>(AllocatedLogit.create {
+val step1BWithParams = DiscreteStructure<Int, PersonAlternative, EducationDaySet> {
 
     option(1, parameters = { option1 }) { standardUtilityFunction(this, it) }
     option(2, parameters = { option2 }) { standardUtilityFunction(this, it) }
@@ -22,8 +21,8 @@ val step1BWithParams = ModifiableDiscreteChoiceModel<Int, PersonAlternative, Edu
     option(0) {
         0.0
     }
-}
-).initializeWithParameters(DefaultEducationParameters)
+}.multinomialLogit("Amount of education days in week routine")
+.build(DefaultEducationParameters)
 
 
 private val standardUtilityFunction: EducationDayParameters.(PersonAlternative) -> Double = {

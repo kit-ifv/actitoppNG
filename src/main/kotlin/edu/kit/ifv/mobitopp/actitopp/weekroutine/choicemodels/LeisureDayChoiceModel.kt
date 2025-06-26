@@ -1,16 +1,14 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels
 
+import discreteChoice.structure.DiscreteStructure
+import discreteChoice.utility.multinomialLogit
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAlternative
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.DefaultLeisureParameters
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.LeisureDayParameters
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.LeisureDaySet
 
-val step1CWithParams = ModifiableDiscreteChoiceModel<Int, PersonAlternative, LeisureDaySet>(AllocatedLogit.create {
-
+val step1CWithParams = DiscreteStructure<Int, PersonAlternative, LeisureDaySet> {
     option(1, parameters = { option1 }) { standardUtilityFunction(this, it) }
     option(2, parameters = { option2 }) { standardUtilityFunction(this, it) }
     option(3, parameters = { option3 }) { standardUtilityFunction(this, it) }
@@ -21,8 +19,7 @@ val step1CWithParams = ModifiableDiscreteChoiceModel<Int, PersonAlternative, Lei
     option(0) {
         0.0
     }
-}
-).initializeWithParameters(DefaultLeisureParameters)
+}.multinomialLogit("Amount of leisure days in week routine").build(DefaultLeisureParameters)
 private val standardUtilityFunction: LeisureDayParameters.(PersonAlternative) -> Double = {
     base +
             (it.isEarningMoney()) * employmentIsEarning +

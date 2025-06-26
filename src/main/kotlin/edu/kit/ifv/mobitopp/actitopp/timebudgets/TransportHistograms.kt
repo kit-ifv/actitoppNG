@@ -1,15 +1,16 @@
 package edu.kit.ifv.mobitopp.actitopp.timebudgets
 
+import discreteChoice.structure.DiscreteStructure
+import discreteChoice.utility.multinomialLogit
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.TransportBudgetParameters
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.TransportBudgetSet
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.TransportBudgets
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
+import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.select
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 import java.nio.file.Path
 import kotlin.io.path.Path
+import kotlin.random.Random
 
 class TransportHistograms(
     val histogram1: ArrayHistogram,
@@ -19,25 +20,23 @@ class TransportHistograms(
 ) : HistogramSelection {
 
     override fun select(
-        randomNumber: Double,
+        random: Random,
         finalizedActivityPattern: FinalizedActivityPattern,
         person: IPerson,
     ): ArrayHistogram {
         val converter: (ArrayHistogram) -> WorkChoiceAlternative =
             { WorkChoiceAlternative(it, finalizedActivityPattern, person) }
-        return choiceModel.select(randomNumber, converter)
+        return choiceModel.select(random, converter)
     }
 
     private val choiceModel =
-        ModifiableDiscreteChoiceModel<ArrayHistogram, WorkChoiceAlternative, TransportBudgetSet>(
-            AllocatedLogit.create {
+        DiscreteStructure<ArrayHistogram, WorkChoiceAlternative, TransportBudgetSet> {
                 option(histogram1) { 0.0 }
                 option(histogram2, parameters = { category2 }) { standardUtilityFunction(this, it) }
                 option(histogram3, parameters = { category3 }) { standardUtilityFunction(this, it) }
                 option(histogram4, parameters = { category4 }) { standardUtilityFunction(this, it) }
 
-            }
-        ).initializeWithParameters(TransportBudgets)
+            }.multinomialLogit("Histogram selection for time budgets for transport").build(TransportBudgets)
 
     companion object {
         fun fromResourcePath(path: Path = Path("src/main/resources/edu/kit/ifv/mobitopp/actitopp/mopv14_withpkwhh")): TransportHistograms {

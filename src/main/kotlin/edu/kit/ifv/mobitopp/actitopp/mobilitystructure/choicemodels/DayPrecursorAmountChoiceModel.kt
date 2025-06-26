@@ -1,16 +1,15 @@
 package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels
 
+import discreteChoice.structure.DiscreteStructure
+import discreteChoice.utility.multinomialLogit
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.DefaultPrecursorTourParameters
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.PrecursorTourAmountParameters
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.PrecursorTourAmountSet
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.PreviousDayAlternative
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 
 val precursorAmountChoiceModel =
-    ModifiableDiscreteChoiceModel<Int, PreviousDayAlternative, PrecursorTourAmountSet>(AllocatedLogit.create {
+    DiscreteStructure<Int, PreviousDayAlternative, PrecursorTourAmountSet>{
         option(0) { 0.0 }
         option(1, parameters = { one }, {
             val util = standardUtilityFunction(this, it)
@@ -20,7 +19,7 @@ val precursorAmountChoiceModel =
         option(3, parameters = { three }, { standardUtilityFunction(this, it) })
         option(4, parameters = { four }, { standardUtilityFunction(this, it) })
         option(5, parameters = { five }, { standardUtilityFunction(this, it) })
-    }).initializeWithParameters(DefaultPrecursorTourParameters)
+    }.multinomialLogit("Amount of precursor tours (tours before main tour) per day").build(DefaultPrecursorTourParameters)
 private val standardUtilityFunction: PrecursorTourAmountParameters.(PreviousDayAlternative) -> Double = {
     base +
             (it.isFulltimeEmployee()) * employmentFullTime +

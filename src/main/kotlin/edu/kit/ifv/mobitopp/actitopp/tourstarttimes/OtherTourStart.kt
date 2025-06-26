@@ -50,9 +50,7 @@ class TourStartByHistogramsRelative<P>(
         val bounds = input.dayPlan.startTimeBoundsFor(input.tourPlan, disregardDayEnd = input.isLastDay)
         val startTime = bounds.start
         val relativeBounds = bounds - startTime
-        val rnd1 = rng.randomValue
-        val rnd2 = rng.randomValue
-        return startTimeHistograms.select(rnd1, rnd2, relativeBounds) {
+        return startTimeHistograms.select(rng, relativeBounds) {
             MainDurationAlternative(it, input)
         } + startTime
     }

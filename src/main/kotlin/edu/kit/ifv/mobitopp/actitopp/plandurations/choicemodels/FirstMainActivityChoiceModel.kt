@@ -1,17 +1,15 @@
 package edu.kit.ifv.mobitopp.actitopp.plandurations.choicemodels
 
+import discreteChoice.EnumeratedDiscreteChoiceModel
+import discreteChoice.structure.DiscreteStructure
+import discreteChoice.utility.multinomialLogit
 import edu.kit.ifv.mobitopp.actitopp.plandurations.BooleanDecisionAlternative
 import edu.kit.ifv.mobitopp.actitopp.plandurations.parameters.ParameterCollectionStep8A
 import edu.kit.ifv.mobitopp.actitopp.plandurations.parameters.ParametersStep8A
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ParametrizedDiscreteChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 
-val firstActivityUsesStandardDuration: ParametrizedDiscreteChoiceModel<Boolean, BooleanDecisionAlternative, ParameterCollectionStep8A> =
-    ModifiableDiscreteChoiceModel<Boolean, BooleanDecisionAlternative, ParameterCollectionStep8A>(
-        AllocatedLogit.create {
+val firstActivityUsesStandardDuration: EnumeratedDiscreteChoiceModel<Boolean, BooleanDecisionAlternative, ParameterCollectionStep8A> =
+    DiscreteStructure<Boolean, BooleanDecisionAlternative, ParameterCollectionStep8A> {
             option(true) { 0.0 }
             option(false, parameters = { no }) {
 
@@ -43,5 +41,4 @@ val firstActivityUsesStandardDuration: ParametrizedDiscreteChoiceModel<Boolean, 
                         (it.tourhat3akt()) * tourhat3akt
             }
 
-        }
-    ).initializeWithParameters(ParametersStep8A)
+        }.multinomialLogit("If first activity of the day should use a predetermined start time").build(ParametersStep8A)

@@ -500,9 +500,9 @@ val ParametersStep8J = ParameterCollectionStep8J(
 
 data class ParameterCollectionStep8J(
     val parameters: List<ParameterStep8J>,
-) {
+) : List<ParameterStep8J> by parameters {
 
-    operator fun get(index: Int) = parameters[index]
+//    operator fun get(index: Int) = parameters[index]
 
     constructor(
         first: ParameterStep8J,

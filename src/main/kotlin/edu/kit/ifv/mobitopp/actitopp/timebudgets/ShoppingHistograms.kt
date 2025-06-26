@@ -1,15 +1,16 @@
 package edu.kit.ifv.mobitopp.actitopp.timebudgets
 
+import discreteChoice.structure.DiscreteStructure
+import discreteChoice.utility.multinomialLogit
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.ShoppingBudgetParameters
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.ShoppingBudgetSet
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.ShoppingBudgets
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
+import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.select
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 import java.nio.file.Path
 import kotlin.io.path.Path
+import kotlin.random.Random
 
 class ShoppingHistograms(
     val histogram1: ArrayHistogram,
@@ -21,23 +22,21 @@ class ShoppingHistograms(
     ) : HistogramSelection {
 
     override fun select(
-        randomNumber: Double,
+        random: Random,
         finalizedActivityPattern: FinalizedActivityPattern,
         person: IPerson,
     ): ArrayHistogram {
-        return choiceModel.select(randomNumber) { WorkChoiceAlternative(it, finalizedActivityPattern, person) }
+        return choiceModel.select(random) { WorkChoiceAlternative(it, finalizedActivityPattern, person) }
     }
 
-    private val choiceModel = ModifiableDiscreteChoiceModel<ArrayHistogram, WorkChoiceAlternative, ShoppingBudgetSet>(
-        AllocatedLogit.create {
+    private val choiceModel = DiscreteStructure<ArrayHistogram, WorkChoiceAlternative, ShoppingBudgetSet> {
             option(histogram1, parameters = { category1 }) { standardUtilityFunction(this, it) }
             option(histogram2, parameters = { category2 }) { standardUtilityFunction(this, it) }
             option(histogram3) { 0.0 }
             option(histogram4, parameters = { category4 }) { standardUtilityFunction(this, it) }
             option(histogram5, parameters = { category5 }) { standardUtilityFunction(this, it) }
 
-        }
-    ).initializeWithParameters(ShoppingBudgets)
+        }.multinomialLogit("Histogram selection for time budget for shopping").build(ShoppingBudgets)
 
     companion object {
         fun fromResourcePath(path: Path = Path("src/main/resources/edu/kit/ifv/mobitopp/actitopp/mopv14_withpkwhh")): ShoppingHistograms {

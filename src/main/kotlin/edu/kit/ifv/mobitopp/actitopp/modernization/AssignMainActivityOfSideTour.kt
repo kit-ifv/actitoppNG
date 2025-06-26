@@ -41,7 +41,7 @@ class AssignByUtilityFunction(private val mobilityStructure: MobilityStructure, 
             mobilityStructure.generateTrackedActivity(input.dayStructure.startTimeDay) { day ->
 
                 val routine = input.personWithRoutine.routine
-                val availableOptions = tourMainActivityChoiceModel.registeredOptions().toMutableSet()
+                val availableOptions = tourMainActivityChoiceModel.choices.toMutableSet()
                 if (!input.personWithRoutine.person.isAllowedToWork) availableOptions.remove(ActivityType.WORK)
                 if (day.shouldNotBeWorkDay(routine)) availableOptions.remove(
                     ActivityType.WORK
@@ -50,8 +50,7 @@ class AssignByUtilityFunction(private val mobilityStructure: MobilityStructure, 
                     ActivityType.EDUCATION
                 )
 
-                val rnd = rngHelper.randomValue
-                tourMainActivityChoiceModel.select(availableOptions, rnd) {
+                tourMainActivityChoiceModel.select(availableOptions, rngHelper) {
                     TourAlternative(
                         it,
                         input.personWithRoutine.person,

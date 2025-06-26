@@ -1,5 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.steps
 
+import discreteChoice.models.ChoiceAlternative
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.enums.Employment
 import edu.kit.ifv.mobitopp.actitopp.enums.Gender
@@ -9,7 +10,6 @@ import edu.kit.ifv.mobitopp.actitopp.enums.isNotEarning
 import edu.kit.ifv.mobitopp.actitopp.enums.isParttime
 import edu.kit.ifv.mobitopp.actitopp.enums.isStudent
 import edu.kit.ifv.mobitopp.actitopp.enums.isStudentOrAzubi
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceAlternative
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
 
 /**

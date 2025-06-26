@@ -1,5 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.tourstarttimes
 
+import discreteChoice.structure.DiscreteStructure
+import discreteChoice.utility.multinomialLogit
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.modernization.durations.MobilityPlanInputs
@@ -7,9 +9,7 @@ import edu.kit.ifv.mobitopp.actitopp.plandurations.BooleanDecisionWithPreference
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.parameters.ParameterStep10A
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.parameters.ParametersStep10A
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
+import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.select
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 
 /**
@@ -27,8 +27,7 @@ import edu.kit.ifv.mobitopp.actitopp.utils.times
  */
 class PreferredStartViaChoiceModel(private val rngKeeper: RNGHelper) : UsePreferredTourStart {
     private val choiceModel =
-        ModifiableDiscreteChoiceModel<Boolean, BooleanDecisionWithPreferenceCategory, ParameterStep10A>(
-            AllocatedLogit.create {
+        DiscreteStructure<Boolean, BooleanDecisionWithPreferenceCategory, ParameterStep10A> {
                 option(true) { 0.0 }
                 option(false) {
                     base +
@@ -48,8 +47,7 @@ class PreferredStartViaChoiceModel(private val rngKeeper: RNGHelper) : UsePrefer
                             (it.std_start_T1_6_7_Uhr()) * std_start_T1_6_7_Uhr +
                             (it.std_start_T1_7_8_Uhr()) * std_start_T1_7_8_Uhr
                 }
-            }
-        ).initializeWithParameters(ParametersStep10A)
+            }.multinomialLogit("Whether the tour should use a previously determined tour start or not").build(ParametersStep10A)
 
     override fun usePreferredTourStart(input: MobilityPlanInputs, preferredHistogram: ArrayHistogram): Boolean {
         val relevantActivities = setOf(ActivityType.WORK, ActivityType.EDUCATION)
@@ -58,8 +56,8 @@ class PreferredStartViaChoiceModel(private val rngKeeper: RNGHelper) : UsePrefer
         val converter: (Boolean) -> BooleanDecisionWithPreferenceCategory = {
             BooleanDecisionWithPreferenceCategory(it, input, preferredHistogram)
         }
-        val rnd = rngKeeper.randomValue
-        return choiceModel.select(rnd, converter)
+
+        return choiceModel.select(rngKeeper, converter)
 
 
     }

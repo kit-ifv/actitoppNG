@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans
 
 
+import discreteChoice.models.ChoiceAlternative
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.DurationDay
@@ -11,7 +12,6 @@ import edu.kit.ifv.mobitopp.actitopp.steps.DayStructureAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.HouseholdAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.HouseholdAttributesFromElement
 import edu.kit.ifv.mobitopp.actitopp.steps.PartialTourLayoutAttributes
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceAlternative
 
 
 class PlannedTourMap(

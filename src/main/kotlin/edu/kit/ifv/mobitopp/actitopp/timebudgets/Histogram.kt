@@ -13,6 +13,7 @@ import kotlin.io.path.useLines
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
+import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
@@ -88,6 +89,7 @@ open class ArrayHistogram protected constructor(
             counter += probability
         }
     }
+
     fun probabilities() = probabilities.toList()
 
 
@@ -134,7 +136,11 @@ open class ArrayHistogram protected constructor(
      * transformed using an affine translation to match the probability range of the cumulative sum of the elements within
      * the
      */
-    private fun selectInt(randomNumber: Double, lowerBoundInclusive: Int? = null, upperBoundInclusive: Int? = null): Duration {
+    private fun selectInt(
+        randomNumber: Double,
+        lowerBoundInclusive: Int? = null,
+        upperBoundInclusive: Int? = null,
+    ): Duration {
         require(randomNumber in 0.0..1.0) {
             "Input is not a probability as random Number $randomNumber"
         }
@@ -147,10 +153,10 @@ open class ArrayHistogram protected constructor(
 
         // We require the cumulative sum up to the current lower bound, which is stored in the field before the current index
         // If this field does not exist(because the index is 0) the cumulative sum before that element must be .0
-        val lowerCumulativeProbability = _cumulativeSum.getOrNull(lb - 1)?: 0.0
+        val lowerCumulativeProbability = _cumulativeSum.getOrNull(lb - 1) ?: 0.0
 
         val upperCumulativeProbability = _cumulativeSum[ub]
-        val selectionIndex = if(lowerCumulativeProbability == upperCumulativeProbability) {
+        val selectionIndex = if (lowerCumulativeProbability == upperCumulativeProbability) {
             /* This is the emergency situation. All elements in the targeted selection have a selection probability of
                 0.0. In this scenario a number is picked uniformly between the lower bound and upper bound. Since
                 the random number is known, we can use an affine transformation for the result.
@@ -158,7 +164,8 @@ open class ArrayHistogram protected constructor(
             val emergency = randomNumber.affineTransform(lb.toDouble(), ub.toDouble()).roundToInt()
             emergency
         } else {
-            val affineRandomNumber = randomNumber.affineTransform(lowerCumulativeProbability, upperCumulativeProbability)
+            val affineRandomNumber =
+                randomNumber.affineTransform(lowerCumulativeProbability, upperCumulativeProbability)
             _cumulativeSum.indexBinarySearch(affineRandomNumber, lb, ub)
         }
 
@@ -166,9 +173,14 @@ open class ArrayHistogram protected constructor(
 
         return (selectionIndex + offset).minutes
     }
-
+    fun select(random: Random, bounds: ClosedRange<Duration>) = select(random.nextDouble(), bounds)
     fun select(randomNumber: Double, bounds: ClosedRange<Duration>) =
         select(randomNumber, bounds.start, bounds.endInclusive)
+
+    fun select(
+        random: Random, lowerBoundInclusive: Duration? = null,
+        upperBoundInclusive: Duration? = null,
+    ) = select(random.nextDouble(), lowerBoundInclusive, upperBoundInclusive)
 
     fun select(
         randomNumber: Double,
@@ -179,7 +191,6 @@ open class ArrayHistogram protected constructor(
         val ub = upperBoundInclusive?.inWholeMinutes?.toInt()
         return selectInt(randomNumber, lb, ub)
     }
-
 
 
     /**
@@ -204,7 +215,7 @@ open class ArrayHistogram protected constructor(
         ).trim()
 
         fun fromWRDDistribution(
-            modelDistribution:  Map<Int, Int>,
+            modelDistribution: Map<Int, Int>,
             categoryIndex: Int,
         ): ArrayHistogram {
             require(modelDistribution.keys.size == modelDistribution.keys.max() - modelDistribution.keys.min() + 1) {
@@ -222,7 +233,7 @@ open class ArrayHistogram protected constructor(
 }
 
 
-private fun loadDistributionInformationFromFile(path: Path):  Map<Int, Int> {
+private fun loadDistributionInformationFromFile(path: Path): Map<Int, Int> {
     require(path.exists()) {
         "The path $path does not exist."
     }

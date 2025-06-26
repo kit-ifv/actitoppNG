@@ -39,8 +39,7 @@ class StandardStep8B<P>(
             val meanActivityDuration = dayPlan.getBudget(tourMainActivityType)
             val bounds = dayPlan.activityDurationBounds(input.activity)
             taintedHistogramMap[input.activity.activityType]?.selectAndTaint(
-                rng.randomValue,
-                rng.randomValue,
+                rng,
                 bounds,
                 meanActivityDuration
             ) {
@@ -58,8 +57,7 @@ class StandardStep8B<P>(
         return input.run {
             val bounds = dayPlan.activityDurationBounds(tourPlan.mainActivity)
             taintedHistogramMap[input.activity.activityType]?.select(
-                rng.randomValue,
-                rng.randomValue,
+                rng,
                 bounds
             ) {
                 MainDurationAlternative(

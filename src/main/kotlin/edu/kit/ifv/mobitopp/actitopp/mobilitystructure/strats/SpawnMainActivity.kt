@@ -16,12 +16,13 @@ class SpawnWithRespect(val rng: RNGHelper) : SpawnMainActivity {
         val availableOptions = Step2Tracking.determineAvailableOptions(
             mobilityStructure.getTracker(),
             mobilityStructure.weekRoutine,
-            mainActivityChoiceModel.registeredOptions()
+            mainActivityChoiceModel.choices
         )
         val activityType =
             mainActivityChoiceModel.select(
-                randomNumber = rng.randomValue,
-                options = availableOptions
+                choices = availableOptions,
+                random = rng,
+
             ) { DayAlternative(it, mobilityStructure.weekRoutine, nextDay.weekday) }
         mobilityStructure.add(nextDay, activityType)
 

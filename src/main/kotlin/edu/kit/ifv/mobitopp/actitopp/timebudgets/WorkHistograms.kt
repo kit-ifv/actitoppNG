@@ -1,18 +1,19 @@
 package edu.kit.ifv.mobitopp.actitopp.timebudgets
 
+import discreteChoice.models.ChoiceAlternative
+import discreteChoice.structure.DiscreteStructure
+import discreteChoice.utility.multinomialLogit
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAttributesFromElement
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.WorkBudgetParameters
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.WorkBudgetSet
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.WorkBudgets
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceAlternative
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
+import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.select
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 import java.nio.file.Path
 import kotlin.io.path.Path
+import kotlin.random.Random
 
 /**
  * Basically the same as step 7B, but reasonable
@@ -31,15 +32,14 @@ class WorkHistograms(
     ) : HistogramSelection {
 
     override fun select(
-        randomNumber: Double,
+        random: Random,
         finalizedActivityPattern: FinalizedActivityPattern,
         person: IPerson,
     ): ArrayHistogram {
-        return choiceModel.select(randomNumber) { WorkChoiceAlternative(it, finalizedActivityPattern, person) }
+        return choiceModel.select(random){ WorkChoiceAlternative(it, finalizedActivityPattern, person) }
     }
 
-    private val choiceModel = ModifiableDiscreteChoiceModel<ArrayHistogram, WorkChoiceAlternative, WorkBudgetSet>(
-        AllocatedLogit.create {
+    private val choiceModel = DiscreteStructure<ArrayHistogram, WorkChoiceAlternative, WorkBudgetSet> {
             option(histogram1, parameters = { category1 }) { standardUtilityFunction(this, it) }
             option(histogram2, parameters = { category2 }) { standardUtilityFunction(this, it) }
             option(histogram3, parameters = { category3 }) { standardUtilityFunction(this, it) }
@@ -50,8 +50,7 @@ class WorkHistograms(
             option(histogram8, parameters = { category8 }) { standardUtilityFunction(this, it) }
             option(histogram9, parameters = { category9 }) { standardUtilityFunction(this, it) }
 
-        }
-    ).initializeWithParameters(WorkBudgets)
+        }.multinomialLogit("Selection of histogram for work activities.").build(WorkBudgets)
 
     companion object {
         fun fromResourcePath(path: Path = Path("src/main/resources/edu/kit/ifv/mobitopp/actitopp/mopv14_withpkwhh")): WorkHistograms {

@@ -19,23 +19,23 @@ class TourStartWithPreference<P>(
     override fun selectStartTime(input: MobilityPlanInputs, preferredTourStart: ArrayHistogram?): Duration {
         val bounds = input.dayPlan.startTimeBoundsFor(input.tourPlan)
 
-        val rnd1 = rng.randomValue
-        val rnd2 = rng.randomValue
+
 
         preferredTourStart?.let {
 
             if (strategy.usePreferredTourStart(input, it) && it.intersects(bounds)) {
                 // In this instance we discard rnd1 because we already know the histogram we want to use.
                 // The preferredTourStart field. However for testability we need to consume rnd1.
+                rng.randomValue // Important for tests to keep the randomness at the same state
                 return it.select(
-                    rnd2,
+                    rng,
                     bounds.start,
                     bounds.endInclusive
                 )
             }
 
         }
-        return startTimeHistograms.select(rnd1, rnd2, bounds) {
+        return startTimeHistograms.select(rng, bounds) {
             MainDurationAlternative(it, input)
         }
     }

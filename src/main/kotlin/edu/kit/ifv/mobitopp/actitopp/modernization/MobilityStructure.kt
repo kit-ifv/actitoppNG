@@ -69,8 +69,6 @@ class MobilityStructure(
         rngHelper: RNGHelper,
     ): ActivityType {
 
-        val randomNumber = rngHelper.randomValue
-
         val converter: (ActivityType) -> DayAlternative = {
             DayAlternative(
                 it,
@@ -79,7 +77,7 @@ class MobilityStructure(
             )
         }
         val activityType = mainActivityChoiceModel.select(
-            options = availableOptions, randomNumber = randomNumber,
+            choices = availableOptions, random = rngHelper,
             converter = converter
         )
         activityTracker.add(activityType, day)

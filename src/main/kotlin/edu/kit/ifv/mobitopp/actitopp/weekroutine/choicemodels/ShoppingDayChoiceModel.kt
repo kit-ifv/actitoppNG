@@ -1,15 +1,14 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels
 
+import discreteChoice.structure.DiscreteStructure
+import discreteChoice.utility.multinomialLogit
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAlternative
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.DefaultShoppingParameters
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.ShoppingDayParameters
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.ShoppingDaySet
 
-val step1DWithParams = ModifiableDiscreteChoiceModel<Int, PersonAlternative, ShoppingDaySet>(AllocatedLogit.create {
+val step1DWithParams = DiscreteStructure<Int, PersonAlternative, ShoppingDaySet> {
 
     option(1, parameters = { option1 }) { standardUtilityFunction(this, it) }
     option(2, parameters = { option2 }) { standardUtilityFunction(this, it) }
@@ -21,8 +20,7 @@ val step1DWithParams = ModifiableDiscreteChoiceModel<Int, PersonAlternative, Sho
     option(0) {
         0.0
     }
-}
-).initializeWithParameters(DefaultShoppingParameters)
+}.multinomialLogit("Amount of shopping days in week routine").build(DefaultShoppingParameters)
 private val standardUtilityFunction: ShoppingDayParameters.(PersonAlternative) -> Double = {
     base +
             (it.isEarningMoney()) * employmentIsEarning +

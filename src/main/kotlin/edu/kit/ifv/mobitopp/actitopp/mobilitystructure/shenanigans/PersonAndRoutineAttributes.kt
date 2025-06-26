@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans
 
 
+import discreteChoice.models.ChoiceAlternative
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.steps.DayAttributes
@@ -11,7 +12,6 @@ import edu.kit.ifv.mobitopp.actitopp.steps.PersonAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAttributesFromElement
 import edu.kit.ifv.mobitopp.actitopp.steps.RoutineAttributes
 import edu.kit.ifv.mobitopp.actitopp.steps.RoutineAttributesFromElement
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceAlternative
 import java.time.DayOfWeek
 
 

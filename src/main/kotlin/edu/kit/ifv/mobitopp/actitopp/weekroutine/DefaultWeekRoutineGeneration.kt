@@ -1,9 +1,10 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine
 
+import discreteChoice.EnumeratedDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAlternative
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.SealedDiscreteChoiceModel
+import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.select
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.defaultWorkDayChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1BWithParams
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1CWithParams
@@ -13,7 +14,7 @@ import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1FWithParams
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1KWithParams
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1LWithParams
 
-typealias ChoiceModel = SealedDiscreteChoiceModel<Int, PersonAlternative>
+typealias ChoiceModele = EnumeratedDiscreteChoiceModel<Int,PersonAlternative , *>
 
 /**
  * The standard implementation to generate a week routine. Using choice models and mutable fields. Note that the
@@ -31,27 +32,27 @@ typealias ChoiceModel = SealedDiscreteChoiceModel<Int, PersonAlternative>
  * will return a read-only [WeekRoutine] as final output.
  */
 class DefaultWeekRoutineGeneration(
-    private val workDayChoiceModel: ChoiceModel = defaultWorkDayChoiceModel,
-    private val educationDayChoiceModel: ChoiceModel = step1BWithParams,
-    private val leisureDayChoiceModel: ChoiceModel = step1CWithParams,
-    private val shoppingDayChoiceModel: ChoiceModel = step1DWithParams,
-    private val serviceDayChoiceModel: ChoiceModel = step1EWithParams,
-    private val immobileDayChoiceModel: ChoiceModel = step1FWithParams,
-    private val averageAmountOfTourChoiceModel: ChoiceModel = step1KWithParams,
-    private val averageAmountOfActivitiesChoiceModel: ChoiceModel = step1LWithParams,
+    private val workDayChoiceModel: ChoiceModele = defaultWorkDayChoiceModel,
+    private val educationDayChoiceModel: ChoiceModele = step1BWithParams,
+    private val leisureDayChoiceModel: ChoiceModele = step1CWithParams,
+    private val shoppingDayChoiceModel: ChoiceModele = step1DWithParams,
+    private val serviceDayChoiceModel: ChoiceModele = step1EWithParams,
+    private val immobileDayChoiceModel: ChoiceModele = step1FWithParams,
+    private val averageAmountOfTourChoiceModel: ChoiceModele = step1KWithParams,
+    private val averageAmountOfActivitiesChoiceModel: ChoiceModele = step1LWithParams,
 ) : GenerateWeekRoutine {
     override fun generate(person: IPerson, rng: RNGHelper): WeekRoutine {
         return ModifiableWeekRoutine().apply {
 
             val converter: (Int) -> PersonAlternative = { PersonAlternative(it, this, person) }
-            amountOfWorkingDays = workDayChoiceModel.select(rng.randomValue, converter)
-            amountOfEducationDays = educationDayChoiceModel.select(rng.randomValue, converter)
-            amountOfLeisureDays = leisureDayChoiceModel.select(rng.randomValue, converter)
-            amountOfShoppingDays = shoppingDayChoiceModel.select(rng.randomValue, converter)
-            amountOfServiceDays = serviceDayChoiceModel.select(rng.randomValue, converter)
-            amountOfImmobileDays = immobileDayChoiceModel.select(rng.randomValue, converter)
-            averageAmountOfTours = averageAmountOfTourChoiceModel.select(rng.randomValue, converter)
-            averageAmountOfActivities = averageAmountOfActivitiesChoiceModel.select(rng.randomValue, converter)
+            amountOfWorkingDays = workDayChoiceModel.select(rng, converter)
+            amountOfEducationDays = educationDayChoiceModel.select(rng, converter)
+            amountOfLeisureDays = leisureDayChoiceModel.select(rng, converter)
+            amountOfShoppingDays = shoppingDayChoiceModel.select(rng, converter)
+            amountOfServiceDays = serviceDayChoiceModel.select(rng, converter)
+            amountOfImmobileDays = immobileDayChoiceModel.select(rng, converter)
+            averageAmountOfTours = averageAmountOfTourChoiceModel.select(rng, converter)
+            averageAmountOfActivities = averageAmountOfActivitiesChoiceModel.select(rng, converter)
         }
     }
 }

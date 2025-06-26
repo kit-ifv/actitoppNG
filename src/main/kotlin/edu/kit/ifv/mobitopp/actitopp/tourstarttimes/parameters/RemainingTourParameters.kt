@@ -25,7 +25,7 @@ data class ParameterStep10S(
 
 data class ParameterCollectionStep10S(
     val parameters: List<ParameterStep10S>,
-) {
+) : List<ParameterStep10S> by parameters {
     companion object {
         fun create(
             first: ParameterStep10S,

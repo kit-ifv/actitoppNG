@@ -1,20 +1,20 @@
 package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.subsubTourAmount
 
+import discreteChoice.EnumeratedDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.step5AWithParams
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.step5BWithParams
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SideTourPrecursorSet
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SideTourSuccessorSet
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.TourAlternativeInt
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ParametrizedDiscreteChoiceModel
 
 abstract class SideTourActivityGenerator<P>(
     val rngHelper: RNGHelper,
-    val choiceModel: ParametrizedDiscreteChoiceModel<Int, TourAlternativeInt, P>,
+    val choiceModel: EnumeratedDiscreteChoiceModel<Int, TourAlternativeInt, P>,
 ) : GenerateSideTourActivities {
     override fun generateActivityAmount(input: SideTourActivityInput): Int {
 
-        val options = choiceModel.registeredOptions().toMutableSet()
+        val options = choiceModel.choices.toMutableSet()
         options.removeIf { it < input.minimumAmountOfActivities }
 
         val converter: (Int) -> TourAlternativeInt = {
@@ -27,8 +27,7 @@ abstract class SideTourActivityGenerator<P>(
                 input.amountOfActivitiesBeforeMainAct
             )
         }
-        val rnd = rngHelper.randomValue
-        return choiceModel.select(options, rnd, converter)
+        return choiceModel.select(options, rngHelper, converter)
     }
 }
 

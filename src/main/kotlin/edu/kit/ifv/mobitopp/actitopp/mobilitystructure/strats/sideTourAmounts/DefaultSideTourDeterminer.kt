@@ -1,18 +1,18 @@
 package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.sideTourAmounts
 
+import discreteChoice.EnumeratedDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.PreviousDayAlternative
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.ModifiablePlannedTourAmounts
 import edu.kit.ifv.mobitopp.actitopp.modernization.PlannedTourAmounts
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ParametrizedDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
 import kotlin.math.max
 
 abstract class DefaultSideTourDeterminer<P>(
     val rngHelper: RNGHelper,
-    val choiceModel: ParametrizedDiscreteChoiceModel<Int, PreviousDayAlternative, P>,
+    val choiceModel: EnumeratedDiscreteChoiceModel<Int, PreviousDayAlternative, P>,
 ) : GenerateSideTours {
     override fun generate(precedingInput: PrecedingInput): Int {
 
@@ -20,8 +20,6 @@ abstract class DefaultSideTourDeterminer<P>(
 
 
             val availableOptions = determineAvailableOptions(day, precedingInput.personInfo.routine)
-
-            val rnd = rngHelper.randomValue
             val converter: (Int) -> PreviousDayAlternative = {
                 createChoiceSituation(
                     choice = it,
@@ -32,7 +30,7 @@ abstract class DefaultSideTourDeterminer<P>(
                 )
 
             }
-            choiceModel.select(availableOptions, rnd, converter)
+            choiceModel.select(availableOptions, rngHelper, converter)
 
 
         }
@@ -43,7 +41,7 @@ abstract class DefaultSideTourDeterminer<P>(
         // If the main activity is staying home, there should not be the option to choose any other subtour
         if (day.isHomeDay()) return setOf(0)
 
-        val availableOptions = choiceModel.registeredOptions().toMutableSet()
+        val availableOptions = choiceModel.choices.toMutableSet()
         val amountOfTours = day.amountOfPrecursorElements()
         // Nothing breaks if we omit the check whether amountOfTours is larger, because we cannot remove negative numbers
         // From the choice set.

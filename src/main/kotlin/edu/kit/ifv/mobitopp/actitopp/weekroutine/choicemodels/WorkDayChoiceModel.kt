@@ -1,16 +1,15 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels
 
+import discreteChoice.structure.DiscreteStructure
+import discreteChoice.utility.multinomialLogit
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAlternative
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.AllocatedLogit
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ModifiableDiscreteChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.initializeWithParameters
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.DefaultWorkParameters
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.WorkDayParameters
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.WorkDaySet
 
 
-val defaultWorkDayChoiceModel = ModifiableDiscreteChoiceModel<Int, PersonAlternative, WorkDaySet>(AllocatedLogit.create {
+val defaultWorkDayChoiceModel = DiscreteStructure<Int, PersonAlternative, WorkDaySet> {
 
     option(1, parameters = { option1 }, { standardUtilityFunction(this, it) })
     option(2, parameters = { option2 }, { standardUtilityFunction(this, it) })
@@ -23,7 +22,7 @@ val defaultWorkDayChoiceModel = ModifiableDiscreteChoiceModel<Int, PersonAlterna
         0.0
     }
 
-}).initializeWithParameters(DefaultWorkParameters)
+}.multinomialLogit("Amount of workdays in week routine").build(DefaultWorkParameters)
 
 private val standardUtilityFunction: WorkDayParameters.(PersonAlternative) -> Double = {
     base +
