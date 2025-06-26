@@ -11,6 +11,7 @@ import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.OTHER_TOUR_HISTOGRAM
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.choicemodels.FIRST_TOUR_HISTOGRAM
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.choicemodels.SECOND_TOUR_HISTOGRAM
 import edu.kit.ifv.mobitopp.actitopp.randomMobilityPlanInput
+import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.select
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -36,7 +37,7 @@ abstract class ActivityDurationHistogramTest(activityDurationHistograms: Activit
         val expected: List<ArrayHistogram> = Json.decodeFromString(listSerializer, path.readText())
         return expected.withIndex().map { (i, element) ->
             DynamicTest.dynamicTest("$name $i") {
-                assertEquals(element.categoryIndex, choiceModel.select(randomNumber = selectRandom.nextDouble(), ::converter).categoryIndex)
+                assertEquals(element.categoryIndex, choiceModel.select(random = selectRandom, ::converter).categoryIndex)
             }
 
         }

@@ -1,6 +1,8 @@
 package edu.kit.ifv.mobitopp.choicemodels
 
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ParametrizedDiscreteChoiceModel
+
+import discreteChoice.EnumeratedDiscreteChoiceModel
+import discreteChoice.models.ChoiceAlternative
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
@@ -11,10 +13,11 @@ import kotlin.io.path.readText
 import kotlin.io.path.writeText
 import kotlin.random.Random
 import kotlin.test.assertEquals
+import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.select
 
 private val RESOURCE_PATH = Path("src/test/resources/choicemodels")
-abstract class ChoiceModelTest<X : Any, SIT : edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ChoiceAlternative<X>>(
-    protected val choiceModel: ParametrizedDiscreteChoiceModel<X, SIT, *>
+abstract class ChoiceModelTest<X : Any, SIT : ChoiceAlternative<X>>(
+    protected val choiceModel: EnumeratedDiscreteChoiceModel<X, SIT, *>
 ) {
     // Rng to create the input data for the test runs
     protected val inputRandom = Random(1)
@@ -27,7 +30,7 @@ abstract class ChoiceModelTest<X : Any, SIT : edu.kit.ifv.mobitopp.actitopp.util
     val listSerializer by lazy {  ListSerializer(serializer)}
     fun writeResults() {
         val output = (0..<1000).map {
-            choiceModel.select(randomNumber = selectRandom.nextDouble(), ::converter)
+            choiceModel.select(random = selectRandom, ::converter)
         }
 
         val jsonstring = Json.encodeToString(listSerializer, output)
@@ -40,7 +43,7 @@ abstract class ChoiceModelTest<X : Any, SIT : edu.kit.ifv.mobitopp.actitopp.util
         val expected: List<X> = Json.decodeFromString(listSerializer, path.readText())
         return expected.withIndex().map { (i, element) ->
             DynamicTest.dynamicTest("$name $i") {
-                assertEquals(element, choiceModel.select(randomNumber = selectRandom.nextDouble(), ::converter))
+                assertEquals(element, choiceModel.select(random= selectRandom, ::converter))
             }
 
         }

@@ -1,8 +1,8 @@
 package edu.kit.ifv.mobitopp.choicemodels
 
+import discreteChoice.EnumeratedDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.randomPersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAlternative
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.ParametrizedDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.defaultWorkDayChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1BWithParams
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1CWithParams
@@ -14,7 +14,7 @@ import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1LWithParams
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer
 
-abstract class RoutineTest(choiceModel: ParametrizedDiscreteChoiceModel<Int, PersonAlternative, *>):
+abstract class RoutineTest(choiceModel: EnumeratedDiscreteChoiceModel<Int, PersonAlternative, *>):
     ChoiceModelTest<Int, PersonAlternative>(choiceModel) {
     override val serializer: KSerializer<Int> = Int.serializer()
         override fun converter(option: Int): PersonAlternative {
