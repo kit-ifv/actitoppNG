@@ -93,7 +93,6 @@ class ArrayHistogramTest {
             assertEquals(it.start, major.histograms[i].start)
             assertEquals(it.start, minor.histograms[i].start)
         }
-        println(lead)
     }
 
 }

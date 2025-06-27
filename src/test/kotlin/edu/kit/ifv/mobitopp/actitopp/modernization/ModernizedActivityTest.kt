@@ -4,6 +4,7 @@ import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.utils.Position
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
@@ -18,6 +19,6 @@ class ModernizedActivityTest {
         )
         val string = Json.encodeToString(ModernizedActivity.serializer(), activity)
         val newActivity = Json.decodeFromString<ModernizedActivity>(string)
-        println(newActivity)
+        assertEquals(activity, newActivity)
     }
 }
