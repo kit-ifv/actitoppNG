@@ -30,13 +30,14 @@ class ShoppingHistograms(
     }
 
     private val choiceModel = DiscreteStructure<ArrayHistogram, WorkChoiceAlternative, ShoppingBudgetSet> {
-            option(histogram1, parameters = { category1 }) { standardUtilityFunction(this, it) }
-            option(histogram2, parameters = { category2 }) { standardUtilityFunction(this, it) }
-            option(histogram3) { 0.0 }
-            option(histogram4, parameters = { category4 }) { standardUtilityFunction(this, it) }
-            option(histogram5, parameters = { category5 }) { standardUtilityFunction(this, it) }
+        option(histogram1, parameters = { category1 }) { standardUtilityFunction(this, it) }
+        option(histogram2, parameters = { category2 }) { standardUtilityFunction(this, it) }
 
-        }.multinomialLogit("Histogram selection for time budget for shopping").build(ShoppingBudgets)
+        option(histogram4, parameters = { category4 }) { standardUtilityFunction(this, it) }
+        option(histogram5, parameters = { category5 }) { standardUtilityFunction(this, it) }
+        option(histogram3) { 0.0 }
+
+    }.multinomialLogit("Histogram selection for time budget for shopping").build(ShoppingBudgets)
 
     companion object {
         fun fromResourcePath(path: Path = Path("src/main/resources/edu/kit/ifv/mobitopp/actitopp/mopv14_withpkwhh")): ShoppingHistograms {

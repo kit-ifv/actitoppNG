@@ -38,9 +38,10 @@ class EducationHistograms(
             option(histogram1, parameters = { category1 }) { standardUtilityFunction(this, it) }
             option(histogram2, parameters = { category2 }) { standardUtilityFunction(this, it) }
             option(histogram3, parameters = { category3 }) { standardUtilityFunction(this, it) }
-            option(histogram4) { 0.0 }
+
             option(histogram5, parameters = { category5 }) { standardUtilityFunction(this, it) }
             option(histogram6, parameters = { category6 }) { standardUtilityFunction(this, it) }
+            option(histogram4) { 0.0 }
         }.multinomialLogit("Histogram selection for education duration").build(EducationBudget)
 
 

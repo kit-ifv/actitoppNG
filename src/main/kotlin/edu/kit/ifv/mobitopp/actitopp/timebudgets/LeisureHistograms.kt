@@ -30,15 +30,15 @@ class LeisureHistograms(
     }
 
 
-    private val choiceModel = DiscreteStructure<ArrayHistogram, WorkChoiceAlternative, LeisureBudgetSet>{
-            option(histogram1, parameters = { category1 }) { standardUtilityFunction(this, it) }
-            option(histogram2, parameters = { category2 }) { standardUtilityFunction(this, it) }
-            option(histogram3, parameters = { category3 }) { standardUtilityFunction(this, it) }
-            option(histogram4) { 0.0 }
-            option(histogram5, parameters = { category5 }) { standardUtilityFunction(this, it) }
-            option(histogram6, parameters = { category6 }) { standardUtilityFunction(this, it) }
+    private val choiceModel = DiscreteStructure<ArrayHistogram, WorkChoiceAlternative, LeisureBudgetSet> {
+        option(histogram1, parameters = { category1 }) { standardUtilityFunction(this, it) }
+        option(histogram2, parameters = { category2 }) { standardUtilityFunction(this, it) }
+        option(histogram3, parameters = { category3 }) { standardUtilityFunction(this, it) }
+        option(histogram5, parameters = { category5 }) { standardUtilityFunction(this, it) }
+        option(histogram6, parameters = { category6 }) { standardUtilityFunction(this, it) }
+        option(histogram4) { 0.0 }
 
-        }.multinomialLogit("Histogram selection for time budget for leisure").build(LeisureBudgets)
+    }.multinomialLogit("Histogram selection for time budget for leisure").build(LeisureBudgets)
 
     companion object {
         fun fromResourcePath(path: Path = Path("src/main/resources/edu/kit/ifv/mobitopp/actitopp/mopv14_withpkwhh")): LeisureHistograms {
