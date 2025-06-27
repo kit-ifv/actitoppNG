@@ -2,14 +2,33 @@ package edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters
 
 
 data class ShoppingDaySet(
-    override val option1: ShoppingDayParameters,
-    override val option2: ShoppingDayParameters,
-    override val option3: ShoppingDayParameters,
-    override val option4: ShoppingDayParameters,
-    override val option5: ShoppingDayParameters,
-    override val option6: ShoppingDayParameters,
-    override val option7: ShoppingDayParameters,
-) : WeekRoutineParameterSet<ShoppingDayParameters>
+    override val parameters: List<ShoppingDayParameters>,
+) : WeekRoutineParameterSet<ShoppingDayParameters>, List<ShoppingDayParameters> by parameters {
+    companion object {
+        fun create(
+            option1: ShoppingDayParameters,
+            option2: ShoppingDayParameters,
+            option3: ShoppingDayParameters,
+            option4: ShoppingDayParameters,
+            option5: ShoppingDayParameters,
+            option6: ShoppingDayParameters,
+            option7: ShoppingDayParameters,
+        ): ShoppingDaySet {
+            return ShoppingDaySet(
+                listOf(
+                    option1,
+                    option2,
+                    option3,
+                    option4,
+                    option5,
+                    option6,
+                    option7,
+                )
+            )
+
+        }
+    }
+}
 
 data class ShoppingDayParameters(
     val base: Double,
@@ -24,7 +43,7 @@ data class ShoppingDayParameters(
     val amountOfLeisureDays: Double,
 )
 
-val DefaultShoppingParameters = ShoppingDaySet(
+val DefaultShoppingParameters = ShoppingDaySet.create(
     option1 = ShoppingDayParameters(
         base = 0.9053,
         employmentIsEarning = 0.0556,

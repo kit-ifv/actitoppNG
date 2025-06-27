@@ -10,7 +10,6 @@ import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.WorkDaySet
 
 
 val defaultWorkDayChoiceModel = DiscreteStructure<Int, PersonAlternative, WorkDaySet> {
-
     option(1, parameters = { option1 }, { standardUtilityFunction(this, it) })
     option(2, parameters = { option2 }, { standardUtilityFunction(this, it) })
     option(3, parameters = { option3 }, { standardUtilityFunction(this, it) })

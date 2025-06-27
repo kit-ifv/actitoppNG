@@ -2,14 +2,30 @@ package edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters
 
 
 data class ServiceDaySet(
-    override val option1: ServiceDayParameters,
-    override val option2: ServiceDayParameters,
-    override val option3: ServiceDayParameters,
-    override val option4: ServiceDayParameters,
-    override val option5: ServiceDayParameters,
-    override val option6: ServiceDayParameters,
-    override val option7: ServiceDayParameters,
-) : WeekRoutineParameterSet<ServiceDayParameters>
+    override val parameters: List<ServiceDayParameters>
+) : WeekRoutineParameterSet<ServiceDayParameters>, List<ServiceDayParameters> by parameters {
+    companion object {
+        fun create(option1: ServiceDayParameters,
+                   option2: ServiceDayParameters,
+                   option3: ServiceDayParameters,
+                   option4: ServiceDayParameters,
+                   option5: ServiceDayParameters,
+                   option6: ServiceDayParameters,
+                   option7: ServiceDayParameters,): ServiceDaySet {
+            return ServiceDaySet(
+                listOf(
+                    option1,
+                            option2,
+                            option3,
+                            option4,
+                            option5,
+                            option6,
+                            option7,
+                )
+            )
+        }
+    }
+}
 
 data class ServiceDayParameters(
     val base: Double,
@@ -25,7 +41,7 @@ data class ServiceDayParameters(
     val isMale: Double,
 )
 
-val DefaultServiceParameters = ServiceDaySet(
+val DefaultServiceParameters = ServiceDaySet.create(
     option1 = ServiceDayParameters(
         base = -1.2172,
         employmentIsFulltime = -0.1229,

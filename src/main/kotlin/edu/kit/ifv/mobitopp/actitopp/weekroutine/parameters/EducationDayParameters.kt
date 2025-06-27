@@ -2,14 +2,32 @@ package edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters
 
 
 data class EducationDaySet(
-    override val option1: EducationDayParameters,
-    override val option2: EducationDayParameters,
-    override val option3: EducationDayParameters,
-    override val option4: EducationDayParameters,
-    override val option5: EducationDayParameters,
-    override val option6: EducationDayParameters,
-    override val option7: EducationDayParameters,
-) : WeekRoutineParameterSet<EducationDayParameters>
+    override val parameters: List<EducationDayParameters>,
+) : WeekRoutineParameterSet<EducationDayParameters>, List<EducationDayParameters> by parameters {
+    companion object {
+        fun create(
+            option1: EducationDayParameters,
+            option2: EducationDayParameters,
+            option3: EducationDayParameters,
+            option4: EducationDayParameters,
+            option5: EducationDayParameters,
+            option6: EducationDayParameters,
+            option7: EducationDayParameters,
+        ): EducationDaySet {
+            return EducationDaySet(
+                listOf(
+                    option1,
+                    option2,
+                    option3,
+                    option4,
+                    option5,
+                    option6,
+                    option7,
+                )
+            )
+        }
+    }
+}
 
 data class EducationDayParameters(
     val base: Double,
@@ -24,7 +42,7 @@ data class EducationDayParameters(
 )
 
 
-val DefaultEducationParameters = EducationDaySet(
+val DefaultEducationParameters = EducationDaySet.create(
     option1 = EducationDayParameters(
         base = -3.6837,
         employmentIsEarning = -0.0309,

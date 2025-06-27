@@ -2,14 +2,28 @@ package edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters
 
 
 data class LeisureDaySet(
-    override val option1: LeisureDayParameters,
-    override val option2: LeisureDayParameters,
-    override val option3: LeisureDayParameters,
-    override val option4: LeisureDayParameters,
-    override val option5: LeisureDayParameters,
-    override val option6: LeisureDayParameters,
-    override val option7: LeisureDayParameters,
-) : WeekRoutineParameterSet<LeisureDayParameters>
+    override val parameters: List<LeisureDayParameters>
+) : WeekRoutineParameterSet<LeisureDayParameters>, List<LeisureDayParameters> by parameters {
+    companion object {
+        fun create(option1: LeisureDayParameters,
+                   option2: LeisureDayParameters,
+                   option3: LeisureDayParameters,
+                   option4: LeisureDayParameters,
+                   option5: LeisureDayParameters,
+                   option6: LeisureDayParameters,
+                   option7: LeisureDayParameters,): LeisureDaySet {
+            return LeisureDaySet(listOf(
+                option1,
+                        option2,
+                        option3,
+                        option4,
+                        option5,
+                        option6,
+                        option7,
+            ))
+        }
+    }
+}
 
 data class LeisureDayParameters(
     val base: Double,
@@ -21,7 +35,7 @@ data class LeisureDayParameters(
     val amountOfWorkingDays: Double,
 )
 
-val DefaultLeisureParameters = LeisureDaySet(
+val DefaultLeisureParameters = LeisureDaySet.create(
     option1 = LeisureDayParameters(
         base = 0.7714,
         employmentIsEarning = -0.1966,

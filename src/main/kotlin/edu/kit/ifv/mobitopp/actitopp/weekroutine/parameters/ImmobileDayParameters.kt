@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters
 
-val ParameterSet1F = ParameterCollectionStep1F(
+val ParameterSet1F = ParameterCollectionStep1F.create(
     option1 = ParametersStep1F(
         base = 3.5739,
         employmentNotEarning = -0.3249,
@@ -88,14 +88,32 @@ val ParameterSet1F = ParameterCollectionStep1F(
 )
 
 data class ParameterCollectionStep1F(
-    override val option1: ParametersStep1F,
-    override val option2: ParametersStep1F,
-    override val option3: ParametersStep1F,
-    override val option4: ParametersStep1F,
-    override val option5: ParametersStep1F,
-    override val option6: ParametersStep1F,
-    override val option7: ParametersStep1F,
-) : WeekRoutineParameterSet<ParametersStep1F>
+    override val parameters: List<ParametersStep1F>
+) : WeekRoutineParameterSet<ParametersStep1F>, List<ParametersStep1F> by parameters {
+    companion object {
+        fun create(
+            option1: ParametersStep1F,
+            option2: ParametersStep1F,
+            option3: ParametersStep1F,
+            option4: ParametersStep1F,
+            option5: ParametersStep1F,
+            option6: ParametersStep1F,
+            option7: ParametersStep1F,
+        ): ParameterCollectionStep1F {
+            return ParameterCollectionStep1F(
+                listOf(
+                    option1,
+                    option2,
+                    option3,
+                    option4,
+                    option5,
+                    option6,
+                    option7,
+                )
+            )
+        }
+    }
+}
 
 data class ParametersStep1F(
     val base: Double,

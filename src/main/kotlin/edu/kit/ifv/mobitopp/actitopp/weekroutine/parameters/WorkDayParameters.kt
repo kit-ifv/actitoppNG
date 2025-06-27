@@ -4,14 +4,32 @@ package edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters
  * A collection of parameters for the choice of amount of work days to be placed within a week routine.
  */
 data class WorkDaySet(
-    override val option1: WorkDayParameters,
-    override val option2: WorkDayParameters,
-    override val option3: WorkDayParameters,
-    override val option4: WorkDayParameters,
-    override val option5: WorkDayParameters,
-    override val option6: WorkDayParameters,
-    override val option7: WorkDayParameters,
-) : WeekRoutineParameterSet<WorkDayParameters>
+    override val parameters: List<WorkDayParameters>
+) : WeekRoutineParameterSet<WorkDayParameters>, List<WorkDayParameters> by parameters {
+    companion object {
+        fun create(
+            option1: WorkDayParameters,
+            option2: WorkDayParameters,
+            option3: WorkDayParameters,
+            option4: WorkDayParameters,
+            option5: WorkDayParameters,
+            option6: WorkDayParameters,
+            option7: WorkDayParameters,
+        ): WorkDaySet {
+            return WorkDaySet(
+                listOf(
+                    option1,
+                    option2,
+                    option3,
+                    option4,
+                    option5,
+                    option6,
+                    option7,
+                )
+            )
+        }
+    }
+}
 
 /**
  * This class lists all the parameters that influence the utility of a concrete decision for the amount of work days
@@ -42,7 +60,7 @@ data class WorkDayParameters(
 /**
  * The default set of parameters taken from actiTopp mopv14_withpkwhh
  */
-val DefaultWorkParameters = WorkDaySet(
+val DefaultWorkParameters = WorkDaySet.create(
     option1 = WorkDayParameters(
         base = -2.6967,
         employmentFullTime = 1.3924,
