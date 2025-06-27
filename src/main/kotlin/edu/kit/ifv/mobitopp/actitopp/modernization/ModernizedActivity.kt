@@ -59,7 +59,7 @@ interface Activity : Action {
 
 
     override fun shortString(): String {
-        return "${activityType.typeasChar}[${startTime?.inWholeMinutes ?: "?"}, ${endTime?.inWholeMinutes ?: "?"}] (${duration?.inWholeMinutes})"
+        return "${activityType.symbol()}[${startTime?.inWholeMinutes ?: "?"}, ${endTime?.inWholeMinutes ?: "?"}] (${duration?.inWholeMinutes})"
     }
 }
 
