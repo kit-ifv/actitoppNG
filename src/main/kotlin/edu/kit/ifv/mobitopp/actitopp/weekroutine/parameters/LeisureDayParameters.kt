@@ -1,6 +1,9 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters
 
-
+/**
+ * Collects parameters of [LeisureDayParameters] to apply the parameters to the set of options, which all take the same
+ * parameter structure.
+ */
 data class LeisureDaySet(
     override val parameters: List<LeisureDayParameters>
 ) : WeekRoutineParameterSet<LeisureDayParameters>, List<LeisureDayParameters> by parameters {
@@ -24,7 +27,16 @@ data class LeisureDaySet(
         }
     }
 }
-
+/**
+ * This class contains the parameters for the utility function to determine the amount of leisure days in the week routine.
+ * @param base The default parameter.
+ * @param employmentIsEarning Parameter that should be applied when the person employment is considered to earn money
+ * @param emplomentStudent Parameter that should be applied when the person is a student.
+ * @param ageIn61To70 Parameter that should be applied when the person is aged between 61 and 70 (inclusive)
+ * @param areaTypeIsRural Parameter that should be applied when the household area type is considered rural
+ * @param householdHasChildenBelowAge10 Parameter that should be applied when the household has children (0-10)
+ * @param amountOfWorkingDays Parameter that should be multiplied with the amount of working days in the week routine
+ */
 data class LeisureDayParameters(
     val base: Double,
     val employmentIsEarning: Double,
@@ -34,7 +46,9 @@ data class LeisureDayParameters(
     val householdHasChildenBelowAge10: Double,
     val amountOfWorkingDays: Double,
 )
-
+/**
+ * The original parameter set for the amount of leisure days, taken from mop14_withpkwhh. Originally called 1CParams.
+ */
 val DefaultLeisureParameters = LeisureDaySet.create(
     option1 = LeisureDayParameters(
         base = 0.7714,

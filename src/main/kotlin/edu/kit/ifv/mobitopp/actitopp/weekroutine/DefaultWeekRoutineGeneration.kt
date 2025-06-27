@@ -6,13 +6,13 @@ import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.select
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.defaultWorkDayChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1BWithParams
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1CWithParams
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1DWithParams
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1EWithParams
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1FWithParams
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1KWithParams
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1LWithParams
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.educationDaysChoiceModel
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.leisureDaysChoiceModel
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.shoppingDaysChoiceModel
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.serviceDaysChoiceModel
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.homeDaysChoiceModel
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.tourAmountChoiceModel
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.activityAmountChoiceModel
 
 typealias ChoiceModele = EnumeratedDiscreteChoiceModel<Int,PersonAlternative , *>
 
@@ -33,13 +33,13 @@ typealias ChoiceModele = EnumeratedDiscreteChoiceModel<Int,PersonAlternative , *
  */
 class DefaultWeekRoutineGeneration(
     private val workDayChoiceModel: ChoiceModele = defaultWorkDayChoiceModel,
-    private val educationDayChoiceModel: ChoiceModele = step1BWithParams,
-    private val leisureDayChoiceModel: ChoiceModele = step1CWithParams,
-    private val shoppingDayChoiceModel: ChoiceModele = step1DWithParams,
-    private val serviceDayChoiceModel: ChoiceModele = step1EWithParams,
-    private val immobileDayChoiceModel: ChoiceModele = step1FWithParams,
-    private val averageAmountOfTourChoiceModel: ChoiceModele = step1KWithParams,
-    private val averageAmountOfActivitiesChoiceModel: ChoiceModele = step1LWithParams,
+    private val educationDayChoiceModel: ChoiceModele = educationDaysChoiceModel,
+    private val leisureDayChoiceModel: ChoiceModele = leisureDaysChoiceModel,
+    private val shoppingDayChoiceModel: ChoiceModele = shoppingDaysChoiceModel,
+    private val serviceDayChoiceModel: ChoiceModele = serviceDaysChoiceModel,
+    private val immobileDayChoiceModel: ChoiceModele = homeDaysChoiceModel,
+    private val averageAmountOfTourChoiceModel: ChoiceModele = tourAmountChoiceModel,
+    private val averageAmountOfActivitiesChoiceModel: ChoiceModele = activityAmountChoiceModel,
 ) : GenerateWeekRoutine {
     override fun generate(person: IPerson, rng: RNGHelper): WeekRoutine {
         return ModifiableWeekRoutine().apply {

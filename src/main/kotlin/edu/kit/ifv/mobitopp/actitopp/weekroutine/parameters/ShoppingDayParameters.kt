@@ -1,6 +1,9 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters
 
-
+/**
+ * Collects parameters of [ShoppingDayParameters] to apply the parameters to the set of options, which all take the same
+ * parameter structure.
+ */
 data class ShoppingDaySet(
     override val parameters: List<ShoppingDayParameters>,
 ) : WeekRoutineParameterSet<ShoppingDayParameters>, List<ShoppingDayParameters> by parameters {
@@ -29,7 +32,20 @@ data class ShoppingDaySet(
         }
     }
 }
+/**
+ * This class contains the parameters for the utility function to determine the amount of shopping days in the week routine.
+ * @param base The default parameter.
+ * @param employmentIsEarning Parameter that should be applied when the person employment is considered to earn money
+ * @param emplomentStudent Parameter that should be applied when the person is a student.
+ * @param employmentVocational Parameter that should be applied when the person is a in a vocational program.
+ * @param ageIn10To17 Parameter that should be applied when the person is aged between 10 and 17 (inclusive)
+ * @param areaTypeIsConurbation Parameter that should be applied when the household area type is considered conurbation
+ * @param areaTypeIsRural Parameter that should be applied when the household area type is considered rural
+ * @param amountOfWorkingDays Parameter that should be multiplied with the amount of working days in the week routine
+ * @param amountOfEducationDays Parameter that should be multiplied with the amount of education days in the week routine
+ * @param amountOfLeisureDays Parameter that should be multiplied with the amount of leisure days in the week routine
 
+ */
 data class ShoppingDayParameters(
     val base: Double,
     val employmentIsEarning: Double,
@@ -42,7 +58,9 @@ data class ShoppingDayParameters(
     val amountOfEducationDays: Double,
     val amountOfLeisureDays: Double,
 )
-
+/**
+ * The original parameter set for the amount of shopping days, taken from mop14_withpkwhh. Originally called 1DParams.
+ */
 val DefaultShoppingParameters = ShoppingDaySet.create(
     option1 = ShoppingDayParameters(
         base = 0.9053,

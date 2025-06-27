@@ -1,7 +1,10 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters
 
-val ParameterSet1F = ParameterCollectionStep1F.create(
-    option1 = ParametersStep1F(
+/**
+ * The original parameter set for the amount of immobile days, taken from mop14_withpkwhh. Originally called 1FParams.
+ */
+val DefaultHomeParameters = HomeDaySet.create(
+    option1 = HomeDayParameters(
         base = 3.5739,
         employmentNotEarning = -0.3249,
         employmentRetired = -0.3439,
@@ -13,7 +16,7 @@ val ParameterSet1F = ParameterCollectionStep1F.create(
         amountOfLeisureDays = -0.5973,
         amountOfShoppingDays = -0.3244,
     ),
-    option2 = ParametersStep1F(
+    option2 = HomeDayParameters(
         base = 7.6320,
         employmentNotEarning = -0.7489,
         employmentRetired = -0.6659,
@@ -25,7 +28,7 @@ val ParameterSet1F = ParameterCollectionStep1F.create(
         amountOfLeisureDays = -1.1970,
         amountOfShoppingDays = -0.9637,
     ),
-    option3 = ParametersStep1F(
+    option3 = HomeDayParameters(
         base = 11.8825,
         employmentNotEarning = -1.1891,
         employmentRetired = -1.1118,
@@ -37,7 +40,7 @@ val ParameterSet1F = ParameterCollectionStep1F.create(
         amountOfLeisureDays = -1.9709,
         amountOfShoppingDays = -1.8096,
     ),
-    option4 = ParametersStep1F(
+    option4 = HomeDayParameters(
         base = 15.1575,
         employmentNotEarning = -1.5659,
         employmentRetired = -1.4033,
@@ -49,7 +52,7 @@ val ParameterSet1F = ParameterCollectionStep1F.create(
         amountOfLeisureDays = -2.7910,
         amountOfShoppingDays = -2.8184,
     ),
-    option5 = ParametersStep1F(
+    option5 = HomeDayParameters(
         base = 18.9161,
         employmentNotEarning = -1.4267,
         employmentRetired = -1.5383,
@@ -61,7 +64,7 @@ val ParameterSet1F = ParameterCollectionStep1F.create(
         amountOfLeisureDays = -4.1593,
         amountOfShoppingDays = -4.4475,
     ),
-    option6 = ParametersStep1F(
+    option6 = HomeDayParameters(
         base = 22.0357,
         employmentNotEarning = -2.4041,
         employmentRetired = -2.0068,
@@ -73,7 +76,7 @@ val ParameterSet1F = ParameterCollectionStep1F.create(
         amountOfLeisureDays = -5.9283,
         amountOfShoppingDays = -6.6534,
     ),
-    option7 = ParametersStep1F(
+    option7 = HomeDayParameters(
         base = 21.1712,
         employmentNotEarning = -8.8502,
         employmentRetired = -14.6527,
@@ -87,20 +90,24 @@ val ParameterSet1F = ParameterCollectionStep1F.create(
     )
 )
 
-data class ParameterCollectionStep1F(
-    override val parameters: List<ParametersStep1F>
-) : WeekRoutineParameterSet<ParametersStep1F>, List<ParametersStep1F> by parameters {
+/**
+ * Collects parameters of [HomeDayParameters] to apply the parameters to the set of options, which all take the same
+ * parameter structure.
+ */
+data class HomeDaySet(
+    override val parameters: List<HomeDayParameters>
+) : WeekRoutineParameterSet<HomeDayParameters>, List<HomeDayParameters> by parameters {
     companion object {
         fun create(
-            option1: ParametersStep1F,
-            option2: ParametersStep1F,
-            option3: ParametersStep1F,
-            option4: ParametersStep1F,
-            option5: ParametersStep1F,
-            option6: ParametersStep1F,
-            option7: ParametersStep1F,
-        ): ParameterCollectionStep1F {
-            return ParameterCollectionStep1F(
+            option1: HomeDayParameters,
+            option2: HomeDayParameters,
+            option3: HomeDayParameters,
+            option4: HomeDayParameters,
+            option5: HomeDayParameters,
+            option6: HomeDayParameters,
+            option7: HomeDayParameters,
+        ): HomeDaySet {
+            return HomeDaySet(
                 listOf(
                     option1,
                     option2,
@@ -114,8 +121,20 @@ data class ParameterCollectionStep1F(
         }
     }
 }
-
-data class ParametersStep1F(
+/**
+ * This class contains the parameters for the utility function to determine the amount of home days in the week routine.
+ * @param base The default parameter.
+ * @param employmentNotEarning Parameter that should be applied when the person employment is considered to not earn money
+ * @param employmentRetired Parameter that should be applied when the person is retired.
+ * @param ageIn18To25 Parameter that should be applied when the person is aged between 18 and 25 (inclusive)
+ * @param amountOfYouths Parameter that should be multiplied with the amount of minors (0-17) in the household.
+ * @param isMale Parameter that should be applied when the person is Male
+ * @param amountOfWorkingDays Parameter that should be multiplied with the amount of working days in the week routine
+ * @param amountOfEducationDays Parameter that should be multiplied with the amount of education days in the week routine
+ * @param amountOfLeisureDays Parameter that should be multiplied with the amount of leisure days in the week routine
+ * @param amountOfShoppingDays Parameter that should be multiplied with the amount of shopping days in the week routine
+ */
+data class HomeDayParameters(
     val base: Double,
     val employmentNotEarning: Double,
     val employmentRetired: Double,

@@ -1,21 +1,15 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters
 
-
+/**
+ * Collects parameters of [ActivityAmountParameters]. The individual options will access the parameters by the order in
+ * which they appear.
+ */
 data class ActivityAmountSet(
-    val optionList: List<ActivityAmountParameters>,
+    val parameters: List<ActivityAmountParameters>,
 
 
-    ) : Map<Int, ActivityAmountParameters> {
+    ) : List<ActivityAmountParameters> by parameters {
 
-    val option2: ActivityAmountParameters = optionList[0]
-    val option3: ActivityAmountParameters = optionList[1]
-    val option4: ActivityAmountParameters = optionList[2]
-    val option5: ActivityAmountParameters = optionList[3]
-    val option6: ActivityAmountParameters = optionList[4]
-
-    override operator fun get(index: Int): ActivityAmountParameters {
-        return optionList.getOrNull(index - 2)?: ActivityAmountParameters.EMPTY
-    }
 
     companion object {
         operator fun invoke(
@@ -31,46 +25,24 @@ data class ActivityAmountSet(
         }
     }
 
-    override val size: Int = optionList.size
-
-    /**
-     * Returns a read-only [Set] of all key/value pairs in this map.
-     */
-    override val entries: Set<Map.Entry<Int, ActivityAmountParameters>>
-        get() = TODO("Not yet implemented")
-
-    /**
-     * Returns a read-only [Set] of all keys in this map.
-     */
-    override val keys: Set<Int> = optionList.indices.toSet()
-
-    /**
-     * Returns a read-only [Collection] of all values in this map. Note that this collection may contain duplicate values.
-     */
-    override val values: Collection<ActivityAmountParameters> = optionList
-
-    /**
-     * Returns `true` if the map is empty (contains no elements), `false` otherwise.
-     */
-    override fun isEmpty(): Boolean {
-        return optionList.isEmpty()
-    }
-
-    /**
-     * Returns `true` if the map maps one or more keys to the specified [value].
-     */
-    override fun containsValue(value: ActivityAmountParameters): Boolean {
-        return optionList.contains(value)
-    }
-
-    /**
-     * Returns `true` if the map contains the specified [key].
-     */
-    override fun containsKey(key: Int): Boolean {
-        return key in optionList.indices
-    }
 }
 
+/**
+ * This class contains the parameters for the utility function to determine the average activity amount.
+ * @param base The default parameter. 
+ * @param beruf_teilzeit Parameter that should be applied when the person is part-time employed.
+ * @param beruf_schueler Parameter that should be applied when the person is a student. 
+ * @param beruf_azubi Parameter that should be applied when the person is in a vocational program.
+ * @param alter_26bis35 Parameter that should be applied when the person is aged between 26 and 35 (inclusive)
+ * @param alter_36bis50 Parameter that should be applied when the person is aged between 36 and 50 (inclusive)
+ * @param alter_51bis60 Parameter that should be applied when the person is aged between 51 and 60 (inclusive)
+ * @param alter_61bis70 Parameter that should be applied when the person is aged between 61 and 70 (inclusive)
+ * @param Raumtyp_mobitopp_rural Parameter that should be applied when the home location of the household of the person 
+ *   is classified as RURAL
+ * @param pendeln_ueber50km Parameter that should be applied when the commute distance of the person is over 50 km
+ * @param pendeln_0bis5km Parameter that should be applied when the commute distance is within 0 to 5 km
+ * @param haushalthatkinderunter10 Parameter that should be applied when the person household has children
+ */
 data class ActivityAmountParameters(
     val base: Double,
     val beruf_teilzeit: Double,
@@ -85,15 +57,11 @@ data class ActivityAmountParameters(
     val pendeln_0bis5km: Double,
     val haushalthatkinderunter10: Double,
 
-    ) {
-    companion object {
-        val EMPTY = ActivityAmountParameters(0.0,
-            0.0, 0.0, 0.0,
-            0.0, 0.0, 0.0,
-            0.0, 0.0, 0.0, 0.0, 0.0)
-    }
-}
+    )
 
+/**
+ * The original parameter set for the activity amount, taken from mop14_withpkwhh. Originally called 1LParams.
+ */
 val DefaultActivityAmountParameters = ActivityAmountSet(
     option2 = ActivityAmountParameters(
         base = 0.3956,

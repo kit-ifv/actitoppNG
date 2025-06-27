@@ -4,13 +4,13 @@ import discreteChoice.EnumeratedDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.randomPersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.defaultWorkDayChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1BWithParams
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1CWithParams
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1DWithParams
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1EWithParams
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1FWithParams
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1KWithParams
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.step1LWithParams
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.educationDaysChoiceModel
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.leisureDaysChoiceModel
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.shoppingDaysChoiceModel
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.serviceDaysChoiceModel
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.homeDaysChoiceModel
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.tourAmountChoiceModel
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.activityAmountChoiceModel
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer
 
@@ -27,26 +27,26 @@ class WorkTest: RoutineTest(defaultWorkDayChoiceModel) {
     override val name: String = "workTest"
 }
 
-class EducationTest: RoutineTest(step1BWithParams) {
+class EducationTest: RoutineTest(educationDaysChoiceModel) {
     override val name: String = "educationTest"
 }
-class ActivityAmountTest: RoutineTest(step1LWithParams) {
+class ActivityAmountTest: RoutineTest(activityAmountChoiceModel) {
     override val name: String = "activityAmountTest"
 }
-class ImmobileTest: RoutineTest(step1FWithParams) {
+class ImmobileTest: RoutineTest(homeDaysChoiceModel) {
     override val name: String = "immobileTest"
 }
 
-class LeisureTest: RoutineTest(step1CWithParams) {
+class LeisureTest: RoutineTest(leisureDaysChoiceModel) {
     override val name: String = "leisureTest"
 }
-class ServiceTest: RoutineTest(step1EWithParams) {
+class ServiceTest: RoutineTest(serviceDaysChoiceModel) {
     override val name: String = "serviceTest"
 }
-class ShoppingTest: RoutineTest(step1DWithParams) {
+class ShoppingTest: RoutineTest(shoppingDaysChoiceModel) {
     override val name: String = "shoppingTest"
 }
 
-class TourAmountTest: RoutineTest(step1KWithParams) {
+class TourAmountTest: RoutineTest(tourAmountChoiceModel) {
     override val name: String = "tourAmountTest"
 }

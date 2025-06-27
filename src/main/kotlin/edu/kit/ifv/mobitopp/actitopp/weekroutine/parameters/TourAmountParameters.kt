@@ -2,12 +2,19 @@ package edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters
 
 
 data class TourAmountSet(
+    val parameters: List<TourAmountParameters>,
 
-    val option2: TourAmountParameters,
-    val option3: TourAmountParameters,
-    val option4: TourAmountParameters,
 
-    )
+    ) : List<TourAmountParameters> by parameters {
+    companion object {
+        fun create(option2: TourAmountParameters,
+                   option3: TourAmountParameters,
+                   option4: TourAmountParameters,
+                   ) : TourAmountSet {
+            return TourAmountSet(listOf(option2, option3, option4))
+        }
+    }
+}
 
 data class TourAmountParameters(
     val base: Double,
@@ -26,7 +33,7 @@ data class TourAmountParameters(
     val isMale: Double,
 )
 
-val DefaultTourAmountParameters = TourAmountSet(
+val DefaultTourAmountParameters = TourAmountSet.create(
     option2 = TourAmountParameters(
         base = -0.2683,
         employmentFulltime = -0.4042,

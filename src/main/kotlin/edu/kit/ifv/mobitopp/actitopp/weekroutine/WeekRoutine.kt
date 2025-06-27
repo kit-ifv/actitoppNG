@@ -9,6 +9,7 @@ import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
  */
 
 interface WeekRoutine {
+
     val amountOfWorkingDays: Int
     val amountOfEducationDays: Int
     val amountOfLeisureDays: Int

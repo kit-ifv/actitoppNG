@@ -3,27 +3,22 @@ package edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels
 import discreteChoice.structure.DiscreteStructure
 import discreteChoice.utility.multinomialLogit
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAlternative
+import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.forOptions
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.ActivityAmountParameters
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.ActivityAmountSet
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.DefaultActivityAmountParameters
 
-
-val step1LWithParams = DiscreteStructure<Int, PersonAlternative, ActivityAmountSet> {
+/**
+ * The choice model for selecting the average amount of activities per day in the week routine. The default option of
+ * 1 has associated utility 0.0. The other remaining options between 2 to 6 share a common utility function.
+ */
+val activityAmountChoiceModel = DiscreteStructure<Int, PersonAlternative, ActivityAmountSet> {
     option(1) {
         0.0
     }
-    option(2, parameters = { option2 }) { standardUtilityFunction(this, it) }
-    option(3, parameters = { option3 }) { standardUtilityFunction(this, it) }
-    option(4, parameters = { option4 }) { standardUtilityFunction(this, it) }
-    option(5, parameters = { option5 }) { standardUtilityFunction(this, it) }
-    option(6, parameters = { option6 }) { standardUtilityFunction(this, it) }
-}.multinomialLogit("Amount of Activities in Week Routine").build(DefaultActivityAmountParameters)
-
-
-
-private val standardUtilityFunction: ActivityAmountParameters.(PersonAlternative) -> Double = {
-    base +
+    forOptions(2..6) {
+        base +
             (it.isParttimeEmployee()) * beruf_teilzeit +
             (it.isStudent()) * beruf_schueler +
             (it.isVocational()) * beruf_azubi +
@@ -35,5 +30,5 @@ private val standardUtilityFunction: ActivityAmountParameters.(PersonAlternative
             (it.commuteOver50km()) * pendeln_ueber50km +
             (it.commuteIn0To5km()) * pendeln_0bis5km +
             (it.hasChildrenInHousehold()) * haushalthatkinderunter10
-
-}
+    }
+}.multinomialLogit("Amount of Activities in Week Routine").build(DefaultActivityAmountParameters)

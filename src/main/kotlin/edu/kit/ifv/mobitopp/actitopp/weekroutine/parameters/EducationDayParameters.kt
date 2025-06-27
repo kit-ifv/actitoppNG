@@ -28,7 +28,19 @@ data class EducationDaySet(
         }
     }
 }
-
+/**
+ * This class contains the parameters for the utility function to determine the amount of education days in the week
+ * pattern.
+ * @param base The default parameter for the utility function.
+ * @param employmentIsEarning Parameter that should be applied when the person employment is considered a money-earner.
+ * @param employmentVocational Parameter that should be applied when the person is a student.
+ * @param beruf_azubi Parameter that should be applied when the person is in a vocational program.
+ * @param ageIn10to17 Parameter that should be applied when the person is aged between 10 and 17 (inclusive)
+ * @param ageIn18To25 Parameter that should be applied when the person is aged between 18 and 25 (inclusive)
+ * @param ageIn26To35 Parameter that should be applied when the person is aged between 26 and 35 (inclusive)
+ * @param ageIn36To50 Parameter that should be applied when the person is aged between 36 and 50 (inclusive)
+ * @param amountOfWorkingDays Parameter that should be applied to the amount of work days in the week pattern
+ */
 data class EducationDayParameters(
     val base: Double,
     val employmentIsEarning: Double,
@@ -41,7 +53,9 @@ data class EducationDayParameters(
     val amountOfWorkingDays: Double,
 )
 
-
+/**
+ * The original parameter set for the education day amount, taken from mop14_withpkwhh. Originally called 1BParams.
+ */
 val DefaultEducationParameters = EducationDaySet.create(
     option1 = EducationDayParameters(
         base = -3.6837,

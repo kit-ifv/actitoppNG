@@ -1,6 +1,9 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters
 
-
+/**
+ * Collects parameters of [ServiceDayParameters] to apply the parameters to the set of options, which all take the same
+ * parameter structure.
+ */
 data class ServiceDaySet(
     override val parameters: List<ServiceDayParameters>
 ) : WeekRoutineParameterSet<ServiceDayParameters>, List<ServiceDayParameters> by parameters {
@@ -26,7 +29,20 @@ data class ServiceDaySet(
         }
     }
 }
+/**
+ * This class contains the parameters for the utility function to determine the amount of service days in the week routine.
+ * @param base The default parameter.
+ * @param employmentIsFulltime Parameter that should be applied when the person employment is full time
+ * @param employmentIsParttime Parameter that should be applied when the person employment is part-time
+ * @param ageIn10to17 Parameter that should be applied when the person is aged between 10 and 17 (inclusive)
+ * @param ageIn26to35 Parameter that should be applied when the person is aged between 26 and 35 (inclusive)
+ * @param ageIn36to50 Parameter that should be applied when the person is aged between 36 and 50 (inclusive)
+ * @param areaTypeIsConurbation Parameter that should be applied when the household area is considered Conurbation
+ * @param householdAmountYouths Parameter that should be multiplied with the amount of youths (0-17) in the household
+ * @param householdHasChildren Parameter that should be applied when the household has children (0-10)
+ *
 
+ */
 data class ServiceDayParameters(
     val base: Double,
     val employmentIsFulltime: Double,
@@ -40,7 +56,9 @@ data class ServiceDayParameters(
     val householdHasChildren: Double,
     val isMale: Double,
 )
-
+/**
+ * The original parameter set for the amount of service days, taken from mop14_withpkwhh. Originally called 1EParams.
+ */
 val DefaultServiceParameters = ServiceDaySet.create(
     option1 = ServiceDayParameters(
         base = -1.2172,

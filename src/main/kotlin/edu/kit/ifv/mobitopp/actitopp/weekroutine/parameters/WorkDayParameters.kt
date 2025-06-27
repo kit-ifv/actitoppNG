@@ -6,7 +6,11 @@ package edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters
 data class WorkDaySet(
     override val parameters: List<WorkDayParameters>
 ) : WeekRoutineParameterSet<WorkDayParameters>, List<WorkDayParameters> by parameters {
+
     companion object {
+        /**
+         * To allow the legacy creation with exactly 7 options.
+         */
         fun create(
             option1: WorkDayParameters,
             option2: WorkDayParameters,
