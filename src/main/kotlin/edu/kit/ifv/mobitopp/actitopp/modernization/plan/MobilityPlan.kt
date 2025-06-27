@@ -140,7 +140,7 @@ class ActualMobilityPlan(
                 act.duration = duration
             }
         }
-        endHomeAnchor.duration = dayPlans.size.days - endHomeAnchor.startTime!!
+        endHomeAnchor.duration = endHomeAnchor.startTime!! - endHomeAnchor.previousTrip!!.endTime!!
     }
 
     override fun toString(): String {
