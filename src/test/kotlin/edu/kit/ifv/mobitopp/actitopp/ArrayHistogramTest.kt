@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp
 
-import edu.kit.ifv.mobitopp.actitopp.changes.Category
+import edu.kit.ifv.mobitopp.actitopp.enums.Category
 import edu.kit.ifv.mobitopp.actitopp.plandurations.choicemodels.LEAD
 import edu.kit.ifv.mobitopp.actitopp.plandurations.choicemodels.MAJOR
 import edu.kit.ifv.mobitopp.actitopp.plandurations.choicemodels.MINOR
@@ -8,12 +8,10 @@ import edu.kit.ifv.mobitopp.actitopp.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitopp.utils.affineTransform
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.params.provider.CsvFileSource
 import org.junit.jupiter.params.provider.CsvSource
 import kotlin.io.path.Path
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
 class ArrayHistogramTest {

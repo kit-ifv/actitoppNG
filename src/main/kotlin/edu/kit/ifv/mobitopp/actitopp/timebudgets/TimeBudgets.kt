@@ -2,7 +2,7 @@ package edu.kit.ifv.mobitopp.actitopp.timebudgets
 
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
-import edu.kit.ifv.mobitopp.actitopp.changes.Category
+import edu.kit.ifv.mobitopp.actitopp.enums.Category
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import kotlinx.serialization.Serializable
 import kotlin.random.Random

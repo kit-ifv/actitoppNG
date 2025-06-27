@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.timebudgets
 
-import edu.kit.ifv.mobitopp.actitopp.changes.Category
+import edu.kit.ifv.mobitopp.actitopp.enums.Category
 import edu.kit.ifv.mobitopp.actitopp.utils.affineTransform
 import edu.kit.ifv.mobitopp.actitopp.utils.ceilWholeMinutes
 import edu.kit.ifv.mobitopp.actitopp.utils.indexBinarySearch

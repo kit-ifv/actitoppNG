@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.choicemodels
 
-import edu.kit.ifv.mobitopp.actitopp.changes.Category
+import edu.kit.ifv.mobitopp.actitopp.enums.Category
 import edu.kit.ifv.mobitopp.actitopp.plandurations.ActivityDurationHistograms
 import edu.kit.ifv.mobitopp.actitopp.plandurations.MainDurationAlternative
 import edu.kit.ifv.mobitopp.actitopp.plandurations.choicemodels.LEAD

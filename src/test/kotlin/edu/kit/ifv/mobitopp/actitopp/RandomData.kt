@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp
 
-import edu.kit.ifv.mobitopp.actitopp.changes.Category
+import edu.kit.ifv.mobitopp.actitopp.enums.Category
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.enums.AreaType
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine

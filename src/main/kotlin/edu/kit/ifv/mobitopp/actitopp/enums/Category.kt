@@ -1,4 +1,4 @@
-package edu.kit.ifv.mobitopp.actitopp.changes
+package edu.kit.ifv.mobitopp.actitopp.enums
 
 import kotlinx.serialization.Serializable
 
