@@ -6,6 +6,7 @@ import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.LeisureBudgetParameters
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.LeisureBudgetSet
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.LeisureBudgets
+import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.forOptions
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.select
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 import java.nio.file.Path
@@ -31,11 +32,13 @@ class LeisureHistograms(
 
 
     private val choiceModel = DiscreteStructure<ArrayHistogram, WorkChoiceAlternative, LeisureBudgetSet> {
-        option(histogram1, parameters = { category1 }) { standardUtilityFunction(this, it) }
-        option(histogram2, parameters = { category2 }) { standardUtilityFunction(this, it) }
-        option(histogram3, parameters = { category3 }) { standardUtilityFunction(this, it) }
-        option(histogram5, parameters = { category5 }) { standardUtilityFunction(this, it) }
-        option(histogram6, parameters = { category6 }) { standardUtilityFunction(this, it) }
+        forOptions(histogram1,
+            histogram2,
+            histogram3,
+            histogram5,
+            histogram6,) {
+            standardUtilityFunction(this, it)
+        }
         option(histogram4) { 0.0 }
 
     }.multinomialLogit("Histogram selection for time budget for leisure").build(LeisureBudgets)

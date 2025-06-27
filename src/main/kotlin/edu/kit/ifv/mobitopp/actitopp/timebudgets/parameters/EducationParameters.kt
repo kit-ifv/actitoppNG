@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters
 
-val EducationBudget = EducationBudgetSet(
+val EducationBudget = EducationBudgetSet.create(
     category1 = EducationBudgetParameters(
         base = 7.3308,
         anzakt_woche_w = 0.2824,
@@ -59,12 +59,28 @@ val EducationBudget = EducationBudgetSet(
 )
 
 data class EducationBudgetSet(
-    val category1: EducationBudgetParameters,
-    val category2: EducationBudgetParameters,
-    val category3: EducationBudgetParameters,
-    val category5: EducationBudgetParameters,
-    val category6: EducationBudgetParameters,
-)
+    val parameters: List<EducationBudgetParameters>,
+) : List<EducationBudgetParameters> by parameters{
+    companion object {
+        fun create(
+            category1: EducationBudgetParameters,
+            category2: EducationBudgetParameters,
+            category3: EducationBudgetParameters,
+            category5: EducationBudgetParameters,
+            category6: EducationBudgetParameters,
+        ): EducationBudgetSet {
+            return EducationBudgetSet(
+                listOf(
+                    category1,
+                    category2,
+                    category3,
+                    category5,
+                    category6,
+                )
+            )
+        }
+    }
+}
 
 data class EducationBudgetParameters(
     val base: Double,

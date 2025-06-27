@@ -9,6 +9,7 @@ import edu.kit.ifv.mobitopp.actitopp.steps.PersonAttributesFromElement
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.WorkBudgetParameters
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.WorkBudgetSet
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.WorkBudgets
+import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.forOptions
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.select
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 import java.nio.file.Path
@@ -40,15 +41,18 @@ class WorkHistograms(
     }
 
     private val choiceModel = DiscreteStructure<ArrayHistogram, WorkChoiceAlternative, WorkBudgetSet> {
-        option(histogram1, parameters = { category1 }) { standardUtilityFunction(this, it) }
-        option(histogram2, parameters = { category2 }) { standardUtilityFunction(this, it) }
-        option(histogram3, parameters = { category3 }) { standardUtilityFunction(this, it) }
-        option(histogram4, parameters = { category4 }) { standardUtilityFunction(this, it) }
-        option(histogram5, parameters = { category5 }) { standardUtilityFunction(this, it) }
-        option(histogram6, parameters = { category6 }) { standardUtilityFunction(this, it) }
-
-        option(histogram8, parameters = { category8 }) { standardUtilityFunction(this, it) }
-        option(histogram9, parameters = { category9 }) { standardUtilityFunction(this, it) }
+        forOptions(
+            histogram1,
+            histogram2,
+            histogram3,
+            histogram4,
+            histogram5,
+            histogram6,
+            histogram8,
+            histogram9,
+        ) {
+            standardUtilityFunction(this, it)
+        }
         option(histogram7) { 0.0 }
 
     }.multinomialLogit("Selection of histogram for work activities.").build(WorkBudgets)

@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters
 
-val WorkBudgets = WorkBudgetSet(
+val WorkBudgets = WorkBudgetSet.create(
     category1 = WorkBudgetParameters(
         base = 1.6917,
         anzakt_woche_w = 0.0280,
@@ -167,16 +167,35 @@ val WorkBudgets = WorkBudgetSet(
  * Note that there is no category7 parameter set, because 7 is the category assumed to be the default.
  */
 data class WorkBudgetSet(
-    val category1: WorkBudgetParameters,
-    val category2: WorkBudgetParameters,
-    val category3: WorkBudgetParameters,
-    val category4: WorkBudgetParameters,
-    val category5: WorkBudgetParameters,
-    val category6: WorkBudgetParameters,
-    val category8: WorkBudgetParameters,
-    val category9: WorkBudgetParameters,
+    val parameters: List<WorkBudgetParameters>,
 
-    )
+    ) : List<WorkBudgetParameters> by parameters {
+    companion object {
+        fun create(
+            category1: WorkBudgetParameters,
+            category2: WorkBudgetParameters,
+            category3: WorkBudgetParameters,
+            category4: WorkBudgetParameters,
+            category5: WorkBudgetParameters,
+            category6: WorkBudgetParameters,
+            category8: WorkBudgetParameters,
+            category9: WorkBudgetParameters,
+        ): WorkBudgetSet {
+            return WorkBudgetSet(
+                listOf(
+                    category1,
+                    category2,
+                    category3,
+                    category4,
+                    category5,
+                    category6,
+                    category8,
+                    category9,
+                )
+            )
+        }
+    }
+}
 
 data class WorkBudgetParameters(
     val base: Double,

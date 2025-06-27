@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters
 
-val ShoppingBudgets = ShoppingBudgetSet(
+val ShoppingBudgets = ShoppingBudgetSet.create(
     category1 = ShoppingBudgetParameters(
         base = 0.0826,
         anzakt_woche_w = 0.0619,
@@ -56,12 +56,29 @@ val ShoppingBudgets = ShoppingBudgetSet(
 )
 
 data class ShoppingBudgetSet(
-    val category1: ShoppingBudgetParameters,
-    val category2: ShoppingBudgetParameters,
-    val category4: ShoppingBudgetParameters,
-    val category5: ShoppingBudgetParameters,
+    val parameters: List<ShoppingBudgetParameters>,
 
-    )
+
+    ): List<ShoppingBudgetParameters> by parameters {
+    companion object {
+        fun create(
+            category1: ShoppingBudgetParameters,
+            category2: ShoppingBudgetParameters,
+            category4: ShoppingBudgetParameters,
+            category5: ShoppingBudgetParameters,
+        ): ShoppingBudgetSet {
+            return ShoppingBudgetSet(
+                listOf(
+                    category1,
+                    category2,
+                    category4,
+                    category5,
+
+                    )
+            )
+        }
+    }
+}
 
 data class ShoppingBudgetParameters(
     val base: Double,

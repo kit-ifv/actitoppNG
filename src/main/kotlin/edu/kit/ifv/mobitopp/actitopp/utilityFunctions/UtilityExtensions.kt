@@ -19,3 +19,7 @@ fun <R : Any, A : ChoiceAlternative<R>, P> EnumeratedDiscreteChoiceModel<R, A, P
 fun <T, R : Any, A : ChoiceAlternative<R>, P : List<T>> EnumeratedStructureBuilder<R, A, P>.forOptions(options: Iterable<R>, utilityFunction: T.(A) -> Double) {
     bulkList(options.toList(), utilityFunction)
 }
+
+fun <T, R : Any, A : ChoiceAlternative<R>, P : List<T>> EnumeratedStructureBuilder<R, A, P>.forOptions(vararg options: R, utilityFunction: T.(A) -> Double) {
+    bulkList(options.toList(), utilityFunction)
+}

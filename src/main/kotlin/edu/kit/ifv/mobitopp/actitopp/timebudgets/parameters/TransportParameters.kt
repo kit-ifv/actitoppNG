@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters
 
-val TransportBudgets = TransportBudgetSet(
+val TransportBudgets = TransportBudgetSet.create(
     category2 = TransportBudgetParameters(
         base = -1.2365,
         anzakt_woche_w = -0.0387,
@@ -34,12 +34,22 @@ val TransportBudgets = TransportBudgetSet(
 )
 
 data class TransportBudgetSet(
-    val category2: TransportBudgetParameters,
-    val category3: TransportBudgetParameters,
-    val category4: TransportBudgetParameters,
+    val parameters: List<TransportBudgetParameters>,
 
 
-    )
+    ): List<TransportBudgetParameters> by parameters {
+    companion object {
+        fun create(
+            category2: TransportBudgetParameters,
+            category3: TransportBudgetParameters,
+            category4: TransportBudgetParameters,
+        ): TransportBudgetSet {
+            return TransportBudgetSet(
+                listOf(category2, category3, category4)
+            )
+        }
+    }
+}
 
 data class TransportBudgetParameters(
     val base: Double,

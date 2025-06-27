@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters
 
-val LeisureBudgets = LeisureBudgetSet(
+val LeisureBudgets = LeisureBudgetSet.create(
     category1 = LeisureBudgetParameters(
         base = 1.0576,
         anzakt_woche_w = 0.0143,
@@ -69,12 +69,29 @@ val LeisureBudgets = LeisureBudgetSet(
 )
 
 data class LeisureBudgetSet(
-    val category1: LeisureBudgetParameters,
-    val category2: LeisureBudgetParameters,
-    val category3: LeisureBudgetParameters,
-    val category5: LeisureBudgetParameters,
-    val category6: LeisureBudgetParameters,
-)
+    val parameters: List<LeisureBudgetParameters>,
+) : List<LeisureBudgetParameters> by parameters {
+    companion object {
+        fun create(
+            category1: LeisureBudgetParameters,
+            category2: LeisureBudgetParameters,
+            category3: LeisureBudgetParameters,
+            category5: LeisureBudgetParameters,
+            category6: LeisureBudgetParameters,
+        ): LeisureBudgetSet {
+            return LeisureBudgetSet(
+                listOf(
+                    category1,
+                    category2,
+                    category3,
+                    category5,
+                    category6,
+                )
+            )
+        }
+    }
+}
+
 
 data class LeisureBudgetParameters(
     val base: Double,
