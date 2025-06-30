@@ -2,7 +2,6 @@ package edu.kit.ifv.mobitopp.actitopp
 
 import edu.kit.ifv.mobitopp.actitopp.enums.Employment
 import edu.kit.ifv.mobitopp.actitopp.enums.Gender
-import edu.kit.ifv.mobitopp.actitopp.modernization.IHousehold
 
 interface IPerson {
     val employment: Employment

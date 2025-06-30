@@ -33,12 +33,6 @@ interface MobilityPlan {
 
     }
 
-    companion object {
-        fun stayAtHomePlan(person: IPerson, amountOfDays: Int): MobilityPlan {
-            return StayAtHomePlan((0..<amountOfDays).map { HomeDayPlan(DurationDay(it)) }, person)
-        }
-
-    }
 }
 
 class StayAtHomePlan(override val homePlans: Collection<HomeDayPlan>, override val person: IPerson) : MobilityPlan {

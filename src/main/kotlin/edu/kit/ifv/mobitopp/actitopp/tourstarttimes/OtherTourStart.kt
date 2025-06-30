@@ -66,6 +66,4 @@ class TourStartByHistogramsRelative<P>(
 val OTHER_TOUR_HISTOGRAM = ParametersStep10S.generateHistogram(
     durationHistogramsFromResourcePath(Identifier.OTHER_TOUR_START_TIME),
     standardUtilityFunction10S
-) { index, obj ->
-    { obj.parameters[index] }
-}
+)

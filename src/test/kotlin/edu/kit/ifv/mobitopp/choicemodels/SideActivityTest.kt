@@ -1,7 +1,7 @@
 package edu.kit.ifv.mobitopp.choicemodels
 
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.step6WithParams
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.sideActivityChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.ActivityAlternative
 import edu.kit.ifv.mobitopp.actitopp.randomDayStructure
 import edu.kit.ifv.mobitopp.actitopp.randomPersonWithRoutine
@@ -9,7 +9,7 @@ import edu.kit.ifv.mobitopp.actitopp.randomPlannedTourAmounts
 import edu.kit.ifv.mobitopp.actitopp.utils.Position
 import kotlinx.serialization.KSerializer
 
-class SideActivityTest : ChoiceModelTest<ActivityType, ActivityAlternative>(step6WithParams) {
+class SideActivityTest : ChoiceModelTest<ActivityType, ActivityAlternative>(sideActivityChoiceModel) {
     override val name: String = "sideActivityChoiceModel"
     override val serializer: KSerializer<ActivityType> = ActivityType.serializer()
 

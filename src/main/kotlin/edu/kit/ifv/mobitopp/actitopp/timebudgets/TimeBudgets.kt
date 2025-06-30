@@ -92,7 +92,7 @@ data class TimeBudgets(
     }
 }
 
-val NO_TIME: Pair<Duration, Category> = Duration.ZERO to Category.NONE_CHOSEN
+
 
 class HistogramPerActivity(
     val workHistograms: HistogramSelection,
@@ -158,5 +158,11 @@ class HistogramPerActivity(
 
                 )
         }
+
+        /**
+         * To indicate that a given category does not occur in the plan of a person. If an activity does not occur
+         * the time available is 0. 
+         */
+        private val NO_TIME: Pair<Duration, Category> = Duration.ZERO to Category.NONE_CHOSEN
     }
 }

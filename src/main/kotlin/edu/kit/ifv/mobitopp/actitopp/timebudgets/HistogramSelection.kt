@@ -6,7 +6,6 @@ import discreteChoice.utility.multinomialLogit
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.select
-import org.jetbrains.annotations.TestOnly
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.random.Random
@@ -19,6 +18,11 @@ open class HistogramSelection(
     val converter: (ArrayHistogram, FinalizedActivityPattern, IPerson) -> WorkChoiceAlternative =
         { a, f, p ->
             WorkChoiceAlternative(a, f, p) }
+
+    /**
+     * Select a histogram from the options registered in the choice model, for a given [FinalizedActivityPattern] and
+     * [IPerson] input.
+     */
     fun select(
         random: Random,
         finalizedActivityPattern: FinalizedActivityPattern,
@@ -31,25 +35,16 @@ open class HistogramSelection(
 
     }
 
-    @TestOnly
-    fun utilities(        finalizedActivityPattern: FinalizedActivityPattern,
-                          person: IPerson,): Map<WorkChoiceAlternative, Double> {
-        return choiceModel.model.utilities(choices.map { converter(it, finalizedActivityPattern, person) }.toSet())
-    }
 
     companion object {
-        fun <P> createChoiceModel(
-            parameter: P,
-            name: String,
-            structure: DiscreteStructure<ArrayHistogram, WorkChoiceAlternative, P>.() -> Unit,
-        ): HistogramSelection {
-            val choiceModel = DiscreteStructure(structure).multinomialLogit(name).build(parameter)
-            return HistogramSelection(choiceModel)
-        }
+
 
         /**
          * Creates the histogram selection by parsing all files that match the specified identifier as given by [Identifier]
-         * Afterwards, the parameter object is linked with the
+         * The construction of the choice model takes into account the parameter object and the parsed inputs, which are
+         * accessible during the creation of the structure as anonymous parameter. To verify that the [structure] parameter
+         * handles all parsed inputs the method checks whether each of the inputs has been assigned a utility function
+         * in the builder.
          */
         fun <P> createChoiceModelFromFiles(
             path: Path = Path("src/main/resources/edu/kit/ifv/mobitopp/actitopp/mopv14_withpkwhh"),

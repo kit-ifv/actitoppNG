@@ -11,7 +11,12 @@ fun interface SelectMainActivityDuration {
     fun getDuration(input: MobilityPlanInputs): Duration
 }
 
-class StandardStep8B<P>(
+/**
+ * In the legacy code the probability of a selected time increased, if the activity is using a standard duration, a proper
+ * activity type: Work, Education. The original code had a hidden side effect that the first activity of a day and the
+ * remaining major activities manipulated their own respective time-tables. IN a sense the selection "sticks around"
+ */
+class StickySelector<P>(
     private val rng: RNGHelper,
     histogram: ActivityDurationHistograms<P>,
 

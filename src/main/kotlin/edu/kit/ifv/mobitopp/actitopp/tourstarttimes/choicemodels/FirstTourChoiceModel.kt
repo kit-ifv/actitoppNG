@@ -42,6 +42,4 @@ private val firstTourStartUtility: ParameterStep10M.(MainDurationAlternative) ->
 val FIRST_TOUR_HISTOGRAM: ActivityDurationHistograms<ParameterCollectionStep10M> = ParametersStep10M.generateHistogram(
     durationHistogramsFromResourcePath(Identifier.FIRST_TOUR_START_TIME),
     firstTourStartUtility
-) { index, objec ->
-    { objec.parameters[index] }
-}
+)

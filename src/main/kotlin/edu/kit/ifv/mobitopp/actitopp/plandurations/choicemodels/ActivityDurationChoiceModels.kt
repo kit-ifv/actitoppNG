@@ -122,20 +122,12 @@ private val standardUtilityFunction8B: ParameterStep8B.(MainDurationAlternative)
 val MINOR = ParametersStep8J.generateHistogram(
     durationHistogramsFromResourcePath(Identifier.MINOR_ACTIVITY_DURATION),
     minorFunction
-) { index, parameterObject ->
-    { parameterObject[index] }
-}
+)
 val MAJOR = ParametersStep8D.generateHistogram(
     durationHistogramsFromResourcePath(Identifier.MAJOR_ACTIVITY_DURATION),
     standardUtilityFunction8D,
-) { index, parameterObject ->
-
-    { parameterObject[index] }
-}
+)
 val LEAD = ParametersStep8B.generateHistogram(
     durationHistogramsFromResourcePath(Identifier.LEAD_ACTIVITY_DURATION),
     standardUtilityFunction8B,
-) { index, parameterObject ->
-
-    { parameterObject[index] }
-}
+)

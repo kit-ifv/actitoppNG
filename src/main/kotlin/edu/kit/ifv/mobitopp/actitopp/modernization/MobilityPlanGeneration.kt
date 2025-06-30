@@ -10,7 +10,7 @@ import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.StandardImplementa
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MobilityPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.StandardCommuteDurations
 import edu.kit.ifv.mobitopp.actitopp.plandurations.AssignMinorActivityDuration
-import edu.kit.ifv.mobitopp.actitopp.plandurations.StandardStep8B
+import edu.kit.ifv.mobitopp.actitopp.plandurations.StickySelector
 import edu.kit.ifv.mobitopp.actitopp.plandurations.assignFirstMainActivities
 import edu.kit.ifv.mobitopp.actitopp.plandurations.assignMinorActivities
 import edu.kit.ifv.mobitopp.actitopp.plandurations.assignSecondaryMainActivities
@@ -83,8 +83,8 @@ fun interface MobilityPlanDurationAssignment {
 
 class StandardDurationAssignment(val rng: RNGHelper) : MobilityPlanDurationAssignment {
     override fun assignDurations(mobilityPlan: MobilityPlan) {
-        mobilityPlan.assignFirstMainActivities(StandardStep8B(rng, LEAD))
-        mobilityPlan.assignSecondaryMainActivities(StandardStep8B(rng, MAJOR))
+        mobilityPlan.assignFirstMainActivities(StickySelector(rng, LEAD))
+        mobilityPlan.assignSecondaryMainActivities(StickySelector(rng, MAJOR))
         mobilityPlan.assignMinorActivities(AssignMinorActivityDuration(rng))
 
     }

@@ -9,7 +9,7 @@ import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SideActivitySe
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.ActivityAlternative
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 
-val step6WithParams =
+val sideActivityChoiceModel =
     DiscreteStructure<ActivityType, ActivityAlternative, SideActivitySet> {
         option(ActivityType.WORK, parameters = { work }) { standardUtilityFunction(this, it) }
         option(ActivityType.EDUCATION, parameters = { education }) { standardUtilityFunction(this, it) }

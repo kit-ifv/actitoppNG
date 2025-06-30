@@ -1,9 +1,11 @@
 package edu.kit.ifv.mobitopp.actitopp.modernization
 
+import discreteChoice.EnumeratedDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.step6WithParams
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.sideActivityChoiceModel
+import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SideActivitySet
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.ActivityAlternative
 import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalIndexedValue
 import edu.kit.ifv.mobitopp.actitopp.utils.Position
@@ -18,10 +20,15 @@ interface AssignSecondaryActivityTypes {
     fun generateSecondaryActivityTypes(input: SecondaryActInput): Pair<List<ActivityType>, List<ActivityType>>
 }
 
-class ExampleAssign(
-    val mobilityStructure: MobilityStructure,
+/**
+ * Generate the secondary activities, with respect to the week routine, so that the options for work and education
+ * are removed if the week routine is already satisfied.
+ */
+class TrackedSecondaryActivities(
+    private val mobilityStructure: MobilityStructure,
 
     val rngHelper: RNGHelper,
+    private val choiceModel: EnumeratedDiscreteChoiceModel<ActivityType, ActivityAlternative, *> = sideActivityChoiceModel,
 ) : AssignSecondaryActivityTypes {
     val personWithRoutine: PersonWithRoutine = mobilityStructure.weekRoutine
     override fun generateSecondaryActivityTypes(input: SecondaryActInput):
@@ -38,7 +45,7 @@ class ExampleAssign(
         val routine = personWithRoutine.routine
         return map { absoluteIndex ->
             mobilityStructure.generateTrackedActivity(input.dayStructure.startTimeDay) {
-                val availableOptions = step6WithParams.choices.toMutableSet()
+                val availableOptions = choiceModel.choices.toMutableSet()
                 if (!personWithRoutine.person.isAllowedToWork) availableOptions.remove(ActivityType.WORK)
                 if (day.shouldNotBeWorkDay(routine)) availableOptions.remove(
                     ActivityType.WORK
@@ -53,7 +60,7 @@ class ExampleAssign(
                         input.tourStructure, position, input.plannedTourAmounts
                     )
                 }
-                step6WithParams.select(availableOptions, rngHelper, converter)
+                choiceModel.select(availableOptions, rngHelper, converter)
             }
         }
     }

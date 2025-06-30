@@ -62,41 +62,6 @@ class MobilityStructure(
         activityTracker.add(activityType, day)
     }
 
-
-    private fun determineActivityFor(
-        availableOptions: Set<ActivityType>,
-        day: DurationDay,
-        rngHelper: RNGHelper,
-    ): ActivityType {
-
-        val converter: (ActivityType) -> DayAlternative = {
-            DayAlternative(
-                it,
-                weekRoutine,
-                day.weekday
-            )
-        }
-        val activityType = mainActivityChoiceModel.select(
-            choices = availableOptions, random = rngHelper,
-            converter = converter
-        )
-        activityTracker.add(activityType, day)
-        dayStructure[day] = when (activityType) {
-            ActivityType.HOME -> HomeDay(day)
-            else -> day.spawnDayStructure(activityType).also { activeDays.add(it) }
-        }
-        return activityType
-    }
-
-    /**
-     * Accessing a day structure should only occur in an appropriate wrapper structure, so that the operating logic can
-     * read proper statistics of the pattern, but remain sealed for modification, so that the added activities can be
-     * tracked.
-     */
-    fun get(durationDay: DurationDay): TrackedDayStructure? {
-        return null
-    }
-
     fun elements(): Collection<TrackedDayStructure> {
         return activeDays.map { TrackedDayStructure(activityTracker, it) }
     }

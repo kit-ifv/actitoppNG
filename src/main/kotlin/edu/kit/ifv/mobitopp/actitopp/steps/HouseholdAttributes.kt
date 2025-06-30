@@ -1,8 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.steps
 
-import edu.kit.ifv.mobitopp.actitopp.ActiToppHousehold
 import edu.kit.ifv.mobitopp.actitopp.enums.AreaType
-import edu.kit.ifv.mobitopp.actitopp.modernization.IHousehold
+import edu.kit.ifv.mobitopp.actitopp.IHousehold
 
 interface HouseholdAttributes {
     fun areaTypeRural(): Boolean

@@ -45,6 +45,4 @@ private val standardUtilityFunction10O: ParameterStep10O.(MainDurationAlternativ
 val SECOND_TOUR_HISTOGRAM = ParametersStep10O.generateHistogram(
     durationHistogramsFromResourcePath(Identifier.SECOND_TOUR_START_TIME),
     standardUtilityFunction10O
-) { index, obj ->
-    { obj.parameters[index] }
-}
+)

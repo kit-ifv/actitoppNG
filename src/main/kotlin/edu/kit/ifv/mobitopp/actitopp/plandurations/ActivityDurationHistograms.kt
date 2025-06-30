@@ -116,7 +116,7 @@ class TaintedActivityDurationHistograms<P>(
 ) {
     val histograms = original.histograms
     val choiceModel = original.choiceModel
-    val taintedHistograms = histograms.associateWith { it.copy() }
+    private val taintedHistograms = histograms.associateWith { it.copy() }
 
 
     fun selectAndTaint(
@@ -182,7 +182,6 @@ fun durationHistogramsFromResourcePath(
 fun <P:List<T>, T> P.generateHistogram(
     histograms: List<ArrayHistogram>,
     utilityFunction: T.(MainDurationAlternative) -> Double,
-    converter: (Int, P) -> (P) -> T,
 ): ActivityDurationHistograms<P> {
 
     val choiceModel = DiscreteStructure<ArrayHistogram, MainDurationAlternative, P> {

@@ -1,6 +1,5 @@
-package edu.kit.ifv.mobitopp.actitopp.modernization
+package edu.kit.ifv.mobitopp.actitopp
 
-import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.enums.AreaType
 
 interface IHousehold {
