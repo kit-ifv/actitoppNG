@@ -128,7 +128,7 @@ class ActualMobilityPlan(
             nextAct?.let {
                 val duration = it.startTime!! - act.next!!.duration - act.startTime!!
                 require(duration >= Duration.ZERO) {
-                    "The duration should never be negative, some other calculation fucked up"
+                    "The duration should never be negative, some other calculation messed up"
                 }
                 act.duration = duration
             }
