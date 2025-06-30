@@ -21,23 +21,4 @@ class ByTracker(val day: DayStructure, val rng: RNGHelper) : DetermineTourAmount
     }
 }
 
-class DeterminePlannedTourAmounts(
-    val mobilityStructure: MobilityStructure,
-
-    private val rngHelper: RNGHelper,
-) {
-
-    private val relevantDays = mobilityStructure.mobileDays()
-
-
-    fun calculate(): Map<DayStructure, Map<BidirectionalIndexedValue<TourStructure>, PlannedTourAmounts>> {
-
-        return relevantDays.associateWith {
-            ByTracker(it, rngHelper).determine(mobilityStructure)
-        }
-
-    }
-}
-
-
 
