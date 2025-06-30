@@ -1,13 +1,16 @@
 package edu.kit.ifv.mobitopp.actitopp.timebudgets
 
 import edu.kit.ifv.mobitopp.actitopp.enums.Category
+import edu.kit.ifv.mobitopp.actitopp.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitopp.utils.affineTransform
 import edu.kit.ifv.mobitopp.actitopp.utils.ceilWholeMinutes
 import edu.kit.ifv.mobitopp.actitopp.utils.indexBinarySearch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import java.nio.file.Path
+import kotlin.io.path.Path
 import kotlin.io.path.exists
+import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.name
 import kotlin.io.path.useLines
 import kotlin.math.max
@@ -229,7 +232,26 @@ open class ArrayHistogram protected constructor(
 
                 )
         }
+
+        fun fromFolder(path: Path = Path("src/main/resources/edu/kit/ifv/mobitopp/actitopp/mopv14_withpkwhh"), identifier: Identifier): List<ArrayHistogram> {
+            return path.listDirectoryEntries("*${identifier.id}*").map { fromPath(it) }
+        }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if(other !is ArrayHistogram) return false
+        return categoryIndex == other.categoryIndex &&
+                offset == other.offset &&
+                probabilities.contentEquals(other.probabilities)
+    }
+
+    override fun hashCode(): Int {
+        var result = offset
+        result = 31 * result + probabilities.contentHashCode()
+        result = 31 * result + categoryIndex.hashCode()
+        return result
+    }
+
 }
 
 

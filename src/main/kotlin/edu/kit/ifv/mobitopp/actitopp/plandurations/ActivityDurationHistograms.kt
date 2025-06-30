@@ -149,6 +149,13 @@ class TaintedActivityDurationHistograms<P>(
 }
 
 enum class Identifier(val id: String) {
+
+    WORK_TIME_BUDGETS("7B"),
+    EDUCATION_TIME_BUDGETS("7D"),
+    LEISURE_TIME_BUDGETS("7F"),
+    SHOPPING_TIME_BUDGETS("7H"),
+    TRANSPORT_TIME_BUDGETS("7J"),
+
     LEAD_ACTIVITY_DURATION("8C"),
     MAJOR_ACTIVITY_DURATION("8E"),
     MINOR_ACTIVITY_DURATION("8K"),

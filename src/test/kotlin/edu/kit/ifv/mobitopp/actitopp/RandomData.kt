@@ -17,6 +17,8 @@ import edu.kit.ifv.mobitopp.actitopp.modernization.plan.ActualMobilityPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MobilityPlan
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.MovingDayPlanInput
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.StandardCommuteDurations
+import edu.kit.ifv.mobitopp.actitopp.timebudgets.FinalizedActivityPattern
+import edu.kit.ifv.mobitopp.actitopp.timebudgets.FinalizedActivityPatternImpl
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.TimeBudgets
 import edu.kit.ifv.mobitopp.actitopp.utils.Position
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.ModifiableWeekRoutine
@@ -208,4 +210,20 @@ object RandomHHKeeper {
 
 fun randomPersonWithRoutine(random: Random = default): PersonWithRoutine {
     return PersonWithRoutine(RandomHHKeeper.randomPerson(random), randomWeekRoutine(random))
+}
+
+
+fun randomFinalizedPattern(random: Random): FinalizedActivityPattern {
+    return FinalizedActivityPatternImpl(
+        workDays = random.nextInt(0, 7),
+        educationDays = random.nextInt(0, 7),
+        leisureDays = random.nextInt(0, 7),
+        shoppingDays = random.nextInt(0, 7),
+        transportDays = random.nextInt(0, 7),
+        workActivities = random.nextInt(0, 14),
+        educationActivities = random.nextInt(0, 14),
+        leisureActivities = random.nextInt(0, 14),
+        shoppingActivities = random.nextInt(0, 14),
+        transportActivities = random.nextInt(0, 14),
+    )
 }

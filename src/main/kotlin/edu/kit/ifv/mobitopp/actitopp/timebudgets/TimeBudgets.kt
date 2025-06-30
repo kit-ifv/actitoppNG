@@ -4,6 +4,11 @@ import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.enums.Category
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
+import edu.kit.ifv.mobitopp.actitopp.timebudgets.choicemodels.educationHistograms
+import edu.kit.ifv.mobitopp.actitopp.timebudgets.choicemodels.leisureHistograms
+import edu.kit.ifv.mobitopp.actitopp.timebudgets.choicemodels.shoppingHistograms
+import edu.kit.ifv.mobitopp.actitopp.timebudgets.choicemodels.transportHistograms
+import edu.kit.ifv.mobitopp.actitopp.timebudgets.choicemodels.workHistograms
 import kotlinx.serialization.Serializable
 import kotlin.random.Random
 import kotlin.time.Duration
@@ -90,11 +95,11 @@ data class TimeBudgets(
 val NO_TIME: Pair<Duration, Category> = Duration.ZERO to Category.NONE_CHOSEN
 
 class HistogramPerActivity(
-    val workHistograms: WorkHistograms,
-    val educationHistograms: EducationHistograms,
-    val leisureHistograms: LeisureHistograms,
-    val shoppingHistograms: ShoppingHistograms,
-    val transportHistograms: TransportHistograms,
+    val workHistograms: HistogramSelection,
+    val educationHistograms: HistogramSelection,
+    val leisureHistograms: HistogramSelection,
+    val shoppingHistograms: HistogramSelection,
+    val transportHistograms: HistogramSelection,
 ) {
 
 
@@ -145,11 +150,11 @@ class HistogramPerActivity(
          */
         val DEFAULT by lazy {
             HistogramPerActivity(
-                workHistograms = WorkHistograms.fromResourcePath(),
-                educationHistograms = EducationHistograms.fromResourcePath(),
-                leisureHistograms = LeisureHistograms.fromResourcePath(),
-                shoppingHistograms = ShoppingHistograms.fromResourcePath(),
-                transportHistograms = TransportHistograms.fromResourcePath(),
+                workHistograms = workHistograms,
+                educationHistograms = educationHistograms,
+                leisureHistograms = leisureHistograms,
+                shoppingHistograms = shoppingHistograms,
+                transportHistograms = transportHistograms,
 
                 )
         }
