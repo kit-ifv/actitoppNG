@@ -1,7 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.steps
 
 import discreteChoice.models.ChoiceAlternative
-import edu.kit.ifv.mobitopp.actitopp.IPerson
+import edu.kit.ifv.mobitopp.actitopp.Person
 import edu.kit.ifv.mobitopp.actitopp.enums.Employment
 import edu.kit.ifv.mobitopp.actitopp.enums.Gender
 import edu.kit.ifv.mobitopp.actitopp.enums.isEarning
@@ -41,7 +41,7 @@ interface PersonAttributes {
     fun commuteOver50km(): Boolean
 }
 
-class PersonAttributesFromElement(val person: IPerson) : PersonAttributes {
+class PersonAttributesFromElement(val person: Person) : PersonAttributes {
 
     override fun isFulltimeEmployee() = person.employment == Employment.FULLTIME
     override fun isParttimeEmployee() = person.employment.isParttime()
@@ -75,13 +75,13 @@ class PersonAttributesFromElement(val person: IPerson) : PersonAttributes {
 class PersonAlternative private constructor(
     override val choice: Int,
     private val weekRoutine: WeekRoutine,
-    val person: IPerson,
+    val person: Person,
     attributes: PersonAttributesFromElement,
     householdAttributes: HouseholdAttributes,
 ) : ChoiceAlternative<Int>(), PersonAttributes by attributes, HouseholdAttributes by householdAttributes {
 
 
-    constructor(choice: Int, weekRoutine: WeekRoutine, person: IPerson) : this(
+    constructor(choice: Int, weekRoutine: WeekRoutine, person: Person) : this(
         choice,
         weekRoutine,
         person,

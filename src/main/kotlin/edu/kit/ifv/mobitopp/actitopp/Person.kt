@@ -3,7 +3,7 @@ package edu.kit.ifv.mobitopp.actitopp
 import edu.kit.ifv.mobitopp.actitopp.enums.Employment
 import edu.kit.ifv.mobitopp.actitopp.enums.Gender
 
-interface IPerson {
+interface Person {
     val employment: Employment
     val age: Int
     val gender: Gender
@@ -13,7 +13,7 @@ interface IPerson {
     val commutingdistanceEducation: Double
 
     val id: Int
-    val household: IHousehold
+    val household: Household
     fun isAnywayEmployed(): Boolean
     fun isinEducation(): Boolean
     fun spawnRandomGenerator(offset: Long = 0L): RNGHelper {

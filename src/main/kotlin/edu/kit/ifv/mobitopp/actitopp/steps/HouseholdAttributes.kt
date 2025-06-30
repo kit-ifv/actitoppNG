@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.steps
 
-import edu.kit.ifv.mobitopp.actitopp.IHousehold
+import edu.kit.ifv.mobitopp.actitopp.Household
 import edu.kit.ifv.mobitopp.actitopp.enums.AreaType
 
 interface HouseholdAttributes {
@@ -13,7 +13,7 @@ interface HouseholdAttributes {
     fun amountOfPKW(): Int
 }
 
-class HouseholdAttributesFromElement(val household: IHousehold) : HouseholdAttributes {
+class HouseholdAttributesFromElement(val household: Household) : HouseholdAttributes {
     override fun areaTypeRural() = household.areaType == AreaType.RURAL
     override fun areaTypeConurbation() = household.areaType == AreaType.CONURBATION
     override fun hasChildrenInHousehold() = household.amountOfYoungMinors() > 0

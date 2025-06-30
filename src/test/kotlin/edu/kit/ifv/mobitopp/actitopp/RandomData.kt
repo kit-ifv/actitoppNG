@@ -203,7 +203,7 @@ object RandomHHKeeper {
             household.generatePersons(5)
         }
     }
-    fun randomPerson(random: Random): IPerson {
+    fun randomPerson(random: Random): Person {
         return households.random(random).members.random(random)
     }
 }

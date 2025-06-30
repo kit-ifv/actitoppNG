@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.modernization.plan
 
-import edu.kit.ifv.mobitopp.actitopp.IPerson
+import edu.kit.ifv.mobitopp.actitopp.Person
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.utils.round
 import units.Distance
@@ -15,31 +15,31 @@ import kotlin.time.DurationUnit
  * This interface is used to determine the trip duration between two activities
  */
 interface DetermineTripDuration {
-    fun firstTourTrip(person: IPerson, activityType: ActivityType): Duration
-    fun lastTourTrip(person: IPerson, activityType: ActivityType): Duration
-    fun everyOtherTourTrip(person: IPerson, activityType: ActivityType): Duration
+    fun firstTourTrip(person: Person, activityType: ActivityType): Duration
+    fun lastTourTrip(person: Person, activityType: ActivityType): Duration
+    fun everyOtherTourTrip(person: Person, activityType: ActivityType): Duration
 }
 
 class StandardCommuteDurations(private val standardTripDuration: Duration = 15.minutes) :
     DetermineTripDuration {
 
 
-    override fun firstTourTrip(person: IPerson, activityType: ActivityType): Duration {
+    override fun firstTourTrip(person: Person, activityType: ActivityType): Duration {
         return commuteBasedDuration(activityType, person)
     }
 
 
-    override fun lastTourTrip(person: IPerson, activityType: ActivityType): Duration {
+    override fun lastTourTrip(person: Person, activityType: ActivityType): Duration {
         return commuteBasedDuration(activityType, person)
     }
 
-    override fun everyOtherTourTrip(person: IPerson, activityType: ActivityType): Duration {
+    override fun everyOtherTourTrip(person: Person, activityType: ActivityType): Duration {
         return standardTripDuration
     }
 
     private fun commuteBasedDuration(
         activityType: ActivityType,
-        person: IPerson,
+        person: Person,
     ) = when {
         activityType == ActivityType.WORK && person.hasWorkCommuteInfo() -> {
             person.commutingdistanceWork.kilometers.calculateCommuteDuration(::commuteSpeedWork)
@@ -83,9 +83,9 @@ class StandardCommuteDurations(private val standardTripDuration: Duration = 15.m
         }
     }
 
-    private fun IPerson.hasWorkCommuteInfo() = commutingdistanceWork != 0.0
+    private fun Person.hasWorkCommuteInfo() = commutingdistanceWork != 0.0
 
-    private fun IPerson.hasEducationCommuteInfo() = commutingdistanceEducation != 0.0
+    private fun Person.hasEducationCommuteInfo() = commutingdistanceEducation != 0.0
 
     companion object {
         val STANDARD_ASSIGNMENT = StandardCommuteDurations()

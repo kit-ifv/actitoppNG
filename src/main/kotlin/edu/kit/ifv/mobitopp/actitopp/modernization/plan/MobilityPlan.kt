@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.modernization.plan
 
-import edu.kit.ifv.mobitopp.actitopp.IPerson
+import edu.kit.ifv.mobitopp.actitopp.Person
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
@@ -22,19 +22,19 @@ interface MobilityPlan {
     val homePlans: Collection<HomeDayPlan>
     val activities: Collection<LinkedActivity>
     val timeBudgets: TimeBudgets
-    val person: IPerson
+    val person: Person
 
     val mainActivityMap: Map<ActivityType, List<LinkedActivity>>
     val regularActivities: Map<ActivityType, Boolean>
     fun finish(): List<ModernizedActivity>
     fun isConsistent() = true
     fun extrudeHomeActivities() {
-
+        throw UnsupportedOperationException("Cannot extrude home activities per default")
     }
 
 }
 
-class StayAtHomePlan(override val homePlans: Collection<HomeDayPlan>, override val person: IPerson) : MobilityPlan {
+class StayAtHomePlan(override val homePlans: Collection<HomeDayPlan>, override val person: Person) : MobilityPlan {
 
     private val singularHomeActivity = LinkedActivity.homeDay().apply {
         startTime = Duration.ZERO
@@ -54,7 +54,7 @@ class StayAtHomePlan(override val homePlans: Collection<HomeDayPlan>, override v
     override val regularActivities: Map<ActivityType, Boolean> = emptyMap()
 
     companion object {
-        fun create(days: Collection<DurationDay>, person: IPerson) =
+        fun create(days: Collection<DurationDay>, person: Person) =
             StayAtHomePlan(days.map { HomeDayPlan(it) }, person)
     }
 }
@@ -64,7 +64,7 @@ class ActualMobilityPlan(
     override val homePlans: Collection<HomeDayPlan>,
     override val activities: Collection<LinkedActivity>,
     override val timeBudgets: TimeBudgets,
-    override val person: IPerson,
+    override val person: Person,
     tripDuration: DetermineTripDuration = StandardCommuteDurations(),
 ) : MobilityPlan {
     // Assume that the agent starts their plan at home.

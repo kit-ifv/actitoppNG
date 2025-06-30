@@ -4,36 +4,12 @@ import edu.kit.ifv.mobitopp.actitopp.enums.Employment
 import edu.kit.ifv.mobitopp.actitopp.enums.Gender
 import edu.kit.ifv.mobitopp.actitopp.enums.isEmployedAnywhere
 import edu.kit.ifv.mobitopp.actitopp.enums.isStudentOrAzubi
-import kotlinx.serialization.Serializable
 import kotlin.math.max
-import kotlin.random.Random
-
-@Serializable
-data class PersonAttributes(
-    val gender: Gender,
-    val employment: Employment,
-    val age: Int,
-    val commuteDistanceWork: Double? = null,
-    val commuteDistanceEducation: Double? = null,
-    val isAllowedToWork: Boolean = true,
-) {
-    companion object {
-        fun random(rng: Random): PersonAttributes {
-            return PersonAttributes(
-                age = rng.nextInt(0, 100),
-                employment = Employment.fromInt(rng.nextInt(0, 42)),
-                gender = Gender.fromCode(rng.nextInt(0, 3)),
-                commuteDistanceWork = rng.nextDouble(),
-                commuteDistanceEducation = rng.nextDouble()
-            )
-        }
-    }
-}
 
 class ActitoppPerson(
     override val household: ActiToppHousehold,
     val attributes: PersonAttributes,
-) : IPerson {
+) : Person {
 
     init {
         household.add(this)

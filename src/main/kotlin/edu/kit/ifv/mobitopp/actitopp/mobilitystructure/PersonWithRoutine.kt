@@ -1,12 +1,12 @@
 package edu.kit.ifv.mobitopp.actitopp.mobilitystructure
 
-import edu.kit.ifv.mobitopp.actitopp.IPerson
+import edu.kit.ifv.mobitopp.actitopp.Person
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
 
 data class PersonWithRoutine(
-    val person: IPerson,
+    val person: Person,
     val routine: WeekRoutine,
-) : IPerson by person {
+) : Person by person {
 
 
     fun amountOfWorkingDays() = routine.amountOfWorkingDays

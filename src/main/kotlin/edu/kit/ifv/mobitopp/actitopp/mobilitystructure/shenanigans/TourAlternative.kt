@@ -2,7 +2,7 @@ package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans
 
 
 import discreteChoice.models.ChoiceAlternative
-import edu.kit.ifv.mobitopp.actitopp.IPerson
+import edu.kit.ifv.mobitopp.actitopp.Person
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
@@ -31,7 +31,7 @@ class TourAlternative private constructor(
 
     constructor(
         choice: ActivityType,
-        person: IPerson,
+        person: Person,
         routine: WeekRoutine,
         day: DayStructure,
         tourAttributes: TourPositionAttributes,
@@ -56,7 +56,7 @@ class TourAlternativeInt private constructor(
 
     constructor(
         choice: Int,
-        person: IPerson,
+        person: Person,
         routine: WeekRoutine,
         day: DayStructure,
         tour: BidirectionalIndexedValue<TourStructure>,

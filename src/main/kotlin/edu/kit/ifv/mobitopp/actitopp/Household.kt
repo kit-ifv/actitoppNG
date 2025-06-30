@@ -2,8 +2,8 @@ package edu.kit.ifv.mobitopp.actitopp
 
 import edu.kit.ifv.mobitopp.actitopp.enums.AreaType
 
-interface IHousehold {
-    val members: List<IPerson>
+interface Household {
+    val members: List<Person>
     val areaType: AreaType
     val numberOfCars: Int
     val id: Int

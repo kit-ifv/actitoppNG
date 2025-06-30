@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.subsubTourAmount
 
-import edu.kit.ifv.mobitopp.actitopp.IPerson
+import edu.kit.ifv.mobitopp.actitopp.Person
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.TourStructure
 import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalIndexedValue
@@ -12,7 +12,7 @@ fun interface GenerateSideTourActivities {
 }
 
 data class SideTourActivityInput(
-    val person: IPerson,
+    val person: Person,
     val routine: WeekRoutine,
     val currentDay: DayStructure,
     val tour: BidirectionalIndexedValue<TourStructure>,

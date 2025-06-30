@@ -4,7 +4,7 @@ import edu.kit.ifv.mobitopp.actitopp.enums.AreaType
 
 /**
  * The legacy ActiTopp household holds two fields for the number of children(0-10) and youths(0..<18) as they are
- * not designed to be explicitly modelled as [IPerson] for some obscure reason. Even though actiTopp claims that it
+ * not designed to be explicitly modelled as [Person] for some obscure reason. Even though actiTopp claims that it
  * is only unable to produce plans for children and is able to produce plans for youths.
  */
 class ActiToppHousehold(
@@ -13,15 +13,15 @@ class ActiToppHousehold(
     private val numMinorsBelow18: Int,
     override val areaType: AreaType,
     override val numberOfCars: Int = 0,
-) : IHousehold {
+) : Household {
 
 
     override val id: Int = ID
     override fun amountOfYoungMinors(): Int = numMinorsUpTo10
     override fun amountOfAllMinors() = numMinorsBelow18
 
-    override val members: MutableList<IPerson> = mutableListOf()
-    fun add(person: IPerson) = members.add(person)
+    override val members: MutableList<Person> = mutableListOf()
+    fun add(person: Person) = members.add(person)
 
 
     companion object {

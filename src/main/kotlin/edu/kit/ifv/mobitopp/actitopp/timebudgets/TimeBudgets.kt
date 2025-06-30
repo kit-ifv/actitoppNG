@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.timebudgets
 
-import edu.kit.ifv.mobitopp.actitopp.IPerson
+import edu.kit.ifv.mobitopp.actitopp.Person
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.enums.Category
@@ -104,7 +104,7 @@ class HistogramPerActivity(
 
     fun determineTimeBudgets(
         rngKeeper: RNGHelper,
-        person: IPerson,
+        person: Person,
         finalizedActivityPattern: FinalizedActivityPattern,
     ): TimeBudgets {
         val workSelection = if (finalizedActivityPattern.workDays == 0) NO_TIME else
@@ -137,7 +137,7 @@ class HistogramPerActivity(
     private fun HistogramSelection.pick(
         random: Random,
         finalizedActivityPattern: FinalizedActivityPattern,
-        person: IPerson,
+        person: Person,
     ): Pair<Duration, Category> {
         val histogram = select(random, finalizedActivityPattern, person)
         return histogram.select(random) to histogram.categoryIndex

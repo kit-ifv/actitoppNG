@@ -1,7 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.modernization
 
 
-import edu.kit.ifv.mobitopp.actitopp.IPerson
+import edu.kit.ifv.mobitopp.actitopp.Person
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.LegacySpawnSideTours
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.SpawnSideTours
@@ -33,12 +33,12 @@ import edu.kit.ifv.mobitopp.actitopp.weekroutine.generateWeekRoutine
 
 
 fun interface MobilityPlanGeneration {
-    fun generate(person: IPerson, amountOfDays: Int): MobilityPlan
-    fun generate(person: IPerson) = generate(person, 7)
+    fun generate(person: Person, amountOfDays: Int): MobilityPlan
+    fun generate(person: Person) = generate(person, 7)
 }
 
 class DefaultPlanGeneration : MobilityPlanGeneration {
-    override fun generate(person: IPerson, amountOfDays: Int): MobilityPlan {
+    override fun generate(person: Person, amountOfDays: Int): MobilityPlan {
         val rng = person.spawnRandomGenerator()
         val structureGenerator = StandardStructureGeneration(rng)
         val durationGenerator = StandardDurationAssignment(rng)
@@ -60,7 +60,7 @@ class StandardStructureGeneration(
     private val sideActivityStrategy = StandardImplementation(rng)
     private val spawnMainActivities = SpawnWeek(rng)
     private val spawnSideTours: SpawnSideTours = LegacySpawnSideTours(rng)
-    override fun generate(person: IPerson, amountOfDays: Int): MobilityPlan {
+    override fun generate(person: Person, amountOfDays: Int): MobilityPlan {
 
         val weekRoutine = person.generateWeekRoutine(rng)
         val mobilityStructure = MobilityStructure(person, weekRoutine)

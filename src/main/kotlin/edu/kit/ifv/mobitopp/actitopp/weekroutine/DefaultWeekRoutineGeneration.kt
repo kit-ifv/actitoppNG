@@ -1,7 +1,7 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine
 
 import discreteChoice.EnumeratedDiscreteChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.IPerson
+import edu.kit.ifv.mobitopp.actitopp.Person
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.select
@@ -41,7 +41,7 @@ class DefaultWeekRoutineGeneration(
     private val averageAmountOfTourChoiceModel: ChoiceModele = tourAmountChoiceModel,
     private val averageAmountOfActivitiesChoiceModel: ChoiceModele = activityAmountChoiceModel,
 ) : GenerateWeekRoutine {
-    override fun generate(person: IPerson, rng: RNGHelper): WeekRoutine {
+    override fun generate(person: Person, rng: RNGHelper): WeekRoutine {
         return ModifiableWeekRoutine().apply {
 
             val converter: (Int) -> PersonAlternative = { PersonAlternative(it, this, person) }

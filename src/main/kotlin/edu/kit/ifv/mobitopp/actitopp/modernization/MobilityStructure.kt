@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.modernization
 
-import edu.kit.ifv.mobitopp.actitopp.IPerson
+import edu.kit.ifv.mobitopp.actitopp.Person
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.modernization.plan.ActualMobilityPlan
@@ -18,7 +18,7 @@ class MobilityStructure(
     val weekRoutine: PersonWithRoutine,
 ) {
 
-    constructor(person: IPerson, weekRoutine: WeekRoutine) : this(PersonWithRoutine(person, weekRoutine))
+    constructor(person: Person, weekRoutine: WeekRoutine) : this(PersonWithRoutine(person, weekRoutine))
 
     private val activeDays: MutableList<ModifiableDayStructure> = mutableListOf()
     private val days: MutableCollection<DurationDay> = mutableListOf()

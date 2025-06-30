@@ -5,7 +5,7 @@ import discreteChoice.models.ChoiceAlternative
 import discreteChoice.structure.DiscreteStructure
 import discreteChoice.structure.bulkList
 import discreteChoice.utility.multinomialLogit
-import edu.kit.ifv.mobitopp.actitopp.IPerson
+import edu.kit.ifv.mobitopp.actitopp.Person
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.enums.Employment
@@ -211,7 +211,7 @@ open class PlanAlternative<P : Any>(
     val tourPlan: TourPlan = input.tourPlan
     val activity: Activity = input.activity
     val planTimeBudgets: TimeBudgets = input.mobilityPlan.timeBudgets
-    val person: IPerson = input.person
+    val person: Person = input.person
     val isLastTourOfDay: Boolean = input.isLastTourOfDay
     val activityType: ActivityType = activity.activityType
 

@@ -3,7 +3,7 @@ package edu.kit.ifv.mobitopp.actitopp.timebudgets
 import discreteChoice.EnumeratedDiscreteChoiceModel
 import discreteChoice.structure.DiscreteStructure
 import discreteChoice.utility.multinomialLogit
-import edu.kit.ifv.mobitopp.actitopp.IPerson
+import edu.kit.ifv.mobitopp.actitopp.Person
 import edu.kit.ifv.mobitopp.actitopp.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.select
 import java.nio.file.Path
@@ -15,19 +15,19 @@ open class HistogramSelection(
 ) {
 
     val choices = choiceModel.choices
-    val converter: (ArrayHistogram, FinalizedActivityPattern, IPerson) -> WorkChoiceAlternative =
+    val converter: (ArrayHistogram, FinalizedActivityPattern, Person) -> WorkChoiceAlternative =
         { a, f, p ->
             WorkChoiceAlternative(a, f, p)
         }
 
     /**
      * Select a histogram from the options registered in the choice model, for a given [FinalizedActivityPattern] and
-     * [IPerson] input.
+     * [Person] input.
      */
     fun select(
         random: Random,
         finalizedActivityPattern: FinalizedActivityPattern,
-        person: IPerson,
+        person: Person,
     ): ArrayHistogram {
 
         return choiceModel.select(random) {
