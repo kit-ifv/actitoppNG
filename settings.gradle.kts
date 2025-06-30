@@ -4,4 +4,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "actitopp"
+rootProject.name = "actitoppNG"

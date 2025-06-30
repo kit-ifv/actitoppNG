@@ -1,8 +1,8 @@
 package edu.kit.ifv.mobitopp.choicemodels
 
-import edu.kit.ifv.mobitopp.actitopp.plandurations.BooleanDecisionAlternative
-import edu.kit.ifv.mobitopp.actitopp.plandurations.choicemodels.firstActivityUsesStandardDuration
-import edu.kit.ifv.mobitopp.actitopp.randomMobilityPlanInput
+import edu.kit.ifv.mobitopp.actitoppNG.plandurations.BooleanDecisionAlternative
+import edu.kit.ifv.mobitopp.actitoppNG.plandurations.choicemodels.firstActivityUsesStandardDuration
+import edu.kit.ifv.mobitopp.actitoppNG.randomMobilityPlanInput
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer
 

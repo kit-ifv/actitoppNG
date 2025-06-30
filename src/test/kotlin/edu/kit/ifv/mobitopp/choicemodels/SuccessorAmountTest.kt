@@ -1,10 +1,10 @@
 package edu.kit.ifv.mobitopp.choicemodels
 
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.successorAmountChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.PreviousDayAlternative
-import edu.kit.ifv.mobitopp.actitopp.randomDayStructure
-import edu.kit.ifv.mobitopp.actitopp.randomPersonWithRoutine
-import edu.kit.ifv.mobitopp.actitopp.randomPlannedTourAmounts
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.successorAmountChoiceModel
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.PreviousDayAlternative
+import edu.kit.ifv.mobitopp.actitoppNG.randomDayStructure
+import edu.kit.ifv.mobitopp.actitoppNG.randomPersonWithRoutine
+import edu.kit.ifv.mobitopp.actitoppNG.randomPlannedTourAmounts
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer
 

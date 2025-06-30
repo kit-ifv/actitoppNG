@@ -1,9 +1,9 @@
 package edu.kit.ifv.mobitopp.choicemodels
 
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.step5AWithParams
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.TourAlternativeInt
-import edu.kit.ifv.mobitopp.actitopp.randomDayStructure
-import edu.kit.ifv.mobitopp.actitopp.randomPersonWithRoutine
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.step5AWithParams
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.TourAlternativeInt
+import edu.kit.ifv.mobitopp.actitoppNG.randomDayStructure
+import edu.kit.ifv.mobitopp.actitoppNG.randomPersonWithRoutine
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer
 

@@ -13,7 +13,7 @@ import kotlin.io.path.readText
 import kotlin.io.path.writeText
 import kotlin.random.Random
 import kotlin.test.assertEquals
-import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.select
+import edu.kit.ifv.mobitopp.actitoppNG.utilityFunctions.select
 
 private val RESOURCE_PATH = Path("src/test/resources/choicemodels")
 abstract class ChoiceModelTest<X : Any, SIT : ChoiceAlternative<X>>(

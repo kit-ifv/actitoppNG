@@ -1,12 +1,12 @@
 package edu.kit.ifv.mobitopp.choicemodels
 
-import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.sideActivityChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.ActivityAlternative
-import edu.kit.ifv.mobitopp.actitopp.randomDayStructure
-import edu.kit.ifv.mobitopp.actitopp.randomPersonWithRoutine
-import edu.kit.ifv.mobitopp.actitopp.randomPlannedTourAmounts
-import edu.kit.ifv.mobitopp.actitopp.utils.Position
+import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.sideActivityChoiceModel
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.ActivityAlternative
+import edu.kit.ifv.mobitopp.actitoppNG.randomDayStructure
+import edu.kit.ifv.mobitopp.actitoppNG.randomPersonWithRoutine
+import edu.kit.ifv.mobitopp.actitoppNG.randomPlannedTourAmounts
+import edu.kit.ifv.mobitopp.actitoppNG.utils.Position
 import kotlinx.serialization.KSerializer
 
 class SideActivityTest : ChoiceModelTest<ActivityType, ActivityAlternative>(sideActivityChoiceModel) {

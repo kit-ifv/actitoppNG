@@ -11,6 +11,7 @@ version = if (project.hasProperty("next-version")) {
 } else {
     "0.0-SNAPSHOT"
 }
+version = "0.9.1"
 
 tasks.wrapper {
     gradleVersion = "6.3"
@@ -35,7 +36,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
 }
 
-version = "0.9.1"
+
 
 tasks.test {
     useJUnitPlatform()

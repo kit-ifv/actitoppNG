@@ -1,9 +1,9 @@
 package edu.kit.ifv.mobitopp.choicemodels
 
-import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.mainActivityChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.DayAlternative
-import edu.kit.ifv.mobitopp.actitopp.randomPersonWithRoutine
+import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.mainActivityChoiceModel
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.DayAlternative
+import edu.kit.ifv.mobitopp.actitoppNG.randomPersonWithRoutine
 
 import kotlinx.serialization.KSerializer
 import java.time.DayOfWeek

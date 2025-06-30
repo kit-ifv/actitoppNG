@@ -1,16 +1,16 @@
 package edu.kit.ifv.mobitopp.choicemodels
 
 import discreteChoice.EnumeratedDiscreteChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.randomPersonWithRoutine
-import edu.kit.ifv.mobitopp.actitopp.steps.PersonAlternative
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.defaultWorkDayChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.educationDaysChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.leisureDaysChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.shoppingDaysChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.serviceDaysChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.homeDaysChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.tourAmountChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.activityAmountChoiceModel
+import edu.kit.ifv.mobitopp.actitoppNG.randomPersonWithRoutine
+import edu.kit.ifv.mobitopp.actitoppNG.steps.PersonAlternative
+import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.defaultWorkDayChoiceModel
+import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.educationDaysChoiceModel
+import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.leisureDaysChoiceModel
+import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.shoppingDaysChoiceModel
+import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.serviceDaysChoiceModel
+import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.homeDaysChoiceModel
+import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.tourAmountChoiceModel
+import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.activityAmountChoiceModel
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer
 
