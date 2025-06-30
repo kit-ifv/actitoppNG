@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "2.1.20"
     kotlin("plugin.serialization") version "2.1.20"
+    id("maven-publish")
     id("org.jetbrains.dokka") version "1.9.10"
 }
 
@@ -34,6 +35,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
 }
 
+version = "0.9.1"
+
 tasks.test {
     useJUnitPlatform()
 }
@@ -46,6 +49,24 @@ tasks.dokkaHtml {
             perPackageOption {
                 matchingRegex.set("com\\.example\\.internal.*")
                 suppress.set(true) // Skip internal packages
+            }
+        }
+    }
+}
+
+publishing {
+    publications {
+        register("mavenData", MavenPublication::class) {
+            from(components["kotlin"])
+        }
+    }
+    repositories {
+        maven {
+            url = uri("https://nexus.ifv.kit.edu/repository/maven-releases/")
+
+            credentials {
+                username = project.findProperty("nexusUsername") as String?
+                password = project.findProperty("nexusPassword") as String?
             }
         }
     }
