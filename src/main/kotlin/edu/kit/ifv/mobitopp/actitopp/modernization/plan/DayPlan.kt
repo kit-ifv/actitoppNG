@@ -17,7 +17,6 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
-import kotlin.time.DurationUnit
 
 
 interface DayPlan : List<LinkedActivity> {
@@ -109,7 +108,8 @@ class MovingDayPlan(
 
     override val durationOfMainActivities: Duration by lazy {
         mainActivities().sumOf {
-            it.duration ?: throw IllegalStateException("Cannot evalutate duration, some activities have not yet received a duration")
+            it.duration
+                ?: throw IllegalStateException("Cannot evalutate duration, some activities have not yet received a duration")
         }
     }
     override var firstActivity: LinkedActivity = activities.first()
@@ -121,7 +121,8 @@ class MovingDayPlan(
     // Throw an error if the duration of any activity is not set, this scenario cannot be handled
     private val _durationOfActivities by lazy {
         activities.sumOf {
-            it.duration ?: throw IllegalStateException("Cannot evaluate duration of activities, if some have not yet been assigned a duration")
+            it.duration
+                ?: throw IllegalStateException("Cannot evaluate duration of activities, if some have not yet been assigned a duration")
         }
     }
 
@@ -144,6 +145,7 @@ class MovingDayPlan(
             .withDefault {
                 ActivityType.HOME.defaultActivityTime.minutes / amountOfActivities
             }
+
     // Amount of tours in plan, since amount of activities is handled above
     override val activityBudget: Map<ActivityType, Duration> = activities.groupBy { it.activityType }
         .mapValues { (timeBudgets[it.key] / it.value.size).coerceIn(1.minutes, 1440.minutes) }

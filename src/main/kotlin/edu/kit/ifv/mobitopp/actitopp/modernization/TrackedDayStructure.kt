@@ -2,7 +2,6 @@ package edu.kit.ifv.mobitopp.actitopp.modernization
 
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalIndexedValue
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.WeekRoutine
 
 /**
  * This class is tasked with one job, to keep track of the activity types added to a day structure and update the

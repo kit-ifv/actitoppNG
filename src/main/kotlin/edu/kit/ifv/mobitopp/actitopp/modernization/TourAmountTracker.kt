@@ -79,7 +79,10 @@ class TourAmountTracker(
         return generateTourAmounts(targets, generator)
     }
 
-    private fun <P> generateTourAmounts(targets: List<DayStructure>, strategy: DefaultSideTourDeterminer<P>): List<Int> {
+    private fun <P> generateTourAmounts(
+        targets: List<DayStructure>,
+        strategy: DefaultSideTourDeterminer<P>,
+    ): List<Int> {
         return targets.map {
             val currentPlan = map.getModifiablePlannedTourAmounts(it)
             val previousDayPlan = map.getPreviousPlannedTourAmounts(it)

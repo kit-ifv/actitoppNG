@@ -8,6 +8,6 @@ package edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters
  * Each implementing class must provide a field [T] which contains the parameters that should be used for that concrete
  * step.
  */
-interface WeekRoutineParameterSet<T>: List<T> {
+interface WeekRoutineParameterSet<T> : List<T> {
     val parameters: List<T>
 }

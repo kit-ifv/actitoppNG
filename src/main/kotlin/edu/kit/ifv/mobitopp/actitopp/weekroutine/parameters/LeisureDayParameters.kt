@@ -5,28 +5,33 @@ package edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters
  * parameter structure.
  */
 data class LeisureDaySet(
-    override val parameters: List<LeisureDayParameters>
+    override val parameters: List<LeisureDayParameters>,
 ) : WeekRoutineParameterSet<LeisureDayParameters>, List<LeisureDayParameters> by parameters {
     companion object {
-        fun create(option1: LeisureDayParameters,
-                   option2: LeisureDayParameters,
-                   option3: LeisureDayParameters,
-                   option4: LeisureDayParameters,
-                   option5: LeisureDayParameters,
-                   option6: LeisureDayParameters,
-                   option7: LeisureDayParameters,): LeisureDaySet {
-            return LeisureDaySet(listOf(
-                option1,
-                        option2,
-                        option3,
-                        option4,
-                        option5,
-                        option6,
-                        option7,
-            ))
+        fun create(
+            option1: LeisureDayParameters,
+            option2: LeisureDayParameters,
+            option3: LeisureDayParameters,
+            option4: LeisureDayParameters,
+            option5: LeisureDayParameters,
+            option6: LeisureDayParameters,
+            option7: LeisureDayParameters,
+        ): LeisureDaySet {
+            return LeisureDaySet(
+                listOf(
+                    option1,
+                    option2,
+                    option3,
+                    option4,
+                    option5,
+                    option6,
+                    option7,
+                )
+            )
         }
     }
 }
+
 /**
  * This class contains the parameters for the utility function to determine the amount of leisure days in the week routine.
  * @param base The default parameter.
@@ -46,6 +51,7 @@ data class LeisureDayParameters(
     val householdHasChildenBelowAge10: Double,
     val amountOfWorkingDays: Double,
 )
+
 /**
  * The original parameter set for the amount of leisure days, taken from mop14_withpkwhh. Originally called 1CParams.
  */

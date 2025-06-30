@@ -25,5 +25,5 @@ value class Category(private val category: Int) {
         val NONE_CHOSEN = Category(0)
     }
 
-    fun toInt()  = category
+    fun toInt() = category
 }

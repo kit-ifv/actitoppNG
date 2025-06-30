@@ -32,9 +32,12 @@ class DayAlternative private constructor(
     ChoiceAlternative<ActivityType>(), PersonAttributes by personAttributesFromElement,
     RoutineAttributes by personAttributesFromElement,
     DayAttributes by dayAttributesFromElement,
-HouseholdAttributes by householdAttributesFromElement{
+    HouseholdAttributes by householdAttributesFromElement {
     constructor(choice: ActivityType, personRoutine: PersonWithRoutine, week: DayOfWeek) : this(
-        choice, PersonAndRoutineFrom(personRoutine), DayAttributesFromWeekday(week), HouseholdAttributesFromElement(personRoutine.household)
+        choice,
+        PersonAndRoutineFrom(personRoutine),
+        DayAttributesFromWeekday(week),
+        HouseholdAttributesFromElement(personRoutine.household)
     )
 
 }

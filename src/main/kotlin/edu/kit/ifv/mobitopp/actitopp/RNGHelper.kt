@@ -1,9 +1,8 @@
 package edu.kit.ifv.mobitopp.actitopp
 
-import kotlin.math.abs
 import kotlin.random.Random
 
-abstract class RNGHelper: Random() {
+abstract class RNGHelper : Random() {
     abstract val randomValue: Double
 
     companion object {
@@ -19,7 +18,6 @@ class RNGHelperImpl private constructor(
 ) : RNGHelper() {
 
     constructor(seed: Long) : this(seed = seed, rng = Random(seed))
-
 
 
     override val randomValue: Double get() = rng.nextDouble()

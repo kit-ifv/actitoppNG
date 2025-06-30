@@ -5,7 +5,6 @@ import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitopp.modernization.DurationDay
-import edu.kit.ifv.mobitopp.actitopp.modernization.LinkedAction
 import edu.kit.ifv.mobitopp.actitopp.modernization.LinkedActivity
 import edu.kit.ifv.mobitopp.actitopp.modernization.ModernizedActivity
 import edu.kit.ifv.mobitopp.actitopp.modernization.linkByHomeActivity

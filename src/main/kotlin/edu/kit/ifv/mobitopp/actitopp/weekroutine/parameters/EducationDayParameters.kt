@@ -28,6 +28,7 @@ data class EducationDaySet(
         }
     }
 }
+
 /**
  * This class contains the parameters for the utility function to determine the amount of education days in the week
  * pattern.

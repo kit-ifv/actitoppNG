@@ -5,16 +5,16 @@ import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.select
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.activityAmountChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.defaultWorkDayChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.educationDaysChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.leisureDaysChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.shoppingDaysChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.serviceDaysChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.homeDaysChoiceModel
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.leisureDaysChoiceModel
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.serviceDaysChoiceModel
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.shoppingDaysChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.tourAmountChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.choicemodels.activityAmountChoiceModel
 
-typealias ChoiceModele = EnumeratedDiscreteChoiceModel<Int,PersonAlternative , *>
+typealias ChoiceModele = EnumeratedDiscreteChoiceModel<Int, PersonAlternative, *>
 
 /**
  * The standard implementation to generate a week routine. Using choice models and mutable fields. Note that the

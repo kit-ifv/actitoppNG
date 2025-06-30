@@ -43,11 +43,11 @@ class PreviousDayAlternative private constructor(
     val pAttr: PersonAndRoutineAttributes,
     val plannedTourAttributes: PartialTourLayoutAttributes,
     val structureAttributes: DayStructureAttributes,
-    val householdAttributes: HouseholdAttributes
+    val householdAttributes: HouseholdAttributes,
 ) : ChoiceAlternative<Int>(), PreviousDayAttributes by previousDayAttributes,
     PersonAndRoutineAttributes by pAttr, PartialTourLayoutAttributes by plannedTourAttributes,
     DayStructureAttributes by structureAttributes,
-HouseholdAttributes by householdAttributes {
+    HouseholdAttributes by householdAttributes {
 
 
     constructor(

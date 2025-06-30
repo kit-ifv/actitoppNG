@@ -20,7 +20,7 @@ sealed interface Action {
     }
 }
 
-interface MutableAction: Action {
+interface MutableAction : Action {
     override var startTime: Duration?
     override var endTime: Duration?
 
@@ -84,9 +84,10 @@ data class ModernizedActivity(
 ) : MutableActivity {
 
 
-    override var endTime get() = startTime?.let { it + duration }
-        set(value)  {
-            startTime = value?.let { it -duration!! }
+    override var endTime
+        get() = startTime?.let { it + duration }
+        set(value) {
+            startTime = value?.let { it - duration!! }
         }
 
 }
@@ -223,7 +224,8 @@ class ModernizedTrip(
     }
 
     override var startTime: Duration? = null
-    override var endTime: Duration? get() = startTime?.let { it + duration }
+    override var endTime: Duration?
+        get() = startTime?.let { it + duration }
         set(value) {
             startTime = value?.let { it - duration }
         }

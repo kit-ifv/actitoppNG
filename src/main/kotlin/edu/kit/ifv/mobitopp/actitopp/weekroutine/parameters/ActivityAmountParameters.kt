@@ -29,15 +29,15 @@ data class ActivityAmountSet(
 
 /**
  * This class contains the parameters for the utility function to determine the average activity amount.
- * @param base The default parameter. 
+ * @param base The default parameter.
  * @param beruf_teilzeit Parameter that should be applied when the person is part-time employed.
- * @param beruf_schueler Parameter that should be applied when the person is a student. 
+ * @param beruf_schueler Parameter that should be applied when the person is a student.
  * @param beruf_azubi Parameter that should be applied when the person is in a vocational program.
  * @param alter_26bis35 Parameter that should be applied when the person is aged between 26 and 35 (inclusive)
  * @param alter_36bis50 Parameter that should be applied when the person is aged between 36 and 50 (inclusive)
  * @param alter_51bis60 Parameter that should be applied when the person is aged between 51 and 60 (inclusive)
  * @param alter_61bis70 Parameter that should be applied when the person is aged between 61 and 70 (inclusive)
- * @param Raumtyp_mobitopp_rural Parameter that should be applied when the home location of the household of the person 
+ * @param Raumtyp_mobitopp_rural Parameter that should be applied when the home location of the household of the person
  *   is classified as RURAL
  * @param pendeln_ueber50km Parameter that should be applied when the commute distance of the person is over 50 km
  * @param pendeln_0bis5km Parameter that should be applied when the commute distance is within 0 to 5 km

@@ -17,7 +17,8 @@ val tourMainActivityChoiceModel =
         option(ActivityType.SHOPPING, parameters = { shopping }, { standardUtilityFunction(this, it) })
         option(ActivityType.TRANSPORT, parameters = { transport }, { standardUtilityFunction(this, it) })
 
-    }.multinomialLogit("Main Activity of the tours that are not the main tour.").build(DefaultSideTourMainActivityParameters)
+    }.multinomialLogit("Main Activity of the tours that are not the main tour.")
+        .build(DefaultSideTourMainActivityParameters)
 private val standardUtilityFunction: SideTourMainActivityParameters.(TourAlternative) -> Double = {
     base +
             (it.isFulltimeEmployee()) * employmentFullTime +

@@ -6,7 +6,6 @@ import edu.kit.ifv.mobitopp.actitopp.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.forOptions
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.DefaultWorkParameters
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.WorkDayParameters
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.WorkDaySet
 
 /**

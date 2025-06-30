@@ -28,26 +28,27 @@ import edu.kit.ifv.mobitopp.actitopp.utils.times
 class PreferredStartViaChoiceModel(private val rngKeeper: RNGHelper) : UsePreferredTourStart {
     private val choiceModel =
         DiscreteStructure<Boolean, BooleanDecisionWithPreferenceCategory, ParameterStep10A> {
-                option(true) { 0.0 }
-                option(false) {
-                    base +
-                            (it.anztourenvorhaupttour()) * anztourenvorhaupttour +
-                            (it.anztourennachhaupttour()) * anztourennachhaupttour +
-                            (it.tourhat1akt()) * tourhat1akt +
-                            (it.isAged10to17()) * alter_10bis17 +
-                            (it.tourtyp_work()) * tourtyp_work +
-                            (it.tag_sa()) * tag_sa +
-                            (it.tag_so()) * tag_so +
-                            (it.dauer_akt_in_tour_2bis4std()) * dauer_akt_in_tour_2bis4std +
-                            (it.dauer_akt_in_tour_4bis6std()) * dauer_akt_in_tour_4bis6std +
-                            (it.dauer_akt_in_tour_6bis8std()) * dauer_akt_in_tour_6bis8std +
-                            (it.dauer_akt_in_tour_8bis10std()) * dauer_akt_in_tour_8bis10std +
-                            (it.dauer_akt_in_tour_10bis12std()) * dauer_akt_in_tour_10bis12std +
-                            (it.dauer_akt_vorht_tag_1bis120()) * dauer_akt_vorht_tag_1bis120 +
-                            (it.std_start_T1_6_7_Uhr()) * std_start_T1_6_7_Uhr +
-                            (it.std_start_T1_7_8_Uhr()) * std_start_T1_7_8_Uhr
-                }
-            }.multinomialLogit("Whether the tour should use a previously determined tour start or not").build(ParametersStep10A)
+            option(true) { 0.0 }
+            option(false) {
+                base +
+                        (it.anztourenvorhaupttour()) * anztourenvorhaupttour +
+                        (it.anztourennachhaupttour()) * anztourennachhaupttour +
+                        (it.tourhat1akt()) * tourhat1akt +
+                        (it.isAged10to17()) * alter_10bis17 +
+                        (it.tourtyp_work()) * tourtyp_work +
+                        (it.tag_sa()) * tag_sa +
+                        (it.tag_so()) * tag_so +
+                        (it.dauer_akt_in_tour_2bis4std()) * dauer_akt_in_tour_2bis4std +
+                        (it.dauer_akt_in_tour_4bis6std()) * dauer_akt_in_tour_4bis6std +
+                        (it.dauer_akt_in_tour_6bis8std()) * dauer_akt_in_tour_6bis8std +
+                        (it.dauer_akt_in_tour_8bis10std()) * dauer_akt_in_tour_8bis10std +
+                        (it.dauer_akt_in_tour_10bis12std()) * dauer_akt_in_tour_10bis12std +
+                        (it.dauer_akt_vorht_tag_1bis120()) * dauer_akt_vorht_tag_1bis120 +
+                        (it.std_start_T1_6_7_Uhr()) * std_start_T1_6_7_Uhr +
+                        (it.std_start_T1_7_8_Uhr()) * std_start_T1_7_8_Uhr
+            }
+        }.multinomialLogit("Whether the tour should use a previously determined tour start or not")
+            .build(ParametersStep10A)
 
     override fun usePreferredTourStart(input: MobilityPlanInputs, preferredHistogram: ArrayHistogram): Boolean {
         val relevantActivities = setOf(ActivityType.WORK, ActivityType.EDUCATION)

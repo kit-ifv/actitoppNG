@@ -3,7 +3,6 @@ package edu.kit.ifv.mobitopp.actitopp.steps
 
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.modernization.DayStructure
-import edu.kit.ifv.mobitopp.actitopp.modernization.DurationDay
 import java.time.DayOfWeek
 
 interface DayAttributes {

@@ -95,7 +95,7 @@ val DefaultHomeParameters = HomeDaySet.create(
  * parameter structure.
  */
 data class HomeDaySet(
-    override val parameters: List<HomeDayParameters>
+    override val parameters: List<HomeDayParameters>,
 ) : WeekRoutineParameterSet<HomeDayParameters>, List<HomeDayParameters> by parameters {
     companion object {
         fun create(
@@ -121,6 +121,7 @@ data class HomeDaySet(
         }
     }
 }
+
 /**
  * This class contains the parameters for the utility function to determine the amount of home days in the week routine.
  * @param base The default parameter.

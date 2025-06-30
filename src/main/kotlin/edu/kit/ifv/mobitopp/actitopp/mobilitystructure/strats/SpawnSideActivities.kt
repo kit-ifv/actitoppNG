@@ -21,7 +21,8 @@ class StandardImplementation(val rng: RNGHelper) : SpawnSideActivities {
             day.trackedElements().forEach { indexedTour ->
                 val originalTour = indexedTour.element
 
-                val plan = plannedAmounts[indexedTour] ?: throw NoSuchElementException("There should be calculated tour amounts for $indexedTour")
+                val plan = plannedAmounts[indexedTour]
+                    ?: throw NoSuchElementException("There should be calculated tour amounts for $indexedTour")
                 val (precursors, successors) = activityTypeGeneration.generateSecondaryActivityTypes(
                     SecondaryActInput(
                         day,

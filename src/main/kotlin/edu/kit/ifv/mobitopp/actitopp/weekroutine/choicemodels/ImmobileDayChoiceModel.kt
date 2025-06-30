@@ -5,8 +5,8 @@ import discreteChoice.utility.multinomialLogit
 import edu.kit.ifv.mobitopp.actitopp.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.forOptions
 import edu.kit.ifv.mobitopp.actitopp.utils.times
-import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.HomeDaySet
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.DefaultHomeParameters
+import edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters.HomeDaySet
 
 /**
  * The choice model for selecting the amount of immobile days in the week routine. An immobile day is a day consisting

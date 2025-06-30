@@ -32,6 +32,7 @@ data class ShoppingDaySet(
         }
     }
 }
+
 /**
  * This class contains the parameters for the utility function to determine the amount of shopping days in the week routine.
  * @param base The default parameter.
@@ -58,6 +59,7 @@ data class ShoppingDayParameters(
     val amountOfEducationDays: Double,
     val amountOfLeisureDays: Double,
 )
+
 /**
  * The original parameter set for the amount of shopping days, taken from mop14_withpkwhh. Originally called 1DParams.
  */

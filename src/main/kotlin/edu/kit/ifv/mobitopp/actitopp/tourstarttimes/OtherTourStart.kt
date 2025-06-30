@@ -40,7 +40,6 @@ private val standardUtilityFunction10S: ParameterStep10S.(MainDurationAlternativ
 }
 
 
-
 class TourStartByHistogramsRelative<P>(
     private val rng: RNGHelper,
     private val startTimeHistograms: ActivityDurationHistograms<P>,

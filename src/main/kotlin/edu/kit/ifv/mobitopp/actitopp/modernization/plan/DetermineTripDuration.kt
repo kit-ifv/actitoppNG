@@ -82,6 +82,7 @@ class StandardCommuteDurations(private val standardTripDuration: Duration = 15.m
             else -> 21.kmh
         }
     }
+
     private fun IPerson.hasWorkCommuteInfo() = commutingdistanceWork != 0.0
 
     private fun IPerson.hasEducationCommuteInfo() = commutingdistanceEducation != 0.0

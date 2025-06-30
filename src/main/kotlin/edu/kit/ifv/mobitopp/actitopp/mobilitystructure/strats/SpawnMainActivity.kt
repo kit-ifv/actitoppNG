@@ -23,7 +23,7 @@ class SpawnWithRespect(val rng: RNGHelper) : SpawnMainActivity {
                 choices = availableOptions,
                 random = rng,
 
-            ) { DayAlternative(it, mobilityStructure.weekRoutine, nextDay.weekday) }
+                ) { DayAlternative(it, mobilityStructure.weekRoutine, nextDay.weekday) }
         mobilityStructure.add(nextDay, activityType)
 
     }

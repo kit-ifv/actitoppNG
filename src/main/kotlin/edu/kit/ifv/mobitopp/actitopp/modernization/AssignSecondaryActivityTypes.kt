@@ -5,7 +5,6 @@ import edu.kit.ifv.mobitopp.actitopp.RNGHelper
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.choicemodels.sideActivityChoiceModel
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.parameters.SideActivitySet
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.ActivityAlternative
 import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalIndexedValue
 import edu.kit.ifv.mobitopp.actitopp.utils.Position

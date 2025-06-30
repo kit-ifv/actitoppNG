@@ -2,8 +2,6 @@ package edu.kit.ifv.mobitopp.actitopp.timebudgets.choicemodels
 
 import edu.kit.ifv.mobitopp.actitopp.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.HistogramSelection
-import edu.kit.ifv.mobitopp.actitopp.timebudgets.WorkChoiceAlternative
-import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.LeisureBudgetParameters
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.parameters.LeisureBudgets
 import edu.kit.ifv.mobitopp.actitopp.utilityFunctions.forOptions
 import edu.kit.ifv.mobitopp.actitopp.utils.times

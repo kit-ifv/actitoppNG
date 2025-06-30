@@ -2,8 +2,8 @@ package edu.kit.ifv.mobitopp.actitopp.timebudgets
 
 import edu.kit.ifv.mobitopp.actitopp.IPerson
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
-import edu.kit.ifv.mobitopp.actitopp.enums.Category
 import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
+import edu.kit.ifv.mobitopp.actitopp.enums.Category
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.choicemodels.educationHistograms
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.choicemodels.leisureHistograms
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.choicemodels.shoppingHistograms
@@ -93,7 +93,6 @@ data class TimeBudgets(
 }
 
 
-
 class HistogramPerActivity(
     val workHistograms: HistogramSelection,
     val educationHistograms: HistogramSelection,
@@ -161,7 +160,7 @@ class HistogramPerActivity(
 
         /**
          * To indicate that a given category does not occur in the plan of a person. If an activity does not occur
-         * the time available is 0. 
+         * the time available is 0.
          */
         private val NO_TIME: Pair<Duration, Category> = Duration.ZERO to Category.NONE_CHOSEN
     }

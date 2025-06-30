@@ -37,7 +37,7 @@ data class TransportBudgetSet(
     val parameters: List<TransportBudgetParameters>,
 
 
-    ): List<TransportBudgetParameters> by parameters {
+    ) : List<TransportBudgetParameters> by parameters {
     companion object {
         fun create(
             category2: TransportBudgetParameters,

@@ -48,7 +48,11 @@ class MutableTourStructure(
     }
 
     override fun toString(): String {
-        return "${precursors().joinToString { it.toString().first().toString() }} [${mainElement().symbol()}] ${successors().joinToString { it.symbol() }}"
+        return "${
+            precursors().joinToString {
+                it.toString().first().toString()
+            }
+        } [${mainElement().symbol()}] ${successors().joinToString { it.symbol() }}"
     }
 
     fun toPlan(

@@ -10,7 +10,7 @@ import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.shenanigans.DayAlternativ
 import edu.kit.ifv.mobitopp.actitopp.utils.times
 
 val mainActivityChoiceModel =
-    DiscreteStructure<ActivityType, DayAlternative, DayMainActivitySet>{
+    DiscreteStructure<ActivityType, DayAlternative, DayMainActivitySet> {
 
         option(ActivityType.WORK, parameters = { work }, {
             (if (it.isEmployedAnywhere() && it.isStandardWorkingDay()) 1.3 else 1.0) * standardUtilityFunction(

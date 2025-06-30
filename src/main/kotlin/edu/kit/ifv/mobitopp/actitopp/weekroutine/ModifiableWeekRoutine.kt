@@ -1,6 +1,5 @@
 package edu.kit.ifv.mobitopp.actitopp.weekroutine
 
-import edu.kit.ifv.mobitopp.actitopp.enums.ActivityType
 import kotlinx.serialization.Serializable
 import kotlin.properties.Delegates
 

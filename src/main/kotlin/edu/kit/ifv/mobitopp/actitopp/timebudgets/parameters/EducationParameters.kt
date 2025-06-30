@@ -60,7 +60,7 @@ val EducationBudget = EducationBudgetSet.create(
 
 data class EducationBudgetSet(
     val parameters: List<EducationBudgetParameters>,
-) : List<EducationBudgetParameters> by parameters{
+) : List<EducationBudgetParameters> by parameters {
     companion object {
         fun create(
             category1: EducationBudgetParameters,

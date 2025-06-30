@@ -176,6 +176,7 @@ open class ArrayHistogram protected constructor(
 
         return (selectionIndex + offset).minutes
     }
+
     fun select(random: Random, bounds: ClosedRange<Duration>) = select(random.nextDouble(), bounds)
     fun select(randomNumber: Double, bounds: ClosedRange<Duration>) =
         select(randomNumber, bounds.start, bounds.endInclusive)
@@ -233,13 +234,16 @@ open class ArrayHistogram protected constructor(
                 )
         }
 
-        fun fromFolder(path: Path = Path("src/main/resources/edu/kit/ifv/mobitopp/actitopp/mopv14_withpkwhh"), identifier: Identifier): List<ArrayHistogram> {
+        fun fromFolder(
+            path: Path = Path("src/main/resources/edu/kit/ifv/mobitopp/actitopp/mopv14_withpkwhh"),
+            identifier: Identifier,
+        ): List<ArrayHistogram> {
             return path.listDirectoryEntries("*${identifier.id}*").map { fromPath(it) }
         }
     }
 
     override fun equals(other: Any?): Boolean {
-        if(other !is ArrayHistogram) return false
+        if (other !is ArrayHistogram) return false
         return categoryIndex == other.categoryIndex &&
                 offset == other.offset &&
                 probabilities.contentEquals(other.probabilities)

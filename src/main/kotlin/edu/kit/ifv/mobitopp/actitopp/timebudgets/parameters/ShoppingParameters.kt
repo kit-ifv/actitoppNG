@@ -59,7 +59,7 @@ data class ShoppingBudgetSet(
     val parameters: List<ShoppingBudgetParameters>,
 
 
-    ): List<ShoppingBudgetParameters> by parameters {
+    ) : List<ShoppingBudgetParameters> by parameters {
     companion object {
         fun create(
             category1: ShoppingBudgetParameters,

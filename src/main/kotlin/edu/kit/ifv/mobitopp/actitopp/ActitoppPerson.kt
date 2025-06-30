@@ -29,6 +29,7 @@ data class PersonAttributes(
         }
     }
 }
+
 class ActitoppPerson(
     override val household: ActiToppHousehold,
     val attributes: PersonAttributes,
@@ -40,7 +41,7 @@ class ActitoppPerson(
 
     override val age: Int = attributes.age
     override val commutingdistanceWork: Double = attributes.commuteDistanceWork ?: .0
-    override val commutingdistanceEducation: Double = attributes.commuteDistanceEducation ?:.0
+    override val commutingdistanceEducation: Double = attributes.commuteDistanceEducation ?: .0
 
     override val maxCommute: Double =
         max(commutingdistanceWork, commutingdistanceEducation)

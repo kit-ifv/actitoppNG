@@ -14,7 +14,7 @@ class TourStartWithPreference<P>(
     override val preferredTourStart: ArrayHistogram? = null,
     private val strategy: UsePreferredTourStart,
 
-) :
+    ) :
     SelectTourStartWithPreference {
     override fun selectStartTime(input: MobilityPlanInputs, preferredTourStart: ArrayHistogram?): Duration {
         val bounds = input.dayPlan.startTimeBoundsFor(input.tourPlan)

@@ -4,7 +4,7 @@ package edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters
  * A collection of parameters for the choice of amount of work days to be placed within a week routine.
  */
 data class WorkDaySet(
-    override val parameters: List<WorkDayParameters>
+    override val parameters: List<WorkDayParameters>,
 ) : WeekRoutineParameterSet<WorkDayParameters>, List<WorkDayParameters> by parameters {
 
     companion object {

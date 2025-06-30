@@ -3,14 +3,15 @@ package edu.kit.ifv.mobitopp.actitopp.enums
 import kotlinx.serialization.Serializable
 import java.util.Collections
 import java.util.EnumSet
+
 @Serializable
 enum class ActivityType(val defaultActivityTime: Int = 278) {
     EDUCATION(340),
     HOME(),
-    LEISURE( 130),
-    SHOPPING( 41),
-    TRANSPORT( 15),
-    WORK( 472);
+    LEISURE(130),
+    SHOPPING(41),
+    TRANSPORT(15),
+    WORK(472);
 
 
     companion object {
@@ -36,5 +37,6 @@ enum class ActivityType(val defaultActivityTime: Int = 278) {
         )
 
     }
+
     fun symbol() = toString().first().toString()
 }

@@ -16,7 +16,6 @@ class ActiToppHousehold(
 ) : IHousehold {
 
 
-
     override val id: Int = ID
     override fun amountOfYoungMinors(): Int = numMinorsUpTo10
     override fun amountOfAllMinors() = numMinorsBelow18

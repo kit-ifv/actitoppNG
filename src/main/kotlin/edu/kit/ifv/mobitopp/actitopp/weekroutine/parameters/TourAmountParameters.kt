@@ -7,10 +7,11 @@ data class TourAmountSet(
 
     ) : List<TourAmountParameters> by parameters {
     companion object {
-        fun create(option2: TourAmountParameters,
-                   option3: TourAmountParameters,
-                   option4: TourAmountParameters,
-                   ) : TourAmountSet {
+        fun create(
+            option2: TourAmountParameters,
+            option3: TourAmountParameters,
+            option4: TourAmountParameters,
+        ): TourAmountSet {
             return TourAmountSet(listOf(option2, option3, option4))
         }
     }

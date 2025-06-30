@@ -18,17 +18,17 @@ import edu.kit.ifv.mobitopp.actitopp.plandurations.choicemodels.LEAD
 import edu.kit.ifv.mobitopp.actitopp.plandurations.choicemodels.MAJOR
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.FinalizedActivityPattern
 import edu.kit.ifv.mobitopp.actitopp.timebudgets.HistogramPerActivity
-import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.choicemodels.SECOND_TOUR_HISTOGRAM
+import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.PreferredStartViaChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.StandardPreferredTourStart
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.TourStartByHistogramsRelative
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.TourStartWithPreference
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.UsePreferredTourStart
-import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.PreferredStartViaChoiceModel
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.assignFirstTourStarts
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.assignPreferredTourStart
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.assignRemainingTourStarts
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.assignSecondTourStarts
 import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.choicemodels.FIRST_TOUR_HISTOGRAM
+import edu.kit.ifv.mobitopp.actitopp.tourstarttimes.choicemodels.SECOND_TOUR_HISTOGRAM
 import edu.kit.ifv.mobitopp.actitopp.weekroutine.generateWeekRoutine
 
 
@@ -53,7 +53,10 @@ class DefaultPlanGeneration : MobilityPlanGeneration {
     }
 }
 
-class StandardStructureGeneration(val rng: RNGHelper, private val histograms: HistogramPerActivity = HistogramPerActivity.DEFAULT) : MobilityPlanGeneration {
+class StandardStructureGeneration(
+    val rng: RNGHelper,
+    private val histograms: HistogramPerActivity = HistogramPerActivity.DEFAULT,
+) : MobilityPlanGeneration {
     private val sideActivityStrategy = StandardImplementation(rng)
     private val spawnMainActivities = SpawnWeek(rng)
     private val spawnSideTours: SpawnSideTours = LegacySpawnSideTours(rng)

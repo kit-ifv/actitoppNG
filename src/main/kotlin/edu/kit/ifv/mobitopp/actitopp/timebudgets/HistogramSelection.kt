@@ -17,7 +17,8 @@ open class HistogramSelection(
     val choices = choiceModel.choices
     val converter: (ArrayHistogram, FinalizedActivityPattern, IPerson) -> WorkChoiceAlternative =
         { a, f, p ->
-            WorkChoiceAlternative(a, f, p) }
+            WorkChoiceAlternative(a, f, p)
+        }
 
     /**
      * Select a histogram from the options registered in the choice model, for a given [FinalizedActivityPattern] and
@@ -62,7 +63,9 @@ open class HistogramSelection(
             }
             val choiceModel = DiscreteStructure(lambda).multinomialLogit(name).build(parameter)
             require(choiceModel.choices.containsAll(inputs)) {
-                "The choice model [${choiceModel.name}] has not defined a utility function for ${inputs.toSet().subtract(choiceModel.choices)} \n" +
+                "The choice model [${choiceModel.name}] has not defined a utility function for ${
+                    inputs.toSet().subtract(choiceModel.choices)
+                } \n" +
                         "since this is most likely undesired behaviour the program will terminate."
             }
             return HistogramSelection(choiceModel)

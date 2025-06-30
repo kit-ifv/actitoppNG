@@ -109,6 +109,7 @@ class ModifiableDayStructure(override val startTimeDay: DurationDay, mainTourStr
             addSuccessor(MutableTourStructure(it))
         }
     }
+
     override fun amountOfPrecursorElements(): Int = precursors().size
     override fun amountOfSuccessorElements(): Int = successors().size
     override fun amountOfElements(): Int = size

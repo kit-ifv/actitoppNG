@@ -28,4 +28,4 @@ val educationDaysChoiceModel = DiscreteStructure<Int, PersonAlternative, Educati
         0.0
     }
 }.multinomialLogit("Amount of education days in week routine")
-.build(DefaultEducationParameters)
+    .build(DefaultEducationParameters)

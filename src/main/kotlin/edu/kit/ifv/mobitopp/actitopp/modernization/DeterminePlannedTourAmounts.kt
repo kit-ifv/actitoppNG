@@ -1,7 +1,6 @@
 package edu.kit.ifv.mobitopp.actitopp.modernization
 
 import edu.kit.ifv.mobitopp.actitopp.RNGHelper
-import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitopp.mobilitystructure.strats.subsubTourAmount.DayAmountTracker
 import edu.kit.ifv.mobitopp.actitopp.utils.BidirectionalIndexedValue
 

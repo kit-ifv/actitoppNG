@@ -159,7 +159,7 @@ val ParametersStep9A = ParameterCollectionStep9A.create(
 
 data class ParameterCollectionStep9A(
     val parameters: List<ParameterStep9A>,
-): List<ParameterStep9A> by parameters {
+) : List<ParameterStep9A> by parameters {
 
 
     companion object {
@@ -218,15 +218,15 @@ data class ParameterStep9A(
 
 class StandardPreferredTourStart(private val rng: RNGHelper) : PersonPreferredTourStart {
     private val choiceModel =
-        DiscreteStructure<ArrayHistogram, MainDurationAlternative, ParameterCollectionStep9A>{
+        DiscreteStructure<ArrayHistogram, MainDurationAlternative, ParameterCollectionStep9A> {
 
-                bulkList(
-                    FIRST_TOUR_HISTOGRAM.histograms
-                ) {
-                    standardUtilityFunction9A(this, it)
-                }
+            bulkList(
+                FIRST_TOUR_HISTOGRAM.histograms
+            ) {
+                standardUtilityFunction9A(this, it)
+            }
 
-            }.multinomialLogit("Determine preferred histogram for the first tour of the day").build(ParametersStep9A)
+        }.multinomialLogit("Determine preferred histogram for the first tour of the day").build(ParametersStep9A)
 
     override fun determinePreferredTourStart(input: MobilityPlanInputs): ArrayHistogram {
 

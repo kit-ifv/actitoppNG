@@ -65,8 +65,12 @@ open class ActivityDurationHistograms<P>(
         val previousHistogram = histograms.getOrNull(index - 1)
         val nextHistogram = histograms.getOrNull(index + 1)
 
-        val choices = listOfNotNull(previousHistogram, mainHistogram, nextHistogram).filter { it.intersects(bounds) }.map(converter).toSet()
-        return choiceModel.selectInjected(choices, injections = mapOf(mainHistogram to {d: Double -> d *1.1 } ), random)
+        val choices = listOfNotNull(previousHistogram, mainHistogram, nextHistogram).filter { it.intersects(bounds) }
+            .map(converter).toSet()
+        return choiceModel.selectInjected(
+            choices,
+            injections = mapOf(mainHistogram to { d: Double -> d * 1.1 }),
+            random)
 
     }
 
@@ -179,7 +183,7 @@ fun durationHistogramsFromResourcePath(
 
 }
 
-fun <P:List<T>, T> P.generateHistogram(
+fun <P : List<T>, T> P.generateHistogram(
     histograms: List<ArrayHistogram>,
     utilityFunction: T.(MainDurationAlternative) -> Double,
 ): ActivityDurationHistograms<P> {

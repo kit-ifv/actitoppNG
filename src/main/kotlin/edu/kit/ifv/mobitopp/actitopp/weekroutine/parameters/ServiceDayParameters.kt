@@ -5,30 +5,33 @@ package edu.kit.ifv.mobitopp.actitopp.weekroutine.parameters
  * parameter structure.
  */
 data class ServiceDaySet(
-    override val parameters: List<ServiceDayParameters>
+    override val parameters: List<ServiceDayParameters>,
 ) : WeekRoutineParameterSet<ServiceDayParameters>, List<ServiceDayParameters> by parameters {
     companion object {
-        fun create(option1: ServiceDayParameters,
-                   option2: ServiceDayParameters,
-                   option3: ServiceDayParameters,
-                   option4: ServiceDayParameters,
-                   option5: ServiceDayParameters,
-                   option6: ServiceDayParameters,
-                   option7: ServiceDayParameters,): ServiceDaySet {
+        fun create(
+            option1: ServiceDayParameters,
+            option2: ServiceDayParameters,
+            option3: ServiceDayParameters,
+            option4: ServiceDayParameters,
+            option5: ServiceDayParameters,
+            option6: ServiceDayParameters,
+            option7: ServiceDayParameters,
+        ): ServiceDaySet {
             return ServiceDaySet(
                 listOf(
                     option1,
-                            option2,
-                            option3,
-                            option4,
-                            option5,
-                            option6,
-                            option7,
+                    option2,
+                    option3,
+                    option4,
+                    option5,
+                    option6,
+                    option7,
                 )
             )
         }
     }
 }
+
 /**
  * This class contains the parameters for the utility function to determine the amount of service days in the week routine.
  * @param base The default parameter.
@@ -56,6 +59,7 @@ data class ServiceDayParameters(
     val householdHasChildren: Double,
     val isMale: Double,
 )
+
 /**
  * The original parameter set for the amount of service days, taken from mop14_withpkwhh. Originally called 1EParams.
  */
