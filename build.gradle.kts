@@ -11,7 +11,7 @@ version = if (project.hasProperty("next-version")) {
 } else {
     "0.0-SNAPSHOT"
 }
-version = "0.9.1"
+version = "0.9.2"
 
 tasks.wrapper {
     gradleVersion = "6.3"
