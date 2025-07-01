@@ -7,7 +7,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.utilityFunctions.forOptions
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 
 
-val transportHistograms = HistogramSelection.createChoiceModelFromFiles(
+val transportHistograms = HistogramSelection.createChoiceModelFromResource(
     identifier = Identifier.TRANSPORT_TIME_BUDGETS,
     parameter = TransportBudgets,
     name = "Histogram selection for time budgets for transport"

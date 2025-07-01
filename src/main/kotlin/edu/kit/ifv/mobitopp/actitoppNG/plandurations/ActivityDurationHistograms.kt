@@ -152,35 +152,25 @@ class TaintedActivityDurationHistograms<P>(
     }
 }
 
-enum class Identifier(val id: String) {
+enum class Identifier(val id: String, val resourceName: String) {
 
-    WORK_TIME_BUDGETS("7B"),
-    EDUCATION_TIME_BUDGETS("7D"),
-    LEISURE_TIME_BUDGETS("7F"),
-    SHOPPING_TIME_BUDGETS("7H"),
-    TRANSPORT_TIME_BUDGETS("7J"),
+    WORK_TIME_BUDGETS("7B", "workBudgetHistograms"),
+    EDUCATION_TIME_BUDGETS("7D", "educationBudgetHistograms"),
+    LEISURE_TIME_BUDGETS("7F", "leisureBudgetHistograms"),
+    SHOPPING_TIME_BUDGETS("7H", "shoppingBudgetHistograms"),
+    TRANSPORT_TIME_BUDGETS("7J", "transportBudgetHistograms"),
 
-    LEAD_ACTIVITY_DURATION("8C"),
-    MAJOR_ACTIVITY_DURATION("8E"),
-    MINOR_ACTIVITY_DURATION("8K"),
+    LEAD_ACTIVITY_DURATION("8C", "leadActivityDurationHistograms"),
+    MAJOR_ACTIVITY_DURATION("8E", "majorActivityDurationHistograms"),
+    MINOR_ACTIVITY_DURATION("8K", "minorActivityDurationHistograms"),
 
-    FIRST_TOUR_START_TIME("10N"),
-    SECOND_TOUR_START_TIME("10P"),
-    OTHER_TOUR_START_TIME("10T")
-}
+    FIRST_TOUR_START_TIME("10N", "firstTourStartHistograms"),
+    SECOND_TOUR_START_TIME("10P", "secondTourStartHistograms"),
+    OTHER_TOUR_START_TIME("10T", "otherTourStartHistograms");
 
-fun durationHistogramsFromResourcePath(
-    identifier: Identifier,
-    path: Path = Path("src/main/resources/edu/kit/ifv/mobitopp/actitoppNG/mopv14_withpkwhh"),
-): List<ArrayHistogram> {
-
-    val globPattern = "${identifier.id}_KAT_*.csv"
-    return path.listDirectoryEntries(globPattern).sortedBy {
-        it.name.removePrefix("${identifier.id}_KAT_")
-            .removeSuffix(".csv")
-            .toInt()
-    }.map { ArrayHistogram.fromPath(it) }
-
+    fun resourcePath(): String {
+        return resourceName
+    }
 }
 
 fun <P : List<T>, T> P.generateHistogram(

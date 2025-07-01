@@ -2,8 +2,8 @@ package edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.choicemodels
 
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.MainDurationAlternative
-import edu.kit.ifv.mobitopp.actitoppNG.plandurations.durationHistogramsFromResourcePath
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.generateHistogram
+import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParameterStep10O
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParametersStep10O
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
@@ -43,6 +43,9 @@ private val standardUtilityFunction10O: ParameterStep10O.(MainDurationAlternativ
 
 
 val SECOND_TOUR_HISTOGRAM = ParametersStep10O.generateHistogram(
-    durationHistogramsFromResourcePath(Identifier.SECOND_TOUR_START_TIME),
+    ArrayHistogram.fromResource(
+
+        identifier = Identifier.SECOND_TOUR_START_TIME
+    ),
     standardUtilityFunction10O
 )

@@ -8,7 +8,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 
 
 val shoppingHistograms by lazy {
-    HistogramSelection.createChoiceModelFromFiles(
+    HistogramSelection.createChoiceModelFromResource(
         identifier = Identifier.SHOPPING_TIME_BUDGETS,
         parameter = ShoppingBudgets,
         name = "Histogram selection for time budget for shopping"

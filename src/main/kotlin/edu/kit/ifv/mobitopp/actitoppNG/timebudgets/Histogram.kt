@@ -7,6 +7,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.utils.ceilWholeMinutes
 import edu.kit.ifv.mobitopp.actitoppNG.utils.indexBinarySearch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import kotlinx.serialization.json.Json
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.exists
@@ -235,10 +236,23 @@ open class ArrayHistogram protected constructor(
         }
 
         fun fromFolder(
-            path: Path = Path("src/main/resources/edu/kit/ifv/mobitopp/actitopp/mopv14_withpkwhh"),
+            path: Path = Path("src/main/resources/edu/kit/ifv/mobitopp/actitoppNG/mopv14_withpkwhh"),
             identifier: Identifier,
         ): List<ArrayHistogram> {
-            return path.listDirectoryEntries("*${identifier.id}*").map { fromPath(it) }
+            return path.listDirectoryEntries("*${identifier.id}*").map { fromPath(it) }.sortedBy { it.categoryIndex }
+        }
+
+        fun fromResource(resourcePath: String): List<ArrayHistogram> {
+            val inputStream = ArrayHistogram::class.java.getResourceAsStream(resourcePath)
+                ?: throw NoSuchElementException("Resource of $resourcePath does not exist")
+
+            return inputStream.reader().use {
+                Json.decodeFromString(it.readText())
+            }
+        }
+
+        fun fromResource(identifier: Identifier, prefix: String = "mop14_withpkwhh"): List<ArrayHistogram> {
+            return fromResource("/$prefix/${identifier.resourcePath()}.json")
         }
     }
 

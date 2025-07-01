@@ -7,7 +7,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.utilityFunctions.forOptions
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 
 val workHistograms by lazy {
-    HistogramSelection.createChoiceModelFromFiles(
+    HistogramSelection.createChoiceModelFromResource(
         identifier = Identifier.WORK_TIME_BUDGETS,
         parameter = WorkBudgets,
         name = "Selection of histogram for work activities."

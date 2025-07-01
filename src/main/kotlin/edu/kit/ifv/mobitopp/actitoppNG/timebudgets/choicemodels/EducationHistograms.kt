@@ -1,14 +1,18 @@
 package edu.kit.ifv.mobitopp.actitoppNG.timebudgets.choicemodels
 
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
+import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.HistogramSelection
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.EducationBudget
 import edu.kit.ifv.mobitopp.actitoppNG.utilityFunctions.forOptions
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
+import kotlinx.serialization.json.Json
+import kotlin.io.path.Path
+import kotlin.io.path.writeText
 
 
 val educationHistograms by lazy {
-    HistogramSelection.createChoiceModelFromFiles(
+    HistogramSelection.createChoiceModelFromResource(
         identifier = Identifier.EDUCATION_TIME_BUDGETS,
         parameter = EducationBudget,
         name = "Histogram selection for education duration"
@@ -29,4 +33,3 @@ val educationHistograms by lazy {
         }
     }
 }
-

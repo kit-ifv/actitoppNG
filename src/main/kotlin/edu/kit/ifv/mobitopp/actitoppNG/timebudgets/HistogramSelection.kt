@@ -39,7 +39,6 @@ open class HistogramSelection(
 
     companion object {
 
-
         /**
          * Creates the histogram selection by parsing all files that match the specified identifier as given by [Identifier]
          * The construction of the choice model takes into account the parameter object and the parsed inputs, which are
@@ -58,6 +57,23 @@ open class HistogramSelection(
             val inputs = ArrayHistogram.fromFolder(path, identifier)
 
 
+            return createChoiceModel(inputs, parameter, name, structure)
+        }
+        fun <P> createChoiceModelFromResource(
+            prefix: String = "mop14_withpkwhh",
+            identifier: Identifier,
+            parameter: P,
+            name: String,
+            structure: DiscreteStructure<ArrayHistogram, WorkChoiceAlternative, P>.(List<ArrayHistogram>) -> Unit
+        ): HistogramSelection {
+            val inputs = ArrayHistogram.fromResource(identifier, prefix)
+            return createChoiceModel(inputs, parameter, name, structure)
+        }
+        fun <P> createChoiceModel(
+            inputs: List<ArrayHistogram>,
+            parameter: P, name: String,
+            structure: DiscreteStructure<ArrayHistogram, WorkChoiceAlternative, P>.(List<ArrayHistogram>) -> Unit,
+        ): HistogramSelection {
             val lambda: DiscreteStructure<ArrayHistogram, WorkChoiceAlternative, P>.() -> Unit = {
                 structure(this, inputs)
             }

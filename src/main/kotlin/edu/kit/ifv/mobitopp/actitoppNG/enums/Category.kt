@@ -14,7 +14,7 @@ import kotlinx.serialization.Serializable
  */
 @JvmInline
 @Serializable
-value class Category(private val category: Int) {
+value class Category(private val category: Int): Comparable<Category> {
     // To collect all comparisons against the category to simplify changing to a 0 based index sometime
     fun matches(index: Int): Boolean {
         return category == index
@@ -26,4 +26,13 @@ value class Category(private val category: Int) {
     }
 
     fun toInt() = category
+
+    /**
+     * Compares this object with the specified object for order. Returns zero if this object is equal
+     * to the specified [other] object, a negative number if it's less than [other], or a positive number
+     * if it's greater than [other].
+     */
+    override fun compareTo(other: Category): Int {
+        return category.compareTo(other.category)
+    }
 }

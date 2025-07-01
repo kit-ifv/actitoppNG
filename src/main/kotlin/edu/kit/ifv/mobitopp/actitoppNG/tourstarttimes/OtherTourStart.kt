@@ -5,8 +5,8 @@ import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInput
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.ActivityDurationHistograms
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.MainDurationAlternative
-import edu.kit.ifv.mobitopp.actitoppNG.plandurations.durationHistogramsFromResourcePath
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.generateHistogram
+import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParameterCollectionStep10S
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParameterStep10S
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParametersStep10S
@@ -63,6 +63,8 @@ class TourStartByHistogramsRelative<P>(
 
 
 val OTHER_TOUR_HISTOGRAM = ParametersStep10S.generateHistogram(
-    durationHistogramsFromResourcePath(Identifier.OTHER_TOUR_START_TIME),
+    ArrayHistogram.fromResource(
+        identifier = Identifier.OTHER_TOUR_START_TIME
+    ),
     standardUtilityFunction10S
 )

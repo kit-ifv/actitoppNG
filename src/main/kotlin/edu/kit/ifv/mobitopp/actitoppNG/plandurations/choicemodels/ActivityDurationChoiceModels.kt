@@ -2,7 +2,6 @@ package edu.kit.ifv.mobitopp.actitoppNG.plandurations.choicemodels
 
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.MainDurationAlternative
-import edu.kit.ifv.mobitopp.actitoppNG.plandurations.durationHistogramsFromResourcePath
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.generateHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterStep8B
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterStep8D
@@ -10,6 +9,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterStep8J
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParametersStep8B
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParametersStep8D
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParametersStep8J
+import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 
 
@@ -120,14 +120,20 @@ private val standardUtilityFunction8B: ParameterStep8B.(MainDurationAlternative)
             (it.tourliegtnachhaupttour()) * tourliegtnachhaupttour
 }
 val MINOR = ParametersStep8J.generateHistogram(
-    durationHistogramsFromResourcePath(Identifier.MINOR_ACTIVITY_DURATION),
-    minorFunction
+    ArrayHistogram.fromResource(
+        identifier = Identifier.MINOR_ACTIVITY_DURATION
+    ),
+    minorFunction,
 )
 val MAJOR = ParametersStep8D.generateHistogram(
-    durationHistogramsFromResourcePath(Identifier.MAJOR_ACTIVITY_DURATION),
+    ArrayHistogram.fromResource(
+        identifier = Identifier.MAJOR_ACTIVITY_DURATION
+    ),
     standardUtilityFunction8D,
 )
 val LEAD = ParametersStep8B.generateHistogram(
-    durationHistogramsFromResourcePath(Identifier.LEAD_ACTIVITY_DURATION),
+    ArrayHistogram.fromResource(
+        identifier = Identifier.LEAD_ACTIVITY_DURATION
+    ),
     standardUtilityFunction8B,
 )
