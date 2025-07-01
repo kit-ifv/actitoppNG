@@ -67,6 +67,9 @@ open class ActivityDurationHistograms<P>(
 
         val choices = listOfNotNull(previousHistogram, mainHistogram, nextHistogram).filter { it.intersects(bounds) }
             .map(converter).toSet()
+        require(choices.isNotEmpty()) {
+            "The choice set is empty, this happens because the duration is $duration and the bounds $bounds, ${histograms.map { it.toString() }}"
+        }
         return choiceModel.selectInjected(
             choices,
             injections = mapOf(mainHistogram to { d: Double -> d * 1.1 }),
