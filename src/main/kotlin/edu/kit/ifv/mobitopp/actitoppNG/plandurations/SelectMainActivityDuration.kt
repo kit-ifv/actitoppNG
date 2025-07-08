@@ -29,21 +29,25 @@ class StickySelector<P>(
 
         val useStandardDuration =
             input.tourMainActivityType in fixedTypes && useStandardDuration.getAssignedStandardDuration(input)
+        // If the mean activity duration does not fit the remaining bounds of the day, we need to default.
+        val meanActivityDurationFitsBounds = input.budgetFitsIntoBounds()
         return input.run {
 
             when {
 
-                useStandardDuration -> calculateFixedAndTarnish(this)
+                useStandardDuration && meanActivityDurationFitsBounds -> calculateFixedAndTarnish(this)
                 else -> calculateDefault(this)
             }
         }
     }
-
+    fun MobilityPlanInputs.budgetFitsIntoBounds(): Boolean {
+        return dayPlan.getBudget(tourMainActivityType) in dayPlan.activityDurationBounds(activity)
+    }
     fun calculateFixedAndTarnish(input: MobilityPlanInputs): Duration {
         return input.run {
             val meanActivityDuration = dayPlan.getBudget(tourMainActivityType)
-            val bounds = dayPlan.activityDurationBounds(input.activity)
-            taintedHistogramMap[input.activity.activityType]?.selectAndTaint(
+            val bounds = dayPlan.activityDurationBounds(activity)
+            taintedHistogramMap[activity.activityType]?.selectAndTaint(
                 rng,
                 bounds,
                 meanActivityDuration
