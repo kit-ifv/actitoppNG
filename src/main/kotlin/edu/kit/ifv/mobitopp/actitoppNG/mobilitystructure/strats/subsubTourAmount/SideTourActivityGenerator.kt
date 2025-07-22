@@ -1,16 +1,16 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.strats.subsubTourAmount
 
-import discreteChoice.EnumeratedDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.step5AWithParams
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.step5BWithParams
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourPrecursorSet
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourSuccessorSet
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.TourAlternativeInt
+import edu.kit.ifv.mobitopp.discretechoice.models.FixedChoiceModel
 
 abstract class SideTourActivityGenerator<P>(
     val rngHelper: RNGHelper,
-    val choiceModel: EnumeratedDiscreteChoiceModel<Int, TourAlternativeInt, P>,
+    val choiceModel: FixedChoiceModel<Int, TourAlternativeInt>,
 ) : GenerateSideTourActivities {
     override fun generateActivityAmount(input: SideTourActivityInput): Int {
 
@@ -19,7 +19,7 @@ abstract class SideTourActivityGenerator<P>(
 
         val converter: (Int) -> TourAlternativeInt = {
             TourAlternativeInt(
-                it,
+
                 input.person,
                 input.routine,
                 input.currentDay,
@@ -27,7 +27,17 @@ abstract class SideTourActivityGenerator<P>(
                 input.amountOfActivitiesBeforeMainAct
             )
         }
-        return choiceModel.select(options, rngHelper, converter)
+        return context(
+            TourAlternativeInt(
+                input.person,
+                input.routine,
+                input.currentDay,
+                input.tour,
+                input.amountOfActivitiesBeforeMainAct
+            ), rngHelper
+        ) {
+            choiceModel.select(options)
+        }
     }
 }
 

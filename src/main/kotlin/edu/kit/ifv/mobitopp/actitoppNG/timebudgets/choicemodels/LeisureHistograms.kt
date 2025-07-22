@@ -3,8 +3,8 @@ package edu.kit.ifv.mobitopp.actitoppNG.timebudgets.choicemodels
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.HistogramSelection
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.LeisureBudgets
-import edu.kit.ifv.mobitopp.actitoppNG.utilityFunctions.forOptions
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
+import edu.kit.ifv.mobitopp.discretechoice.structure.loadFromList
 
 
 val leisureHistograms by lazy {
@@ -13,7 +13,7 @@ val leisureHistograms by lazy {
         parameter = LeisureBudgets,
         name = "Histogram selection for time budget for leisure"
     ) { histograms ->
-        forOptions(histograms - histograms[3]) {
+        loadFromList(histograms - histograms[3]) {_, it ->
             base +
                     (it.amountOfWorkActivitiesInWeek()) * anzakt_woche_w +
                     (it.amountOfLeisureActivitiesInWeek()) * anzakt_woche_l +

@@ -5,8 +5,8 @@ package edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters
  * parameter structure.
  */
 data class LeisureDaySet(
-    override val parameters: List<LeisureDayParameters>,
-) : WeekRoutineParameterSet<LeisureDayParameters>, List<LeisureDayParameters> by parameters {
+    override val parameters: Map<Int, LeisureDayParameters>,
+) : WeekRoutineParameterSet<LeisureDayParameters>, Map<Int, LeisureDayParameters> by parameters {
     companion object {
         fun create(
             option1: LeisureDayParameters,
@@ -18,14 +18,14 @@ data class LeisureDaySet(
             option7: LeisureDayParameters,
         ): LeisureDaySet {
             return LeisureDaySet(
-                listOf(
-                    option1,
-                    option2,
-                    option3,
-                    option4,
-                    option5,
-                    option6,
-                    option7,
+                mapOf(
+                    1 to option1,
+                    2 to option2,
+                    3 to option3,
+                    4 to option4,
+                    5 to option5,
+                    6 to option6,
+                    7 to option7,
                 )
             )
         }

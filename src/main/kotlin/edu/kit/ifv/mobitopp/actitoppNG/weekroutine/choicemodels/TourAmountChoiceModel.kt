@@ -1,12 +1,12 @@
 package edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels
 
-import discreteChoice.structure.DiscreteStructure
-import discreteChoice.utility.multinomialLogit
+import edu.kit.ifv.discretechoice.extensions.optionsIndexed
 import edu.kit.ifv.mobitopp.actitoppNG.steps.PersonAlternative
-import edu.kit.ifv.mobitopp.actitoppNG.utilityFunctions.forOptions
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.DefaultTourAmountParameters
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.TourAmountSet
+import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
+import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
 
 /**
  * The choice model for selecting the average amount of tours per day in the week routine. The default option of 1
@@ -16,7 +16,7 @@ val tourAmountChoiceModel = DiscreteStructure<Int, PersonAlternative, TourAmount
     option(1) {
         0.0
     }
-    forOptions(2..4) {
+    optionsIndexed(2..4) { _, it ->
         base +
                 (it.isFulltimeEmployee()) * employmentFulltime +
                 (it.isParttimeEmployee()) * employmentParttime +

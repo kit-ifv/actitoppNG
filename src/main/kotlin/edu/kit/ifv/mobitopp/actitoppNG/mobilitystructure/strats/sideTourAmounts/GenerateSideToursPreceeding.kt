@@ -1,16 +1,16 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.strats.sideTourAmounts
 
-import discreteChoice.EnumeratedDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.precursorAmountChoiceModel
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.PrecursorTourAmountSet
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.PreviousDayAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.ModifiablePlannedTourAmounts
+import edu.kit.ifv.mobitopp.discretechoice.models.FixedChoiceModel
 
 
 class GenerateSideToursPreceeding(
     rngHelper: RNGHelper,
-    choiceModel: EnumeratedDiscreteChoiceModel<Int, PreviousDayAlternative, PrecursorTourAmountSet> = precursorAmountChoiceModel,
+    choiceModel: FixedChoiceModel<Int, PreviousDayAlternative> = precursorAmountChoiceModel,
 ) : DefaultSideTourDeterminer<PrecursorTourAmountSet>(rngHelper, choiceModel) {
 
 

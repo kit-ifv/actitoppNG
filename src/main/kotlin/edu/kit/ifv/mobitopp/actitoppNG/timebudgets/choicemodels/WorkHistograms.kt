@@ -3,8 +3,8 @@ package edu.kit.ifv.mobitopp.actitoppNG.timebudgets.choicemodels
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.HistogramSelection
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.WorkBudgets
-import edu.kit.ifv.mobitopp.actitoppNG.utilityFunctions.forOptions
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
+import edu.kit.ifv.mobitopp.discretechoice.structure.loadFromList
 
 val workHistograms by lazy {
     HistogramSelection.createChoiceModelFromResource(
@@ -12,7 +12,7 @@ val workHistograms by lazy {
         parameter = WorkBudgets,
         name = "Selection of histogram for work activities."
     ) { histograms ->
-        forOptions(histograms - histograms[6]) {
+        loadFromList(histograms - histograms[6]) { _,it ->
             base +
                     (it.amountOfWorkActivitiesInWeek()) * anzakt_woche_w +
                     (it.amountOfEducationActivitiesInWeek()) * anzakt_woche_e +

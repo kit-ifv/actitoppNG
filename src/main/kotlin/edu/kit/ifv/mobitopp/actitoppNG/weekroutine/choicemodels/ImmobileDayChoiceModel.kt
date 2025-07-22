@@ -1,12 +1,13 @@
 package edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels
 
-import discreteChoice.structure.DiscreteStructure
-import discreteChoice.utility.multinomialLogit
+import edu.kit.ifv.discretechoice.extensions.loadOptionsMap
+import edu.kit.ifv.discretechoice.extensions.optionsIndexed
 import edu.kit.ifv.mobitopp.actitoppNG.steps.PersonAlternative
-import edu.kit.ifv.mobitopp.actitoppNG.utilityFunctions.forOptions
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.DefaultHomeParameters
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.HomeDaySet
+import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
+import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
 
 /**
  * The choice model for selecting the amount of immobile days in the week routine. An immobile day is a day consisting
@@ -14,7 +15,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.HomeDaySet
  */
 val homeDaysChoiceModel =
     DiscreteStructure<Int, PersonAlternative, HomeDaySet> {
-        forOptions(1..7) {
+        loadOptionsMap(1..7) { _, it ->
             base +
                     (it.isNotEarningMoney()) * employmentNotEarning +
                     (it.isRetired()) * employmentRetired +

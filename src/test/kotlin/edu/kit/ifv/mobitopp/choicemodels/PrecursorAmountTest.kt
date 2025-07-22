@@ -12,8 +12,8 @@ class PrecursorAmountTest: ChoiceModelTest<Int, PreviousDayAlternative>(precurso
     override val name: String = "precursorAmountChoiceModel"
     override val serializer: KSerializer<Int> = Int.serializer()
 
-    override fun converter(option: Int): PreviousDayAlternative {
-        return PreviousDayAlternative(option,
+    override fun converter(): PreviousDayAlternative {
+        return PreviousDayAlternative(
             day = randomDayStructure(inputRandom),
             previousResults = randomPlannedTourAmounts(inputRandom),
             personWithRoutine = randomPersonWithRoutine(inputRandom),

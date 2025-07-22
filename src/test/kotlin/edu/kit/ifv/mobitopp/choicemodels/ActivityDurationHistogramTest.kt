@@ -11,7 +11,6 @@ import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.OTHER_TOUR_HISTOGRAM
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.choicemodels.FIRST_TOUR_HISTOGRAM
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.choicemodels.SECOND_TOUR_HISTOGRAM
 import edu.kit.ifv.mobitopp.actitoppNG.randomMobilityPlanInput
-import edu.kit.ifv.mobitopp.actitoppNG.utilityFunctions.select
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -28,8 +27,8 @@ abstract class ActivityDurationHistogramTest(activityDurationHistograms: Activit
     ChoiceModelTest<ArrayHistogram, MainDurationAlternative>(activityDurationHistograms.choiceModel) {
     override val serializer: KSerializer<ArrayHistogram> = ArrayHistogramIdOnlySerializer
 
-    override fun converter(option: ArrayHistogram): MainDurationAlternative {
-        return MainDurationAlternative(option, randomMobilityPlanInput(inputRandom))
+    override fun converter(): MainDurationAlternative {
+        return MainDurationAlternative(randomMobilityPlanInput(inputRandom))
     }
 
     override fun compareAgainstData(): Collection<DynamicTest> {
@@ -37,7 +36,10 @@ abstract class ActivityDurationHistogramTest(activityDurationHistograms: Activit
         val expected: List<ArrayHistogram> = Json.decodeFromString(listSerializer, path.readText())
         return expected.withIndex().map { (i, element) ->
             DynamicTest.dynamicTest("$name $i") {
-                assertEquals(element.categoryIndex, choiceModel.select(random = selectRandom, ::converter).categoryIndex)
+                context(converter(), selectRandom) {
+                    assertEquals(element.categoryIndex, choiceModel.select().categoryIndex)
+                }
+
             }
 
         }

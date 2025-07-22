@@ -1,25 +1,26 @@
 package edu.kit.ifv.mobitopp.choicemodels
 
-import discreteChoice.EnumeratedDiscreteChoiceModel
+
 import edu.kit.ifv.mobitopp.actitoppNG.randomPersonWithRoutine
 import edu.kit.ifv.mobitopp.actitoppNG.steps.PersonAlternative
+import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.activityAmountChoiceModel
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.defaultWorkDayChoiceModel
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.educationDaysChoiceModel
-import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.leisureDaysChoiceModel
-import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.shoppingDaysChoiceModel
-import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.serviceDaysChoiceModel
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.homeDaysChoiceModel
+import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.leisureDaysChoiceModel
+import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.serviceDaysChoiceModel
+import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.shoppingDaysChoiceModel
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.tourAmountChoiceModel
-import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.activityAmountChoiceModel
+import edu.kit.ifv.mobitopp.discretechoice.models.FixedChoiceModel
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.serializer
 
-abstract class RoutineTest(choiceModel: EnumeratedDiscreteChoiceModel<Int, PersonAlternative, *>):
+abstract class RoutineTest(choiceModel: FixedChoiceModel<Int, PersonAlternative>):
     ChoiceModelTest<Int, PersonAlternative>(choiceModel) {
     override val serializer: KSerializer<Int> = Int.serializer()
-        override fun converter(option: Int): PersonAlternative {
+        override fun converter(): PersonAlternative {
             val (person, routine)  = randomPersonWithRoutine(inputRandom)
-            return PersonAlternative(option, routine,  person)
+            return PersonAlternative( routine,  person)
     }
 }
 

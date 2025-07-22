@@ -18,12 +18,9 @@ class SpawnWithRespect(val rng: RNGHelper) : SpawnMainActivity {
             mobilityStructure.weekRoutine,
             mainActivityChoiceModel.choices
         )
-        val activityType =
-            mainActivityChoiceModel.select(
-                choices = availableOptions,
-                random = rng,
-
-                ) { DayAlternative(it, mobilityStructure.weekRoutine, nextDay.weekday) }
+        val activityType = context(DayAlternative(mobilityStructure.weekRoutine, nextDay.weekday), rng) {
+            mainActivityChoiceModel.select(availableOptions)
+        }
         mobilityStructure.add(nextDay, activityType)
 
     }

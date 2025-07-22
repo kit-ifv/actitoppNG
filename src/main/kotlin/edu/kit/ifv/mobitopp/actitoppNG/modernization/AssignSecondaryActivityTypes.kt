@@ -1,6 +1,5 @@
 package edu.kit.ifv.mobitopp.actitoppNG.modernization
 
-import discreteChoice.EnumeratedDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.PersonWithRoutine
@@ -8,6 +7,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.sideActivi
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.ActivityAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.utils.BidirectionalIndexedValue
 import edu.kit.ifv.mobitopp.actitoppNG.utils.Position
+import edu.kit.ifv.mobitopp.discretechoice.models.FixedChoiceModel
 
 data class SecondaryActInput(
     val dayStructure: DayStructure,
@@ -27,7 +27,7 @@ class TrackedSecondaryActivities(
     private val mobilityStructure: MobilityStructure,
 
     val rngHelper: RNGHelper,
-    private val choiceModel: EnumeratedDiscreteChoiceModel<ActivityType, ActivityAlternative, *> = sideActivityChoiceModel,
+    private val choiceModel: FixedChoiceModel<ActivityType, ActivityAlternative> = sideActivityChoiceModel,
 ) : AssignSecondaryActivityTypes {
     val personWithRoutine: PersonWithRoutine = mobilityStructure.weekRoutine
     override fun generateSecondaryActivityTypes(input: SecondaryActInput):
@@ -52,14 +52,16 @@ class TrackedSecondaryActivities(
                 if (day.shouldNotBeEducationDay(routine)) availableOptions.remove(
                     ActivityType.EDUCATION
                 )
-                val converter: (ActivityType) -> ActivityAlternative = {
+
+                context(
                     ActivityAlternative(
-                        it, personWithRoutine,
+                        personWithRoutine,
                         input.dayStructure,
                         input.tourStructure, position, input.plannedTourAmounts
-                    )
+                    ), rngHelper
+                ) {
+                    choiceModel.select(availableOptions)
                 }
-                choiceModel.select(availableOptions, rngHelper, converter)
             }
         }
     }

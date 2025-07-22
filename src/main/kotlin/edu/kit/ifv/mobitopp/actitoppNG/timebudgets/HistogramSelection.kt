@@ -1,23 +1,22 @@
 package edu.kit.ifv.mobitopp.actitoppNG.timebudgets
 
-import discreteChoice.EnumeratedDiscreteChoiceModel
-import discreteChoice.structure.DiscreteStructure
-import discreteChoice.utility.multinomialLogit
 import edu.kit.ifv.mobitopp.actitoppNG.Person
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
-import edu.kit.ifv.mobitopp.actitoppNG.utilityFunctions.select
+import edu.kit.ifv.mobitopp.discretechoice.models.FixedChoiceModel
+import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
+import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.random.Random
 
 open class HistogramSelection(
-    val choiceModel: EnumeratedDiscreteChoiceModel<ArrayHistogram, WorkChoiceAlternative, *>,
+    val choiceModel: FixedChoiceModel<ArrayHistogram, WorkChoiceAlternative>,
 ) {
 
     val choices = choiceModel.choices
     val converter: (ArrayHistogram, FinalizedActivityPattern, Person) -> WorkChoiceAlternative =
         { a, f, p ->
-            WorkChoiceAlternative(a, f, p)
+            WorkChoiceAlternative( f, p)
         }
 
     /**
@@ -29,10 +28,10 @@ open class HistogramSelection(
         finalizedActivityPattern: FinalizedActivityPattern,
         person: Person,
     ): ArrayHistogram {
-
-        return choiceModel.select(random) {
-            converter(it, finalizedActivityPattern, person)
+        return context(WorkChoiceAlternative(finalizedActivityPattern, person), random) {
+            choiceModel.select()
         }
+
 
     }
 

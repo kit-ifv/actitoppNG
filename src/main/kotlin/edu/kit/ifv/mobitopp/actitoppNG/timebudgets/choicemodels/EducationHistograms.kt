@@ -1,14 +1,10 @@
 package edu.kit.ifv.mobitopp.actitoppNG.timebudgets.choicemodels
 
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
-import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.HistogramSelection
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.EducationBudget
-import edu.kit.ifv.mobitopp.actitoppNG.utilityFunctions.forOptions
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
-import kotlinx.serialization.json.Json
-import kotlin.io.path.Path
-import kotlin.io.path.writeText
+import edu.kit.ifv.mobitopp.discretechoice.structure.loadFromList
 
 
 val educationHistograms by lazy {
@@ -17,7 +13,9 @@ val educationHistograms by lazy {
         parameter = EducationBudget,
         name = "Histogram selection for education duration"
     ) { histograms ->
-        forOptions(histograms - histograms[3]) {
+        loadFromList(histograms - histograms[3]) {_, it ->
+
+
             base +
                     (it.amountOfWorkActivitiesInWeek()) * anzakt_woche_w +
                     (it.amountOfEducationActivitiesInWeek()) * anzakt_woche_e +

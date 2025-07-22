@@ -35,8 +35,6 @@ class TourStartWithPreference<P>(
             }
 
         }
-        return startTimeHistograms.select(rng, bounds) {
-            MainDurationAlternative(it, input)
-        }
+        return startTimeHistograms.select(rng, bounds, MainDurationAlternative(input))
     }
 }

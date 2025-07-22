@@ -22,12 +22,13 @@ class AssignMinorActivityDuration(
         return input.run {
             val bounds = dayPlan.activityDurationBounds(activity)
 
-            histogram.select(rngHelper, bounds) {
+            histogram.select(
+                rngHelper, bounds,
                 MainDurationAlternative(
-                    choice = it,
                     this
                 )
-            }
+            )
+
         }
 
 

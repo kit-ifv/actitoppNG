@@ -1,7 +1,6 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans
 
 
-import discreteChoice.models.ChoiceAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitoppNG.steps.DayAttributes
@@ -23,18 +22,14 @@ data class PersonAndRoutineFrom(
 ) : PersonAndRoutineAttributes, RoutineAttributes by routine, PersonAttributes by person
 
 class DayAlternative private constructor(
-    override val choice: ActivityType,
-
     private val personAttributesFromElement: PersonAndRoutineAttributes,
     private val dayAttributesFromElement: DayAttributes,
     private val householdAttributesFromElement: HouseholdAttributes,
-) :
-    ChoiceAlternative<ActivityType>(), PersonAttributes by personAttributesFromElement,
+) :  PersonAttributes by personAttributesFromElement,
     RoutineAttributes by personAttributesFromElement,
     DayAttributes by dayAttributesFromElement,
     HouseholdAttributes by householdAttributesFromElement {
-    constructor(choice: ActivityType, personRoutine: PersonWithRoutine, week: DayOfWeek) : this(
-        choice,
+    constructor( personRoutine: PersonWithRoutine, week: DayOfWeek) : this(
         PersonAndRoutineFrom(personRoutine),
         DayAttributesFromWeekday(week),
         HouseholdAttributesFromElement(personRoutine.household)

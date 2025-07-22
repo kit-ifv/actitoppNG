@@ -14,7 +14,7 @@ class MainActivityTest() : ChoiceModelTest<ActivityType, DayAlternative>(mainAct
 
     override val name: String = "mainActivityChoiceModel"
 
-    override fun converter(option: ActivityType): DayAlternative {
-        return DayAlternative(option, randomPersonWithRoutine(inputRandom), DayOfWeek.entries.random(inputRandom))
+    override fun converter(): DayAlternative {
+        return DayAlternative( randomPersonWithRoutine(inputRandom), DayOfWeek.entries.random(inputRandom))
     }
 }

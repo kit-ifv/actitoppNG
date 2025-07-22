@@ -13,10 +13,10 @@ class SideTourActivityTest : ChoiceModelTest<ActivityType, TourAlternative>(tour
     override val name: String = "tourMainActivityChoiceModel"
     override val serializer: KSerializer<ActivityType> = ActivityType.serializer()
 
-    override fun converter(option: ActivityType): TourAlternative {
+    override fun converter(): TourAlternative {
         val randomDayStructure = randomDayStructure(inputRandom)
         val (person, routine) = randomPersonWithRoutine(inputRandom)
-        return TourAlternative(option, person, routine, randomDayStructure, tourAttributes = RandomTourPosAttr(inputRandom))
+        return TourAlternative( person, routine, randomDayStructure, tourAttributes = RandomTourPosAttr(inputRandom))
     }
 }
 

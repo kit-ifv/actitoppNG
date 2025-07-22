@@ -1,15 +1,15 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.strats.sideTourAmounts
 
-import discreteChoice.EnumeratedDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.successorAmountChoiceModel
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SuccessorTourAmountSet
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.PreviousDayAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.ModifiablePlannedTourAmounts
+import edu.kit.ifv.mobitopp.discretechoice.models.FixedChoiceModel
 
 class GenerateSideToursFollowing(
     rngHelper: RNGHelper,
-    choiceModel: EnumeratedDiscreteChoiceModel<Int, PreviousDayAlternative, SuccessorTourAmountSet> = successorAmountChoiceModel,
+    choiceModel: FixedChoiceModel<Int, PreviousDayAlternative> = successorAmountChoiceModel,
 
     ) : DefaultSideTourDeterminer<SuccessorTourAmountSet>(rngHelper, choiceModel) {
 

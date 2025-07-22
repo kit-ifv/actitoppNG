@@ -1,21 +1,21 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels
 
-import discreteChoice.structure.DiscreteStructure
-import discreteChoice.utility.multinomialLogit
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DefaultSideActivityParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideActivityParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideActivitySet
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.ActivityAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
+import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
+import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
 
 val sideActivityChoiceModel =
     DiscreteStructure<ActivityType, ActivityAlternative, SideActivitySet> {
-        option(ActivityType.WORK, parameters = { work }) { standardUtilityFunction(this, it) }
-        option(ActivityType.EDUCATION, parameters = { education }) { standardUtilityFunction(this, it) }
+        option(ActivityType.WORK, parameters = { work }) { standardUtilityFunction(this, it.second) }
+        option(ActivityType.EDUCATION, parameters = { education }) { standardUtilityFunction(this, it.second) }
         option(ActivityType.LEISURE) { 0.0 }
-        option(ActivityType.SHOPPING, parameters = { shopping }) { standardUtilityFunction(this, it) }
-        option(ActivityType.TRANSPORT, parameters = { transport }) { standardUtilityFunction(this, it) }
+        option(ActivityType.SHOPPING, parameters = { shopping }) { standardUtilityFunction(this, it.second) }
+        option(ActivityType.TRANSPORT, parameters = { transport }) { standardUtilityFunction(this, it.second) }
 
     }.multinomialLogit("Determine Activity type of secondary activities.").build(DefaultSideActivityParameters)
 private val standardUtilityFunction: SideActivityParameters.(ActivityAlternative) -> Double = {

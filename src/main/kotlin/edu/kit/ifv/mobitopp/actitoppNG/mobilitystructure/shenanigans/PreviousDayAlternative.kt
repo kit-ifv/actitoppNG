@@ -1,7 +1,6 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans
 
 
-import discreteChoice.models.ChoiceAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.DurationDay
@@ -38,26 +37,23 @@ class PlannedTourMap(
 }
 
 class PreviousDayAlternative private constructor(
-    override val choice: Int,
     val previousDayAttributes: PreviousDayAttributes,
     val pAttr: PersonAndRoutineAttributes,
     val plannedTourAttributes: PartialTourLayoutAttributes,
     val structureAttributes: DayStructureAttributes,
     val householdAttributes: HouseholdAttributes,
-) : ChoiceAlternative<Int>(), PreviousDayAttributes by previousDayAttributes,
+) : PreviousDayAttributes by previousDayAttributes,
     PersonAndRoutineAttributes by pAttr, PartialTourLayoutAttributes by plannedTourAttributes,
     DayStructureAttributes by structureAttributes,
     HouseholdAttributes by householdAttributes {
 
 
     constructor(
-        choice: Int,
         day: DayStructure,
         previousResults: PlannedTourAmounts?,
         personWithRoutine: PersonWithRoutine,
         plannedPrecursorTours: Int,
     ) : this(
-        choice = choice,
         previousDayAttributes = PreviousDayAttributesNumeric(
             dayStructure = day,
             plannedTourAmounts = previousResults

@@ -1,7 +1,6 @@
 package edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes
 
-import discreteChoice.structure.DiscreteStructure
-import discreteChoice.utility.multinomialLogit
+
 import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInputs
@@ -9,8 +8,9 @@ import edu.kit.ifv.mobitopp.actitoppNG.plandurations.BooleanDecisionWithPreferen
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParameterStep10A
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParametersStep10A
-import edu.kit.ifv.mobitopp.actitoppNG.utilityFunctions.select
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
+import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
+import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
 
 /**
  * This implementation of [UsePreferredTourStart] utilizes a choice model to evaluate whether a tour should use the
@@ -29,7 +29,7 @@ class PreferredStartViaChoiceModel(private val rngKeeper: RNGHelper) : UsePrefer
     private val choiceModel =
         DiscreteStructure<Boolean, BooleanDecisionWithPreferenceCategory, ParameterStep10A> {
             option(true) { 0.0 }
-            option(false) {
+            option(false) {_, it ->
                 base +
                         (it.anztourenvorhaupttour()) * anztourenvorhaupttour +
                         (it.anztourennachhaupttour()) * anztourennachhaupttour +
@@ -54,11 +54,10 @@ class PreferredStartViaChoiceModel(private val rngKeeper: RNGHelper) : UsePrefer
         val relevantActivities = setOf(ActivityType.WORK, ActivityType.EDUCATION)
         if (!input.person.isAnywayEmployed() && !input.person.isinEducation()) return false
         if (input.tourMainActivityType !in relevantActivities) return false
-        val converter: (Boolean) -> BooleanDecisionWithPreferenceCategory = {
-            BooleanDecisionWithPreferenceCategory(it, input, preferredHistogram)
+        return context(BooleanDecisionWithPreferenceCategory(input, preferredHistogram), rngKeeper) {
+            choiceModel.select()
         }
 
-        return choiceModel.select(rngKeeper, converter)
 
 
     }

@@ -1,8 +1,7 @@
 package edu.kit.ifv.mobitopp.choicemodels
 
 
-import discreteChoice.EnumeratedDiscreteChoiceModel
-import discreteChoice.models.ChoiceAlternative
+import edu.kit.ifv.mobitopp.discretechoice.models.FixedChoiceModel
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
@@ -13,11 +12,10 @@ import kotlin.io.path.readText
 import kotlin.io.path.writeText
 import kotlin.random.Random
 import kotlin.test.assertEquals
-import edu.kit.ifv.mobitopp.actitoppNG.utilityFunctions.select
 
 private val RESOURCE_PATH = Path("src/test/resources/choicemodels")
-abstract class ChoiceModelTest<X : Any, SIT : ChoiceAlternative<X>>(
-    protected val choiceModel: EnumeratedDiscreteChoiceModel<X, SIT, *>
+abstract class ChoiceModelTest<X : Any, SIT >(
+    protected val choiceModel: FixedChoiceModel<X, SIT>
 ) {
     // Rng to create the input data for the test runs
     protected val inputRandom = Random(1)
@@ -25,13 +23,15 @@ abstract class ChoiceModelTest<X : Any, SIT : ChoiceAlternative<X>>(
     // Rng for the selection
     protected val selectRandom = Random(1)
     abstract val name: String
-    abstract fun converter(option: X): SIT
+    abstract fun converter(): SIT
     abstract val serializer: KSerializer<X>
     val listSerializer by lazy {  ListSerializer(serializer)}
     fun writeResults() {
-        val output = (0..<1000).map {
-            choiceModel.select(random = selectRandom, ::converter)
+
+        val output = context(converter(), selectRandom) {
+             (0..<1000).map { choiceModel.select() }
         }
+
 
         val jsonstring = Json.encodeToString(listSerializer, output)
         RESOURCE_PATH.resolve(name).writeText(jsonstring)
@@ -43,7 +43,11 @@ abstract class ChoiceModelTest<X : Any, SIT : ChoiceAlternative<X>>(
         val expected: List<X> = Json.decodeFromString(listSerializer, path.readText())
         return expected.withIndex().map { (i, element) ->
             DynamicTest.dynamicTest("$name $i") {
-                assertEquals(element, choiceModel.select(random= selectRandom, ::converter))
+
+                context(converter(), selectRandom) {
+                    assertEquals(element, choiceModel.select())
+                }
+
             }
 
         }

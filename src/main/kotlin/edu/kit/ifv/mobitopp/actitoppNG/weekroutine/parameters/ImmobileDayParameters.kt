@@ -95,8 +95,8 @@ val DefaultHomeParameters = HomeDaySet.create(
  * parameter structure.
  */
 data class HomeDaySet(
-    override val parameters: List<HomeDayParameters>,
-) : WeekRoutineParameterSet<HomeDayParameters>, List<HomeDayParameters> by parameters {
+    override val parameters: Map<Int, HomeDayParameters>,
+) : WeekRoutineParameterSet<HomeDayParameters>, Map<Int, HomeDayParameters> by parameters {
     companion object {
         fun create(
             option1: HomeDayParameters,
@@ -108,14 +108,14 @@ data class HomeDaySet(
             option7: HomeDayParameters,
         ): HomeDaySet {
             return HomeDaySet(
-                listOf(
-                    option1,
-                    option2,
-                    option3,
-                    option4,
-                    option5,
-                    option6,
-                    option7,
+                mapOf(
+                    1 to option1,
+                    2 to option2,
+                    3 to option3,
+                    4 to option4,
+                    5 to option5,
+                    6 to option6,
+                    7 to option7,
                 )
             )
         }

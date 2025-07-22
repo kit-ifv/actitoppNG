@@ -1,15 +1,15 @@
 package edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes
 
-import discreteChoice.structure.DiscreteStructure
-import discreteChoice.structure.bulkList
-import discreteChoice.utility.multinomialLogit
+
 import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.MainDurationAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.choicemodels.FIRST_TOUR_HISTOGRAM
-import edu.kit.ifv.mobitopp.actitoppNG.utilityFunctions.select
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
+import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
+import edu.kit.ifv.mobitopp.discretechoice.structure.loadFromList
+import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
 
 interface PersonPreferredTourStart {
 
@@ -220,9 +220,9 @@ class StandardPreferredTourStart(private val rng: RNGHelper) : PersonPreferredTo
     private val choiceModel =
         DiscreteStructure<ArrayHistogram, MainDurationAlternative, ParameterCollectionStep9A> {
 
-            bulkList(
+            loadFromList(
                 FIRST_TOUR_HISTOGRAM.histograms
-            ) {
+            ) { _, it ->
                 standardUtilityFunction9A(this, it)
             }
 
@@ -230,7 +230,9 @@ class StandardPreferredTourStart(private val rng: RNGHelper) : PersonPreferredTo
 
     override fun determinePreferredTourStart(input: MobilityPlanInputs): ArrayHistogram {
 
-        val converter: (ArrayHistogram) -> MainDurationAlternative = { MainDurationAlternative(it, input) }
-        return choiceModel.select(rng, converter)
+        return context(MainDurationAlternative(input), rng) {
+            choiceModel.select()
+        }
+
     }
 }

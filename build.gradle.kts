@@ -1,6 +1,6 @@
 plugins {
-    kotlin("jvm") version "2.1.20"
-    kotlin("plugin.serialization") version "2.1.20"
+    kotlin("jvm") version "2.2.0"
+    kotlin("plugin.serialization") version "2.2.0"
     id("maven-publish")
     id("org.jetbrains.dokka") version "1.9.10"
 }
@@ -11,10 +11,15 @@ version = if (project.hasProperty("next-version")) {
 } else {
     "0.0-SNAPSHOT"
 }
-version = "0.9.5"
 
 tasks.wrapper {
     gradleVersion = "6.3"
+}
+kotlin {
+    jvmToolchain(21)
+    compilerOptions {
+        freeCompilerArgs.add("-Xcontext-parameters")
+    }
 }
 
 repositories {
@@ -29,7 +34,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("edu.kit.ifv.mobitopp:kotlin-units:0.0.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
-    implementation("edu.kit.ifv.mobitopp:discrete-choice:0.0.2")
+    implementation("edu.kit.ifv.mobitopp:discrete-choice:0.1.1")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.0")
     testImplementation(kotlin("test"))

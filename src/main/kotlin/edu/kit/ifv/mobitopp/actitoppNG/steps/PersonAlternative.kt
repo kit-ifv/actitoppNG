@@ -1,6 +1,5 @@
 package edu.kit.ifv.mobitopp.actitoppNG.steps
 
-import discreteChoice.models.ChoiceAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.Person
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Gender
@@ -73,16 +72,15 @@ class PersonAttributesFromElement(val person: Person) : PersonAttributes {
 
 
 class PersonAlternative private constructor(
-    override val choice: Int,
+
     private val weekRoutine: WeekRoutine,
     val person: Person,
     attributes: PersonAttributesFromElement,
     householdAttributes: HouseholdAttributes,
-) : ChoiceAlternative<Int>(), PersonAttributes by attributes, HouseholdAttributes by householdAttributes {
+) : PersonAttributes by attributes, HouseholdAttributes by householdAttributes {
 
 
-    constructor(choice: Int, weekRoutine: WeekRoutine, person: Person) : this(
-        choice,
+    constructor(weekRoutine: WeekRoutine, person: Person) : this(
         weekRoutine,
         person,
         PersonAttributesFromElement(person),

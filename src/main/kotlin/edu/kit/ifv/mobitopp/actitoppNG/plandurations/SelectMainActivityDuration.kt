@@ -40,9 +40,11 @@ class StickySelector<P>(
             }
         }
     }
+
     fun MobilityPlanInputs.budgetFitsIntoBounds(): Boolean {
         return dayPlan.getBudget(tourMainActivityType) in dayPlan.activityDurationBounds(activity)
     }
+
     fun calculateFixedAndTarnish(input: MobilityPlanInputs): Duration {
         return input.run {
             val meanActivityDuration = dayPlan.getBudget(tourMainActivityType)
@@ -50,13 +52,8 @@ class StickySelector<P>(
             taintedHistogramMap[activity.activityType]?.selectAndTaint(
                 rng,
                 bounds,
-                meanActivityDuration
-            ) {
-                MainDurationAlternative(
-                    it,
-                    this
-                )
-            } ?: throw NoSuchElementException("There are no tainted histograms for ${input.activity.activityType}")
+                meanActivityDuration, MainDurationAlternative(this)
+            ) ?: throw NoSuchElementException("There are no tainted histograms for ${input.activity.activityType}")
 
         }
     }
@@ -67,13 +64,9 @@ class StickySelector<P>(
             val bounds = dayPlan.activityDurationBounds(tourPlan.mainActivity)
             taintedHistogramMap[input.activity.activityType]?.select(
                 rng,
-                bounds
-            ) {
-                MainDurationAlternative(
-                    it,
-                    this
-                )
-            } ?: throw NoSuchElementException("There are no tainted histograms for ${input.activity.activityType}")
+                bounds,
+                MainDurationAlternative(this)
+            ) ?: throw NoSuchElementException("There are no tainted histograms for ${input.activity.activityType}")
         }
     }
 }

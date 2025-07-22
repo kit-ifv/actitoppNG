@@ -9,8 +9,8 @@ import kotlinx.serialization.builtins.serializer
 class UseStandardDurationTest: ChoiceModelTest<Boolean, BooleanDecisionAlternative>(firstActivityUsesStandardDuration) {
     override val name: String = "useStandardDuration"
 
-    override fun converter(option: Boolean): BooleanDecisionAlternative {
-        return BooleanDecisionAlternative(option, randomMobilityPlanInput(inputRandom))
+    override fun converter(): BooleanDecisionAlternative {
+        return BooleanDecisionAlternative( randomMobilityPlanInput(inputRandom))
     }
 
     override val serializer: KSerializer<Boolean> = Boolean.serializer()

@@ -1,10 +1,9 @@
 package edu.kit.ifv.mobitopp.actitoppNG.plandurations
 
-import discreteChoice.EnumeratedDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.choicemodels.firstActivityUsesStandardDuration
-import edu.kit.ifv.mobitopp.actitoppNG.utilityFunctions.select
+import edu.kit.ifv.mobitopp.discretechoice.models.FixedChoiceModel
 
 
 fun interface StandardDuration {
@@ -13,15 +12,16 @@ fun interface StandardDuration {
 
 class UtilityFunctionAssignment(
     val rngHelper: RNGHelper,
-    private val choiceModel: EnumeratedDiscreteChoiceModel<Boolean, BooleanDecisionAlternative, *> = firstActivityUsesStandardDuration,
+    private val choiceModel: FixedChoiceModel<Boolean, BooleanDecisionAlternative> = firstActivityUsesStandardDuration,
 ) : StandardDuration {
     override fun getAssignedStandardDuration(input: MobilityPlanInputs): Boolean {
 
         val converter: (Boolean) -> BooleanDecisionAlternative = {
-            BooleanDecisionAlternative(it, input)
+            BooleanDecisionAlternative(input)
         }
-
-        return choiceModel.select(rngHelper, converter)
+        return context(BooleanDecisionAlternative(input), rngHelper) {
+            choiceModel.select()
+        }
     }
 
 }

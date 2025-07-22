@@ -1,6 +1,5 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.strats.sideTourAmounts
 
-import discreteChoice.EnumeratedDiscreteChoiceModel
 import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.PreviousDayAlternative
@@ -8,11 +7,12 @@ import edu.kit.ifv.mobitopp.actitoppNG.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.ModifiablePlannedTourAmounts
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.PlannedTourAmounts
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.WeekRoutine
+import edu.kit.ifv.mobitopp.discretechoice.models.FixedChoiceModel
 import kotlin.math.max
 
 abstract class DefaultSideTourDeterminer<P>(
     val rngHelper: RNGHelper,
-    val choiceModel: EnumeratedDiscreteChoiceModel<Int, PreviousDayAlternative, P>,
+    val choiceModel: FixedChoiceModel<Int, PreviousDayAlternative>,
 ) : GenerateSideTours {
     override fun generate(precedingInput: PrecedingInput): Int {
 
@@ -20,17 +20,17 @@ abstract class DefaultSideTourDeterminer<P>(
 
 
             val availableOptions = determineAvailableOptions(day, precedingInput.personInfo.routine)
-            val converter: (Int) -> PreviousDayAlternative = {
+            context(
                 createChoiceSituation(
-                    choice = it,
                     dayTourPlan = currentPlannedTourAmounts,
                     previousTourPlan = previousPlannedTourAmounts,
                     day = day,
                     personWithRoutine = personInfo
-                )
-
+                ), rngHelper
+            ) {
+                choiceModel.select(availableOptions)
             }
-            choiceModel.select(availableOptions, rngHelper, converter)
+
 
 
         }
@@ -65,12 +65,11 @@ abstract class DefaultSideTourDeterminer<P>(
 
     abstract fun determineMinimumAmountOfTours(remainingNumberOfTours: Int): Int
     open fun createChoiceSituation(
-        choice: Int,
         dayTourPlan: PlannedTourAmounts,
         previousTourPlan: PlannedTourAmounts?,
         day: DayStructure,
         personWithRoutine: PersonWithRoutine,
     ): PreviousDayAlternative {
-        return PreviousDayAlternative(choice, day, previousTourPlan, personWithRoutine, dayTourPlan.precursorAmount)
+        return PreviousDayAlternative(day, previousTourPlan, personWithRoutine, dayTourPlan.precursorAmount)
     }
 }

@@ -49,17 +49,15 @@ class AssignByUtilityFunction(private val mobilityStructure: MobilityStructure, 
                 if (day.shouldNotBeEducationDay(routine)) availableOptions.remove(
                     ActivityType.EDUCATION
                 )
-
-                tourMainActivityChoiceModel.select(availableOptions, rngHelper) {
-                    TourAlternative(
-                        it,
-                        input.personWithRoutine.person,
-                        input.personWithRoutine.routine,
-                        input.dayStructure,
-                        TourPositionAttributesByIndex(absoluteIndex, position)
-
-                    )
+                context(TourAlternative(
+                    input.personWithRoutine.person,
+                    input.personWithRoutine.routine,
+                    input.dayStructure,
+                    TourPositionAttributesByIndex(absoluteIndex, position)
+                ), rngHelper) {
+                    tourMainActivityChoiceModel.select(availableOptions)
                 }
+
             }
         }
     }

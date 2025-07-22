@@ -11,10 +11,10 @@ class SideTourPrecursorAmountTest: ChoiceModelTest<Int, TourAlternativeInt>(step
     override val name: String = "sideTourPrecursorAmountTest"
     override val serializer: KSerializer<Int> = Int.serializer()
 
-    override fun converter(option: Int): TourAlternativeInt {
+    override fun converter(): TourAlternativeInt {
         val randomDayStructure = randomDayStructure(inputRandom)
         val (person, routine) = randomPersonWithRoutine(inputRandom)
-        return TourAlternativeInt(option, person, routine, randomDayStructure, randomDayStructure.indexedElements().random(inputRandom),        amountOfPrecursorActivities = inputRandom.nextInt(0, 5), )
+        return TourAlternativeInt(person, routine, randomDayStructure, randomDayStructure.indexedElements().random(inputRandom),        amountOfPrecursorActivities = inputRandom.nextInt(0, 5), )
 
     }
 }

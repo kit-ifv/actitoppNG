@@ -1,17 +1,17 @@
 package edu.kit.ifv.mobitopp.actitoppNG.plandurations.choicemodels
 
-import discreteChoice.EnumeratedDiscreteChoiceModel
-import discreteChoice.structure.DiscreteStructure
-import discreteChoice.utility.multinomialLogit
+
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.BooleanDecisionAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterCollectionStep8A
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParametersStep8A
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
+import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
+import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
 
-val firstActivityUsesStandardDuration: EnumeratedDiscreteChoiceModel<Boolean, BooleanDecisionAlternative, ParameterCollectionStep8A> =
+val firstActivityUsesStandardDuration =
     DiscreteStructure<Boolean, BooleanDecisionAlternative, ParameterCollectionStep8A> {
         option(true) { 0.0 }
-        option(false, parameters = { no }) {
+        option(false, parameters = { no }) {_, it ->
 
             base +
                     (it.aktzweck_work()) * aktzweck_work +

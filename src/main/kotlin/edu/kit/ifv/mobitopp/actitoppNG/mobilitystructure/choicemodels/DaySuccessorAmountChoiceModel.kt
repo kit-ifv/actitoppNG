@@ -1,25 +1,25 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels
 
-import discreteChoice.structure.DiscreteStructure
-import discreteChoice.utility.multinomialLogit
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DefaultSuccessorTourParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SuccessorTourAmountParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SuccessorTourAmountSet
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.PreviousDayAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
+import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
+import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
 
 
 val successorAmountChoiceModel =
     DiscreteStructure<Int, PreviousDayAlternative, SuccessorTourAmountSet> {
         option(0) { 0.0 }
         option(1, parameters = { one }, {
-            val util = standardUtilityFunction(this, it)
+            val util = standardUtilityFunction(this, it.second)
             util
         })
-        option(2, parameters = { two }, { standardUtilityFunction(this, it) })
-        option(3, parameters = { three }, { standardUtilityFunction(this, it) })
-        option(4, parameters = { four }, { standardUtilityFunction(this, it) })
-        option(5, parameters = { five }, { standardUtilityFunction(this, it) })
+        option(2, parameters = { two }, { standardUtilityFunction(this, it.second) })
+        option(3, parameters = { three }, { standardUtilityFunction(this, it.second) })
+        option(4, parameters = { four }, { standardUtilityFunction(this, it.second) })
+        option(5, parameters = { five }, { standardUtilityFunction(this, it.second) })
     }.multinomialLogit("Amount of successor tours (tours after main tour)").build(DefaultSuccessorTourParameters)
 
 

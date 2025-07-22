@@ -1,11 +1,13 @@
 package edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters
 
+import java.util.function.IntFunction
+
 /**
  * A collection of parameters for the choice of amount of work days to be placed within a week routine.
  */
 data class WorkDaySet(
-    override val parameters: List<WorkDayParameters>,
-) : WeekRoutineParameterSet<WorkDayParameters>, List<WorkDayParameters> by parameters {
+    override val parameters: Map<Int,WorkDayParameters>,
+) : WeekRoutineParameterSet<WorkDayParameters>, Map<Int, WorkDayParameters> by parameters {
 
     companion object {
         /**
@@ -21,14 +23,14 @@ data class WorkDaySet(
             option7: WorkDayParameters,
         ): WorkDaySet {
             return WorkDaySet(
-                listOf(
-                    option1,
-                    option2,
-                    option3,
-                    option4,
-                    option5,
-                    option6,
-                    option7,
+                mapOf(
+                    1 to option1,
+                    2 to option2,
+                    3 to option3,
+                    4 to option4,
+                    5 to option5,
+                    6 to option6,
+                    7 to option7,
                 )
             )
         }
