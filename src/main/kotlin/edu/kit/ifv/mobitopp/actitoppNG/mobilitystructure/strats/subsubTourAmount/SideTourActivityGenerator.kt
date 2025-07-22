@@ -7,11 +7,12 @@ import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourPrec
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourSuccessorSet
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.TourAlternativeInt
 import edu.kit.ifv.mobitopp.discretechoice.models.FixedChoiceModel
+import kotlin.random.Random
 
 abstract class SideTourActivityGenerator<P>(
-    val rngHelper: RNGHelper,
     val choiceModel: FixedChoiceModel<Int, TourAlternativeInt>,
 ) : GenerateSideTourActivities {
+    context(rng: Random)
     override fun generateActivityAmount(input: SideTourActivityInput): Int {
 
         val options = choiceModel.choices.toMutableSet()
@@ -34,17 +35,17 @@ abstract class SideTourActivityGenerator<P>(
                 input.currentDay,
                 input.tour,
                 input.amountOfActivitiesBeforeMainAct
-            ), rngHelper
+            )
         ) {
             choiceModel.select(options)
         }
     }
 }
 
-class PrecedingSpawns(rngHelper: RNGHelper) : SideTourActivityGenerator<SideTourPrecursorSet>(
-    rngHelper, step5AWithParams,
+class PrecedingSpawns() : SideTourActivityGenerator<SideTourPrecursorSet>(
+     step5AWithParams,
 )
 
-class FollowingSpawns(rngHelper: RNGHelper) : SideTourActivityGenerator<SideTourSuccessorSet>(
-    rngHelper, step5BWithParams,
+class FollowingSpawns() : SideTourActivityGenerator<SideTourSuccessorSet>(
+     step5BWithParams,
 )

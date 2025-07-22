@@ -7,6 +7,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.tourMainAc
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.TourAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.steps.TourPositionAttributesByIndex
 import edu.kit.ifv.mobitopp.actitoppNG.utils.Position
+import kotlin.random.Random
 
 class DayWithPlans(
     val dayStructure: DayStructure,
@@ -16,12 +17,14 @@ class DayWithPlans(
 
 
 fun interface AssignMainActivityOfSideTour {
+    context(rng: Random)
     fun generateSideTourActivities(input: DayWithPlans): Pair<List<ActivityType>, List<ActivityType>>
 }
 
 
-class AssignByUtilityFunction(private val mobilityStructure: MobilityStructure, val rngHelper: RNGHelper) :
+class AssignByUtilityFunction(private val mobilityStructure: MobilityStructure) :
     AssignMainActivityOfSideTour {
+    context(rng: Random)
     override fun generateSideTourActivities(input: DayWithPlans): Pair<List<ActivityType>, List<ActivityType>> {
         val plannedPrecursors = input.plannedTourAmounts.precursorAmount
         val plannedSuccessors = input.plannedTourAmounts.successorAmount
@@ -35,7 +38,7 @@ class AssignByUtilityFunction(private val mobilityStructure: MobilityStructure, 
 
 
     }
-
+    context(rng: Random)
     private fun List<Int>.calculate(position: Position, input: DayWithPlans): List<ActivityType> {
         return map { absoluteIndex ->
             mobilityStructure.generateTrackedActivity(input.dayStructure.startTimeDay) { day ->
@@ -54,7 +57,7 @@ class AssignByUtilityFunction(private val mobilityStructure: MobilityStructure, 
                     input.personWithRoutine.routine,
                     input.dayStructure,
                     TourPositionAttributesByIndex(absoluteIndex, position)
-                ), rngHelper) {
+                )) {
                     tourMainActivityChoiceModel.select(availableOptions)
                 }
 

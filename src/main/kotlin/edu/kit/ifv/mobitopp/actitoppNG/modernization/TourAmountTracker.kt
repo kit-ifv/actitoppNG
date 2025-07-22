@@ -7,6 +7,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.strats.sideTourAmounts.
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.strats.sideTourAmounts.GenerateSideToursFollowing
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.strats.sideTourAmounts.GenerateSideToursPreceeding
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.strats.sideTourAmounts.PrecedingInput
+import kotlin.random.Random
 
 
 interface PlannedTourAmounts {
@@ -43,7 +44,6 @@ data class ModifiablePlannedTourAmounts(
 class TourAmountTracker(
     initialDayStructures: Collection<DayStructure>,
     val person: PersonWithRoutine,
-    val rngHelper: RNGHelper,
 ) {
     // Irealy wish that I could find a better solution than to allow every field to be modifiable, because home activities
     // should not have a modifiable field for tour amounts, but since it is private whatever
@@ -57,6 +57,7 @@ class TourAmountTracker(
     /**
      * Use ModifiableDayStructure as input to prevent home days to sneak into this calculation.
      */
+    context(rng: Random)
     fun generateSideTours(targets: List<ModifiableDayStructure>): Map<DurationDay, PlannedTourAmounts> {
         generatePredecessorTourAmounts(targets)
         generateSuccessorTourAmounts(targets)
@@ -66,19 +67,21 @@ class TourAmountTracker(
     /** step 3A
      *
      */
+    context(rng: Random)
     private fun generatePredecessorTourAmounts(targets: List<DayStructure>): List<Int> {
-        val generator = GenerateSideToursPreceeding(rngHelper)
+        val generator = GenerateSideToursPreceeding()
         return generateTourAmounts(targets, generator)
     }
 
     /**
      * Step 3B
      */
+    context(rng: Random)
     private fun generateSuccessorTourAmounts(targets: List<DayStructure>): List<Int> {
-        val generator = GenerateSideToursFollowing(rngHelper)
+        val generator = GenerateSideToursFollowing()
         return generateTourAmounts(targets, generator)
     }
-
+    context(rng: Random)
     private fun <P> generateTourAmounts(
         targets: List<DayStructure>,
         strategy: DefaultSideTourDeterminer<P>,
@@ -100,9 +103,9 @@ class TourAmountTracker(
     }
 
 }
-
-fun MobilityStructure.calculateTourAmounts(rngHelper: RNGHelper): Map<DurationDay, PlannedTourAmounts> {
-    val tracker = TourAmountTracker(allDays(), person = this.weekRoutine, rngHelper = rngHelper)
+context(rng: Random)
+fun MobilityStructure.calculateTourAmounts(): Map<DurationDay, PlannedTourAmounts> {
+    val tracker = TourAmountTracker(allDays(), person = this.weekRoutine)
     tracker.generateSideTours(mobileDays())
     return tracker.output()
 

@@ -12,6 +12,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParameterStep10
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParametersStep10S
 import edu.kit.ifv.mobitopp.actitoppNG.utils.minus
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
+import kotlin.random.Random
 import kotlin.time.Duration
 
 
@@ -41,20 +42,21 @@ private val standardUtilityFunction10S: ParameterStep10S.(MainDurationAlternativ
 
 
 class TourStartByHistogramsRelative<P>(
-    private val rng: RNGHelper,
+
     private val startTimeHistograms: ActivityDurationHistograms<P>,
 ) :
     SelectTourStart {
+    context(rng: Random)
     override fun selectStartTime(input: MobilityPlanInputs): Duration {
         val bounds = input.dayPlan.startTimeBoundsFor(input.tourPlan, disregardDayEnd = input.isLastDay)
         val startTime = bounds.start
         val relativeBounds = bounds - startTime
-        return startTimeHistograms.select(rng, relativeBounds, MainDurationAlternative( input)) + startTime
+        return startTimeHistograms.select(relativeBounds, MainDurationAlternative( input)) + startTime
     }
 
     companion object {
-        fun standard(rng: RNGHelper): TourStartByHistogramsRelative<ParameterCollectionStep10S> {
-            return TourStartByHistogramsRelative(rng, OTHER_TOUR_HISTOGRAM)
+        fun standard(): TourStartByHistogramsRelative<ParameterCollectionStep10S> {
+            return TourStartByHistogramsRelative( OTHER_TOUR_HISTOGRAM)
         }
     }
 }

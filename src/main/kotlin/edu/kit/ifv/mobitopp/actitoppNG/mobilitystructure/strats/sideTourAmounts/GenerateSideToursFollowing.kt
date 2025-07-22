@@ -8,10 +8,9 @@ import edu.kit.ifv.mobitopp.actitoppNG.modernization.ModifiablePlannedTourAmount
 import edu.kit.ifv.mobitopp.discretechoice.models.FixedChoiceModel
 
 class GenerateSideToursFollowing(
-    rngHelper: RNGHelper,
     choiceModel: FixedChoiceModel<Int, PreviousDayAlternative> = successorAmountChoiceModel,
 
-    ) : DefaultSideTourDeterminer<SuccessorTourAmountSet>(rngHelper, choiceModel) {
+    ) : DefaultSideTourDeterminer<SuccessorTourAmountSet>( choiceModel) {
 
     override fun determineMinimumAmountOfTours(remainingNumberOfTours: Int): Int {
         return remainingNumberOfTours

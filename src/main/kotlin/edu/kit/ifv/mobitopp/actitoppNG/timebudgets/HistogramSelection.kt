@@ -23,12 +23,12 @@ open class HistogramSelection(
      * Select a histogram from the options registered in the choice model, for a given [FinalizedActivityPattern] and
      * [Person] input.
      */
+    context(rng: Random)
     fun select(
-        random: Random,
         finalizedActivityPattern: FinalizedActivityPattern,
         person: Person,
     ): ArrayHistogram {
-        return context(WorkChoiceAlternative(finalizedActivityPattern, person), random) {
+        return context(WorkChoiceAlternative(finalizedActivityPattern, person)) {
             choiceModel.select()
         }
 

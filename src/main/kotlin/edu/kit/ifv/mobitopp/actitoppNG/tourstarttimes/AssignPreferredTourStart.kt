@@ -4,8 +4,9 @@ import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.plan.MobilityPlan
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
+import kotlin.random.Random
 
-
+context(rng: Random)
 fun MobilityPlan.assignPreferredTourStart(strategy: PersonPreferredTourStart): ArrayHistogram? {
     if (!person.isAnywayEmployed() && !person.isinEducation()) return null
     // TODO Invert this boolean expressions

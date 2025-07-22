@@ -5,9 +5,10 @@ import edu.kit.ifv.mobitopp.actitoppNG.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.TourStructure
 import edu.kit.ifv.mobitopp.actitoppNG.utils.BidirectionalIndexedValue
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.WeekRoutine
+import kotlin.random.Random
 
 fun interface GenerateSideTourActivities {
-
+    context(rng: Random)
     fun generateActivityAmount(input: SideTourActivityInput): Int
 }
 

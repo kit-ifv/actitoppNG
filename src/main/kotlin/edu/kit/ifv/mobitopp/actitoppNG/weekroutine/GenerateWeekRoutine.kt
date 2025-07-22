@@ -2,6 +2,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.weekroutine
 
 import edu.kit.ifv.mobitopp.actitoppNG.Person
 import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
+import kotlin.random.Random
 
 /**
  * The first step of the activity generation is to create an appropriate [WeekRoutine] for the input person. The
@@ -10,15 +11,16 @@ import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
  * subsequent implementations are tasked with determining the proper [WeekRoutine] for an input [person][Person]
  */
 fun interface GenerateWeekRoutine {
-    fun generate(person: Person, rng: RNGHelper): WeekRoutine
+    context(rng: Random)
+    fun generate(person: Person): WeekRoutine
 }
 
 /**
  * A convenience extension function to call the generation of a [WeekRoutine] directly on an [Person] object.
  */
+context(rng: Random)
 fun Person.generateWeekRoutine(
-    rng: RNGHelper,
     strategy: GenerateWeekRoutine = DefaultWeekRoutineGeneration(),
 ): WeekRoutine {
-    return strategy.generate(this, rng)
+    return strategy.generate(this)
 }

@@ -5,18 +5,19 @@ import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.TourStructure
 import edu.kit.ifv.mobitopp.actitoppNG.utils.BidirectionalIndexedValue
+import kotlin.random.Random
 
 /**
  * Keep track of the amount of "activities" placed within the day, to avoid the side effect shenanigans of the legacy
  * code. We want to determine the amount of activities in bulk, before even considering spawning a single activity.
  */
-class DayAmountTracker(val day: DayStructure, val rngHelper: RNGHelper, val personWithRoutine: PersonWithRoutine) {
+class DayAmountTracker(val day: DayStructure, val personWithRoutine: PersonWithRoutine) {
 
     private var counter = 2 * day.amountOfElements()
     private var remainingPlacements = day.minimumAmountOfActivitiesByJointActions - day.amountOfActivities()
 
-    private val successorGenerator = FollowingSpawns(rngHelper)
-    private val predecessorGenerator = PrecedingSpawns(rngHelper)
+    private val successorGenerator = FollowingSpawns()
+    private val predecessorGenerator = PrecedingSpawns()
 
     /**
      * This map is required to fetch the calculation of the predecessor amount for each tour, since the predecessors
@@ -24,7 +25,7 @@ class DayAmountTracker(val day: DayStructure, val rngHelper: RNGHelper, val pers
      * that, because it makes no sense.
      */
     private val calculatedPredecessorAmount: MutableMap<BidirectionalIndexedValue<TourStructure>, Int> = mutableMapOf()
-
+    context(rng: Random)
     fun generatePredecessors(indexedTours: Collection<BidirectionalIndexedValue<TourStructure>>): Map<BidirectionalIndexedValue<TourStructure>, Int> {
         val predecessorActivityAmounts = indexedTours.associateWith {
             generatePredecessor(it)
@@ -32,7 +33,7 @@ class DayAmountTracker(val day: DayStructure, val rngHelper: RNGHelper, val pers
 
         return predecessorActivityAmounts
     }
-
+    context(rng: Random)
     fun generatePredecessor(indexedTour: BidirectionalIndexedValue<TourStructure>): Int {
         return generatePredecessorActivityAmounts(indexedTour, calculateMinimumAmount()).also { amount ->
             remainingPlacements -= amount
@@ -40,14 +41,14 @@ class DayAmountTracker(val day: DayStructure, val rngHelper: RNGHelper, val pers
             calculatedPredecessorAmount[indexedTour] = amount
         }
     }
-
+    context(rng: Random)
     fun generateSuccessors(indexedTours: Collection<BidirectionalIndexedValue<TourStructure>>): Map<BidirectionalIndexedValue<TourStructure>, Int> {
         val successorActivityAmounts = indexedTours.associateWith {
             generateSuccessor(it)
         }
         return successorActivityAmounts
     }
-
+    context(rng: Random)
     fun generateSuccessor(indexedTour: BidirectionalIndexedValue<TourStructure>): Int {
         return generateSuccessorActivityAmounts(indexedTour, calculateMinimumAmount()).also { amount ->
             remainingPlacements -= amount
@@ -58,7 +59,7 @@ class DayAmountTracker(val day: DayStructure, val rngHelper: RNGHelper, val pers
     private fun calculateMinimumAmount(): Int {
         return (remainingPlacements.toDouble() / counter).toInt()
     }
-
+    context(rng: Random)
     private fun generatePredecessorActivityAmounts(
         input: BidirectionalIndexedValue<TourStructure>,
         minimumAmount: Int,
@@ -75,7 +76,7 @@ class DayAmountTracker(val day: DayStructure, val rngHelper: RNGHelper, val pers
             )
         )
     }
-
+    context(rng: Random)
     private fun generateSuccessorActivityAmounts(
         input: BidirectionalIndexedValue<TourStructure>,
         minimumAmount: Int,

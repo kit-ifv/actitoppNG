@@ -2,7 +2,9 @@ package edu.kit.ifv.mobitopp.actitoppNG.plandurations
 
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.plan.MobilityPlan
+import kotlin.random.Random
 
+context(rng: Random)
 fun MobilityPlan.assignFirstMainActivities(strategy: SelectMainActivityDuration) {
     dayPlans.forEach { dayPlan ->
         val tourPlan = dayPlan.tourPlans.first()
@@ -19,7 +21,7 @@ fun MobilityPlan.assignFirstMainActivities(strategy: SelectMainActivityDuration)
 
     }
 }
-
+context(rng: Random)
 fun MobilityPlan.assignSecondaryMainActivities(strategy: SelectMajorActivityDuration) {
     dayPlans.forEach { dayPlan ->
         dayPlan.tourPlans.drop(1).forEach { tourPlan ->
@@ -37,7 +39,7 @@ fun MobilityPlan.assignSecondaryMainActivities(strategy: SelectMajorActivityDura
         }
     }
 }
-
+context(rng: Random)
 fun MobilityPlan.assignMinorActivities(strategy: SelectMinorActivityDuration) {
     dayPlans.forEach { dayPlan ->
         dayPlan.tourPlans.forEach { tourPlan ->

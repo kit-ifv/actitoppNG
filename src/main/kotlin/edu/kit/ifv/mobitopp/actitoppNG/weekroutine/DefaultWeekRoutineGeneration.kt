@@ -13,6 +13,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.serviceDaysChoic
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.shoppingDaysChoiceModel
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.tourAmountChoiceModel
 import edu.kit.ifv.mobitopp.discretechoice.models.FixedChoiceModel
+import kotlin.random.Random
 
 typealias ChoiceModele = FixedChoiceModel<Int, PersonAlternative>
 
@@ -41,9 +42,10 @@ class DefaultWeekRoutineGeneration(
     private val averageAmountOfTourChoiceModel: ChoiceModele = tourAmountChoiceModel,
     private val averageAmountOfActivitiesChoiceModel: ChoiceModele = activityAmountChoiceModel,
 ) : GenerateWeekRoutine {
-    override fun generate(person: Person, rng: RNGHelper): WeekRoutine {
+    context(rng: Random)
+    override fun generate(person: Person): WeekRoutine {
         return ModifiableWeekRoutine().apply {
-            context(PersonAlternative(this, person), rng) {
+            context(PersonAlternative(this, person)) {
                 amountOfWorkingDays = workDayChoiceModel.select()
                 amountOfEducationDays = educationDayChoiceModel.select()
                 amountOfLeisureDays = leisureDayChoiceModel.select()

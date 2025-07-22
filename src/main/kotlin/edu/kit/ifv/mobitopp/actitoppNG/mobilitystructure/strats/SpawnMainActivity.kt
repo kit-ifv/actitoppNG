@@ -5,12 +5,15 @@ import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.mainActivi
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.DayAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.MobilityStructure
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.Step2Tracking
+import kotlin.random.Random
 
 fun interface SpawnMainActivity {
+    context(rng: Random)
     fun generateNewDay(mobilityStructure: MobilityStructure)
 }
 
-class SpawnWithRespect(val rng: RNGHelper) : SpawnMainActivity {
+class SpawnWithRespect() : SpawnMainActivity {
+    context(rng: Random)
     override fun generateNewDay(mobilityStructure: MobilityStructure) {
         val nextDay = mobilityStructure.nextDay()
         val availableOptions = Step2Tracking.determineAvailableOptions(

@@ -11,6 +11,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParametersStep1
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
 import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
+import kotlin.random.Random
 
 /**
  * This implementation of [UsePreferredTourStart] utilizes a choice model to evaluate whether a tour should use the
@@ -25,7 +26,7 @@ import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
  *
  * However since condition 2 implies 3, this code has been removed in this implementation.
  */
-class PreferredStartViaChoiceModel(private val rngKeeper: RNGHelper) : UsePreferredTourStart {
+class PreferredStartViaChoiceModel() : UsePreferredTourStart {
     private val choiceModel =
         DiscreteStructure<Boolean, BooleanDecisionWithPreferenceCategory, ParameterStep10A> {
             option(true) { 0.0 }
@@ -49,12 +50,12 @@ class PreferredStartViaChoiceModel(private val rngKeeper: RNGHelper) : UsePrefer
             }
         }.multinomialLogit("Whether the tour should use a previously determined tour start or not")
             .build(ParametersStep10A)
-
+    context(rng: Random)
     override fun usePreferredTourStart(input: MobilityPlanInputs, preferredHistogram: ArrayHistogram): Boolean {
         val relevantActivities = setOf(ActivityType.WORK, ActivityType.EDUCATION)
         if (!input.person.isAnywayEmployed() && !input.person.isinEducation()) return false
         if (input.tourMainActivityType !in relevantActivities) return false
-        return context(BooleanDecisionWithPreferenceCategory(input, preferredHistogram), rngKeeper) {
+        return context(BooleanDecisionWithPreferenceCategory(input, preferredHistogram)) {
             choiceModel.select()
         }
 

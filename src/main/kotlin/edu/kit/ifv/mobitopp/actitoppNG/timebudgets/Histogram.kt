@@ -177,15 +177,15 @@ open class ArrayHistogram protected constructor(
 
         return (selectionIndex + offset).minutes
     }
-
-    fun select(random: Random, bounds: ClosedRange<Duration>) = select(random.nextDouble(), bounds)
+    context(rng: Random)
+    fun select(bounds: ClosedRange<Duration>) = select(rng.nextDouble(), bounds)
     fun select(randomNumber: Double, bounds: ClosedRange<Duration>) =
         select(randomNumber, bounds.start, bounds.endInclusive)
-
+    context(rng: Random)
     fun select(
-        random: Random, lowerBoundInclusive: Duration? = null,
+        lowerBoundInclusive: Duration? = null,
         upperBoundInclusive: Duration? = null,
-    ) = select(random.nextDouble(), lowerBoundInclusive, upperBoundInclusive)
+    ) = select(rng.nextDouble(), lowerBoundInclusive, upperBoundInclusive)
 
     fun select(
         randomNumber: Double,

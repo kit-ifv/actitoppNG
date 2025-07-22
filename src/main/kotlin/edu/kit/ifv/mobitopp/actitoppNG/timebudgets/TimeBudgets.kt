@@ -1,7 +1,6 @@
 package edu.kit.ifv.mobitopp.actitoppNG.timebudgets
 
 import edu.kit.ifv.mobitopp.actitoppNG.Person
-import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Category
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.choicemodels.educationHistograms
@@ -101,24 +100,23 @@ class HistogramPerActivity(
     val transportHistograms: HistogramSelection,
 ) {
 
-
+    context(rng: Random)
     fun determineTimeBudgets(
-        rngKeeper: RNGHelper,
         person: Person,
         finalizedActivityPattern: FinalizedActivityPattern,
     ): TimeBudgets {
         val workSelection = if (finalizedActivityPattern.workDays == 0) NO_TIME else
             workHistograms.pick(
-                rngKeeper, finalizedActivityPattern, person
+                 finalizedActivityPattern, person
             )
         val educationSelection = if (finalizedActivityPattern.educationDays == 0) NO_TIME else
-            educationHistograms.pick(rngKeeper, finalizedActivityPattern, person)
+            educationHistograms.pick(finalizedActivityPattern, person)
         val leisureSelection = if (finalizedActivityPattern.leisureDays == 0) NO_TIME else
-            leisureHistograms.pick(rngKeeper, finalizedActivityPattern, person)
+            leisureHistograms.pick( finalizedActivityPattern, person)
         val shoppingSelection = if (finalizedActivityPattern.shoppingDays == 0) NO_TIME else
-            shoppingHistograms.pick(rngKeeper, finalizedActivityPattern, person)
+            shoppingHistograms.pick( finalizedActivityPattern, person)
         val transportSelection = if (finalizedActivityPattern.transportDays == 0) NO_TIME else
-            transportHistograms.pick(rngKeeper, finalizedActivityPattern, person)
+            transportHistograms.pick( finalizedActivityPattern, person)
         return TimeBudgets(
             workBudget = workSelection.first,
             workCategory = workSelection.second,
@@ -133,14 +131,13 @@ class HistogramPerActivity(
         )
     }
 
-
+    context(rng: Random)
     private fun HistogramSelection.pick(
-        random: Random,
         finalizedActivityPattern: FinalizedActivityPattern,
         person: Person,
     ): Pair<Duration, Category> {
-        val histogram = select(random, finalizedActivityPattern, person)
-        return histogram.select(random) to histogram.categoryIndex
+        val histogram = select( finalizedActivityPattern, person)
+        return histogram.select() to histogram.categoryIndex
     }
 
     companion object {

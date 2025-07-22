@@ -38,7 +38,7 @@ open class ActivityDurationHistograms<P>(
     // TODO histograms could be a sorted Set, since they are supposed to cover respective ranges.
     open val histograms: List<ArrayHistogram>,
     open val choiceModel: FixedChoiceModel<ArrayHistogram, MainDurationAlternative>,
-    val emergencyBehaviour: (ClosedRange<Duration>, Random) -> Duration = { range, rng ->
+    val emergencyBehaviour:  (ClosedRange<Duration>, Random) -> Duration = { range, rng ->
 
         ((range.endInclusive - range.start) * rng.nextDouble() + range.start).inWholeMinutes.minutes
     },
@@ -48,8 +48,8 @@ open class ActivityDurationHistograms<P>(
      * Find the proper histogram, select between histogram and neighbors, where main histogram gets a 1.1 boost.
      * Select duration from selected histogram.
      */
+    context(rng: Random)
     fun chooseHistogramFromNeighbors(
-        random: Random,
         duration: Duration,
         bounds: ClosedRange<Duration>,
         converter: MainDurationAlternative,
@@ -64,20 +64,19 @@ open class ActivityDurationHistograms<P>(
             "The choice set is empty, this happens because the duration is $duration and the bounds $bounds, ${histograms.map { it.toString() }}"
         }
 
-        return context(converter, random) {
+        return context(converter) {
             choiceModel.selectInjected(choices, injections = mapOf(mainHistogram to { d: Double -> d * 1.1 }))
         }
 
     }
-
-    fun select(rngHelper: RNGHelper, converter: MainDurationAlternative): Duration {
-        return context(converter, rngHelper) {
-            choiceModel.select().select(rngHelper.nextDouble())
+    context(rng: Random)
+    fun select(converter: MainDurationAlternative): Duration {
+        return context(converter) {
+            choiceModel.select().select(rng.nextDouble())
         }
     }
-
+    context(rng: Random)
     fun selectHistogram(
-        random: Random,
         bounds: ClosedRange<Duration>,
         converter: MainDurationAlternative,
     ): ArrayHistogram? {
@@ -87,20 +86,18 @@ open class ActivityDurationHistograms<P>(
             return null
         }
 
-        return context(converter, random) {
+        return context(converter) {
             choiceModel.select(options)
         }
     }
-
+    context(rng: Random)
     fun select(
-        random: Random,
         bounds: ClosedRange<Duration>,
         converter: MainDurationAlternative,
     ): Duration {
 
-        val concreteHistogram = selectHistogram(random, bounds, converter) ?: return emergencyBehaviour(bounds, random)
+        val concreteHistogram = selectHistogram(bounds, converter) ?: return emergencyBehaviour(bounds, rng)
         val output = concreteHistogram.select(
-            random,
             bounds
         )
         return output
@@ -122,33 +119,31 @@ class TaintedActivityDurationHistograms<P>(
     val choiceModel = original.choiceModel
     private val taintedHistograms = histograms.associateWith { it.copy() }
 
-
+    context(rng: Random)
     fun selectAndTaint(
-        random: Random,
         bounds: ClosedRange<Duration>,
         duration: Duration,
         converter: MainDurationAlternative,
     ): Duration {
 
-        val selectedHistogram = original.chooseHistogramFromNeighbors(random, duration, bounds, converter)
+        val selectedHistogram = original.chooseHistogramFromNeighbors(duration, bounds, converter)
         val taint = taintedHistograms.getValue(selectedHistogram)
 
 
-        return taint.select(random, bounds).also {
+        return taint.select(bounds).also {
             taint.modify(it.inWholeMinutes.toInt())
         }
     }
-
+    context(rng: Random)
     fun select(
-        random: Random,
         bounds: ClosedRange<Duration>,
         converter: MainDurationAlternative,
     ): Duration {
 
         val histogram =
-            original.selectHistogram(random, bounds, converter) ?: return original.emergencyBehaviour(bounds, random)
+            original.selectHistogram( bounds, converter) ?: return original.emergencyBehaviour(bounds, rng)
         val taint = taintedHistograms.getValue(histogram)
-        return taint.select(random, bounds)
+        return taint.select( bounds)
     }
 }
 

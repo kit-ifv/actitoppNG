@@ -34,7 +34,10 @@ class CompareAgainstTestData {
         val householdPlan = DefaultPlanGeneration()
         return targets.map { household ->
             val plans = household.members.associate { member ->
-                member.id to householdPlan.generate(member).finish()
+
+                    member.id to householdPlan.generate(member).finish()
+
+
             }
             HouseholdPlanOutput(household.id, plans)
         }

@@ -30,19 +30,25 @@ import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.assignSecondTourStarts
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.choicemodels.FIRST_TOUR_HISTOGRAM
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.choicemodels.SECOND_TOUR_HISTOGRAM
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.generateWeekRoutine
+import kotlin.random.Random
 
 
 fun interface MobilityPlanGeneration {
+    context(rng: Random)
     fun generate(person: Person, amountOfDays: Int): MobilityPlan
+    context(rng: Random)
     fun generate(person: Person) = generate(person, 7)
+
+    fun generate(person: Person, amountOfDays : Int = 7, randomOffset: Long = 0L) = context(person.spawnRandomGenerator(randomOffset)) {generate(person, amountOfDays)}
 }
 
 class DefaultPlanGeneration : MobilityPlanGeneration {
+    context(rng: Random)
     override fun generate(person: Person, amountOfDays: Int): MobilityPlan {
         val rng = person.spawnRandomGenerator()
-        val structureGenerator = StandardStructureGeneration(rng)
-        val durationGenerator = StandardDurationAssignment(rng)
-        val startTimeGenerator = StandardStartTimeAssignment(rng)
+        val structureGenerator = StandardStructureGeneration()
+        val durationGenerator = StandardDurationAssignment()
+        val startTimeGenerator = StandardStartTimeAssignment()
         val mobilityPlan = structureGenerator.generate(person, amountOfDays)
         mobilityPlan.apply {
             durationGenerator.assignDurations(this)
@@ -54,15 +60,15 @@ class DefaultPlanGeneration : MobilityPlanGeneration {
 }
 
 class StandardStructureGeneration(
-    val rng: RNGHelper,
     private val histograms: HistogramPerActivity = HistogramPerActivity.DEFAULT,
 ) : MobilityPlanGeneration {
-    private val sideActivityStrategy = StandardImplementation(rng)
-    private val spawnMainActivities = SpawnWeek(rng)
-    private val spawnSideTours: SpawnSideTours = LegacySpawnSideTours(rng)
+    private val sideActivityStrategy = StandardImplementation()
+    private val spawnMainActivities = SpawnWeek()
+    private val spawnSideTours: SpawnSideTours = LegacySpawnSideTours()
+    context(rng: Random)
     override fun generate(person: Person, amountOfDays: Int): MobilityPlan {
 
-        val weekRoutine = person.generateWeekRoutine(rng)
+        val weekRoutine = person.generateWeekRoutine()
         val mobilityStructure = MobilityStructure(person, weekRoutine)
         // Generate the main activities of each day
         spawnMainActivities.spawnMainActivities(mobilityStructure)
@@ -72,7 +78,6 @@ class StandardStructureGeneration(
         // Determine the amount of precursor and successor tours for each tour of the day
 
         val budget = histograms.determineTimeBudgets(
-            rng,
             person,
             FinalizedActivityPattern.fromModernPattern(mobilityStructure)
         )
@@ -81,42 +86,44 @@ class StandardStructureGeneration(
 }
 
 fun interface MobilityPlanDurationAssignment {
+    context(rng: Random)
     fun assignDurations(mobilityPlan: MobilityPlan)
 }
 
-class StandardDurationAssignment(val rng: RNGHelper) : MobilityPlanDurationAssignment {
+class StandardDurationAssignment() : MobilityPlanDurationAssignment {
+    context(rng: Random)
     override fun assignDurations(mobilityPlan: MobilityPlan) {
-        mobilityPlan.assignFirstMainActivities(StickySelector(rng, LEAD))
-        mobilityPlan.assignSecondaryMainActivities(StickySelector(rng, MAJOR))
-        mobilityPlan.assignMinorActivities(AssignMinorActivityDuration(rng))
+        mobilityPlan.assignFirstMainActivities(StickySelector( LEAD))
+        mobilityPlan.assignSecondaryMainActivities(StickySelector( MAJOR))
+        mobilityPlan.assignMinorActivities(AssignMinorActivityDuration())
 
     }
 }
 
 fun interface MobilityPlanStartTimeAssignment {
+    context(rng: Random)
     fun assignStartTimes(mobilityPlan: MobilityPlan)
 }
 
-class StandardStartTimeAssignment(val rng: RNGHelper) : MobilityPlanStartTimeAssignment {
+class StandardStartTimeAssignment() : MobilityPlanStartTimeAssignment {
+    context(rng: Random)
     override fun assignStartTimes(mobilityPlan: MobilityPlan) {
-        val preferredHistogram = mobilityPlan.assignPreferredTourStart(StandardPreferredTourStart(rng))
+        val preferredHistogram = mobilityPlan.assignPreferredTourStart(StandardPreferredTourStart())
 
         val firstStrategy = TourStartWithPreference(
-            rng = rng,
             startTimeHistograms = FIRST_TOUR_HISTOGRAM,
             preferredTourStart = preferredHistogram,
-            strategy = PreferredStartViaChoiceModel(rng),
+            strategy = PreferredStartViaChoiceModel(),
         )
 
         val secondStrategy = TourStartWithPreference(
-            rng = rng,
             startTimeHistograms = SECOND_TOUR_HISTOGRAM,
             preferredTourStart = preferredHistogram,
             strategy = UsePreferredTourStart.DISABLED
         )
         mobilityPlan.assignFirstTourStarts(firstStrategy)
         mobilityPlan.assignSecondTourStarts(secondStrategy)
-        mobilityPlan.assignRemainingTourStarts(TourStartByHistogramsRelative.standard(rng))
+        mobilityPlan.assignRemainingTourStarts(TourStartByHistogramsRelative.standard())
     }
 
 }

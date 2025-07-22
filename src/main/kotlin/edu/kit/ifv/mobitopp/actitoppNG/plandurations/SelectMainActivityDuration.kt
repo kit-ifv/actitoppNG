@@ -5,9 +5,11 @@ import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInputs
 import java.util.EnumSet
+import kotlin.random.Random
 import kotlin.time.Duration
 
 fun interface SelectMainActivityDuration {
+    context(rng: Random)
     fun getDuration(input: MobilityPlanInputs): Duration
 }
 
@@ -17,13 +19,13 @@ fun interface SelectMainActivityDuration {
  * remaining major activities manipulated their own respective time-tables. IN a sense the selection "sticks around"
  */
 class StickySelector<P>(
-    private val rng: RNGHelper,
     histogram: ActivityDurationHistograms<P>,
 
-    private val useStandardDuration: StandardDuration = UtilityFunctionAssignment(rng),
+    private val useStandardDuration: StandardDuration = UtilityFunctionAssignment(),
 ) : SelectMainActivityDuration, SelectMajorActivityDuration {
     private val taintedHistogramMap = ActivityType.OUTOFHOMEACTIVITY.associateWith { histogram.taint() }
     private val fixedTypes = EnumSet.of(ActivityType.WORK, ActivityType.EDUCATION)
+    context(rng: Random)
     override fun getDuration(input: MobilityPlanInputs): Duration {
 
 
@@ -44,29 +46,29 @@ class StickySelector<P>(
     fun MobilityPlanInputs.budgetFitsIntoBounds(): Boolean {
         return dayPlan.getBudget(tourMainActivityType) in dayPlan.activityDurationBounds(activity)
     }
-
+    context(rng: Random)
     fun calculateFixedAndTarnish(input: MobilityPlanInputs): Duration {
         return input.run {
             val meanActivityDuration = dayPlan.getBudget(tourMainActivityType)
             val bounds = dayPlan.activityDurationBounds(activity)
             taintedHistogramMap[activity.activityType]?.selectAndTaint(
-                rng,
                 bounds,
                 meanActivityDuration, MainDurationAlternative(this)
             ) ?: throw NoSuchElementException("There are no tainted histograms for ${input.activity.activityType}")
 
         }
     }
-
+    context(rng: Random)
     fun calculateDefault(input: MobilityPlanInputs): Duration {
 
         return input.run {
             val bounds = dayPlan.activityDurationBounds(tourPlan.mainActivity)
             taintedHistogramMap[input.activity.activityType]?.select(
-                rng,
                 bounds,
                 MainDurationAlternative(this)
             ) ?: throw NoSuchElementException("There are no tainted histograms for ${input.activity.activityType}")
         }
     }
+
+
 }

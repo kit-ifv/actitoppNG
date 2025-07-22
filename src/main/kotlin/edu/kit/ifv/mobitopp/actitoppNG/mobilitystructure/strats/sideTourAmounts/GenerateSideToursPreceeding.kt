@@ -9,9 +9,8 @@ import edu.kit.ifv.mobitopp.discretechoice.models.FixedChoiceModel
 
 
 class GenerateSideToursPreceeding(
-    rngHelper: RNGHelper,
     choiceModel: FixedChoiceModel<Int, PreviousDayAlternative> = precursorAmountChoiceModel,
-) : DefaultSideTourDeterminer<PrecursorTourAmountSet>(rngHelper, choiceModel) {
+) : DefaultSideTourDeterminer<PrecursorTourAmountSet>( choiceModel) {
 
 
     override fun determineMinimumAmountOfTours(remainingNumberOfTours: Int): Int {

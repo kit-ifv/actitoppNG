@@ -8,6 +8,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.ActivityAlt
 import edu.kit.ifv.mobitopp.actitoppNG.utils.BidirectionalIndexedValue
 import edu.kit.ifv.mobitopp.actitoppNG.utils.Position
 import edu.kit.ifv.mobitopp.discretechoice.models.FixedChoiceModel
+import kotlin.random.Random
 
 data class SecondaryActInput(
     val dayStructure: DayStructure,
@@ -16,6 +17,7 @@ data class SecondaryActInput(
 )
 
 interface AssignSecondaryActivityTypes {
+    context(rng: Random)
     fun generateSecondaryActivityTypes(input: SecondaryActInput): Pair<List<ActivityType>, List<ActivityType>>
 }
 
@@ -25,11 +27,10 @@ interface AssignSecondaryActivityTypes {
  */
 class TrackedSecondaryActivities(
     private val mobilityStructure: MobilityStructure,
-
-    val rngHelper: RNGHelper,
     private val choiceModel: FixedChoiceModel<ActivityType, ActivityAlternative> = sideActivityChoiceModel,
 ) : AssignSecondaryActivityTypes {
     val personWithRoutine: PersonWithRoutine = mobilityStructure.weekRoutine
+    context(rng: Random)
     override fun generateSecondaryActivityTypes(input: SecondaryActInput):
             Pair<List<ActivityType>, List<ActivityType>> {
         val precursors = input.plannedTourAmounts.precursorAmount
@@ -38,7 +39,7 @@ class TrackedSecondaryActivities(
         return (0..<precursors).calculate(Position.BEFORE, input) to
                 (0..<successors).calculate(Position.AFTER, input)
     }
-
+    context(rng: Random)
     private fun Iterable<Int>.calculate(position: Position, input: SecondaryActInput): List<ActivityType> {
         val day = input.dayStructure.startTimeDay
         val routine = personWithRoutine.routine
@@ -58,7 +59,7 @@ class TrackedSecondaryActivities(
                         personWithRoutine,
                         input.dayStructure,
                         input.tourStructure, position, input.plannedTourAmounts
-                    ), rngHelper
+                    )
                 ) {
                     choiceModel.select(availableOptions)
                 }

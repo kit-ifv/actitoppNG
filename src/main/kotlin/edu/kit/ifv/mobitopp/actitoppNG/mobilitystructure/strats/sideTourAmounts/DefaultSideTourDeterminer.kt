@@ -9,11 +9,12 @@ import edu.kit.ifv.mobitopp.actitoppNG.modernization.PlannedTourAmounts
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.WeekRoutine
 import edu.kit.ifv.mobitopp.discretechoice.models.FixedChoiceModel
 import kotlin.math.max
+import kotlin.random.Random
 
 abstract class DefaultSideTourDeterminer<P>(
-    val rngHelper: RNGHelper,
     val choiceModel: FixedChoiceModel<Int, PreviousDayAlternative>,
 ) : GenerateSideTours {
+    context(rng: Random)
     override fun generate(precedingInput: PrecedingInput): Int {
 
         return precedingInput.run {
@@ -26,7 +27,7 @@ abstract class DefaultSideTourDeterminer<P>(
                     previousTourPlan = previousPlannedTourAmounts,
                     day = day,
                     personWithRoutine = personInfo
-                ), rngHelper
+                )
             ) {
                 choiceModel.select(availableOptions)
             }
