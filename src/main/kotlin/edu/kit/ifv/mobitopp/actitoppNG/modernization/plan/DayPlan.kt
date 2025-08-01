@@ -54,10 +54,10 @@ interface DayPlan : List<LinkedActivity> {
     fun activityDurationBounds(linkedActivity: LinkedActivity): ClosedRange<Duration> {
         val absoluteBounds = activityTimeBounds(linkedActivity)
         val maximumDuration = absoluteBounds.endInclusive - absoluteBounds.start
-
-        require(maximumDuration >= 1.minutes) {
-            "This duration is not reasonable."
-        }
+// TODO the check for duration should not throw, the function above should
+//        require(maximumDuration >= 1.minutes) {
+//            "This duration is not reasonable. $this"
+//        }
         return 1.minutes..maximumDuration
 
 

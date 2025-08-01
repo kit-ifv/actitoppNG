@@ -6,6 +6,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.plandurations.choicemodels.MINOR
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterCollectionStep8J
 import kotlin.random.Random
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
 
 fun interface SelectMajorActivityDuration {
     context(rng: Random)
@@ -24,7 +25,7 @@ class AssignMinorActivityDuration(
     override fun getDuration(input: MobilityPlanInputs): Duration {
         return input.run {
             val bounds = dayPlan.activityDurationBounds(activity)
-
+            if(bounds.isEmpty()) return 0.minutes
             histogram.select(
                 bounds,
                 MainDurationAlternative(

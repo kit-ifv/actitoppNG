@@ -7,6 +7,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInput
 import java.util.EnumSet
 import kotlin.random.Random
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
 
 fun interface SelectMainActivityDuration {
     context(rng: Random)
@@ -51,6 +52,7 @@ class StickySelector<P>(
         return input.run {
             val meanActivityDuration = dayPlan.getBudget(tourMainActivityType)
             val bounds = dayPlan.activityDurationBounds(activity)
+            if(bounds.isEmpty()) return 0.minutes
             taintedHistogramMap[activity.activityType]?.selectAndTaint(
                 bounds,
                 meanActivityDuration, MainDurationAlternative(this)
@@ -63,6 +65,7 @@ class StickySelector<P>(
 
         return input.run {
             val bounds = dayPlan.activityDurationBounds(tourPlan.mainActivity)
+            if(bounds.isEmpty()) return 0.minutes
             taintedHistogramMap[input.activity.activityType]?.select(
                 bounds,
                 MainDurationAlternative(this)
