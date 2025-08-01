@@ -34,7 +34,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("edu.kit.ifv.mobitopp:kotlin-units:0.0.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
-    implementation("edu.kit.ifv.mobitopp:discrete-choice:0.1.1")
+    api("edu.kit.ifv.mobitopp:discrete-choice:0.1.1")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.0")
     testImplementation(kotlin("test"))
