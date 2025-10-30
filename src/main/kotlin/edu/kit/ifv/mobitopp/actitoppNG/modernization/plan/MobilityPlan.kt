@@ -133,7 +133,7 @@ class ActualMobilityPlan(
                 act.duration = duration
             }
         }
-        endHomeAnchor.duration = endHomeAnchor.startTime!! - endHomeAnchor.previousTrip!!.endTime!!
+        endHomeAnchor.duration = endHomeAnchor.startTime!! - endHomeAnchor.previousTrip!!.endTime!! + 1.minutes
     }
 
     override fun toString(): String {

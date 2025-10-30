@@ -3,10 +3,10 @@ package edu.kit.ifv.mobitopp.actitoppNG.modernization.plan
 import edu.kit.ifv.mobitopp.actitoppNG.Person
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.utils.round
-import units.Distance
-import units.Speed
-import units.kilometers
-import units.kmh
+import edu.kit.ifv.units.Distance
+import edu.kit.ifv.units.Speed
+import edu.kit.ifv.units.kilometers
+import edu.kit.ifv.units.kmh
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.DurationUnit

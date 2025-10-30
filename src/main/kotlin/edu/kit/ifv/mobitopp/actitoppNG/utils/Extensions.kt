@@ -63,6 +63,13 @@ fun DoubleArray.indexBinarySearch(element: Double, fromIndex: Int = 0, toIndex: 
     return binarySearch.indexOfSearch()
 }
 
+fun <T> Array<T>.indexBinarySearch(element: T, fromIndex: Int = 0, toIndex: Int = size): Int {
+    val binarySearch = binarySearch(element, fromIndex, toIndex)
+    return binarySearch.indexOfSearch()
+}
+
 fun Int.indexOfSearch(): Int {
     return if (this < 0) -this - 1 else this
 }
+
+
