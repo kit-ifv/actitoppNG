@@ -79,10 +79,16 @@ operator fun Duration.plus(nullable: Duration?): Duration {
 data class ModernizedActivity(
     override val activityType: ActivityType,
     override var startTime: Duration? = null,
-    override var duration: Duration? = null,
+
     override val position: Position,
 ) : MutableActivity {
-
+    override var duration: Duration? = null
+        set(value) {
+            require(value?.let { it > Duration.ZERO }?: true) {
+                "Cannot set an activity to nonpositive duration"
+            }
+            field = value
+        }
 
     override var endTime
         get() = startTime?.let { it + duration }
