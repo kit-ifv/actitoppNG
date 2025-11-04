@@ -82,9 +82,12 @@ data class ModernizedActivity(
 
     override val position: Position,
 ) : MutableActivity {
+
+
+
     override var duration: Duration? = null
         set(value) {
-            require(value?.let { it > Duration.ZERO }?: true) {
+            require(value?.let { it > Duration.ZERO } ?: true) {
                 "Cannot set an activity to nonpositive duration"
             }
             field = value
@@ -96,6 +99,19 @@ data class ModernizedActivity(
             startTime = value?.let { it - duration!! }
         }
 
+    companion object {
+        operator fun invoke(
+            activityType: ActivityType,
+            startTime: Duration? = null,
+            duration: Duration? = null,
+            position: Position,
+        ): ModernizedActivity {
+
+            return ModernizedActivity(activityType, startTime, position).apply {
+                this.duration = duration
+            }
+        }
+    }
 }
 
 class LinkedActivity(
