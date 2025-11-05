@@ -1,7 +1,6 @@
 package edu.kit.ifv.mobitopp.actitoppNG.plandurations
 
 
-import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInputs
 import java.util.EnumSet
@@ -52,7 +51,7 @@ class StickySelector<P>(
         return input.run {
             val meanActivityDuration = dayPlan.getBudget(tourMainActivityType)
             val bounds = dayPlan.activityDurationBounds(activity)
-            if(bounds.isEmpty()) return 0.minutes
+            if(bounds.isEmpty()) return 1.minutes
             taintedHistogramMap[activity.activityType]?.selectAndTaint(
                 bounds,
                 meanActivityDuration, MainDurationAlternative(this)
@@ -65,7 +64,7 @@ class StickySelector<P>(
 
         return input.run {
             val bounds = dayPlan.activityDurationBounds(tourPlan.mainActivity)
-            if(bounds.isEmpty()) return 0.minutes
+            if(bounds.isEmpty()) return 1.minutes
             taintedHistogramMap[input.activity.activityType]?.select(
                 bounds,
                 MainDurationAlternative(this)
