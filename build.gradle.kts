@@ -23,9 +23,6 @@ kotlin {
 }
 
 repositories {
-    maven { url = uri("https://nexus.ifv.kit.edu/repository/maven-releases/") }
-    maven { url = uri("https://nexus.ifv.kit.edu/repository/maven-central/") }
-    maven { url = uri("https://nexus.ifv.kit.edu/repository/maven-snapshots/") }
     maven("https://packages.jetbrains.team/maven/p/kds/kotlin-ds-maven")
     mavenCentral()
 }
