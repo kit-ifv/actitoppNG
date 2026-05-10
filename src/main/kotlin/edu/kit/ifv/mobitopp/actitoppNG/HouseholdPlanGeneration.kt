@@ -7,37 +7,38 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
-import kotlin.random.Random
 
 fun interface HouseholdPlanGeneration {
 
     fun generateSchedules(household: Household): Map<Person, MobilityPlan>
 }
 
-class StandardHouseholdPlanGeneration(private val planGeneration: MobilityPlanGeneration = DefaultPlanGeneration()) :
+class StandardHouseholdPlanGeneration(
+    val planGenerationParameters: PlanGenerationParameters = PlanGenerationParameters(),
+    private val planGeneration: MobilityPlanGeneration = DefaultPlanGeneration()) :
     HouseholdPlanGeneration {
 
     override fun generateSchedules(household: Household): Map<Person, MobilityPlan> {
         return household.members.associateWith { member ->
-            context(member.spawnRandomGenerator()) {
+            context(member.spawnRandomGenerator(), planGenerationParameters) {
                 planGeneration.generate(member)
             }
-
         }
     }
 }
 
 
 
-class ParallelHouseholdPlanGeneration(private val planGeneration: MobilityPlanGeneration = DefaultPlanGeneration()) :
+class ParallelHouseholdPlanGeneration(
+    val planGenerationParameters: PlanGenerationParameters = PlanGenerationParameters(),
+    private val planGeneration: MobilityPlanGeneration = DefaultPlanGeneration()) :
     HouseholdPlanGeneration {
-
     override fun generateSchedules(household: Household): Map<Person, MobilityPlan> {
         return runBlocking {
             household.members
                 .map { member ->
                     async(Dispatchers.Default) {
-                        val plan = context(member.spawnRandomGenerator()) {
+                        val plan = context(member.spawnRandomGenerator(), planGenerationParameters) {
                             planGeneration.generate(member)
                         }
                         member to plan

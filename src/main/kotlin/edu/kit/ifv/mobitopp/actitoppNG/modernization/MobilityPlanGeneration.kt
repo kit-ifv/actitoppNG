@@ -1,8 +1,8 @@
 package edu.kit.ifv.mobitopp.actitoppNG.modernization
 
 
+import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.Person
-import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.strats.LegacySpawnSideTours
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.strats.SpawnSideTours
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.strats.SpawnWeek
@@ -34,16 +34,16 @@ import kotlin.random.Random
 
 
 fun interface MobilityPlanGeneration {
-    context(rng: Random)
+    context(rng: Random, planGenerationParameters: PlanGenerationParameters)
     fun generate(person: Person, amountOfDays: Int): MobilityPlan
-    context(rng: Random)
+    context(rng: Random, planGenerationParameters: PlanGenerationParameters)
     fun generate(person: Person) = generate(person, 7)
-
+    context(planGenerationParameters: PlanGenerationParameters)
     fun generate(person: Person, amountOfDays : Int = 7, randomOffset: Long = 0L) = context(person.spawnRandomGenerator(randomOffset)) {generate(person, amountOfDays)}
 }
 
 class DefaultPlanGeneration : MobilityPlanGeneration {
-    context(rng: Random)
+    context(rng: Random, planGenerationParameters: PlanGenerationParameters)
     override fun generate(person: Person, amountOfDays: Int): MobilityPlan {
         val rng = person.spawnRandomGenerator()
         val structureGenerator = StandardStructureGeneration()
@@ -65,7 +65,7 @@ class StandardStructureGeneration(
     private val sideActivityStrategy = StandardImplementation()
     private val spawnMainActivities = SpawnWeek()
     private val spawnSideTours: SpawnSideTours = LegacySpawnSideTours()
-    context(rng: Random)
+    context(rng: Random, planGenerationParameters: PlanGenerationParameters)
     override fun generate(person: Person, amountOfDays: Int): MobilityPlan {
 
         val weekRoutine = person.generateWeekRoutine()

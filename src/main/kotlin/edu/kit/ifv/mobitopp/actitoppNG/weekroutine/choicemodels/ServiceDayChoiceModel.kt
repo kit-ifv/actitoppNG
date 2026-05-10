@@ -1,10 +1,9 @@
 package edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels
 
 import edu.kit.ifv.discretechoice.extensions.loadOptionsMap
-import edu.kit.ifv.discretechoice.extensions.optionsIndexed
+import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
-import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.DefaultServiceParameters
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.ServiceDaySet
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
 import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
@@ -13,7 +12,8 @@ import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
  * The choice model determining the amount of days with a SHOPPING activity within the week routine. The default option
  * is 0. The other options [1,7] share a common utility function.
  */
-val serviceDaysChoiceModel = DiscreteStructure<Int, PersonAlternative, ServiceDaySet> {
+context(planGenerationParameters: PlanGenerationParameters)
+val serviceDaysChoiceModel get() = DiscreteStructure<Int, PersonAlternative, ServiceDaySet> {
     loadOptionsMap(1..7) {_, it ->
         base +
                 (it.isFulltimeEmployee()) * employmentIsFulltime +
@@ -30,4 +30,5 @@ val serviceDaysChoiceModel = DiscreteStructure<Int, PersonAlternative, ServiceDa
     option(0) {
         0.0
     }
-}.multinomialLogit("Amount of service/transport days in week routine").build(DefaultServiceParameters)
+}.multinomialLogit("Amount of service/transport days in week routine")
+    .build(planGenerationParameters.serviceDayParams)

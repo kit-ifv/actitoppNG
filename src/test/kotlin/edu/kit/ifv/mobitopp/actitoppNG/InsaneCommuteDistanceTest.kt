@@ -15,12 +15,11 @@ class InsaneCommuteDistanceTest {
 
             val householdPlan = DefaultPlanGeneration()
             targets.forEach {
-                householdPlan.generate(it)
+                context(PlanGenerationParameters()) {
+                    householdPlan.generate(it)
+                }
             }
-
         }
-
-
     }
 
     private fun ActiToppHousehold.generateInsanePerson(): Person {

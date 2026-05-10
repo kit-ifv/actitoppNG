@@ -6,7 +6,6 @@ import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.EducationBudget
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.discretechoice.structure.loadFromList
 
-
 val educationHistograms by lazy {
     HistogramSelection.createChoiceModelFromResource(
         identifier = Identifier.EDUCATION_TIME_BUDGETS,

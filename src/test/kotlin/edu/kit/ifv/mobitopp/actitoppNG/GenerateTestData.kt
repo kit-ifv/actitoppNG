@@ -19,7 +19,9 @@ fun main() {
     val householdPlan = DefaultPlanGeneration()
     val plans = targets.map { household ->
         val plans = household.members.associate { member ->
-            member.id to householdPlan.generate(member).finish()
+            context(PlanGenerationParameters()) {
+                member.id to householdPlan.generate(member).finish()
+            }
         }
         HouseholdPlanOutput(household.id, plans)
     }

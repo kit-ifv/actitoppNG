@@ -1,20 +1,19 @@
 package edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels
 
 import edu.kit.ifv.discretechoice.extensions.loadOptionsMap
-import edu.kit.ifv.discretechoice.extensions.optionsIndexed
+import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
-import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.DefaultWorkParameters
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.WorkDaySet
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
-import edu.kit.ifv.mobitopp.discretechoice.structure.loadFromMap
 import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
 
 /**
  * The choice model determining the amount of work days with a WORK activity within the week routine. The default option
  * is 0. The other options [1, 7] share a common utility function.
  */
-val defaultWorkDayChoiceModel = DiscreteStructure<Int, PersonAlternative, WorkDaySet> {
+context(planGenerationParameters: PlanGenerationParameters)
+val defaultWorkDayChoiceModel get() = DiscreteStructure<Int, PersonAlternative, WorkDaySet> {
     loadOptionsMap(1..7) {_, it ->
         base +
                 (it.isFulltimeEmployee()) * employmentFullTime +
@@ -35,5 +34,5 @@ val defaultWorkDayChoiceModel = DiscreteStructure<Int, PersonAlternative, WorkDa
     option(0) {
         0.0
     }
-
-}.multinomialLogit("Amount of workdays in week routine").build(DefaultWorkParameters)
+}.multinomialLogit("Amount of workdays in week routine")
+    .build(planGenerationParameters.workDayParams)
