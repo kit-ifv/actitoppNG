@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels
 
 
+import edu.kit.ifv.discretechoice.extensions.multiAssign
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DayMainActivityParameters
@@ -13,13 +14,12 @@ import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
 context(params: PlanGenerationParameters)
 val mainActivityChoiceModel get() =
     DiscreteStructure<ActivityType, DayAlternative, DayMainActivitySet> {
-
         option(ActivityType.WORK, parameters = { work }, {_, it ->
-            (if (it.isEmployedAnywhere() && it.isStandardWorkingDay()) 1.3 else 1.0) * standardUtilityFunction(
-                this,
-                it
-            )
-        }
+                (if (it.isEmployedAnywhere() && it.isStandardWorkingDay()) 1.3 else 1.0) * standardUtilityFunction(
+                    this,
+                    it
+                )
+            }
         )
         option(ActivityType.EDUCATION, parameters = { education }, {_, it ->
             (if (it.isStudentOrAzubi() && it.isStandardWorkingDay()) 1.3 else 1.0) * standardUtilityFunction(
@@ -27,15 +27,21 @@ val mainActivityChoiceModel get() =
                 it
             )
         })
-        option(ActivityType.LEISURE, parameters = { leisure }, { standardUtilityFunction(this, it.second) })
-        option(ActivityType.SHOPPING, parameters = { shopping }, { standardUtilityFunction(this, it.second) })
-        option(ActivityType.TRANSPORT, parameters = { transport }, { standardUtilityFunction(this, it.second) })
+        multiAssign(
+            mapOf(
+                ActivityType.LEISURE to { leisure },
+                ActivityType.SHOPPING to { shopping },
+                ActivityType.TRANSPORT to { transport }
+            ),
+            utilityFunction = { standardUtilityFunction(this, it.second) }
+        )
         option(ActivityType.HOME) {
             0.0
         }
 
-
     }.multinomialLogit("Main activity type of the day").build(params.mainActivityChoiceModelParams)
+
+
 
 private val standardUtilityFunction: DayMainActivityParameters.( DayAlternative) -> Double = {
     base +

@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels
 
 
+import edu.kit.ifv.discretechoice.extensions.multiAssign
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourSuccessorParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourSuccessorSet
@@ -13,14 +14,15 @@ context(params: PlanGenerationParameters)
 val step5BWithParams get() =
     DiscreteStructure<Int, TourAlternativeInt, SideTourSuccessorSet> {
         option(0) { 0.0 }
-        option(1, parameters = { one }, {
-            val util = standardUtilityFunction(this, it.second)
-            util
-        })
-        option(2, parameters = { two }, { standardUtilityFunction(this, it.second) })
-        option(3, parameters = { three }, { standardUtilityFunction(this, it.second) })
-        option(4, parameters = { four }, { standardUtilityFunction(this, it.second) })
-        option(5, parameters = { five }, { standardUtilityFunction(this, it.second) })
+        multiAssign(mapOf(
+            1 to { one },
+            2 to { two },
+            3 to { three },
+            4 to { four },
+            5 to { five }
+        )) {
+            standardUtilityFunction(this, it.second)
+        }
     }.multinomialLogit("Amount of successor activities in side tours")
         .build(params.step5BWithParamsParams)
 
