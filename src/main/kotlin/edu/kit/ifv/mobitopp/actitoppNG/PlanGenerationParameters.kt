@@ -32,6 +32,10 @@ import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.TransportBudgetSet
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.TransportBudgets
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.WorkBudgetSet
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.WorkBudgets
+import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParameterCollectionStep10M
+import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParameterCollectionStep10O
+import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParametersStep10M
+import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParametersStep10O
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.ActivityAmountSet
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.DefaultActivityAmountParameters
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.DefaultEducationParameters
@@ -62,6 +66,9 @@ data class PlanGenerationParameters(
     val shoppingDayParams: ShoppingDaySet = DefaultShoppingParameters,
     val tourAmountParams: TourAmountSet = DefaultTourAmountParameters,
     val workDayParams: WorkDaySet = DefaultWorkParameters,
+    // Tour start times
+    val firstTourHistogramParams: ParameterCollectionStep10M = ParametersStep10M,
+    val secondTourHistogramParams: ParameterCollectionStep10O = ParametersStep10O,
     // Time budget
     val educationTimeBudgetParams: EducationBudgetSet = EducationBudget,
     val workTimeBudgedParams: WorkBudgetSet = WorkBudgets,

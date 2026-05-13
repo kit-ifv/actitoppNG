@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes
 
 
+import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.MainDurationAlternative
@@ -13,7 +14,7 @@ import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
 import kotlin.random.Random
 
 interface PersonPreferredTourStart {
-    context(rng: Random)
+    context(rng: Random, params: PlanGenerationParameters)
     fun determinePreferredTourStart(input: MobilityPlanInputs): ArrayHistogram
 }
 
@@ -217,8 +218,9 @@ data class ParameterStep9A(
     )
 
 
-class StandardPreferredTourStart() : PersonPreferredTourStart {
-    private val choiceModel =
+class StandardPreferredTourStart: PersonPreferredTourStart {
+    context(params: PlanGenerationParameters)
+    private val choiceModel get() =
         DiscreteStructure<ArrayHistogram, MainDurationAlternative, ParameterCollectionStep9A> {
 
             loadFromList(
@@ -228,7 +230,7 @@ class StandardPreferredTourStart() : PersonPreferredTourStart {
             }
 
         }.multinomialLogit("Determine preferred histogram for the first tour of the day").build(ParametersStep9A)
-    context(rng: Random)
+    context(rng: Random, params: PlanGenerationParameters)
     override fun determinePreferredTourStart(input: MobilityPlanInputs): ArrayHistogram {
 
         return context(MainDurationAlternative(input), rng) {

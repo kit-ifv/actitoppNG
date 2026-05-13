@@ -105,12 +105,12 @@ class StandardDurationAssignment : MobilityPlanDurationAssignment {
 }
 
 fun interface MobilityPlanStartTimeAssignment {
-    context(rng: Random)
+    context(rng: Random, params: PlanGenerationParameters)
     fun assignStartTimes(mobilityPlan: MobilityPlan)
 }
 
 class StandardStartTimeAssignment() : MobilityPlanStartTimeAssignment {
-    context(rng: Random)
+    context(rng: Random, params: PlanGenerationParameters)
     override fun assignStartTimes(mobilityPlan: MobilityPlan) {
         val preferredHistogram = mobilityPlan.assignPreferredTourStart(StandardPreferredTourStart())
 

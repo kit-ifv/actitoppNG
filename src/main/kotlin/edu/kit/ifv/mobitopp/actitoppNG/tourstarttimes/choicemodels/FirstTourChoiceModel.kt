@@ -1,5 +1,6 @@
 package edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.choicemodels
 
+import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.ActivityDurationHistograms
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.MainDurationAlternative
@@ -7,7 +8,6 @@ import edu.kit.ifv.mobitopp.actitoppNG.plandurations.generateHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParameterCollectionStep10M
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParameterStep10M
-import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParametersStep10M
 
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 
@@ -39,9 +39,12 @@ private val firstTourStartUtility: ParameterStep10M.(MainDurationAlternative) ->
 
 
 }
-val FIRST_TOUR_HISTOGRAM: ActivityDurationHistograms<ParameterCollectionStep10M> = ParametersStep10M.generateHistogram(
-    ArrayHistogram.fromResource(
-        identifier = Identifier.FIRST_TOUR_START_TIME
-    ),
-    firstTourStartUtility
-)
+
+context(params: PlanGenerationParameters)
+val FIRST_TOUR_HISTOGRAM: ActivityDurationHistograms<ParameterCollectionStep10M> get() =
+    params.firstTourHistogramParams.generateHistogram(
+        ArrayHistogram.fromResource(
+                        identifier = Identifier.FIRST_TOUR_START_TIME
+                    ),
+        firstTourStartUtility
+    )
