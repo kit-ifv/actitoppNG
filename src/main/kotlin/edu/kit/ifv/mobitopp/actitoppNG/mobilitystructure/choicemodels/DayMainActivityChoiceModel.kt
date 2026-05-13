@@ -1,16 +1,17 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels
 
 
+import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DayMainActivityParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DayMainActivitySet
-import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DefaultDayMainActivityParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.DayAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
 import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
 
-val mainActivityChoiceModel =
+context(params: PlanGenerationParameters)
+val mainActivityChoiceModel get() =
     DiscreteStructure<ActivityType, DayAlternative, DayMainActivitySet> {
 
         option(ActivityType.WORK, parameters = { work }, {_, it ->
@@ -34,7 +35,8 @@ val mainActivityChoiceModel =
         }
 
 
-    }.multinomialLogit("Main activity type of the day").build(DefaultDayMainActivityParameters)
+    }.multinomialLogit("Main activity type of the day").build(params.mainActivityChoiceModelParams)
+
 private val standardUtilityFunction: DayMainActivityParameters.( DayAlternative) -> Double = {
     base +
             (it.isFulltimeEmployee()) * employmentFullTime +

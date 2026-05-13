@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels
 
-import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DefaultSuccessorTourParameters
+import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SuccessorTourAmountParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SuccessorTourAmountSet
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.PreviousDayAlternative
@@ -8,8 +8,8 @@ import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
 import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
 
-
-val successorAmountChoiceModel =
+context(params: PlanGenerationParameters)
+val successorAmountChoiceModel get() =
     DiscreteStructure<Int, PreviousDayAlternative, SuccessorTourAmountSet> {
         option(0) { 0.0 }
         option(1, parameters = { one }, {
@@ -20,7 +20,7 @@ val successorAmountChoiceModel =
         option(3, parameters = { three }, { standardUtilityFunction(this, it.second) })
         option(4, parameters = { four }, { standardUtilityFunction(this, it.second) })
         option(5, parameters = { five }, { standardUtilityFunction(this, it.second) })
-    }.multinomialLogit("Amount of successor tours (tours after main tour)").build(DefaultSuccessorTourParameters)
+    }.multinomialLogit("Amount of successor tours (tours after main tour)").build(params.successorAmountChoiceModelParams)
 
 
 private val standardUtilityFunction: SuccessorTourAmountParameters.(PreviousDayAlternative) -> Double = {

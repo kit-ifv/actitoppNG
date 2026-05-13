@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitoppNG.modernization
 
-import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
+import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import kotlin.random.Random
 
@@ -10,7 +10,7 @@ class SideTourMainActivityGenerator(
 
     private val mainActivityOfSideTours: AssignMainActivityOfSideTour =
         AssignByUtilityFunction(mobilityStructure)
-    context(rng: Random)
+    context(rng: Random, params: PlanGenerationParameters)
     fun generateSideTours(tourAmounts: Map<DurationDay, PlannedTourAmounts>): Map<TrackedDayStructure, Pair<List<ActivityType>, List<ActivityType>>> {
         return mobilityStructure.elements().associateWith {
             val input =
@@ -23,7 +23,7 @@ class SideTourMainActivityGenerator(
         }
 
     }
-    context(rng: Random)
+    context(rng: Random, params: PlanGenerationParameters)
     fun loadSideTours(tourAmounts: Map<DurationDay, PlannedTourAmounts>) {
         val targets = generateSideTours(tourAmounts)
         targets.forEach { dayStructure, (prec, succ) ->

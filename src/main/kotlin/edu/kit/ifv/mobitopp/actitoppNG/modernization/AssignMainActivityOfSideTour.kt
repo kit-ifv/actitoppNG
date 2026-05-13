@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitoppNG.modernization
 
-import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
+import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.tourMainActivityChoiceModel
@@ -17,14 +17,14 @@ class DayWithPlans(
 
 
 fun interface AssignMainActivityOfSideTour {
-    context(rng: Random)
+    context(rng: Random, params: PlanGenerationParameters)
     fun generateSideTourActivities(input: DayWithPlans): Pair<List<ActivityType>, List<ActivityType>>
 }
 
 
 class AssignByUtilityFunction(private val mobilityStructure: MobilityStructure) :
     AssignMainActivityOfSideTour {
-    context(rng: Random)
+    context(rng: Random, params: PlanGenerationParameters)
     override fun generateSideTourActivities(input: DayWithPlans): Pair<List<ActivityType>, List<ActivityType>> {
         val plannedPrecursors = input.plannedTourAmounts.precursorAmount
         val plannedSuccessors = input.plannedTourAmounts.successorAmount
@@ -38,7 +38,7 @@ class AssignByUtilityFunction(private val mobilityStructure: MobilityStructure) 
 
 
     }
-    context(rng: Random)
+    context(rng: Random, params: PlanGenerationParameters)
     private fun List<Int>.calculate(position: Position, input: DayWithPlans): List<ActivityType> {
         return map { absoluteIndex ->
             mobilityStructure.generateTrackedActivity(input.dayStructure.startTimeDay) { day ->

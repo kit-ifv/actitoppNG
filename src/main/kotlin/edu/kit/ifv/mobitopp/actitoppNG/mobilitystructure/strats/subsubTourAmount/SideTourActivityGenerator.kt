@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.strats.subsubTourAmount
 
-import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
+import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.step5AWithParams
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.step5BWithParams
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourPrecursorSet
@@ -42,10 +42,10 @@ abstract class SideTourActivityGenerator<P>(
     }
 }
 
-class PrecedingSpawns() : SideTourActivityGenerator<SideTourPrecursorSet>(
-     step5AWithParams,
+class PrecedingSpawns( params: PlanGenerationParameters ) : SideTourActivityGenerator<SideTourPrecursorSet>(
+     context(params) { step5AWithParams },
 )
 
-class FollowingSpawns() : SideTourActivityGenerator<SideTourSuccessorSet>(
-     step5BWithParams,
+class FollowingSpawns(params: PlanGenerationParameters) : SideTourActivityGenerator<SideTourSuccessorSet>(
+     context(params) { step5BWithParams },
 )

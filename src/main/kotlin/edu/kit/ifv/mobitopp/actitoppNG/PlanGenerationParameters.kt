@@ -1,5 +1,19 @@
 package edu.kit.ifv.mobitopp.actitoppNG
 
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DayMainActivitySet
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DefaultDayMainActivityParameters
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DefaultPrecursorTourParameters
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DefaultSideActivityParameters
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DefaultSideTourMainActivityParameters
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DefaultSideTourPrecursorParameters
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DefaultSideTourSuccessorParameters
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DefaultSuccessorTourParameters
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.PrecursorTourAmountSet
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideActivitySet
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourMainActivitySet
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourPrecursorSet
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourSuccessorSet
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SuccessorTourAmountSet
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterCollectionStep8A
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterCollectionStep8B
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterCollectionStep8D
@@ -58,5 +72,13 @@ data class PlanGenerationParameters(
     val firstActivityUsesStandardDurationParams: ParameterCollectionStep8A = ParametersStep8A,
     val minorActivityDurationParams: ParameterCollectionStep8J = ParametersStep8J,
     val majorActivityDurationParams: ParameterCollectionStep8D = ParametersStep8D,
-    val leadActivityDurationParams: ParameterCollectionStep8B = ParametersStep8B
+    val leadActivityDurationParams: ParameterCollectionStep8B = ParametersStep8B,
+    // mobilitystructure
+    val mainActivityChoiceModelParams: DayMainActivitySet = DefaultDayMainActivityParameters,
+    val precursorAmountChoiceModelParams: PrecursorTourAmountSet = DefaultPrecursorTourParameters,
+    val successorAmountChoiceModelParams: SuccessorTourAmountSet = DefaultSuccessorTourParameters,
+    val sideActivityChoiceModelParams: SideActivitySet = DefaultSideActivityParameters,
+    val tourMainActivityChoiceModelParams: SideTourMainActivitySet = DefaultSideTourMainActivityParameters,
+    val step5AWithParamsParams: SideTourPrecursorSet = DefaultSideTourPrecursorParameters,
+    val step5BWithParamsParams: SideTourSuccessorSet = DefaultSideTourSuccessorParameters
 )
