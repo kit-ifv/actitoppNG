@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitoppNG.plandurations.choicemodels
 
 
+import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.BooleanDecisionAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterCollectionStep8A
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParametersStep8A
@@ -8,7 +9,8 @@ import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
 import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
 
-val firstActivityUsesStandardDuration =
+context(params: PlanGenerationParameters)
+val firstActivityUsesStandardDuration get() =
     DiscreteStructure<Boolean, BooleanDecisionAlternative, ParameterCollectionStep8A> {
         option(true) { 0.0 }
         option(false, parameters = { no }) {_, it ->
@@ -41,4 +43,5 @@ val firstActivityUsesStandardDuration =
                     (it.tourhat3akt()) * tourhat3akt
         }
 
-    }.multinomialLogit("If first activity of the day should use a predetermined start time").build(ParametersStep8A)
+    }.multinomialLogit("If first activity of the day should use a predetermined start time")
+        .build(params.firstActivityUsesStandardDurationParams)

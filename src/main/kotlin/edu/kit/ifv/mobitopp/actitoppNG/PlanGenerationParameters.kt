@@ -1,5 +1,13 @@
 package edu.kit.ifv.mobitopp.actitoppNG
 
+import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterCollectionStep8A
+import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterCollectionStep8B
+import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterCollectionStep8D
+import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterCollectionStep8J
+import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParametersStep8A
+import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParametersStep8B
+import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParametersStep8D
+import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParametersStep8J
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.EducationBudget
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.EducationBudgetSet
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.LeisureBudgetSet
@@ -46,7 +54,9 @@ data class PlanGenerationParameters(
     val leisureTimeBudgetParams: LeisureBudgetSet = LeisureBudgets,
     val shoppingTimeBudgetParams: ShoppingBudgetSet = ShoppingBudgets,
     val transportTimeBudgetParams: TransportBudgetSet = TransportBudgets,
-
-
-
+    // Plan generation
+    val firstActivityUsesStandardDurationParams: ParameterCollectionStep8A = ParametersStep8A,
+    val minorActivityDurationParams: ParameterCollectionStep8J = ParametersStep8J,
+    val majorActivityDurationParams: ParameterCollectionStep8D = ParametersStep8D,
+    val leadActivityDurationParams: ParameterCollectionStep8B = ParametersStep8B
 )
