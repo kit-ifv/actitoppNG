@@ -34,19 +34,19 @@ import kotlin.random.Random
 
 
 fun interface MobilityPlanGeneration {
-    context(rng: Random, planGenerationParameters: PlanGenerationParameters)
+    context(rng: Random, params: PlanGenerationParameters)
     fun generate(person: Person, amountOfDays: Int): MobilityPlan
-    context(rng: Random, planGenerationParameters: PlanGenerationParameters)
+    context(rng: Random, params: PlanGenerationParameters)
     fun generate(person: Person) = generate(person, 7)
-    context(planGenerationParameters: PlanGenerationParameters)
+    context(params: PlanGenerationParameters)
     fun generate(person: Person, amountOfDays : Int = 7, randomOffset: Long = 0L) = context(person.spawnRandomGenerator(randomOffset)) {generate(person, amountOfDays)}
 }
 
 class DefaultPlanGeneration : MobilityPlanGeneration {
-    context(rng: Random, planGenerationParameters: PlanGenerationParameters)
+    context(rng: Random, params: PlanGenerationParameters)
     override fun generate(person: Person, amountOfDays: Int): MobilityPlan {
         val rng = person.spawnRandomGenerator()
-        val structureGenerator = StandardStructureGeneration(planGenerationParameters)
+        val structureGenerator = StandardStructureGeneration(params)
         val durationGenerator = StandardDurationAssignment()
         val startTimeGenerator = StandardStartTimeAssignment()
         val mobilityPlan = structureGenerator.generate(person, amountOfDays)
@@ -89,17 +89,18 @@ class StandardStructureGeneration(
 }
 
 fun interface MobilityPlanDurationAssignment {
-    context(rng: Random)
+    context(rng: Random, params: PlanGenerationParameters)
     fun assignDurations(mobilityPlan: MobilityPlan)
 }
 
-class StandardDurationAssignment() : MobilityPlanDurationAssignment {
-    context(rng: Random)
+class StandardDurationAssignment : MobilityPlanDurationAssignment {
+    context(rng: Random, params: PlanGenerationParameters)
     override fun assignDurations(mobilityPlan: MobilityPlan) {
-        mobilityPlan.assignFirstMainActivities(StickySelector( LEAD))
-        mobilityPlan.assignSecondaryMainActivities(StickySelector( MAJOR))
-        mobilityPlan.assignMinorActivities(AssignMinorActivityDuration())
-
+        context(params) {
+            mobilityPlan.assignFirstMainActivities(StickySelector( LEAD, params))
+            mobilityPlan.assignSecondaryMainActivities(StickySelector( MAJOR, params))
+            mobilityPlan.assignMinorActivities(AssignMinorActivityDuration(params))
+        }
     }
 }
 

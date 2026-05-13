@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitoppNG.plandurations
 
 
+import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInputs
 import java.util.EnumSet
@@ -20,8 +21,8 @@ fun interface SelectMainActivityDuration {
  */
 class StickySelector<P>(
     histogram: ActivityDurationHistograms<P>,
-
-    private val useStandardDuration: StandardDuration = UtilityFunctionAssignment(),
+    params: PlanGenerationParameters,
+    private val useStandardDuration: StandardDuration = UtilityFunctionAssignment(params),
 ) : SelectMainActivityDuration, SelectMajorActivityDuration {
     private val taintedHistogramMap = ActivityType.OUTOFHOMEACTIVITY.associateWith { histogram.taint() }
     private val fixedTypes = EnumSet.of(ActivityType.WORK, ActivityType.EDUCATION)

@@ -1,5 +1,6 @@
 package edu.kit.ifv.mobitopp.actitoppNG.plandurations
 
+import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.choicemodels.MINOR
@@ -19,7 +20,9 @@ fun interface SelectMinorActivityDuration {
 }
 
 class AssignMinorActivityDuration(
-    private val histogram: ActivityDurationHistograms<ParameterCollectionStep8J> = MINOR,
+    params: PlanGenerationParameters,
+    private val histogram: ActivityDurationHistograms<ParameterCollectionStep8J> =
+        context(params) { MINOR },
 ) : SelectMinorActivityDuration {
     context(rng: Random)
     override fun getDuration(input: MobilityPlanInputs): Duration {
@@ -32,9 +35,6 @@ class AssignMinorActivityDuration(
                     this
                 )
             )
-
         }
-
-
     }
 }
