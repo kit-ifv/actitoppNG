@@ -12,7 +12,7 @@ import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
  * The choice model for selecting the average amount of tours per day in the week routine. The default option of 1
  * is normalized and has 0.0 utility. The other options [2, 4] share a common utility function.
  */
-context(planGenerationParameters: PlanGenerationParameters)
+context(params: PlanGenerationParameters)
 val tourAmountChoiceModel get() = DiscreteStructure<Int, PersonAlternative, TourAmountSet> {
     option(1) {
         0.0
@@ -34,4 +34,4 @@ val tourAmountChoiceModel get() = DiscreteStructure<Int, PersonAlternative, Tour
                 (it.isMale()) * isMale
     }
 }.multinomialLogit("Average amount of tours per day in week routine ")
-    .build(planGenerationParameters.tourAmountParams)
+    .build(params.tourAmountParams)

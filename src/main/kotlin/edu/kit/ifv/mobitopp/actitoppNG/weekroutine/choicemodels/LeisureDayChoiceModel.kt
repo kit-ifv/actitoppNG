@@ -13,7 +13,7 @@ import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
  * The choice model determining the amount of days with a LEISURE activity within the week routine. The default option is
  * 0. The other options [1, 7] share a common utility function.
  */
-context(planGenerationParameters: PlanGenerationParameters)
+context(params: PlanGenerationParameters)
 val leisureDaysChoiceModel get() = DiscreteStructure<Int, PersonAlternative, LeisureDaySet> {
     loadOptionsMap(1..7) {_, it ->
         base +
@@ -28,4 +28,4 @@ val leisureDaysChoiceModel get() = DiscreteStructure<Int, PersonAlternative, Lei
         0.0
     }
 }.multinomialLogit("Amount of leisure days in week routine")
-    .build(planGenerationParameters.leisureDaysParams)
+    .build(params.leisureDaysParams)

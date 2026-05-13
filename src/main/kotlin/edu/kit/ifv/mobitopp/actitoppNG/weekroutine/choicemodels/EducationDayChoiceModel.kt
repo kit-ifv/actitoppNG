@@ -14,7 +14,7 @@ import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
  * The choice model of selecting the amount of days with an education activity in the week routine. The default option
  * is 0 days. The other options [1, 7] share a common utility function.
  */
-context(planGenerationParameters: PlanGenerationParameters)
+context(params: PlanGenerationParameters)
 val educationDaysChoiceModel get() = DiscreteStructure<Int, PersonAlternative, EducationDaySet> {
     loadOptionsMap(1..7) {_, it ->
         base +
@@ -31,4 +31,4 @@ val educationDaysChoiceModel get() = DiscreteStructure<Int, PersonAlternative, E
         0.0
     }
 }.multinomialLogit("Amount of education days in week routine")
-    .build(planGenerationParameters.educationDayParams)
+    .build(params.educationDayParams)

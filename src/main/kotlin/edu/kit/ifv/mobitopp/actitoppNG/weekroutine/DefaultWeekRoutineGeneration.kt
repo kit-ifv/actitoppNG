@@ -33,15 +33,15 @@ typealias ChoiceModele = FixedChoiceModel<Int, PersonAlternative>
  * will return a read-only [WeekRoutine] as final output.
  */
 class DefaultWeekRoutineGeneration(
-    val planGenerationParameters: PlanGenerationParameters,
-    private val workDayChoiceModel: ChoiceModele = context(planGenerationParameters) {defaultWorkDayChoiceModel},
-    private val educationDayChoiceModel: ChoiceModele = context(planGenerationParameters) {educationDaysChoiceModel},
-    private val leisureDayChoiceModel: ChoiceModele = context(planGenerationParameters) {leisureDaysChoiceModel},
-    private val shoppingDayChoiceModel: ChoiceModele = context(planGenerationParameters) {shoppingDaysChoiceModel},
-    private val serviceDayChoiceModel: ChoiceModele = context(planGenerationParameters) {serviceDaysChoiceModel},
-    private val immobileDayChoiceModel: ChoiceModele = context(planGenerationParameters) {homeDaysChoiceModel},
-    private val averageAmountOfTourChoiceModel: ChoiceModele = context(planGenerationParameters) {tourAmountChoiceModel},
-    private val averageAmountOfActivitiesChoiceModel: ChoiceModele = context(planGenerationParameters) {activityAmountChoiceModel},
+    val params: PlanGenerationParameters,
+    private val workDayChoiceModel: ChoiceModele = context(params) {defaultWorkDayChoiceModel},
+    private val educationDayChoiceModel: ChoiceModele = context(params) {educationDaysChoiceModel},
+    private val leisureDayChoiceModel: ChoiceModele = context(params) {leisureDaysChoiceModel},
+    private val shoppingDayChoiceModel: ChoiceModele = context(params) {shoppingDaysChoiceModel},
+    private val serviceDayChoiceModel: ChoiceModele = context(params) {serviceDaysChoiceModel},
+    private val immobileDayChoiceModel: ChoiceModele = context(params) {homeDaysChoiceModel},
+    private val averageAmountOfTourChoiceModel: ChoiceModele = context(params) {tourAmountChoiceModel},
+    private val averageAmountOfActivitiesChoiceModel: ChoiceModele = context(params) {activityAmountChoiceModel},
 ) : GenerateWeekRoutine {
     context(rng: Random)
     override fun generate(person: Person): WeekRoutine {

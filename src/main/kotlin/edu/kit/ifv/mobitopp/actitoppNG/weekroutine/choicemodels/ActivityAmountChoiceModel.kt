@@ -13,7 +13,7 @@ import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
  * The choice model for selecting the average amount of activities per day in the week routine. The default option of
  * 1 has associated utility 0.0. The other remaining options between 2 to 6 share a common utility function.
  */
-context(planGenerationParameters: PlanGenerationParameters)
+context(params: PlanGenerationParameters)
 val activityAmountChoiceModel get() = DiscreteStructure<Int, PersonAlternative, ActivityAmountSet> {
     option(1) {
         0.0
@@ -33,4 +33,4 @@ val activityAmountChoiceModel get() = DiscreteStructure<Int, PersonAlternative, 
                 (it.hasChildrenInHousehold()) * haushalthatkinderunter10
     }
 }.multinomialLogit("Amount of Activities in Week Routine")
-    .build(planGenerationParameters.activityAmountParams)
+    .build(params.activityAmountParams)

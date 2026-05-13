@@ -12,7 +12,7 @@ import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
  * The choice model determining the amount of work days with a WORK activity within the week routine. The default option
  * is 0. The other options [1, 7] share a common utility function.
  */
-context(planGenerationParameters: PlanGenerationParameters)
+context(params: PlanGenerationParameters)
 val defaultWorkDayChoiceModel get() = DiscreteStructure<Int, PersonAlternative, WorkDaySet> {
     loadOptionsMap(1..7) {_, it ->
         base +
@@ -35,4 +35,4 @@ val defaultWorkDayChoiceModel get() = DiscreteStructure<Int, PersonAlternative, 
         0.0
     }
 }.multinomialLogit("Amount of workdays in week routine")
-    .build(planGenerationParameters.workDayParams)
+    .build(params.workDayParams)

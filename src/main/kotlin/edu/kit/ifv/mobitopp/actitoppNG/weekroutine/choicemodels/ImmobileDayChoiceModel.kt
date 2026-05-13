@@ -12,7 +12,7 @@ import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
  * The choice model for selecting the amount of immobile days in the week routine. An immobile day is a day consisting
  * only of a HOME activity. The default option is 0. The remaining options [1, 7] share a common utility function.
  */
-context(planGenerationParameters: PlanGenerationParameters)
+context(params: PlanGenerationParameters)
 val homeDaysChoiceModel get() =
     DiscreteStructure<Int, PersonAlternative, HomeDaySet> {
         loadOptionsMap(1..7) { _, it ->
@@ -30,7 +30,8 @@ val homeDaysChoiceModel get() =
         option(0) {
             0.0
         }
-    }.multinomialLogit("Amount of immobile days (Home days) in week routine").build(planGenerationParameters.homeStayParams)
+    }.multinomialLogit("Amount of immobile days (Home days) in week routine")
+        .build(params.homeStayParams)
 
 
 

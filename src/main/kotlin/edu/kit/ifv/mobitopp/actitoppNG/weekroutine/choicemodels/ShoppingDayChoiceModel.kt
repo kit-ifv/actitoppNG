@@ -12,7 +12,7 @@ import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
  * THe choice model determining the amount of days with a SHOPPING activity within the week routine. The default option
  * is 0. The other options [1, 7] share a common utility function.
  */
-context(planGenerationParameters: PlanGenerationParameters)
+context(params: PlanGenerationParameters)
 val shoppingDaysChoiceModel get() = DiscreteStructure<Int, PersonAlternative, ShoppingDaySet> {
     loadOptionsMap((1..7)) {_, it ->
         base +
@@ -30,4 +30,4 @@ val shoppingDaysChoiceModel get() = DiscreteStructure<Int, PersonAlternative, Sh
         0.0
     }
 }.multinomialLogit("Amount of shopping days in week routine")
-    .build(planGenerationParameters.shoppingDayParams)
+    .build(params.shoppingDayParams)
