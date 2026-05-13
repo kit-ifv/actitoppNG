@@ -1,5 +1,15 @@
 package edu.kit.ifv.mobitopp.actitoppNG
 
+import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.EducationBudget
+import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.EducationBudgetSet
+import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.LeisureBudgetSet
+import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.LeisureBudgets
+import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.ShoppingBudgetSet
+import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.ShoppingBudgets
+import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.TransportBudgetSet
+import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.TransportBudgets
+import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.WorkBudgetSet
+import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.WorkBudgets
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.ActivityAmountSet
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.DefaultActivityAmountParameters
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.DefaultEducationParameters
@@ -21,6 +31,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.WorkDaySet
  * A set of all choice model parameters needed for a household plan generation.
  */
 data class PlanGenerationParameters(
+    // Week routine parameters
     val activityAmountParams: ActivityAmountSet = DefaultActivityAmountParameters,
     val educationDayParams: EducationDaySet = DefaultEducationParameters,
     val homeStayParams: HomeDaySet = DefaultHomeParameters,
@@ -28,5 +39,14 @@ data class PlanGenerationParameters(
     val serviceDayParams: ServiceDaySet = DefaultServiceParameters,
     val shoppingDayParams: ShoppingDaySet = DefaultShoppingParameters,
     val tourAmountParams: TourAmountSet = DefaultTourAmountParameters,
-    val workDayParams: WorkDaySet = DefaultWorkParameters
+    val workDayParams: WorkDaySet = DefaultWorkParameters,
+    // Time budget
+    val educationTimeBudgetParams: EducationBudgetSet = EducationBudget,
+    val workTimeBudgedParams: WorkBudgetSet = WorkBudgets,
+    val leisureTimeBudgetParams: LeisureBudgetSet = LeisureBudgets,
+    val shoppingTimeBudgetParams: ShoppingBudgetSet = ShoppingBudgets,
+    val transportTimeBudgetParams: TransportBudgetSet = TransportBudgets,
+
+
+
 )

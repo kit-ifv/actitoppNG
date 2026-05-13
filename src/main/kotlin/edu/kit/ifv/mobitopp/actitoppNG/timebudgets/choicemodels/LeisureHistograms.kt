@@ -1,16 +1,16 @@
 package edu.kit.ifv.mobitopp.actitoppNG.timebudgets.choicemodels
 
+import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.HistogramSelection
-import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.LeisureBudgets
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.discretechoice.structure.loadFromList
 
-
-val leisureHistograms by lazy {
+context(params: PlanGenerationParameters)
+val leisureHistograms get() =
     HistogramSelection.createChoiceModelFromResource(
         identifier = Identifier.LEISURE_TIME_BUDGETS,
-        parameter = LeisureBudgets,
+        parameter = params.leisureTimeBudgetParams,
         name = "Histogram selection for time budget for leisure"
     ) { histograms ->
         loadFromList(histograms - histograms[3]) {_, it ->
@@ -32,5 +32,5 @@ val leisureHistograms by lazy {
 
 
     }
-}
+
 

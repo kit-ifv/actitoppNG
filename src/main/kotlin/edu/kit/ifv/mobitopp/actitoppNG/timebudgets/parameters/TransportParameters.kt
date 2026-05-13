@@ -1,5 +1,6 @@
 package edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters
 
+
 val TransportBudgets = TransportBudgetSet.create(
     category2 = TransportBudgetParameters(
         base = -1.2365,
