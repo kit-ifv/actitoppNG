@@ -14,11 +14,8 @@ context(params: PlanGenerationParameters)
 val precursorAmountChoiceModel get() =
     DiscreteStructure<Int, PreviousDayAlternative, PrecursorTourAmountSet> {
         option(0) { 0.0 }
-        option(1, parameters = { one }, {
-            val util = standardUtilityFunction(this, it.second)
-            util
-        })
         multiAssign(mapOf(
+                1 to { one },
                 2 to { two },
                 3 to { three },
                 4 to { four },
