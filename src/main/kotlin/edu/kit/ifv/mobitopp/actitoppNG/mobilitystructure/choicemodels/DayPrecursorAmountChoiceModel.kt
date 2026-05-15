@@ -1,7 +1,7 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels
 
 
-import edu.kit.ifv.discretechoice.extensions.multiAssign
+import edu.kit.ifv.discretechoice.extensions.loadOptionsMap
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.PrecursorTourAmountParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.PrecursorTourAmountSet
@@ -14,14 +14,7 @@ context(params: PlanGenerationParameters)
 val precursorAmountChoiceModel get() =
     DiscreteStructure<Int, PreviousDayAlternative, PrecursorTourAmountSet> {
         option(0) { 0.0 }
-        multiAssign(mapOf(
-                1 to { one },
-                2 to { two },
-                3 to { three },
-                4 to { four },
-                5 to { five }
-            )
-        ) { standardUtilityFunction(this, it.second) }
+        loadOptionsMap(1..5){ _, it -> standardUtilityFunction(this, it)}
     }.multinomialLogit("Amount of precursor tours (tours before main tour) per day")
         .build(params.precursorAmountChoiceModelParams)
 
