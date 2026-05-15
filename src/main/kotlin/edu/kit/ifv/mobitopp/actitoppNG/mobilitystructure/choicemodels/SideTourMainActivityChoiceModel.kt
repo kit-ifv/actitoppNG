@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels
 
-import edu.kit.ifv.discretechoice.extensions.multiAssign
+import edu.kit.ifv.discretechoice.extensions.loadOptionsMap
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourMainActivityParameters
@@ -11,20 +11,15 @@ import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
 import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
 
 context(params: PlanGenerationParameters)
-val tourMainActivityChoiceModel get() =
-    DiscreteStructure<ActivityType, TourAlternative, SideTourMainActivitySet> {
-
-        option(ActivityType.LEISURE) { 0.0 }
-
-        multiAssign(mapOf(
-            ActivityType.WORK to { work },
-            ActivityType.EDUCATION to { education },
-            ActivityType.SHOPPING to { shopping },
-            ActivityType.TRANSPORT to { transport },
-        )) { standardUtilityFunction(this, it.second) }
-
-    }.multinomialLogit("Main Activity of the tours that are not the main tour.")
-        .build(params.tourMainActivityChoiceModelParams)
+val tourMainActivityChoiceModel
+    get() =
+        DiscreteStructure<ActivityType, TourAlternative, SideTourMainActivitySet> {
+            option(ActivityType.LEISURE) { 0.0 }
+            loadOptionsMap(ActivityType.entries - ActivityType.LEISURE - ActivityType.HOME) { _, it ->
+                standardUtilityFunction(this, it)
+            }
+        }.multinomialLogit("Main Activity of the tours that are not the main tour.")
+            .build(params.tourMainActivityChoiceModelParams)
 
 private val standardUtilityFunction: SideTourMainActivityParameters.(TourAlternative) -> Double = {
     base +

@@ -1,12 +1,28 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters
 
 data class SideTourPrecursorSet(
-    val one: SideTourPrecursorParameters,
-    val two: SideTourPrecursorParameters,
-    val three: SideTourPrecursorParameters,
-    val four: SideTourPrecursorParameters,
-    val five: SideTourPrecursorParameters,
-)
+    private val parameters: Map<Int, SideTourPrecursorParameters>,
+    ) : Map<Int, SideTourPrecursorParameters> by parameters {
+    companion object {
+        fun create(
+            one: SideTourPrecursorParameters,
+            two: SideTourPrecursorParameters,
+            three: SideTourPrecursorParameters,
+            four: SideTourPrecursorParameters,
+            five: SideTourPrecursorParameters,
+        ): SideTourPrecursorSet {
+            return SideTourPrecursorSet(
+                mapOf(
+                    1 to one,
+                    2 to two,
+                    3 to three,
+                    4 to four,
+                    5 to five,
+                )
+            )
+        }
+    }
+}
 
 data class SideTourPrecursorParameters(
     val base: Double,
@@ -28,7 +44,7 @@ data class SideTourPrecursorParameters(
     val mean_3akt: Double,
 )
 
-val DefaultSideTourPrecursorParameters = SideTourPrecursorSet(
+val DefaultSideTourPrecursorParameters = SideTourPrecursorSet.create(
     one = SideTourPrecursorParameters(
         base = -1.5334,
         tourliegtvorhaupttour = -0.5963,

@@ -1,7 +1,7 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels
 
 
-import edu.kit.ifv.discretechoice.extensions.multiAssign
+import edu.kit.ifv.discretechoice.extensions.loadOptionsMap
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourSuccessorParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourSuccessorSet
@@ -11,20 +11,15 @@ import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
 import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
 
 context(params: PlanGenerationParameters)
-val step5BWithParams get() =
-    DiscreteStructure<Int, TourAlternativeInt, SideTourSuccessorSet> {
-        option(0) { 0.0 }
-        multiAssign(mapOf(
-            1 to { one },
-            2 to { two },
-            3 to { three },
-            4 to { four },
-            5 to { five }
-        )) {
-            standardUtilityFunction(this, it.second)
-        }
-    }.multinomialLogit("Amount of successor activities in side tours")
-        .build(params.step5BWithParamsParams)
+val step5BWithParams
+    get() =
+        DiscreteStructure<Int, TourAlternativeInt, SideTourSuccessorSet> {
+            option(0) { 0.0 }
+            loadOptionsMap(1..5) { _, it ->
+                standardUtilityFunction(this, it)
+            }
+        }.multinomialLogit("Amount of successor activities in side tours")
+            .build(params.step5BWithParamsParams)
 
 
 private val standardUtilityFunction: SideTourSuccessorParameters.(TourAlternativeInt) -> Double = {

@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels
 
-import edu.kit.ifv.discretechoice.extensions.multiAssign
+import edu.kit.ifv.discretechoice.extensions.loadOptionsMap
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideActivityParameters
@@ -11,20 +11,15 @@ import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
 import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
 
 context(params: PlanGenerationParameters)
-val sideActivityChoiceModel get() =
-    DiscreteStructure<ActivityType, ActivityAlternative, SideActivitySet> {
-        multiAssign(mapOf(
-            ActivityType.WORK to { work },
-            ActivityType.EDUCATION to { education },
-            ActivityType.SHOPPING to { shopping },
-            ActivityType.TRANSPORT to { transport },
-        )) {
-            standardUtilityFunction(this, it.second)
-        }
-        option(ActivityType.LEISURE) { 0.0 }
-
-    }.multinomialLogit("Determine Activity type of secondary activities.")
-        .build(params.sideActivityChoiceModelParams)
+val sideActivityChoiceModel
+    get() =
+        DiscreteStructure<ActivityType, ActivityAlternative, SideActivitySet> {
+            loadOptionsMap(ActivityType.entries - ActivityType.LEISURE - ActivityType.HOME) { _, it ->
+                standardUtilityFunction(this, it)
+            }
+            option(ActivityType.LEISURE) { 0.0 }
+        }.multinomialLogit("Determine Activity type of secondary activities.")
+            .build(params.sideActivityChoiceModelParams)
 
 private val standardUtilityFunction: SideActivityParameters.(ActivityAlternative) -> Double = {
     base +

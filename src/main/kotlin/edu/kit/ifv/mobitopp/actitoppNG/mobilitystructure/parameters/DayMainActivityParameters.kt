@@ -1,6 +1,9 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters
 
-val DefaultDayMainActivityParameters = DayMainActivitySet(
+import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DayMainActivityParameters
+
+val DefaultDayMainActivityParameters = DayMainActivitySet.create(
     work = DayMainActivityParameters(
         base = -0.5374,
         employmentFullTime = 0.6741,
@@ -118,14 +121,29 @@ val DefaultDayMainActivityParameters = DayMainActivitySet(
     ),
 )
 
-data class DayMainActivitySet(
-    val work: DayMainActivityParameters,
-    val education: DayMainActivityParameters,
-    val leisure: DayMainActivityParameters,
-    val shopping: DayMainActivityParameters,
-    val transport: DayMainActivityParameters,
-
-    )
+class DayMainActivitySet(
+    private val parameters: Map<ActivityType, DayMainActivityParameters>
+    ): Map<ActivityType, DayMainActivityParameters> by parameters {
+        companion object {
+            fun create(
+                work: DayMainActivityParameters,
+                education: DayMainActivityParameters,
+                leisure: DayMainActivityParameters,
+                shopping: DayMainActivityParameters,
+                transport: DayMainActivityParameters,
+            ): DayMainActivitySet {
+                return DayMainActivitySet(
+                    mapOf(
+                        ActivityType.WORK to work,
+                        ActivityType.EDUCATION to education,
+                        ActivityType.LEISURE to leisure,
+                        ActivityType.SHOPPING to shopping,
+                        ActivityType.TRANSPORT to transport,
+                    )
+                )
+            }
+        }
+    }
 
 data class DayMainActivityParameters(
     val base: Double,

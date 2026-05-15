@@ -25,7 +25,7 @@ suspend fun Collection<ActitoppPerson>.generateSchedules(): List<List<Modernized
 }
 
 fun main() {
-    val targets = randomHouseholds(10000).flatMap { it.generatePersons(5) }
+    val targets = randomHouseholds(1000).flatMap { it.generatePersons(5) }
     runBlocking {
         targets.generateSchedules()
     }
