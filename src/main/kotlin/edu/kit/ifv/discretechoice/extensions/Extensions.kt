@@ -1,6 +1,6 @@
 package edu.kit.ifv.discretechoice.extensions
 
-import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
+
 import edu.kit.ifv.mobitopp.discretechoice.structure.EnumeratedStructureBuilder
 import edu.kit.ifv.mobitopp.discretechoice.structure.loadFromList
 import edu.kit.ifv.mobitopp.discretechoice.structure.loadFromMap
@@ -24,7 +24,7 @@ fun <T, A, C, P: Map<A, T>> EnumeratedStructureBuilder<A, C, P>.loadOptionsMap(o
  * @param utilityFunction a utility function working on the selected parameter (parameter from the selection function
  * in the options map). It gets a pair of `A` the option and `C` the choice
  */
-fun<T, A, C, P> DiscreteStructure<A, C, T>.multiAssign(
+fun<T, A, C, P> EnumeratedStructureBuilder<A, C, T>.multiAssign(
     optionsParameterMap: Map<A, T.() -> P>,
     utilityFunction: P.(Pair<A, C>) -> Double
 ) {
