@@ -30,11 +30,12 @@ class CompareAgainstTestData {
             it.generatePersons(5)
 
         }
-
-        val householdPlan = DefaultPlanGeneration(PlanGenerationParameters())
+        val params = PlanGenerationParameters()
+        val models = AllChoiceModels(params)
+        val householdPlan = DefaultPlanGeneration(params)
         val plans = targets.map { household ->
             val plans = household.members.associate { member ->
-                context(PlanGenerationParameters()) {
+                context(params, models) {
                     member.id to householdPlan.generate(member).finish()
                 }
             }

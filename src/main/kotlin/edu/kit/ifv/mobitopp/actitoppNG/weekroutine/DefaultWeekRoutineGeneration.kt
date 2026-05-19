@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitoppNG.weekroutine
 
 
+import edu.kit.ifv.mobitopp.actitoppNG.AllChoiceModels
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.Person
 import edu.kit.ifv.mobitopp.actitoppNG.steps.PersonAlternative
@@ -34,6 +35,7 @@ typealias ChoiceModele = FixedChoiceModel<Int, PersonAlternative>
  */
 class DefaultWeekRoutineGeneration(
     val params: PlanGenerationParameters,
+    val allChoiceModels: AllChoiceModels,
     private val workDayChoiceModel: ChoiceModele = context(params) {defaultWorkDayChoiceModel},
     private val educationDayChoiceModel: ChoiceModele = context(params) {educationDaysChoiceModel},
     private val leisureDayChoiceModel: ChoiceModele = context(params) {leisureDaysChoiceModel},
@@ -41,7 +43,7 @@ class DefaultWeekRoutineGeneration(
     private val serviceDayChoiceModel: ChoiceModele = context(params) {serviceDaysChoiceModel},
     private val immobileDayChoiceModel: ChoiceModele = context(params) {homeDaysChoiceModel},
     private val averageAmountOfTourChoiceModel: ChoiceModele = context(params) {tourAmountChoiceModel},
-    private val averageAmountOfActivitiesChoiceModel: ChoiceModele = context(params) {activityAmountChoiceModel},
+    private val averageAmountOfActivitiesChoiceModel: ChoiceModele = allChoiceModels.activityAmountChoiceModel_,
 ) : GenerateWeekRoutine {
     context(rng: Random)
     override fun generate(person: Person): WeekRoutine {

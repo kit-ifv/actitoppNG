@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitoppNG.modernization
 
 
+import edu.kit.ifv.mobitopp.actitoppNG.AllChoiceModels
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.Person
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.strats.LegacySpawnSideTours
@@ -34,11 +35,11 @@ import kotlin.random.Random
 
 
 fun interface MobilityPlanGeneration {
-    context(rng: Random, params: PlanGenerationParameters)
+    context(rng: Random, params: PlanGenerationParameters, models: AllChoiceModels)
     fun generate(person: Person, amountOfDays: Int): MobilityPlan
-    context(rng: Random, params: PlanGenerationParameters)
+    context(rng: Random, params: PlanGenerationParameters, models: AllChoiceModels)
     fun generate(person: Person) = generate(person, 7)
-    context(params: PlanGenerationParameters)
+    context(params: PlanGenerationParameters, models: AllChoiceModels)
     fun generate(person: Person, amountOfDays : Int = 7, randomOffset: Long = 0L) = context(person.spawnRandomGenerator(randomOffset)) {generate(person, amountOfDays)}
 }
 
@@ -46,7 +47,7 @@ class DefaultPlanGeneration(params: PlanGenerationParameters) : MobilityPlanGene
     val structureGenerator = StandardStructureGeneration(params)
     val durationGenerator = StandardDurationAssignment()
     val startTimeGenerator = StandardStartTimeAssignment()
-    context(rng: Random, params: PlanGenerationParameters)
+    context(rng: Random, params: PlanGenerationParameters, models: AllChoiceModels)
     override fun generate(person: Person, amountOfDays: Int): MobilityPlan {
         val mobilityPlan = structureGenerator.generate(person, amountOfDays)
         mobilityPlan.apply {
@@ -66,7 +67,7 @@ class StandardStructureGeneration(
     private val sideActivityStrategy = StandardImplementation()
     private val spawnMainActivities = SpawnWeek()
     private val spawnSideTours: SpawnSideTours = LegacySpawnSideTours()
-    context(rng: Random, planGenerationParameters: PlanGenerationParameters)
+    context(rng: Random, planGenerationParameters: PlanGenerationParameters, models: AllChoiceModels)
     override fun generate(person: Person, amountOfDays: Int): MobilityPlan {
 
         val weekRoutine = person.generateWeekRoutine()

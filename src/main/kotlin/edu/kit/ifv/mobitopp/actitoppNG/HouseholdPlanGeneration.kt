@@ -15,12 +15,13 @@ fun interface HouseholdPlanGeneration {
 
 class StandardHouseholdPlanGeneration(
     val params: PlanGenerationParameters = PlanGenerationParameters(),
+    val models: AllChoiceModels = AllChoiceModels(params),
     private val planGeneration: MobilityPlanGeneration = DefaultPlanGeneration(params)) :
     HouseholdPlanGeneration {
 
     override fun generateSchedules(household: Household): Map<Person, MobilityPlan> {
         return household.members.associateWith { member ->
-            context(member.spawnRandomGenerator(), params) {
+            context(member.spawnRandomGenerator(), params, models) {
                 planGeneration.generate(member)
             }
         }
@@ -31,6 +32,7 @@ class StandardHouseholdPlanGeneration(
 
 class ParallelHouseholdPlanGeneration(
     val params: PlanGenerationParameters = PlanGenerationParameters(),
+    val models: AllChoiceModels = AllChoiceModels(params),
     private val planGeneration: MobilityPlanGeneration = DefaultPlanGeneration(params)) :
     HouseholdPlanGeneration {
     override fun generateSchedules(household: Household): Map<Person, MobilityPlan> {
@@ -38,7 +40,7 @@ class ParallelHouseholdPlanGeneration(
             household.members
                 .map { member ->
                     async(Dispatchers.Default) {
-                        val plan = context(member.spawnRandomGenerator(), params) {
+                        val plan = context(member.spawnRandomGenerator(), params, models) {
                             planGeneration.generate(member)
                         }
                         member to plan
