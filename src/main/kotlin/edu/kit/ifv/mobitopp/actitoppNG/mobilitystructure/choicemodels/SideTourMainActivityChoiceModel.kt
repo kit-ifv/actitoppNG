@@ -14,8 +14,11 @@ context(params: PlanGenerationParameters)
 val tourMainActivityChoiceModel
     get() =
         DiscreteStructure<ActivityType, TourAlternative, SideTourMainActivitySet> {
+            loadOptionsMap(listOf(ActivityType.WORK, ActivityType.EDUCATION)) { _, it ->
+                standardUtilityFunction(this, it)
+            }
             option(ActivityType.LEISURE) { 0.0 }
-            loadOptionsMap(ActivityType.entries - ActivityType.LEISURE - ActivityType.HOME) { _, it ->
+            loadOptionsMap(listOf(ActivityType.SHOPPING, ActivityType.TRANSPORT)) { _, it ->
                 standardUtilityFunction(this, it)
             }
         }.multinomialLogit("Main Activity of the tours that are not the main tour.")

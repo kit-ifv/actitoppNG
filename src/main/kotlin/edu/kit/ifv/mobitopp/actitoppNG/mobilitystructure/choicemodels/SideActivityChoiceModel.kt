@@ -14,10 +14,13 @@ context(params: PlanGenerationParameters)
 val sideActivityChoiceModel
     get() =
         DiscreteStructure<ActivityType, ActivityAlternative, SideActivitySet> {
-            loadOptionsMap(ActivityType.entries - ActivityType.LEISURE - ActivityType.HOME) { _, it ->
+            loadOptionsMap(listOf(ActivityType.WORK, ActivityType.EDUCATION)) { _, it ->
                 standardUtilityFunction(this, it)
             }
             option(ActivityType.LEISURE) { 0.0 }
+            loadOptionsMap(listOf(ActivityType.SHOPPING, ActivityType.TRANSPORT)) { _, it ->
+                standardUtilityFunction(this, it)
+            }
         }.multinomialLogit("Determine Activity type of secondary activities.")
             .build(params.sideActivityChoiceModelParams)
 
