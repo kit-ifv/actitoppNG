@@ -42,13 +42,12 @@ fun interface MobilityPlanGeneration {
     fun generate(person: Person, amountOfDays : Int = 7, randomOffset: Long = 0L) = context(person.spawnRandomGenerator(randomOffset)) {generate(person, amountOfDays)}
 }
 
-class DefaultPlanGeneration : MobilityPlanGeneration {
+class DefaultPlanGeneration(params: PlanGenerationParameters) : MobilityPlanGeneration {
+    val structureGenerator = StandardStructureGeneration(params)
+    val durationGenerator = StandardDurationAssignment()
+    val startTimeGenerator = StandardStartTimeAssignment()
     context(rng: Random, params: PlanGenerationParameters)
     override fun generate(person: Person, amountOfDays: Int): MobilityPlan {
-        val rng = person.spawnRandomGenerator()
-        val structureGenerator = StandardStructureGeneration(params)
-        val durationGenerator = StandardDurationAssignment()
-        val startTimeGenerator = StandardStartTimeAssignment()
         val mobilityPlan = structureGenerator.generate(person, amountOfDays)
         mobilityPlan.apply {
             durationGenerator.assignDurations(this)
@@ -62,8 +61,7 @@ class DefaultPlanGeneration : MobilityPlanGeneration {
 
 class StandardStructureGeneration(
     planGenerationParameters: PlanGenerationParameters,
-    private val histograms: HistogramPerActivity =
-        context(planGenerationParameters) { HistogramPerActivity.DEFAULT }
+    private val histograms: HistogramPerActivity = planGenerationParameters.histograms
 ) : MobilityPlanGeneration {
     private val sideActivityStrategy = StandardImplementation()
     private val spawnMainActivities = SpawnWeek()

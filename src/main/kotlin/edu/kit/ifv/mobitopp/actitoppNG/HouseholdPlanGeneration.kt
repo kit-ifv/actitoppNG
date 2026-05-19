@@ -15,7 +15,7 @@ fun interface HouseholdPlanGeneration {
 
 class StandardHouseholdPlanGeneration(
     val params: PlanGenerationParameters = PlanGenerationParameters(),
-    private val planGeneration: MobilityPlanGeneration = DefaultPlanGeneration()) :
+    private val planGeneration: MobilityPlanGeneration = DefaultPlanGeneration(params)) :
     HouseholdPlanGeneration {
 
     override fun generateSchedules(household: Household): Map<Person, MobilityPlan> {
@@ -31,7 +31,7 @@ class StandardHouseholdPlanGeneration(
 
 class ParallelHouseholdPlanGeneration(
     val params: PlanGenerationParameters = PlanGenerationParameters(),
-    private val planGeneration: MobilityPlanGeneration = DefaultPlanGeneration()) :
+    private val planGeneration: MobilityPlanGeneration = DefaultPlanGeneration(params)) :
     HouseholdPlanGeneration {
     override fun generateSchedules(household: Household): Map<Person, MobilityPlan> {
         return runBlocking {

@@ -14,7 +14,7 @@ suspend fun Collection<ActitoppPerson>.generateSchedules(): List<List<Modernized
 
     this@generateSchedules.withIndex().map { (index, person) ->
         async(Default) {
-            val householdPlan = DefaultPlanGeneration()
+            val householdPlan = DefaultPlanGeneration(PlanGenerationParameters())
             context(PlanGenerationParameters()) {
                 val schedule = householdPlan.generate(person).finish()
                 if (index % 100 == 0) println("Working on person $index done")
