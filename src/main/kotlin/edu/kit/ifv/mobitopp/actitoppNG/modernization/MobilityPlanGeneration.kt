@@ -107,9 +107,10 @@ fun interface MobilityPlanStartTimeAssignment {
 }
 
 class StandardStartTimeAssignment() : MobilityPlanStartTimeAssignment {
+    private val preferredTourStart = StandardPreferredTourStart()
     context(rng: Random, models: AllChoiceModels)
     override fun assignStartTimes(mobilityPlan: MobilityPlan) {
-        val preferredHistogram = mobilityPlan.assignPreferredTourStart(StandardPreferredTourStart())
+        val preferredHistogram = mobilityPlan.assignPreferredTourStart(preferredTourStart)
 
         val firstStrategy = TourStartWithPreference(
             startTimeHistograms = models.firstTourHistogram,
