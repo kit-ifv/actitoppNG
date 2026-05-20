@@ -33,6 +33,8 @@ import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.TransportBudgetSet
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.TransportBudgets
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.WorkBudgetSet
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.WorkBudgets
+import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.ParameterCollectionStep9A
+import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.ParametersStep9A
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParameterCollectionStep10M
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParameterCollectionStep10O
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParametersStep10M
@@ -70,6 +72,7 @@ data class PlanGenerationParameters(
     // Tour start times
     val firstTourHistogramParams: ParameterCollectionStep10M = ParametersStep10M,
     val secondTourHistogramParams: ParameterCollectionStep10O = ParametersStep10O,
+    val standardPreferredTourStart: ParameterCollectionStep9A = ParametersStep9A,
     // Time budget
     val educationTimeBudgetParams: EducationBudgetSet = EducationBudget,
     val workTimeBudgedParams: WorkBudgetSet = WorkBudgets,

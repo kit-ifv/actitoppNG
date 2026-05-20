@@ -1,5 +1,6 @@
 package edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes
 
+import edu.kit.ifv.mobitopp.actitoppNG.AllChoiceModels
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInputs
@@ -7,7 +8,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.modernization.plan.MobilityPlan
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import kotlin.random.Random
 
-context(rng: Random, params: PlanGenerationParameters)
+context(rng: Random, models: AllChoiceModels)
 fun MobilityPlan.assignPreferredTourStart(strategy: PersonPreferredTourStart): ArrayHistogram? {
     if (!person.isAnywayEmployed() && !person.isinEducation()) return null
     // TODO Invert this boolean expressions

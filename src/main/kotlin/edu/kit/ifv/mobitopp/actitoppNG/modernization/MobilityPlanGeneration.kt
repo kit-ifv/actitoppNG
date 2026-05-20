@@ -88,39 +88,37 @@ class StandardStructureGeneration(
 }
 
 fun interface MobilityPlanDurationAssignment {
-    context(rng: Random, params: PlanGenerationParameters)
+    context(rng: Random, models: AllChoiceModels)
     fun assignDurations(mobilityPlan: MobilityPlan)
 }
 
 class StandardDurationAssignment : MobilityPlanDurationAssignment {
-    context(rng: Random, params: PlanGenerationParameters)
+    context(rng: Random, models: AllChoiceModels)
     override fun assignDurations(mobilityPlan: MobilityPlan) {
-        context(params) {
-            mobilityPlan.assignFirstMainActivities(StickySelector( LEAD, params))
-            mobilityPlan.assignSecondaryMainActivities(StickySelector( MAJOR, params))
-            mobilityPlan.assignMinorActivities(AssignMinorActivityDuration(params))
-        }
+        mobilityPlan.assignFirstMainActivities(StickySelector( models.leadActivityDurationChoiceModel, models))
+        mobilityPlan.assignSecondaryMainActivities(StickySelector( models.majorActivityDurationChoiceModel, models))
+        mobilityPlan.assignMinorActivities(AssignMinorActivityDuration(models))
     }
 }
 
 fun interface MobilityPlanStartTimeAssignment {
-    context(rng: Random, params: PlanGenerationParameters)
+    context(rng: Random, models: AllChoiceModels)
     fun assignStartTimes(mobilityPlan: MobilityPlan)
 }
 
 class StandardStartTimeAssignment() : MobilityPlanStartTimeAssignment {
-    context(rng: Random, params: PlanGenerationParameters)
+    context(rng: Random, models: AllChoiceModels)
     override fun assignStartTimes(mobilityPlan: MobilityPlan) {
         val preferredHistogram = mobilityPlan.assignPreferredTourStart(StandardPreferredTourStart())
 
         val firstStrategy = TourStartWithPreference(
-            startTimeHistograms = FIRST_TOUR_HISTOGRAM,
+            startTimeHistograms = models.firstTourHistogram,
             preferredTourStart = preferredHistogram,
             strategy = PreferredStartViaChoiceModel(),
         )
 
         val secondStrategy = TourStartWithPreference(
-            startTimeHistograms = SECOND_TOUR_HISTOGRAM,
+            startTimeHistograms = models.secondTourHistogram,
             preferredTourStart = preferredHistogram,
             strategy = UsePreferredTourStart.DISABLED
         )
