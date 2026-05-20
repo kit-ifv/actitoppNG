@@ -13,7 +13,7 @@ suspend fun Collection<ActitoppPerson>.generateSchedules(): List<List<Modernized
 
     val params = PlanGenerationParameters()
     val models = AllChoiceModels.create(params)
-    val householdPlan = DefaultPlanGeneration(params)
+    val householdPlan = DefaultPlanGeneration(models)
     this@generateSchedules.withIndex().map { (index, person) ->
         async(Default) {
             context(params, models) {

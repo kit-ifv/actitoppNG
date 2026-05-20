@@ -15,7 +15,7 @@ class InsaneCommuteDistanceTest {
         assertThrows<IllegalArgumentException> {
             val targets = randomHouseholds(1000).map { it.generateInsanePerson() }
 
-            val householdPlan = DefaultPlanGeneration(params)
+            val householdPlan = DefaultPlanGeneration(models)
             targets.forEach {
                 context(params, models) {
                     householdPlan.generate(it)

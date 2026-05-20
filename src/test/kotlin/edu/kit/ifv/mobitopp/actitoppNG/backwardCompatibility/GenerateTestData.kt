@@ -19,7 +19,7 @@ internal fun generatePlans(): List<HouseholdPlanOutput> {
     }
     val params = PlanGenerationParameters()
     val models = AllChoiceModels.create(params)
-    val householdPlan = DefaultPlanGeneration(params)
+    val householdPlan = DefaultPlanGeneration(models)
     val plans = targets.map { household ->
         val plans = household.members.associate { member ->
             context(params, models) {
