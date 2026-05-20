@@ -12,7 +12,7 @@ import kotlinx.coroutines.runBlocking
 suspend fun Collection<ActitoppPerson>.generateSchedules(): List<List<ModernizedActivity>> = coroutineScope {
 
     val params = PlanGenerationParameters()
-    val models = AllChoiceModels(params)
+    val models = AllChoiceModels.create(params)
     val householdPlan = DefaultPlanGeneration(params)
     this@generateSchedules.withIndex().map { (index, person) ->
         async(Default) {

@@ -43,7 +43,7 @@ class DefaultWeekRoutineGeneration(
     private val serviceDayChoiceModel: ChoiceModele = context(params) {serviceDaysChoiceModel},
     private val immobileDayChoiceModel: ChoiceModele = context(params) {homeDaysChoiceModel},
     private val averageAmountOfTourChoiceModel: ChoiceModele = context(params) {tourAmountChoiceModel},
-    private val averageAmountOfActivitiesChoiceModel: ChoiceModele = allChoiceModels.activityAmountChoiceModel_,
+    private val averageAmountOfActivitiesChoiceModel: ChoiceModele = context(params){activityAmountChoiceModel},
 ) : GenerateWeekRoutine {
     context(rng: Random)
     override fun generate(person: Person): WeekRoutine {

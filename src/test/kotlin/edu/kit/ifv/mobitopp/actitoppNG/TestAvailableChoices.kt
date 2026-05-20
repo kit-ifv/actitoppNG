@@ -50,7 +50,7 @@ class TestAvailableChoices {
     fun testGenerateUtil() {
         val rng = Random(0)
         val person = randomHousehold(rng).generatePersons(1, rng)[0]
-        context(PlanGenerationParameters(), rng, AllChoiceModels(PlanGenerationParameters())) {
+        context(PlanGenerationParameters(), rng, AllChoiceModels.create(PlanGenerationParameters())) {
             val weekRoutine = person.generateWeekRoutine()
             val mobilityStructure = MobilityStructure(person, weekRoutine)
             val nextDay = mobilityStructure.nextDay()

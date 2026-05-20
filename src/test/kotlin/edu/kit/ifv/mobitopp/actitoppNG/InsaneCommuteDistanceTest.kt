@@ -11,7 +11,7 @@ class InsaneCommuteDistanceTest {
     @Test
     fun insaneCommuteDistances() {
         val params = PlanGenerationParameters()
-        val models = AllChoiceModels(params)
+        val models = AllChoiceModels.create(params)
         assertThrows<IllegalArgumentException> {
             val targets = randomHouseholds(1000).map { it.generateInsanePerson() }
 

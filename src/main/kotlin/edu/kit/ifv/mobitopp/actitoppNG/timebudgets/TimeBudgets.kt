@@ -2,7 +2,6 @@ package edu.kit.ifv.mobitopp.actitoppNG.timebudgets
 
 import edu.kit.ifv.mobitopp.actitoppNG.Person
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
-import edu.kit.ifv.mobitopp.actitoppNG.TimeBudgetParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Category
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.choicemodels.educationHistograms
@@ -147,7 +146,7 @@ class HistogramPerActivity(
         /**
          * Initialize the Histograms from files only once, as reading the files is rather time consuming.
          */
-        context(params: TimeBudgetParameters)
+        context(params: PlanGenerationParameters)
         val DEFAULT get() =
             HistogramPerActivity(
                 workHistograms = workHistograms,

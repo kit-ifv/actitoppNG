@@ -1,13 +1,12 @@
 package edu.kit.ifv.mobitopp.actitoppNG.timebudgets.choicemodels
 
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
-import edu.kit.ifv.mobitopp.actitoppNG.TimeBudgetParameters
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.HistogramSelection
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.discretechoice.structure.loadFromList
 
-context(params: TimeBudgetParameters)
+context(params: PlanGenerationParameters)
 val educationHistograms get() =
     HistogramSelection.createChoiceModelFromResource(
         identifier = Identifier.EDUCATION_TIME_BUDGETS,
