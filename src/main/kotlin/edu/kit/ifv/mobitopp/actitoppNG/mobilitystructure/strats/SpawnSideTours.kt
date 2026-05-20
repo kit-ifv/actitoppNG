@@ -8,12 +8,12 @@ import edu.kit.ifv.mobitopp.actitoppNG.modernization.calculateTourAmounts
 import kotlin.random.Random
 
 fun interface SpawnSideTours {
-    context(rng: Random, params: PlanGenerationParameters, models: AllChoiceModels)
+    context(rng: Random, models: AllChoiceModels)
     fun spawnSideTours(input: MobilityStructure)
 }
 
 class LegacySpawnSideTours() : SpawnSideTours {
-    context(rng: Random, params: PlanGenerationParameters, models: AllChoiceModels)
+    context(rng: Random, models: AllChoiceModels)
     override fun spawnSideTours(input: MobilityStructure) {
 
         val plannedTourAmounts = input.calculateTourAmounts()

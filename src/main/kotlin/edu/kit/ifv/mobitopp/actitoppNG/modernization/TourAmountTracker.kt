@@ -58,7 +58,7 @@ class TourAmountTracker(
     /**
      * Use ModifiableDayStructure as input to prevent home days to sneak into this calculation.
      */
-    context(rng: Random, params: PlanGenerationParameters, models: AllChoiceModels)
+    context(rng: Random, models: AllChoiceModels)
     fun generateSideTours(targets: List<ModifiableDayStructure>): Map<DurationDay, PlannedTourAmounts> {
         generatePredecessorTourAmounts(targets)
         generateSuccessorTourAmounts(targets)
@@ -68,9 +68,9 @@ class TourAmountTracker(
     /** step 3A
      *
      */
-    context(rng: Random, params: PlanGenerationParameters, models: AllChoiceModels)
+    context(rng: Random, models: AllChoiceModels)
     private fun generatePredecessorTourAmounts(targets: List<DayStructure>): List<Int> {
-        val generator = GenerateSideToursPreceeding(params, models)
+        val generator = GenerateSideToursPreceeding(models)
         return generateTourAmounts(targets, generator)
     }
 
@@ -105,7 +105,7 @@ class TourAmountTracker(
 
 }
 
-context(rng: Random, params: PlanGenerationParameters, models: AllChoiceModels)
+context(rng: Random, models: AllChoiceModels)
 fun MobilityStructure.calculateTourAmounts(): Map<DurationDay, PlannedTourAmounts> {
     val tracker = TourAmountTracker(allDays(), person = this.weekRoutine)
     tracker.generateSideTours(mobileDays())

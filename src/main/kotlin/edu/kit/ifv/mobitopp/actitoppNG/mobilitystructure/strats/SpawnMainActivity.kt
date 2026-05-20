@@ -9,12 +9,12 @@ import edu.kit.ifv.mobitopp.actitoppNG.modernization.Step2Tracking
 import kotlin.random.Random
 
 fun interface SpawnMainActivity {
-    context(rng: Random, params: PlanGenerationParameters, choiceModels: AllChoiceModels)
+    context(rng: Random, choiceModels: AllChoiceModels)
     fun generateNewDay(mobilityStructure: MobilityStructure)
 }
 
 class SpawnWithRespect() : SpawnMainActivity {
-    context(rng: Random, params: PlanGenerationParameters, choiceModels: AllChoiceModels)
+    context(rng: Random, choiceModels: AllChoiceModels)
     override fun generateNewDay(mobilityStructure: MobilityStructure) {
         val nextDay = mobilityStructure.nextDay()
         val availableOptions = Step2Tracking.determineAvailableOptions(

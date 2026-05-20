@@ -10,7 +10,6 @@ import edu.kit.ifv.mobitopp.discretechoice.models.FixedChoiceModel
 
 
 class GenerateSideToursPreceeding(
-    params: PlanGenerationParameters,
     models: AllChoiceModels,
     choiceModel: FixedChoiceModel<Int, PreviousDayAlternative> = models.precursorAmountChoiceModel
 ) : DefaultSideTourDeterminer<PrecursorTourAmountSet>( choiceModel) {
