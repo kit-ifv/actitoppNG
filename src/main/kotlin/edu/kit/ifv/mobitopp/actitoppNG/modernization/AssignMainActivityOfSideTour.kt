@@ -1,5 +1,6 @@
 package edu.kit.ifv.mobitopp.actitoppNG.modernization
 
+import edu.kit.ifv.mobitopp.actitoppNG.AllChoiceModels
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.PersonWithRoutine
@@ -17,14 +18,14 @@ class DayWithPlans(
 
 
 fun interface AssignMainActivityOfSideTour {
-    context(rng: Random, params: PlanGenerationParameters)
+    context(rng: Random, models: AllChoiceModels)
     fun generateSideTourActivities(input: DayWithPlans): Pair<List<ActivityType>, List<ActivityType>>
 }
 
 
 class AssignByUtilityFunction(private val mobilityStructure: MobilityStructure) :
     AssignMainActivityOfSideTour {
-    context(rng: Random, params: PlanGenerationParameters)
+    context(rng: Random, models: AllChoiceModels)
     override fun generateSideTourActivities(input: DayWithPlans): Pair<List<ActivityType>, List<ActivityType>> {
         val plannedPrecursors = input.plannedTourAmounts.precursorAmount
         val plannedSuccessors = input.plannedTourAmounts.successorAmount
@@ -38,13 +39,13 @@ class AssignByUtilityFunction(private val mobilityStructure: MobilityStructure) 
 
 
     }
-    context(rng: Random, params: PlanGenerationParameters)
+    context(rng: Random, models: AllChoiceModels)
     private fun List<Int>.calculate(position: Position, input: DayWithPlans): List<ActivityType> {
         return map { absoluteIndex ->
             mobilityStructure.generateTrackedActivity(input.dayStructure.startTimeDay) { day ->
 
                 val routine = input.personWithRoutine.routine
-                val availableOptions = tourMainActivityChoiceModel.choices.toMutableSet()
+                val availableOptions = models.tourMainActivityChoiceModel.choices.toMutableSet()
                 if (!input.personWithRoutine.person.isAllowedToWork) availableOptions.remove(ActivityType.WORK)
                 if (day.shouldNotBeWorkDay(routine)) availableOptions.remove(
                     ActivityType.WORK
@@ -58,7 +59,7 @@ class AssignByUtilityFunction(private val mobilityStructure: MobilityStructure) 
                     input.dayStructure,
                     TourPositionAttributesByIndex(absoluteIndex, position)
                 )) {
-                    tourMainActivityChoiceModel.select(availableOptions)
+                    models.tourMainActivityChoiceModel.select(availableOptions)
                 }
 
             }

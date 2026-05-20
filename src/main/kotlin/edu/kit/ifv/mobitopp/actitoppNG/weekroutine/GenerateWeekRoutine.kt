@@ -19,9 +19,9 @@ fun interface GenerateWeekRoutine {
 /**
  * A convenience extension function to call the generation of a [WeekRoutine] directly on an [Person] object.
  */
-context(rng: Random, planGenerationParameters: PlanGenerationParameters, models: AllChoiceModels)
+context(rng: Random, models: AllChoiceModels)
 fun Person.generateWeekRoutine(
-    strategy: GenerateWeekRoutine = DefaultWeekRoutineGeneration(planGenerationParameters, models),
+    strategy: GenerateWeekRoutine = DefaultWeekRoutineGeneration(models),
 ): WeekRoutine {
     return strategy.generate(this)
 }

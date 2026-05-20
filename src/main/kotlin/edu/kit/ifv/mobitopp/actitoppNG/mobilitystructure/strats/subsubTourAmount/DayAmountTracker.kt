@@ -1,5 +1,6 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.strats.subsubTourAmount
 
+import edu.kit.ifv.mobitopp.actitoppNG.AllChoiceModels
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.DayStructure
@@ -11,13 +12,13 @@ import kotlin.random.Random
  * Keep track of the amount of "activities" placed within the day, to avoid the side effect shenanigans of the legacy
  * code. We want to determine the amount of activities in bulk, before even considering spawning a single activity.
  */
-class DayAmountTracker(val params: PlanGenerationParameters, val day: DayStructure, val personWithRoutine: PersonWithRoutine) {
+class DayAmountTracker(val models: AllChoiceModels, val day: DayStructure, val personWithRoutine: PersonWithRoutine) {
 
     private var counter = 2 * day.amountOfElements()
     private var remainingPlacements = day.minimumAmountOfActivitiesByJointActions - day.amountOfActivities()
 
-    private val successorGenerator = FollowingSpawns(params)
-    private val predecessorGenerator = PrecedingSpawns(params)
+    private val successorGenerator = FollowingSpawns(models)
+    private val predecessorGenerator = PrecedingSpawns(models)
 
     /**
      * This map is required to fetch the calculation of the predecessor amount for each tour, since the predecessors

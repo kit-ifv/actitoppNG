@@ -8,16 +8,6 @@ import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.step5AWith
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.step5BWithParams
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.successorAmountChoiceModel
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.tourMainActivityChoiceModel
-import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DefaultSideActivityParameters
-import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DefaultSideTourMainActivityParameters
-import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DefaultSideTourPrecursorParameters
-import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DefaultSideTourSuccessorParameters
-import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DefaultSuccessorTourParameters
-import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideActivitySet
-import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourMainActivitySet
-import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourPrecursorSet
-import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourSuccessorSet
-import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SuccessorTourAmountSet
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.ActivityAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.DayAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.PreviousDayAlternative
@@ -50,14 +40,14 @@ import edu.kit.ifv.mobitopp.discretechoice.models.FixedChoiceModel
 
 data class AllChoiceModels(
     // week routine
-    val activityAmount: FixedChoiceModel<Int, PersonAlternative>,
-    val educationDay: FixedChoiceModel<Int, PersonAlternative>,
-    val homeDays:  FixedChoiceModel<Int, PersonAlternative>,
-    val leisureDays: FixedChoiceModel<Int, PersonAlternative>,
-    val serviceDays:  FixedChoiceModel<Int, PersonAlternative>,
-    val shoppingDays: FixedChoiceModel<Int, PersonAlternative>,
-    val tourAmount: FixedChoiceModel<Int, PersonAlternative>,
-    val defaultWorkDay: FixedChoiceModel<Int, PersonAlternative>,
+    val activityAmountChoiceModel: FixedChoiceModel<Int, PersonAlternative>,
+    val educationDaysChoiceModel: FixedChoiceModel<Int, PersonAlternative>,
+    val homeDaysChoiceModel:  FixedChoiceModel<Int, PersonAlternative>,
+    val leisureDaysChoiceModel: FixedChoiceModel<Int, PersonAlternative>,
+    val serviceDaysChoiceModel:  FixedChoiceModel<Int, PersonAlternative>,
+    val shoppingDaysChoiceModel: FixedChoiceModel<Int, PersonAlternative>,
+    val tourAmountChoiceModel: FixedChoiceModel<Int, PersonAlternative>,
+    val defaultWorkDayChoiceModel: FixedChoiceModel<Int, PersonAlternative>,
     // Tour start times
     val firstTourHistogram: ActivityDurationHistograms<ParameterCollectionStep10M>,
     val secondTourHistogram:  ActivityDurationHistograms<ParameterCollectionStep10O>,
@@ -81,14 +71,14 @@ data class AllChoiceModels(
         fun create(params: PlanGenerationParameters): AllChoiceModels {
             context(params) {
                 return AllChoiceModels(
-                    activityAmount = activityAmountChoiceModel,
-                    educationDay = educationDaysChoiceModel,
-                    homeDays = homeDaysChoiceModel,
-                    leisureDays = leisureDaysChoiceModel,
-                    serviceDays = serviceDaysChoiceModel,
-                    shoppingDays = shoppingDaysChoiceModel,
-                    tourAmount = tourAmountChoiceModel,
-                    defaultWorkDay = defaultWorkDayChoiceModel,
+                    activityAmountChoiceModel = activityAmountChoiceModel,
+                    educationDaysChoiceModel = educationDaysChoiceModel,
+                    homeDaysChoiceModel = homeDaysChoiceModel,
+                    leisureDaysChoiceModel = leisureDaysChoiceModel,
+                    serviceDaysChoiceModel = serviceDaysChoiceModel,
+                    shoppingDaysChoiceModel = shoppingDaysChoiceModel,
+                    tourAmountChoiceModel = tourAmountChoiceModel,
+                    defaultWorkDayChoiceModel = defaultWorkDayChoiceModel,
                     firstTourHistogram = FIRST_TOUR_HISTOGRAM,
                     secondTourHistogram = SECOND_TOUR_HISTOGRAM,
                     histograms = HistogramPerActivity.DEFAULT,

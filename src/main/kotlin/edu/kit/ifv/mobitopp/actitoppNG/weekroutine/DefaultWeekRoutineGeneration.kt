@@ -2,11 +2,9 @@ package edu.kit.ifv.mobitopp.actitoppNG.weekroutine
 
 
 import edu.kit.ifv.mobitopp.actitoppNG.AllChoiceModels
-import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.Person
 import edu.kit.ifv.mobitopp.actitoppNG.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.activityAmountChoiceModel
-import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.defaultWorkDayChoiceModel
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.educationDaysChoiceModel
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.homeDaysChoiceModel
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.leisureDaysChoiceModel
@@ -34,16 +32,15 @@ typealias ChoiceModele = FixedChoiceModel<Int, PersonAlternative>
  * will return a read-only [WeekRoutine] as final output.
  */
 class DefaultWeekRoutineGeneration(
-    val params: PlanGenerationParameters,
-    val allChoiceModels: AllChoiceModels,
-    private val workDayChoiceModel: ChoiceModele = context(params) {defaultWorkDayChoiceModel},
-    private val educationDayChoiceModel: ChoiceModele = context(params) {educationDaysChoiceModel},
-    private val leisureDayChoiceModel: ChoiceModele = context(params) {leisureDaysChoiceModel},
-    private val shoppingDayChoiceModel: ChoiceModele = context(params) {shoppingDaysChoiceModel},
-    private val serviceDayChoiceModel: ChoiceModele = context(params) {serviceDaysChoiceModel},
-    private val immobileDayChoiceModel: ChoiceModele = context(params) {homeDaysChoiceModel},
-    private val averageAmountOfTourChoiceModel: ChoiceModele = context(params) {tourAmountChoiceModel},
-    private val averageAmountOfActivitiesChoiceModel: ChoiceModele = context(params){activityAmountChoiceModel},
+    val models: AllChoiceModels,
+    private val workDayChoiceModel: ChoiceModele = models.defaultWorkDayChoiceModel,
+    private val educationDayChoiceModel: ChoiceModele = models.educationDaysChoiceModel,
+    private val leisureDayChoiceModel: ChoiceModele = models.leisureDaysChoiceModel,
+    private val shoppingDayChoiceModel: ChoiceModele = models.shoppingDaysChoiceModel,
+    private val serviceDayChoiceModel: ChoiceModele = models.serviceDaysChoiceModel,
+    private val immobileDayChoiceModel: ChoiceModele = models.homeDaysChoiceModel,
+    private val averageAmountOfTourChoiceModel: ChoiceModele = models.tourAmountChoiceModel,
+    private val averageAmountOfActivitiesChoiceModel: ChoiceModele = models.activityAmountChoiceModel,
 ) : GenerateWeekRoutine {
     context(rng: Random)
     override fun generate(person: Person): WeekRoutine {

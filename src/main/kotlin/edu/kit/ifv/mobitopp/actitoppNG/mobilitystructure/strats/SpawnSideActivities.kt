@@ -1,5 +1,6 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.strats
 
+import edu.kit.ifv.mobitopp.actitoppNG.AllChoiceModels
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.ByTracker
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.MobilityStructure
@@ -8,14 +9,14 @@ import edu.kit.ifv.mobitopp.actitoppNG.modernization.TrackedSecondaryActivities
 import kotlin.random.Random
 
 fun interface SpawnSideActivities {
-    context(rng: Random, params: PlanGenerationParameters)
+    context(rng: Random, models: AllChoiceModels)
     fun spawnSideActivities(input: MobilityStructure)
 }
 
 class StandardImplementation() : SpawnSideActivities {
-    context(rng: Random, params: PlanGenerationParameters)
+    context(rng: Random, models: AllChoiceModels)
     override fun spawnSideActivities(input: MobilityStructure) {
-        val activityTypeGeneration = TrackedSecondaryActivities(params, input)
+        val activityTypeGeneration = TrackedSecondaryActivities(models , input)
 
 
         input.elements().forEach { day ->
