@@ -1,15 +1,15 @@
 package edu.kit.ifv.mobitopp.actitoppNG.timebudgets.choicemodels
 
+import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.HistogramSelection
-import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.TransportBudgets
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.discretechoice.structure.loadFromList
 
-
-val transportHistograms = HistogramSelection.createChoiceModelFromResource(
+context(params: PlanGenerationParameters)
+val transportHistograms get() = HistogramSelection.createChoiceModelFromResource(
     identifier = Identifier.TRANSPORT_TIME_BUDGETS,
-    parameter = TransportBudgets,
+    parameter = params.transportTimeBudgetParams,
     name = "Histogram selection for time budgets for transport"
 ) { histograms ->
     option(histograms[0]) {

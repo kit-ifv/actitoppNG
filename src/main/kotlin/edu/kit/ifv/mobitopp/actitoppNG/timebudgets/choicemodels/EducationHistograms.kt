@@ -1,16 +1,16 @@
 package edu.kit.ifv.mobitopp.actitoppNG.timebudgets.choicemodels
 
+import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.HistogramSelection
-import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.EducationBudget
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.discretechoice.structure.loadFromList
 
-
-val educationHistograms by lazy {
+context(params: PlanGenerationParameters)
+val educationHistograms get() =
     HistogramSelection.createChoiceModelFromResource(
         identifier = Identifier.EDUCATION_TIME_BUDGETS,
-        parameter = EducationBudget,
+        parameter = params.educationTimeBudgetParams,
         name = "Histogram selection for education duration"
     ) { histograms ->
         loadFromList(histograms - histograms[3]) {_, it ->
@@ -29,5 +29,4 @@ val educationHistograms by lazy {
         option(histograms[3]) {
             0.0
         }
-    }
 }

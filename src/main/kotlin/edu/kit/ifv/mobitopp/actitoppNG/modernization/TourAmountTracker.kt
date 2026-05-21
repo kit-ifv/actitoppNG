@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitoppNG.modernization
 
-import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
+import edu.kit.ifv.mobitopp.actitoppNG.AllChoiceModels
+import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.PlannedTourMap
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.strats.sideTourAmounts.DefaultSideTourDeterminer
@@ -57,7 +58,7 @@ class TourAmountTracker(
     /**
      * Use ModifiableDayStructure as input to prevent home days to sneak into this calculation.
      */
-    context(rng: Random)
+    context(rng: Random, models: AllChoiceModels)
     fun generateSideTours(targets: List<ModifiableDayStructure>): Map<DurationDay, PlannedTourAmounts> {
         generatePredecessorTourAmounts(targets)
         generateSuccessorTourAmounts(targets)
@@ -67,18 +68,18 @@ class TourAmountTracker(
     /** step 3A
      *
      */
-    context(rng: Random)
+    context(rng: Random, models: AllChoiceModels)
     private fun generatePredecessorTourAmounts(targets: List<DayStructure>): List<Int> {
-        val generator = GenerateSideToursPreceeding()
+        val generator = GenerateSideToursPreceeding(models)
         return generateTourAmounts(targets, generator)
     }
 
     /**
      * Step 3B
      */
-    context(rng: Random)
+    context(rng: Random, models: AllChoiceModels)
     private fun generateSuccessorTourAmounts(targets: List<DayStructure>): List<Int> {
-        val generator = GenerateSideToursFollowing()
+        val generator = GenerateSideToursFollowing(models)
         return generateTourAmounts(targets, generator)
     }
     context(rng: Random)
@@ -103,11 +104,11 @@ class TourAmountTracker(
     }
 
 }
-context(rng: Random)
+
+context(rng: Random, models: AllChoiceModels)
 fun MobilityStructure.calculateTourAmounts(): Map<DurationDay, PlannedTourAmounts> {
     val tracker = TourAmountTracker(allDays(), person = this.weekRoutine)
     tracker.generateSideTours(mobileDays())
     return tracker.output()
-
 }
 

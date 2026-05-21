@@ -1,7 +1,8 @@
 package edu.kit.ifv.mobitopp.actitoppNG.weekroutine
 
+import edu.kit.ifv.mobitopp.actitoppNG.AllChoiceModels
+import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.Person
-import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
 import kotlin.random.Random
 
 /**
@@ -18,9 +19,9 @@ fun interface GenerateWeekRoutine {
 /**
  * A convenience extension function to call the generation of a [WeekRoutine] directly on an [Person] object.
  */
-context(rng: Random)
+context(rng: Random, models: AllChoiceModels)
 fun Person.generateWeekRoutine(
-    strategy: GenerateWeekRoutine = DefaultWeekRoutineGeneration(),
+    strategy: GenerateWeekRoutine = DefaultWeekRoutineGeneration(models),
 ): WeekRoutine {
     return strategy.generate(this)
 }

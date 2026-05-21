@@ -10,17 +10,18 @@ import kotlin.random.Random
 class InsaneCommuteDistanceTest {
     @Test
     fun insaneCommuteDistances() {
+        val params = PlanGenerationParameters()
+        val models = AllChoiceModels.create(params)
         assertThrows<IllegalArgumentException> {
             val targets = randomHouseholds(1000).map { it.generateInsanePerson() }
 
-            val householdPlan = DefaultPlanGeneration()
+            val householdPlan = DefaultPlanGeneration(models)
             targets.forEach {
-                householdPlan.generate(it)
+                context(params, models) {
+                    householdPlan.generate(it)
+                }
             }
-
         }
-
-
     }
 
     private fun ActiToppHousehold.generateInsanePerson(): Person {

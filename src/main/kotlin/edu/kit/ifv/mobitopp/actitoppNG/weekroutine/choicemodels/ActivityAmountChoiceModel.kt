@@ -2,10 +2,10 @@ package edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels
 
 
 import edu.kit.ifv.discretechoice.extensions.optionsIndexed
+import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.ActivityAmountSet
-import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.DefaultActivityAmountParameters
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
 import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
 
@@ -13,7 +13,8 @@ import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
  * The choice model for selecting the average amount of activities per day in the week routine. The default option of
  * 1 has associated utility 0.0. The other remaining options between 2 to 6 share a common utility function.
  */
-val activityAmountChoiceModel = DiscreteStructure<Int, PersonAlternative, ActivityAmountSet> {
+context(params: PlanGenerationParameters)
+val activityAmountChoiceModel get() = DiscreteStructure<Int, PersonAlternative, ActivityAmountSet> {
     option(1) {
         0.0
     }
@@ -31,4 +32,5 @@ val activityAmountChoiceModel = DiscreteStructure<Int, PersonAlternative, Activi
                 (it.commuteIn0To5km()) * pendeln_0bis5km +
                 (it.hasChildrenInHousehold()) * haushalthatkinderunter10
     }
-}.multinomialLogit("Amount of Activities in Week Routine").build(DefaultActivityAmountParameters)
+}.multinomialLogit("Amount of Activities in Week Routine")
+    .build(params.activityAmountParams)

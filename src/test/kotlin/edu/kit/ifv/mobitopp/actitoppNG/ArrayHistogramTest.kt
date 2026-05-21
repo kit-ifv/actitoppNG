@@ -82,14 +82,16 @@ class ArrayHistogramTest {
     }
     @Test
     fun assertCategoryEquality() {
-        val lead = LEAD
-        val major = MAJOR
-        val minor = MINOR
-        lead.histograms.withIndex().forEach { (i, it) ->
-            assertEquals(it.categoryIndex, major.histograms[i].categoryIndex)
-            assertEquals(it.categoryIndex, minor.histograms[i].categoryIndex)
-            assertEquals(it.start, major.histograms[i].start)
-            assertEquals(it.start, minor.histograms[i].start)
+        context(PlanGenerationParameters()) {
+            val lead = LEAD
+            val major = MAJOR
+            val minor = MINOR
+            lead.histograms.withIndex().forEach { (i, it) ->
+                assertEquals(it.categoryIndex, major.histograms[i].categoryIndex)
+                assertEquals(it.categoryIndex, minor.histograms[i].categoryIndex)
+                assertEquals(it.start, major.histograms[i].start)
+                assertEquals(it.start, minor.histograms[i].start)
+            }
         }
     }
 

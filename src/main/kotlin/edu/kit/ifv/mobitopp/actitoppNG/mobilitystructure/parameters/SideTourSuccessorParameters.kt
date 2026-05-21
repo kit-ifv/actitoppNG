@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters
 
-val DefaultSideTourSuccessorParameters = SideTourSuccessorSet(
+val DefaultSideTourSuccessorParameters = SideTourSuccessorSet.create(
     one = SideTourSuccessorParameters(
         base = -2.0784,
         tourliegtvorhaupttour = -0.5151,
@@ -104,13 +104,28 @@ val DefaultSideTourSuccessorParameters = SideTourSuccessorSet(
 )
 
 data class SideTourSuccessorSet(
-
-    val one: SideTourSuccessorParameters,
-    val two: SideTourSuccessorParameters,
-    val three: SideTourSuccessorParameters,
-    val four: SideTourSuccessorParameters,
-    val five: SideTourSuccessorParameters,
-)
+    private val parameters: Map<Int, SideTourSuccessorParameters>,
+) : Map<Int, SideTourSuccessorParameters> by parameters {
+    companion object {
+        fun create(
+            one: SideTourSuccessorParameters,
+            two: SideTourSuccessorParameters,
+            three: SideTourSuccessorParameters,
+            four: SideTourSuccessorParameters,
+            five: SideTourSuccessorParameters,
+        ): SideTourSuccessorSet {
+            return SideTourSuccessorSet(
+                mapOf(
+                    1 to one,
+                    2 to two,
+                    3 to three,
+                    4 to four,
+                    5 to five,
+                )
+            )
+        }
+    }
+}
 
 data class SideTourSuccessorParameters(
     val base: Double,

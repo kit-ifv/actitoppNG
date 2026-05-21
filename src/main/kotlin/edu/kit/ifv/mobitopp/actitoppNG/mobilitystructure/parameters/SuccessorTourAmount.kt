@@ -1,6 +1,6 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters
 
-val DefaultSuccessorTourParameters = SuccessorTourAmountSet(
+val DefaultSuccessorTourParameters = SuccessorTourAmountSet.create(
     one = SuccessorTourAmountParameters(
         base = 0.5789,
         employmentPartTime = 0.0113,
@@ -120,13 +120,26 @@ val DefaultSuccessorTourParameters = SuccessorTourAmountSet(
 )
 
 data class SuccessorTourAmountSet(
-
-    val one: SuccessorTourAmountParameters,
-    val two: SuccessorTourAmountParameters,
-    val three: SuccessorTourAmountParameters,
-    val four: SuccessorTourAmountParameters,
-    val five: SuccessorTourAmountParameters,
-)
+    private val parameters: Map<Int, SuccessorTourAmountParameters>,
+): Map<Int, SuccessorTourAmountParameters> by parameters {
+    companion object {
+        fun create(
+            one: SuccessorTourAmountParameters,
+            two: SuccessorTourAmountParameters,
+            three: SuccessorTourAmountParameters,
+            four: SuccessorTourAmountParameters,
+            five: SuccessorTourAmountParameters,
+        ): SuccessorTourAmountSet {
+            return SuccessorTourAmountSet(mapOf(
+                1 to one,
+                2 to two,
+                3 to three,
+                4 to four,
+                5 to five,
+            ))
+        }
+    }
+}
 
 data class SuccessorTourAmountParameters(
     val base: Double,

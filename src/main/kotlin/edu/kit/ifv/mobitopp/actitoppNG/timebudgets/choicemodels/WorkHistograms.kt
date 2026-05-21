@@ -1,15 +1,16 @@
 package edu.kit.ifv.mobitopp.actitoppNG.timebudgets.choicemodels
 
+import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.HistogramSelection
-import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.WorkBudgets
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.discretechoice.structure.loadFromList
 
-val workHistograms by lazy {
+context(params: PlanGenerationParameters)
+val workHistograms get() =
     HistogramSelection.createChoiceModelFromResource(
         identifier = Identifier.WORK_TIME_BUDGETS,
-        parameter = WorkBudgets,
+        parameter = params.workTimeBudgedParams,
         name = "Selection of histogram for work activities."
     ) { histograms ->
         loadFromList(histograms - histograms[6]) { _,it ->
@@ -36,7 +37,7 @@ val workHistograms by lazy {
             0.0
         }
     }
-}
+
 
 
 

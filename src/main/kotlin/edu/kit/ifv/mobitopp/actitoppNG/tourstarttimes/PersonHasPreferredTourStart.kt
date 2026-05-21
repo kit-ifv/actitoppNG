@@ -1,7 +1,8 @@
 package edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes
 
 
-import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
+import edu.kit.ifv.mobitopp.actitoppNG.AllChoiceModels
+import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.MainDurationAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
@@ -13,7 +14,7 @@ import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
 import kotlin.random.Random
 
 interface PersonPreferredTourStart {
-    context(rng: Random)
+    context(rng: Random, models: AllChoiceModels)
     fun determinePreferredTourStart(input: MobilityPlanInputs): ArrayHistogram
 }
 
@@ -217,23 +218,24 @@ data class ParameterStep9A(
     )
 
 
-class StandardPreferredTourStart() : PersonPreferredTourStart {
-    private val choiceModel =
-        DiscreteStructure<ArrayHistogram, MainDurationAlternative, ParameterCollectionStep9A> {
+context(params: PlanGenerationParameters)
+val standardPreferredTourStartChoiceModel get() =
+    DiscreteStructure<ArrayHistogram, MainDurationAlternative, ParameterCollectionStep9A> {
 
-            loadFromList(
-                FIRST_TOUR_HISTOGRAM.histograms
-            ) { _, it ->
-                standardUtilityFunction9A(this, it)
-            }
-
-        }.multinomialLogit("Determine preferred histogram for the first tour of the day").build(ParametersStep9A)
-    context(rng: Random)
-    override fun determinePreferredTourStart(input: MobilityPlanInputs): ArrayHistogram {
-
-        return context(MainDurationAlternative(input), rng) {
-            choiceModel.select()
+        loadFromList(
+            FIRST_TOUR_HISTOGRAM.histograms
+        ) { _, it ->
+            standardUtilityFunction9A(this, it)
         }
 
+    }.multinomialLogit("Determine preferred histogram for the first tour of the day")
+        .build(params.standardPreferredTourStart)
+
+class StandardPreferredTourStart: PersonPreferredTourStart {
+    context(rng: Random, models: AllChoiceModels)
+    override fun determinePreferredTourStart(input: MobilityPlanInputs): ArrayHistogram {
+        return context(MainDurationAlternative(input), rng) {
+            models.preferredTourStartChoiceModel.select()
+        }
     }
 }

@@ -1,5 +1,6 @@
 package edu.kit.ifv.discretechoice.extensions
 
+
 import edu.kit.ifv.mobitopp.discretechoice.structure.EnumeratedStructureBuilder
 import edu.kit.ifv.mobitopp.discretechoice.structure.loadFromList
 import edu.kit.ifv.mobitopp.discretechoice.structure.loadFromMap

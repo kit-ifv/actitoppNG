@@ -1,12 +1,29 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters
 
 data class PrecursorTourAmountSet(
-    val one: PrecursorTourAmountParameters,
-    val two: PrecursorTourAmountParameters,
-    val three: PrecursorTourAmountParameters,
-    val four: PrecursorTourAmountParameters,
-    val five: PrecursorTourAmountParameters,
-)
+    private val parameters: Map<Int, PrecursorTourAmountParameters>
+) : Map<Int, PrecursorTourAmountParameters> by parameters {
+
+    companion object {
+        fun create(
+            one: PrecursorTourAmountParameters,
+            two: PrecursorTourAmountParameters,
+            three: PrecursorTourAmountParameters,
+            four: PrecursorTourAmountParameters,
+            five: PrecursorTourAmountParameters,
+        ): PrecursorTourAmountSet {
+            return PrecursorTourAmountSet(
+                mapOf(
+                    1 to one,
+                    2 to two,
+                    3 to three,
+                    4 to four,
+                    5 to five,
+                )
+            )
+        }
+    }
+}
 
 data class PrecursorTourAmountParameters(
     val base: Double,
@@ -28,7 +45,7 @@ data class PrecursorTourAmountParameters(
     val previousDayHas1TourBeforeMainAct: Double,
 )
 
-val DefaultPrecursorTourParameters = PrecursorTourAmountSet(
+val DefaultPrecursorTourParameters = PrecursorTourAmountSet.create(
     one = PrecursorTourAmountParameters(
         base = 0.7630,
         employmentFullTime = -0.1760,

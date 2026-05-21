@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitoppNG.timebudgets
 
 import edu.kit.ifv.mobitopp.actitoppNG.Person
+import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Category
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.choicemodels.educationHistograms
@@ -140,20 +141,21 @@ class HistogramPerActivity(
         return histogram.select() to histogram.categoryIndex
     }
 
+
     companion object {
         /**
          * Initialize the Histograms from files only once, as reading the files is rather time consuming.
          */
-        val DEFAULT by lazy {
+        context(params: PlanGenerationParameters)
+        val DEFAULT get() =
             HistogramPerActivity(
                 workHistograms = workHistograms,
                 educationHistograms = educationHistograms,
                 leisureHistograms = leisureHistograms,
                 shoppingHistograms = shoppingHistograms,
                 transportHistograms = transportHistograms,
-
                 )
-        }
+
 
         /**
          * To indicate that a given category does not occur in the plan of a person. If an activity does not occur

@@ -1,6 +1,8 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters
 
-val DefaultSideTourMainActivityParameters = SideTourMainActivitySet(
+import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
+
+val DefaultSideTourMainActivityParameters = SideTourMainActivitySet.create(
     work = SideTourMainActivityParameters(
         base = -1.7501,
         employmentFullTime = -0.9697,
@@ -112,13 +114,24 @@ val DefaultSideTourMainActivityParameters = SideTourMainActivitySet(
 )
 
 data class SideTourMainActivitySet(
-
-    val work: SideTourMainActivityParameters,
-    val education: SideTourMainActivityParameters,
-    val shopping: SideTourMainActivityParameters,
-    val transport: SideTourMainActivityParameters,
-
-    )
+    val parameters: Map<ActivityType, SideTourMainActivityParameters>,
+    ) : Map<ActivityType, SideTourMainActivityParameters> by parameters {
+    companion object {
+        fun create(
+            work: SideTourMainActivityParameters,
+            education: SideTourMainActivityParameters,
+            shopping: SideTourMainActivityParameters,
+            transport: SideTourMainActivityParameters,
+        ): SideTourMainActivitySet {
+            return SideTourMainActivitySet(mapOf(
+                ActivityType.WORK to work,
+                ActivityType.EDUCATION to education,
+                ActivityType.SHOPPING to shopping,
+                ActivityType.TRANSPORT to transport,
+            ))
+        }
+    }
+}
 
 data class SideTourMainActivityParameters(
     val base: Double,

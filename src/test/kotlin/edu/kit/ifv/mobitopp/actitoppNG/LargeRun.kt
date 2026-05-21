@@ -11,22 +11,23 @@ import kotlinx.coroutines.runBlocking
 
 suspend fun Collection<ActitoppPerson>.generateSchedules(): List<List<ModernizedActivity>> = coroutineScope {
 
-
+    val params = PlanGenerationParameters()
+    val models = AllChoiceModels.create(params)
+    val householdPlan = DefaultPlanGeneration(models)
     this@generateSchedules.withIndex().map { (index, person) ->
         async(Default) {
-            val householdPlan = DefaultPlanGeneration()
-            val schedule = householdPlan.generate(person).finish()
-            if (index % 100 == 0) println("Working on person $index done")
-            schedule
+            context(params, models) {
+                val schedule = householdPlan.generate(person).finish()
+                if (index % 100 == 0) println("Working on person $index done")
+                schedule
+            }
         }
     }.awaitAll()
 }
 
 fun main() {
     val targets = randomHouseholds(10000).flatMap { it.generatePersons(5) }
-
     runBlocking {
         targets.generateSchedules()
     }
-
 }

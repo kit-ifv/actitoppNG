@@ -1,16 +1,16 @@
 package edu.kit.ifv.mobitopp.actitoppNG.timebudgets.choicemodels
 
 import edu.kit.ifv.discretechoice.extensions.optionsIndexed
+import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.HistogramSelection
-import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.parameters.ShoppingBudgets
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 
-
-val shoppingHistograms by lazy {
+context(params: PlanGenerationParameters)
+val shoppingHistograms get() =
     HistogramSelection.createChoiceModelFromResource(
         identifier = Identifier.SHOPPING_TIME_BUDGETS,
-        parameter = ShoppingBudgets,
+        parameter = params.shoppingTimeBudgetParams,
         name = "Histogram selection for time budget for shopping"
     ) { l ->
         optionsIndexed(l[0], l[1], l[3], l[4]) { _, it ->
@@ -28,7 +28,7 @@ val shoppingHistograms by lazy {
         }
         option(l[2]) { 0.0 }
     }
-}
+
 
 
 

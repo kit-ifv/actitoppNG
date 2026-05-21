@@ -1,40 +1,42 @@
 package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels
 
-
+import edu.kit.ifv.discretechoice.extensions.loadOptionsMap
+import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DayMainActivityParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DayMainActivitySet
-import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DefaultDayMainActivityParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.DayAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
 import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
 
-val mainActivityChoiceModel =
+context(params: PlanGenerationParameters)
+val mainActivityChoiceModel get() =
     DiscreteStructure<ActivityType, DayAlternative, DayMainActivitySet> {
-
-        option(ActivityType.WORK, parameters = { work }, {_, it ->
-            (if (it.isEmployedAnywhere() && it.isStandardWorkingDay()) 1.3 else 1.0) * standardUtilityFunction(
-                this,
-                it
-            )
-        }
+        option(ActivityType.WORK, parameters = { this[ActivityType.WORK]!! }, { _, it ->
+                (if (it.isEmployedAnywhere() && it.isStandardWorkingDay()) 1.3 else 1.0) * standardUtilityFunction(
+                    this,
+                    it
+                )
+            }
         )
-        option(ActivityType.EDUCATION, parameters = { education }, {_, it ->
+        option(ActivityType.EDUCATION, parameters = { this[ActivityType.EDUCATION]!! }, { _, it ->
             (if (it.isStudentOrAzubi() && it.isStandardWorkingDay()) 1.3 else 1.0) * standardUtilityFunction(
                 this,
                 it
             )
         })
-        option(ActivityType.LEISURE, parameters = { leisure }, { standardUtilityFunction(this, it.second) })
-        option(ActivityType.SHOPPING, parameters = { shopping }, { standardUtilityFunction(this, it.second) })
-        option(ActivityType.TRANSPORT, parameters = { transport }, { standardUtilityFunction(this, it.second) })
+        loadOptionsMap(listOf(ActivityType.LEISURE, ActivityType.SHOPPING, ActivityType.TRANSPORT), {
+            _, it -> standardUtilityFunction(this, it)
+        })
         option(ActivityType.HOME) {
             0.0
         }
 
+    }.multinomialLogit("Main activity type of the day").build(params.mainActivityChoiceModelParams)
 
-    }.multinomialLogit("Main activity type of the day").build(DefaultDayMainActivityParameters)
+
+
 private val standardUtilityFunction: DayMainActivityParameters.( DayAlternative) -> Double = {
     base +
             (it.isFulltimeEmployee()) * employmentFullTime +

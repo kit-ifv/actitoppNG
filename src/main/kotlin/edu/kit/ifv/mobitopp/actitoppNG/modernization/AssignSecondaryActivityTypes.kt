@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitoppNG.modernization
 
-import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
+import edu.kit.ifv.mobitopp.actitoppNG.AllChoiceModels
+import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.sideActivityChoiceModel
@@ -26,8 +27,9 @@ interface AssignSecondaryActivityTypes {
  * are removed if the week routine is already satisfied.
  */
 class TrackedSecondaryActivities(
+    models: AllChoiceModels,
     private val mobilityStructure: MobilityStructure,
-    private val choiceModel: FixedChoiceModel<ActivityType, ActivityAlternative> = sideActivityChoiceModel,
+    private val choiceModel: FixedChoiceModel<ActivityType, ActivityAlternative> = models.sideActivityChoiceModel
 ) : AssignSecondaryActivityTypes {
     val personWithRoutine: PersonWithRoutine = mobilityStructure.weekRoutine
     context(rng: Random)
