@@ -9,7 +9,6 @@ import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterStep8D
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterStep8J
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
-import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 
@@ -17,21 +16,22 @@ private val minorFunction: ParameterStep8J.(MainDurationAlternative) -> Double =
 
     val durationMainAct = it.dayPlan.durationOfMainActivities
     val averageTimeOfActivity = it.dayPlan.getBudget(it.activityType)
+    val numberOfActivities = it.dayPlan.amountOfActivities
     base +
-            when (durationMainAct) {
-                in 4.hours..<6.hours -> dauer_hauptakt_tag_4bis6std
-                in 6.hours..<8.hours -> dauer_hauptakt_tag_6bis8std
-                in 8.hours..<10.hours -> dauer_hauptakt_tag_8bis10std
-                in 10.hours..<12.hours -> dauer_hauptakt_tag_10bis12std
-                in 12.hours..<14.hours -> dauer_hauptakt_tag_12bis14std
-                in 14.hours..<Int.MAX_VALUE.hours -> dauer_hauptakt_tag_ueber14std
+            when (durationMainAct.inWholeHours) {
+                in 4..<6 -> dauer_hauptakt_tag_4bis6std
+                in 6..<8 -> dauer_hauptakt_tag_6bis8std
+                in 8..<10 -> dauer_hauptakt_tag_8bis10std
+                in 10..<12 -> dauer_hauptakt_tag_10bis12std
+                in 12..<14 -> dauer_hauptakt_tag_12bis14std
+                in 14..<Int.MAX_VALUE -> dauer_hauptakt_tag_ueber14std
                 else -> .0
             } +
-            when(averageTimeOfActivity) {
-                in 1.minutes..<15.minutes -> mittl_zeit_akt_1bis14min
-                in 15.minutes..<30.minutes -> mittl_zeit_akt_15bis29min
-                in 30.minutes..<60.minutes -> mittl_zeit_akt_30bis59min
-                in 60.minutes..<120.minutes -> mittl_zeit_akt_60bis119min
+            when (averageTimeOfActivity.inWholeMinutes) {
+                in 1..<15 -> mittl_zeit_akt_1bis14min
+                in 15..<30 -> mittl_zeit_akt_15bis29min
+                in 30..<60 -> mittl_zeit_akt_30bis59min
+                in 60..<120 -> mittl_zeit_akt_60bis119min
                 else -> .0
             } +
             (it.tag_so()) * tag_so +
@@ -39,11 +39,14 @@ private val minorFunction: ParameterStep8J.(MainDurationAlternative) -> Double =
             (it.aktzweck_education()) * aktzweck_education +
             (it.aktzweck_shopping()) * aktzweck_shopping +
             (it.aktzweck_transport()) * aktzweck_transport +
-            (it.taghat2akt()) * taghat2akt +
-            (it.taghat3akt()) * taghat3akt +
-            (it.taghat4akt()) * taghat4akt +
-            (it.taghat5akt()) * taghat5akt +
-            (it.taghat6akt()) * taghat6akt +
+            when(numberOfActivities) {
+                2 -> taghat2akt
+                3 -> taghat3akt
+                4 -> taghat4akt
+                5 -> taghat5akt
+                6 -> taghat6akt
+                else -> .0
+            } +
             (it.tourtyp_work()) * tourtyp_work +
             (it.tourtyp_education()) * tourtyp_education +
             (it.tourtyp_shopping()) * tourtyp_shopping +
@@ -60,13 +63,13 @@ private val standardUtilityFunction8D: ParameterStep8D.(MainDurationAlternative)
     val averageTimeOfActivity = it.dayPlan.getBudget(it.activityType)
     base +
 
-            when(averageTimeOfActivity) {
-                in 1.minutes..<15.minutes -> mittl_zeit_akt_1bis14min
-                in 15.minutes..<30.minutes -> mittl_zeit_akt_15bis29min
-                in 30.minutes..<60.minutes -> mittl_zeit_akt_30bis59min
-                in 60.minutes..<120.minutes -> mittl_zeit_akt_60bis119min
-                in 120.minutes..<180.minutes -> mittl_zeit_akt_120bis179min
-                in 180.minutes..<240.minutes -> mittl_zeit_akt_180bis239min
+            when (averageTimeOfActivity.inWholeMinutes) {
+                in 1..<15 -> mittl_zeit_akt_1bis14min
+                in 15..<30 -> mittl_zeit_akt_15bis29min
+                in 30..<60 -> mittl_zeit_akt_30bis59min
+                in 60..<120 -> mittl_zeit_akt_60bis119min
+                in 120..<180 -> mittl_zeit_akt_120bis179min
+                in 180..<240 -> mittl_zeit_akt_180bis239min
                 else -> .0
             } +
             (it.tag_fr()) * tag_fr +
@@ -99,14 +102,14 @@ private val standardUtilityFunction8D: ParameterStep8D.(MainDurationAlternative)
 private val standardUtilityFunction8B: ParameterStep8B.(MainDurationAlternative) -> Double = {
     val averageTimeOfActivity = it.dayPlan.getBudget(it.activityType)
     base +
-            when(averageTimeOfActivity) {
-                in 60.minutes..<120.minutes -> mittl_zeit_akt_60bis119min
-                in 120.minutes..<180.minutes -> mittl_zeit_akt_120bis179min
-                in 180.minutes..<240.minutes -> mittl_zeit_akt_180bis239min
-                in 240.minutes..<300.minutes -> mittl_zeit_akt_240bis299min
-                in 300.minutes..<360.minutes -> mittl_zeit_akt_300bis359min
-                in 360.minutes..<420.minutes -> mittl_zeit_akt_360bis419min
-                in 420.minutes..<480.minutes -> mittl_zeit_akt_420bis479min
+            when (averageTimeOfActivity.inWholeMinutes) {
+                in 60..<120 -> mittl_zeit_akt_60bis119min
+                in 120..<180 -> mittl_zeit_akt_120bis179min
+                in 180..<240 -> mittl_zeit_akt_180bis239min
+                in 240..<300 -> mittl_zeit_akt_240bis299min
+                in 300..<360 -> mittl_zeit_akt_300bis359min
+                in 360..<420 -> mittl_zeit_akt_360bis419min
+                in 420..<480 -> mittl_zeit_akt_420bis479min
                 else -> .0
             } +
             (it.tag_fr()) * tag_fr +

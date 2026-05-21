@@ -75,11 +75,24 @@ open class ActivityDurationHistograms<P>(
             choiceModel.select().select(rng.nextDouble())
         }
     }
+
+    private val choiceModelSize by lazy {
+        choiceModel.choices.size
+    }
+
     context(rng: Random)
     fun selectHistogram(
         bounds: ClosedRange<Duration>,
         converter: MainDurationAlternative,
     ): ArrayHistogram? {
+        if(histograms.all {it.end >= bounds.start && it.start <= bounds.endInclusive  }) {
+            return selectAll(converter)
+        } else if (histograms.none{it.end >= bounds.start && it.start <= bounds.endInclusive}) {
+            return null
+        } else {
+            val options = histograms.filter { it.end >= bounds.start && it.start <= bounds.endInclusive }.toSet()
+            return selectPrecise(converter, options)
+        }
         val options = histograms.filter { it.end >= bounds.start && it.start <= bounds.endInclusive }.toSet()
         // It can happen that no histogram fits, because they are trimmed. The default behaviour of legacy actitopp is to return a random value.
         if (options.isEmpty()) {
@@ -90,6 +103,20 @@ open class ActivityDurationHistograms<P>(
             choiceModel.select(options)
         }
     }
+    context(rng: Random)
+    private fun selectPrecise(converter: MainDurationAlternative, options: Set<ArrayHistogram>): ArrayHistogram? {
+        return context(converter) {
+            choiceModel.select(options)
+        }
+    }
+
+    context(rng: Random)
+    private fun selectAll(converter: MainDurationAlternative): ArrayHistogram? {
+        return context(converter) {
+            choiceModel.select()
+        }
+    }
+
     context(rng: Random)
     fun select(
         bounds: ClosedRange<Duration>,

@@ -10,7 +10,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParameterCollec
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParameterStep10M
 
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
-import kotlin.time.Duration.Companion.hours
+
 
 private val firstTourStartUtility: ParameterStep10M.(MainDurationAlternative) -> Double = {
     val durationOfActivities = it.dayPlan.durationOfActivities()
@@ -26,12 +26,12 @@ private val firstTourStartUtility: ParameterStep10M.(MainDurationAlternative) ->
             (it.tourtyp_transport()) * tourtyp_transport +
             (it.tag_sa()) * tag_sa +
             (it.tag_so()) * tag_so +
-            when(durationOfActivities) {
-                in 4.hours..<6.hours -> dauer_akt_tag_4bis6std
-                in 6.hours..<8.hours -> dauer_akt_tag_6bis8std
-                in 8.hours..<10.hours -> dauer_akt_tag_8bis10std
-                in 10.hours..<12.hours -> dauer_akt_tag_10bis12std
-                in 12.hours..<14.hours -> dauer_akt_tag_12bis14std
+            when(durationOfActivities.inWholeHours) {
+                in 4..<6 -> dauer_akt_tag_4bis6std
+                in 6..<8 -> dauer_akt_tag_6bis8std
+                in 8..<10 -> dauer_akt_tag_8bis10std
+                in 10..<12 -> dauer_akt_tag_10bis12std
+                in 12..<14 -> dauer_akt_tag_12bis14std
 
                 else -> .0
             } +

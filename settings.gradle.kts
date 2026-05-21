@@ -5,3 +5,11 @@ pluginManagement {
 }
 
 rootProject.name = "actitoppNG"
+
+val localDiscreteChoice = file("../discretechoicemodelling")
+if (localDiscreteChoice.exists()) {
+    println("Using local DCM project")
+    includeBuild(localDiscreteChoice)
+} else {
+    println("Using remote DCM project.")
+}
