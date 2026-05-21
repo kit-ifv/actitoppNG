@@ -263,9 +263,11 @@ open class ArrayHistogram protected constructor(
                 probabilities.contentEquals(other.probabilities)
     }
 
+    private val precomputedHashCode by lazy {probabilities.contentHashCode()}
+
     override fun hashCode(): Int {
         var result = offset
-        result = 31 * result + probabilities.contentHashCode()
+        result = 31 * result + precomputedHashCode
         result = 31 * result + categoryIndex.hashCode()
         return result
     }
