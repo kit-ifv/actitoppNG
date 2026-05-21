@@ -57,7 +57,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.TourAmountSet
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.WorkDaySet
 
 /**
- * A set of all choice model parameters needed for a household plan generation.
+ * A set of all choice model parameters needed for the construction of [AllChoiceModels].
  */
 data class PlanGenerationParameters(
     // Week routine parameters

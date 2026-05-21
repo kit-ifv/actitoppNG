@@ -17,12 +17,11 @@ internal fun generatePlans(): List<HouseholdPlanOutput> {
     targets.forEach {
         it.generatePersons(5)
     }
-    val params = PlanGenerationParameters()
-    val models = AllChoiceModels.create(params)
+    val models = AllChoiceModels.DEFAULT
     val householdPlan = DefaultPlanGeneration(models)
     val plans = targets.map { household ->
         val plans = household.members.associate { member ->
-            context(params, models) {
+            context(models) {
                 member.id to householdPlan.generate(member).finish()
             }
         }

@@ -41,6 +41,11 @@ import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.shoppingDaysChoi
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.tourAmountChoiceModel
 import edu.kit.ifv.mobitopp.discretechoice.models.FixedChoiceModel
 
+/**
+ * All choice models needed for the generation of mobility plans.
+ * Creation: Get the defaults with [AllChoiceModels.DEFAULT], build the choice models with custom parameters with
+ * [AllChoiceModels.create], or modify an existing set of models with [AllChoiceModels.copy].
+ */
 data class AllChoiceModels(
     // week routine
     val activityAmountChoiceModel: FixedChoiceModel<Int, PersonAlternative>,
@@ -72,6 +77,9 @@ data class AllChoiceModels(
     val sideTourSuccessorActivityCountChoiceModel: FixedChoiceModel<Int, TourAlternativeInt>,
 ) {
     companion object {
+        /**
+         * Default choice models built with the given parameters.
+         */
         fun create(params: PlanGenerationParameters): AllChoiceModels {
             context(params) {
                 return AllChoiceModels(
@@ -101,5 +109,10 @@ data class AllChoiceModels(
                 )
             }
         }
+
+        /**
+         * Default choice models with default parameters.
+         */
+        val DEFAULT = create(PlanGenerationParameters())
     }
 }
