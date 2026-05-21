@@ -7,9 +7,12 @@ import edu.kit.ifv.mobitopp.actitoppNG.plandurations.generateHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParameterStep10O
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
+import kotlin.time.Duration.Companion.hours
 
 
 private val standardUtilityFunction10O: ParameterStep10O.(MainDurationAlternative) -> Double = {
+
+    val previousDayTourEndHour = it.dayPlan.endOfPreviousTour(it.tourPlan)
     base +
             (it.beruf_vollzeit()) * beruf_vollzeit +
             (it.beruf_teilzeit()) * beruf_teilzeit +
@@ -30,22 +33,26 @@ private val standardUtilityFunction10O: ParameterStep10O.(MainDurationAlternativ
             (it.dauer_akt_in_tour_2bis4std()) * dauer_akt_in_tour_2bis4std +
             (it.dauer_akt_in_tour_4bis6std()) * dauer_akt_in_tour_4bis6std +
             (it.touristhaupttour()) * touristhaupttour +
-            (it.endetourvorher_Std_12()) * endetourvorher_Std_12 +
-            (it.endetourvorher_Std_13()) * endetourvorher_Std_13 +
-            (it.endetourvorher_Std_14()) * endetourvorher_Std_14 +
-            (it.endetourvorher_Std_15()) * endetourvorher_Std_15 +
-            (it.endetourvorher_Std_16()) * endetourvorher_Std_16 +
-            (it.endetourvorher_Std_17()) * endetourvorher_Std_17 +
-            (it.endetourvorher_Std_18()) * endetourvorher_Std_18
+            when (previousDayTourEndHour) {
+                in 12.hours..<13.hours -> endetourvorher_Std_12
+                in 13.hours..<14.hours -> endetourvorher_Std_13
+                in 14.hours..<15.hours -> endetourvorher_Std_14
+                in 15.hours..<16.hours -> endetourvorher_Std_15
+                in 16.hours..<17.hours -> endetourvorher_Std_16
+                in 17.hours..<18.hours -> endetourvorher_Std_17
+                in 18.hours..<19.hours -> endetourvorher_Std_18
+                else -> .0
+            }
 
 
 }
 
 context(params: PlanGenerationParameters)
-val SECOND_TOUR_HISTOGRAM get() = params.secondTourHistogramParams.generateHistogram(
-    ArrayHistogram.fromResource(
+val SECOND_TOUR_HISTOGRAM
+    get() = params.secondTourHistogramParams.generateHistogram(
+        ArrayHistogram.fromResource(
 
-        identifier = Identifier.SECOND_TOUR_START_TIME
-    ),
-    standardUtilityFunction10O
-)
+            identifier = Identifier.SECOND_TOUR_START_TIME
+        ),
+        standardUtilityFunction10O
+    )

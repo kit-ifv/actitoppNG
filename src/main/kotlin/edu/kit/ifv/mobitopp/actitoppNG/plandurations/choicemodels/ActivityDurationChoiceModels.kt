@@ -9,20 +9,31 @@ import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterStep8D
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterStep8J
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
 
 
 private val minorFunction: ParameterStep8J.(MainDurationAlternative) -> Double = {
+
+    val durationMainAct = it.dayPlan.durationOfMainActivities
+    val averageTimeOfActivity = it.dayPlan.getBudget(it.activityType)
     base +
-            (it.dauer_hauptakt_tag_4bis6std()) * dauer_hauptakt_tag_4bis6std +
-            (it.dauer_hauptakt_tag_6bis8std()) * dauer_hauptakt_tag_6bis8std +
-            (it.dauer_hauptakt_tag_8bis10std()) * dauer_hauptakt_tag_8bis10std +
-            (it.dauer_hauptakt_tag_10bis12std()) * dauer_hauptakt_tag_10bis12std +
-            (it.dauer_hauptakt_tag_12bis14std()) * dauer_hauptakt_tag_12bis14std +
-            (it.dauer_hauptakt_tag_ueber14std()) * dauer_hauptakt_tag_ueber14std +
-            (it.mittl_zeit_akt_1bis14min()) * mittl_zeit_akt_1bis14min +
-            (it.mittl_zeit_akt_15bis29min()) * mittl_zeit_akt_15bis29min +
-            (it.mittl_zeit_akt_30bis59min()) * mittl_zeit_akt_30bis59min +
-            (it.mittl_zeit_akt_60bis119min()) * mittl_zeit_akt_60bis119min +
+            when (durationMainAct) {
+                in 4.hours..<6.hours -> dauer_hauptakt_tag_4bis6std
+                in 6.hours..<8.hours -> dauer_hauptakt_tag_6bis8std
+                in 8.hours..<10.hours -> dauer_hauptakt_tag_8bis10std
+                in 10.hours..<12.hours -> dauer_hauptakt_tag_10bis12std
+                in 12.hours..<14.hours -> dauer_hauptakt_tag_12bis14std
+                in 14.hours..<Int.MAX_VALUE.hours -> dauer_hauptakt_tag_ueber14std
+                else -> .0
+            } +
+            when(averageTimeOfActivity) {
+                in 1.minutes..<15.minutes -> mittl_zeit_akt_1bis14min
+                in 15.minutes..<30.minutes -> mittl_zeit_akt_15bis29min
+                in 30.minutes..<60.minutes -> mittl_zeit_akt_30bis59min
+                in 60.minutes..<120.minutes -> mittl_zeit_akt_60bis119min
+                else -> .0
+            } +
             (it.tag_so()) * tag_so +
             (it.aktzweck_work()) * aktzweck_work +
             (it.aktzweck_education()) * aktzweck_education +
@@ -46,13 +57,18 @@ private val minorFunction: ParameterStep8J.(MainDurationAlternative) -> Double =
 
 }
 private val standardUtilityFunction8D: ParameterStep8D.(MainDurationAlternative) -> Double = {
+    val averageTimeOfActivity = it.dayPlan.getBudget(it.activityType)
     base +
-            (it.mittl_zeit_akt_1bis14min()) * mittl_zeit_akt_1bis14min +
-            (it.mittl_zeit_akt_15bis29min()) * mittl_zeit_akt_15bis29min +
-            (it.mittl_zeit_akt_30bis59min()) * mittl_zeit_akt_30bis59min +
-            (it.mittl_zeit_akt_60bis119min()) * mittl_zeit_akt_60bis119min +
-            (it.mittl_zeit_akt_120bis179min()) * mittl_zeit_akt_120bis179min +
-            (it.mittl_zeit_akt_180bis239min()) * mittl_zeit_akt_180bis239min +
+
+            when(averageTimeOfActivity) {
+                in 1.minutes..<15.minutes -> mittl_zeit_akt_1bis14min
+                in 15.minutes..<30.minutes -> mittl_zeit_akt_15bis29min
+                in 30.minutes..<60.minutes -> mittl_zeit_akt_30bis59min
+                in 60.minutes..<120.minutes -> mittl_zeit_akt_60bis119min
+                in 120.minutes..<180.minutes -> mittl_zeit_akt_120bis179min
+                in 180.minutes..<240.minutes -> mittl_zeit_akt_180bis239min
+                else -> .0
+            } +
             (it.tag_fr()) * tag_fr +
             (it.tag_sa()) * tag_sa +
             (it.tag_so()) * tag_so +
@@ -81,15 +97,18 @@ private val standardUtilityFunction8D: ParameterStep8D.(MainDurationAlternative)
 
 }
 private val standardUtilityFunction8B: ParameterStep8B.(MainDurationAlternative) -> Double = {
-
+    val averageTimeOfActivity = it.dayPlan.getBudget(it.activityType)
     base +
-            (it.mittl_zeit_akt_60bis119min()) * mittl_zeit_akt_60bis119min +
-            (it.mittl_zeit_akt_120bis179min()) * mittl_zeit_akt_120bis179min +
-            (it.mittl_zeit_akt_180bis239min()) * mittl_zeit_akt_180bis239min +
-            (it.mittl_zeit_akt_240bis299min()) * mittl_zeit_akt_240bis299min +
-            (it.mittl_zeit_akt_300bis359min()) * mittl_zeit_akt_300bis359min +
-            (it.mittl_zeit_akt_360bis419min()) * mittl_zeit_akt_360bis419min +
-            (it.mittl_zeit_akt_420bis479min()) * mittl_zeit_akt_420bis479min +
+            when(averageTimeOfActivity) {
+                in 60.minutes..<120.minutes -> mittl_zeit_akt_60bis119min
+                in 120.minutes..<180.minutes -> mittl_zeit_akt_120bis179min
+                in 180.minutes..<240.minutes -> mittl_zeit_akt_180bis239min
+                in 240.minutes..<300.minutes -> mittl_zeit_akt_240bis299min
+                in 300.minutes..<360.minutes -> mittl_zeit_akt_300bis359min
+                in 360.minutes..<420.minutes -> mittl_zeit_akt_360bis419min
+                in 420.minutes..<480.minutes -> mittl_zeit_akt_420bis479min
+                else -> .0
+            } +
             (it.tag_fr()) * tag_fr +
             (it.tag_sa()) * tag_sa +
             (it.tag_so()) * tag_so +
@@ -119,23 +138,28 @@ private val standardUtilityFunction8B: ParameterStep8B.(MainDurationAlternative)
 }
 
 context(params: PlanGenerationParameters)
-val MINOR get() = params.minorActivityDurationParams.generateHistogram(
-    ArrayHistogram.fromResource(
-        identifier = Identifier.MINOR_ACTIVITY_DURATION
-    ),
-    minorFunction,
-)
+val MINOR
+    get() = params.minorActivityDurationParams.generateHistogram(
+        ArrayHistogram.fromResource(
+            identifier = Identifier.MINOR_ACTIVITY_DURATION
+        ),
+        minorFunction,
+    )
+
 context(params: PlanGenerationParameters)
-val MAJOR get() = params.majorActivityDurationParams.generateHistogram(
-    ArrayHistogram.fromResource(
-        identifier = Identifier.MAJOR_ACTIVITY_DURATION
-    ),
-    standardUtilityFunction8D,
-)
+val MAJOR
+    get() = params.majorActivityDurationParams.generateHistogram(
+        ArrayHistogram.fromResource(
+            identifier = Identifier.MAJOR_ACTIVITY_DURATION
+        ),
+        standardUtilityFunction8D,
+    )
+
 context(params: PlanGenerationParameters)
-val LEAD get() = params.leadActivityDurationParams.generateHistogram(
-    ArrayHistogram.fromResource(
-        identifier = Identifier.LEAD_ACTIVITY_DURATION
-    ),
-    standardUtilityFunction8B,
-)
+val LEAD
+    get() = params.leadActivityDurationParams.generateHistogram(
+        ArrayHistogram.fromResource(
+            identifier = Identifier.LEAD_ACTIVITY_DURATION
+        ),
+        standardUtilityFunction8B,
+    )

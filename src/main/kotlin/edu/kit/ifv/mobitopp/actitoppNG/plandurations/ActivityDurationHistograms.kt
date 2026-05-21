@@ -393,21 +393,13 @@ open class PlanAlternative<P : Any>(
     fun anztourenvorhaupttour() = dayPlan.tourPlans.count { it.position == Position.BEFORE }
     fun anztourennachhaupttour() = dayPlan.tourPlans.count { it.position == Position.AFTER }
     fun endetourvorher_Std_12() = dayPlan.endOfPreviousTour(tourPlan) in 12.hours..<13.hours
-
     fun endetourvorher_Std_13() = dayPlan.endOfPreviousTour(tourPlan) in 13.hours..<14.hours
-
     fun endetourvorher_Std_14() = dayPlan.endOfPreviousTour(tourPlan) in 14.hours..<15.hours
-
     fun endetourvorher_Std_15() = dayPlan.endOfPreviousTour(tourPlan) in 15.hours..<16.hours
-
     fun endetourvorher_Std_16() = dayPlan.endOfPreviousTour(tourPlan) in 16.hours..<17.hours
-
     fun endetourvorher_Std_17() = dayPlan.endOfPreviousTour(tourPlan) in 17.hours..<18.hours
-
     fun endetourvorher_Std_18() = dayPlan.endOfPreviousTour(tourPlan) in 18.hours..<19.hours
-
     fun endetourvorher_Std_19() = dayPlan.endOfPreviousTour(tourPlan) in 19.hours..<20.hours
-
     fun endetourvorher_Std_20() = dayPlan.endOfPreviousTour(tourPlan) in 20.hours..<21.hours
 
     fun dauer_akt_in_tour_0bis2std() = tourPlan.activityDurations in 0.hours..<2.hours
