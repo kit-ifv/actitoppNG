@@ -14,9 +14,13 @@ import edu.kit.ifv.mobitopp.actitoppNG.utils.minus
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import kotlin.random.Random
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
 
 
 private val standardUtilityFunction10S: ParameterStep10S.(MainDurationAlternative) -> Double = {
+
+
+    val previousDayTourEndHour = it.dayPlan.endOfPreviousTour(it.tourPlan)
     base +
 
             (it.touristhaupttour()) * touristhaupttour +
@@ -27,15 +31,19 @@ private val standardUtilityFunction10S: ParameterStep10S.(MainDurationAlternativ
             (it.dauer_akt_tag_8bis10std()) * dauer_akt_tag_8bis10std +
             (it.dauer_akt_tag_10bis12std()) * dauer_akt_tag_10bis12std +
             (it.dauer_akt_tag_12bis14std()) * dauer_akt_tag_12bis14std +
-            (it.endetourvorher_Std_12()) * endetourvorher_Std_12 +
-            (it.endetourvorher_Std_13()) * endetourvorher_Std_13 +
-            (it.endetourvorher_Std_14()) * endetourvorher_Std_14 +
-            (it.endetourvorher_Std_15()) * endetourvorher_Std_15 +
-            (it.endetourvorher_Std_16()) * endetourvorher_Std_16 +
-            (it.endetourvorher_Std_17()) * endetourvorher_Std_17 +
-            (it.endetourvorher_Std_18()) * endetourvorher_Std_18 +
-            (it.endetourvorher_Std_19()) * endetourvorher_Std_19 +
-            (it.endetourvorher_Std_20()) * endetourvorher_Std_20 +
+
+            when (previousDayTourEndHour) {
+                in 12.hours..<13.hours -> endetourvorher_Std_12
+                in 13.hours..<14.hours -> endetourvorher_Std_13
+                in 14.hours..<15.hours -> endetourvorher_Std_14
+                in 15.hours..<16.hours -> endetourvorher_Std_15
+                in 16.hours..<17.hours -> endetourvorher_Std_16
+                in 17.hours..<18.hours -> endetourvorher_Std_17
+                in 18.hours..<19.hours -> endetourvorher_Std_18
+                in 19.hours..<20.hours -> endetourvorher_Std_19
+                in 20.hours..<21.hours -> endetourvorher_Std_20
+                else -> .0
+            } +
             (it.isStudent()) * beruf_schueler
 
 }
