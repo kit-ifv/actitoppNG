@@ -1,11 +1,9 @@
 package edu.kit.ifv.mobitopp.actitoppNG.plandurations
 
 
-import edu.kit.ifv.mobitopp.actitoppNG.AllChoiceModels
-import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInputs
-import java.util.EnumSet
+import java.util.*
 import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
@@ -22,11 +20,13 @@ fun interface SelectMainActivityDuration {
  */
 class StickySelector<P>(
     histogram: ActivityDurationHistograms<P>,
-    models: AllChoiceModels,
-    private val useStandardDuration: StandardDuration = UtilityFunctionAssignment(models),
+    private val useStandardDuration: StandardDuration,
 ) : SelectMainActivityDuration, SelectMajorActivityDuration {
     private val taintedHistogramMap = ActivityType.OUTOFHOMEACTIVITY.associateWith { histogram.taint() }
-    private val fixedTypes = EnumSet.of(ActivityType.WORK, ActivityType.EDUCATION)
+    companion object {
+        @JvmStatic val fixedTypes: EnumSet<ActivityType> = EnumSet.of(ActivityType.WORK, ActivityType.EDUCATION)
+    }
+
     context(rng: Random)
     override fun getDuration(input: MobilityPlanInputs): Duration {
 
