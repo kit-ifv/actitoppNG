@@ -2,7 +2,6 @@ package edu.kit.ifv.mobitopp.actitoppNG.plandurations
 
 
 import edu.kit.ifv.mobitopp.actitoppNG.Person
-import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
 import edu.kit.ifv.mobitopp.actitoppNG.enums.isParttime
@@ -93,15 +92,6 @@ open class ActivityDurationHistograms<P>(
             val options = histograms.filter { it.end >= bounds.start && it.start <= bounds.endInclusive }.toSet()
             return selectPrecise(converter, options)
         }
-        val options = histograms.filter { it.end >= bounds.start && it.start <= bounds.endInclusive }.toSet()
-        // It can happen that no histogram fits, because they are trimmed. The default behaviour of legacy actitopp is to return a random value.
-        if (options.isEmpty()) {
-            return null
-        }
-
-        return context(converter) {
-            choiceModel.select(options)
-        }
     }
     context(rng: Random)
     private fun selectPrecise(converter: MainDurationAlternative, options: Set<ArrayHistogram>): ArrayHistogram? {
@@ -138,13 +128,20 @@ open class ActivityDurationHistograms<P>(
     }
 
 }
-
-class TaintedActivityDurationHistograms<P>(
+// Every time this class is created, the histograms are copied for tainting. This may be too much copying.
+class TaintedActivityDurationHistograms<P> constructor(
     val original: ActivityDurationHistograms<P>,
 ) {
     val histograms = original.histograms
     val choiceModel = original.choiceModel
     private val taintedHistograms = histograms.associateWith { it.copy() }
+
+    fun reset()  {
+        taintedHistograms.forEach { (original, corruption) ->
+            corruption.cleanseByLoading(original)
+        }
+    }
+
 
     context(rng: Random)
     fun selectAndTaint(

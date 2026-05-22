@@ -3,6 +3,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.plandurations
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.plan.MobilityPlan
 import kotlin.random.Random
+import kotlin.time.Duration
 
 context(rng: Random)
 fun MobilityPlan.assignFirstMainActivities(strategy: SelectMainActivityDuration) {
@@ -20,6 +21,7 @@ fun MobilityPlan.assignFirstMainActivities(strategy: SelectMainActivityDuration)
         )
 
     }
+
 }
 context(rng: Random)
 fun MobilityPlan.assignSecondaryMainActivities(strategy: SelectMajorActivityDuration) {
