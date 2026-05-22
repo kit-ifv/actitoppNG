@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitoppNG.plandurations.choicemodels
 
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
+import edu.kit.ifv.mobitopp.actitoppNG.performance.UtilityConverter
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.MainDurationAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.generateHistogram
@@ -17,6 +18,8 @@ private val minorFunction: ParameterStep8J.(MainDurationAlternative) -> Double =
     val durationMainAct = it.dayPlan.durationOfMainActivities
     val averageTimeOfActivity = it.dayPlan.getBudget(it.activityType)
     val numberOfActivities = it.dayPlan.amountOfActivities
+    val activityTypeCode = UtilityConverter.convertActivityType(it.activityType)
+    val tourMainActivityTypeCode = UtilityConverter.convertActivityType(it.tourPlan.mainActivity.activityType)
     base +
             when (durationMainAct.inWholeHours) {
                 in 4..<6 -> dauer_hauptakt_tag_4bis6std
@@ -35,10 +38,13 @@ private val minorFunction: ParameterStep8J.(MainDurationAlternative) -> Double =
                 else -> .0
             } +
             (it.tag_so()) * tag_so +
-            (it.aktzweck_work()) * aktzweck_work +
-            (it.aktzweck_education()) * aktzweck_education +
-            (it.aktzweck_shopping()) * aktzweck_shopping +
-            (it.aktzweck_transport()) * aktzweck_transport +
+            when(activityTypeCode) {
+                5 -> aktzweck_work
+                0 -> aktzweck_education
+                3  -> aktzweck_shopping
+                4 -> aktzweck_transport
+                else -> 0.0
+            } +
             when(numberOfActivities) {
                 2 -> taghat2akt
                 3 -> taghat3akt
@@ -47,10 +53,13 @@ private val minorFunction: ParameterStep8J.(MainDurationAlternative) -> Double =
                 6 -> taghat6akt
                 else -> .0
             } +
-            (it.tourtyp_work()) * tourtyp_work +
-            (it.tourtyp_education()) * tourtyp_education +
-            (it.tourtyp_shopping()) * tourtyp_shopping +
-            (it.tourtyp_transport()) * tourtyp_transport +
+            when(tourMainActivityTypeCode) {
+                5 -> tourtyp_work
+                0 -> tourtyp_education
+                    3 -> tourtyp_shopping
+                4 -> tourtyp_transport
+                else -> .0
+            } +
             (it.tourhat2akt()) * tourhat2akt +
             (it.taghat1tour()) * taghat1tour +
             (it.taghat2touren()) * taghat2touren +
