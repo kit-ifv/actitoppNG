@@ -2,6 +2,10 @@ package edu.kit.ifv.mobitopp.actitoppNG.steps
 
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.WeekRoutine
 
+/**
+ * An interface, one that gets recycled via delegation by a lot of classes, but the only implementation that does
+ * actually implement is [RoutineAttributesFromElement]
+ */
 interface RoutineAttributes {
 
     fun amountOfWorkingDays(): Int

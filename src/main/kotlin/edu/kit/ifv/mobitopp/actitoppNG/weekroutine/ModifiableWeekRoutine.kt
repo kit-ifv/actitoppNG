@@ -9,15 +9,16 @@ import kotlin.properties.Delegates
  * (We assume that this silent calculation mismatch is not desired, and thus guarded with errors)
  */
 @Serializable
-class ModifiableWeekRoutine : WeekRoutine {
-    override var amountOfWorkingDays: Int by Delegates.notNull()
-    override var amountOfEducationDays: Int by Delegates.notNull()
-    override var amountOfLeisureDays: Int by Delegates.notNull()
-    override var amountOfShoppingDays: Int by Delegates.notNull()
-    override var amountOfServiceDays: Int by Delegates.notNull()
-    override var amountOfImmobileDays: Int by Delegates.notNull()
-    override var averageAmountOfTours: Int by Delegates.notNull()
-    override var averageAmountOfActivities: Int by Delegates.notNull()
+class ModifiableWeekRoutine constructor() : WeekRoutine {
+    override var amountOfWorkingDays: Int = -1
+    override var amountOfEducationDays: Int = -1
+    override var amountOfLeisureDays: Int = -1
+    override var amountOfShoppingDays: Int = -1
+    override var amountOfServiceDays: Int = -1
+    override var amountOfImmobileDays: Int = -1
+    override var averageAmountOfTours: Int = -1
+    override var averageAmountOfActivities: Int = -1
+
 }
 
 

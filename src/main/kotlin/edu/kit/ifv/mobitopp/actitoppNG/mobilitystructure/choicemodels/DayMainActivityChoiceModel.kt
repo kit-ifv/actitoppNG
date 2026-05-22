@@ -6,6 +6,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DayMainActivityParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DayMainActivitySet
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.DayAlternative
+import edu.kit.ifv.mobitopp.actitoppNG.performance.UtilityConverter
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
 import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
@@ -38,21 +39,33 @@ val mainActivityChoiceModel get() =
 
 
 private val standardUtilityFunction: DayMainActivityParameters.( DayAlternative) -> Double = {
+    val dayCode = UtilityConverter.convertWeekDay(it.dayOfWeek)
+    val employmentCode = UtilityConverter.convertEmployment(it.employment)
     base +
-            (it.isFulltimeEmployee()) * employmentFullTime +
-            (it.isParttimeEmployee()) * employmentPartTime +
-            (it.isNotEarningMoney()) * employmentNotEarning +
-            (it.isStudent()) * employmentStudent +
-            (it.isVocational()) * employmentVocational +
+
+            when(employmentCode) {
+                0 -> employmentFullTime
+                1, 7, 8 -> employmentPartTime
+                2, 5 -> employmentNotEarning
+                3, 9, 10, 11 -> employmentStudent
+                4 -> employmentVocational
+                else -> .0
+            } +
+
             (it.amountOfYouthsInHousehold()) * amountOfYouths +
             (it.has5WorkDays()) * has5WorkingDays +
             (it.has5EducationDays()) * has5EducationDays +
-            (it.isTuesday()) * tuesday +
-            (it.isWednesday()) * wednesday +
-            (it.isThursday()) * thursday +
-            (it.isFriday()) * friday +
-            (it.isSaturday()) * saturday +
-            (it.isSunday()) * sunday +
+
+            when(dayCode) {
+                2 -> tuesday
+                3 -> wednesday
+                4 -> thursday
+                5 -> friday
+                6 -> saturday
+                7 -> sunday
+                else -> .0
+
+            } +
             (it.amountOfWorkingDays()) * amountOfWorkdays +
             (it.amountOfEducationDays()) * amountOfEducationDays +
             (it.amountOfLeisureDays()) * amountOfLeisureDays +

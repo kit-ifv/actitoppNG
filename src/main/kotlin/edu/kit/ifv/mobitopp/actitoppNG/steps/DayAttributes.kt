@@ -5,6 +5,13 @@ import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.DayStructure
 import java.time.DayOfWeek
 
+
+/**
+ * This is a combinatorical interface to encapsulate the different utility function components used in actitopp
+ * Originally this interface existed to replicate the original structure and replace it with a more sensible structure
+ * which is essentially just [DayOfWeek]. During the rewrite I really needed this interface to get some sensible structure
+ * into actitopp. Now it may be no longer needed.
+ */
 interface DayAttributes {
     fun isMonday(): Boolean
     fun isTuesday(): Boolean
@@ -16,6 +23,8 @@ interface DayAttributes {
 
     fun isStandardWorkingDay(): Boolean
 
+    // Introduced for performant lookups and not stepping through the interface.
+    val dayOfWeek: DayOfWeek
 
 }
 
@@ -42,6 +51,8 @@ fun interface PartialTourLayoutAttributes {
 
 class DayAttributesFromStructure(private val element: DayStructure) : PartialTourLayoutAttributes,
     DayStructureAttributes, FullyQualifiedDayStructureAttributes {
+
+    override val dayOfWeek: DayOfWeek = element.weekday
 
     override fun isMonday() = element.weekday == DayOfWeek.MONDAY
     override fun isTuesday() = element.weekday == DayOfWeek.TUESDAY
@@ -70,4 +81,7 @@ class DayAttributesFromWeekday(private val element: DayOfWeek) : DayAttributes {
     override fun isSaturday(): Boolean = element == DayOfWeek.SATURDAY
     override fun isSunday(): Boolean = element == DayOfWeek.SUNDAY
     override fun isStandardWorkingDay(): Boolean = element in DayOfWeek.MONDAY..DayOfWeek.FRIDAY
+
+
+    override val dayOfWeek: DayOfWeek = element
 }
