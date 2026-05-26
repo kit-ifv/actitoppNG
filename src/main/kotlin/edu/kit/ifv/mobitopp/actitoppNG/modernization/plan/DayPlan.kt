@@ -3,6 +3,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.modernization.plan
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.DurationDay
+import edu.kit.ifv.mobitopp.actitoppNG.modernization.LinkedAction
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.LinkedActivity
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.MutableTourStructure
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.linkByHomeActivity
@@ -54,10 +55,6 @@ interface DayPlan : List<LinkedActivity> {
     fun activityDurationBounds(linkedActivity: LinkedActivity): ClosedRange<Duration> {
         val absoluteBounds = activityTimeBounds(linkedActivity)
         val maximumDuration = absoluteBounds.endInclusive - absoluteBounds.start
-// TODO the check for duration should not throw, the function above should
-//        require(maximumDuration >= 1.minutes) {
-//            "This duration is not reasonable. $this"
-//        }
         return 1.minutes..maximumDuration
 
 
@@ -158,19 +155,70 @@ class MovingDayPlan(
         // Potentially locate a successor activity with a fixed start time in this day, and track the sum of
         // durations until either a successor is found or the end of the day is reached (checked by comparing against end
         // home activity)
-        val (fixedSuccessor, durationToSuccessor) = linkedActivity.iterator().drop(1)
-            .takeUntil { it == endHomeActivityDay }
-            .foldUntil({ it.startTime != null }, Duration.ZERO) { acc, action ->
-                acc + (action.estimatedDuration(estimatedActivityDurations))
+        var durationToSuccessor = Duration.ZERO
+        var fixedSuccessor: LinkedAction? = null
+        val iterator = linkedActivity.iterator()
+        iterator.next() // Skip over the current element.
+        while(iterator.hasNext()) {
+            val element = iterator.next()
+            // Once an action with a fixed start time has been found we don't need to continue the search, we found
+            // the next element with a limiting factor for the activity time bounds. Also we dont need to add the
+            // estimated duration anymore.
+            if(element.startTime != null) {
+                fixedSuccessor = element
+                break
             }
+            durationToSuccessor += (element.estimatedDuration(estimatedActivityDurations))
+            if(element == endHomeActivityDay) {
+                // in this scenario the activity is not set as fixed successor.
+                break
+            }
+            /**
+             * Note at this point that the endHomeActivity does not serve the same logic as the start time, One would
+             * assume that a fixed element, like the end home Activity would not be taken into account for the estimated
+             * duration, and that the checks for exiting the loop could be formed together, but that is not original
+             * actitopp behaviour. I wish i could make sense why this happens.
+             */
+        }
+
+
         /*
             Similarly, locate a precursor activity with a fixed end time. And track the sum of durations either to the
             fixed element or the sum of durations up to the start of the day.
          */
-        val (fixedPrecursor, durationToPrecursor) = linkedActivity.backwardIterator().drop(1)
-            .takeUntil { it == startHomeActivityDay }.foldUntil({ it.endTime != null }, Duration.ZERO) { acc, action ->
-                acc + (action.estimatedDuration(estimatedActivityDurations))
+
+
+
+        var durationToPrecursor = Duration.ZERO
+        var fixedPrecursor: LinkedAction? = null
+        val backwardIterator = linkedActivity.backwardIterator()
+        backwardIterator.next() // Skip over the current element.
+        while(backwardIterator.hasNext()) {
+            val element = backwardIterator.next()
+            // Once an action with a fixed start time has been found we don't need to continue the search, we found
+            // the next element with a limiting factor for the activity time bounds. Also we dont need to add the
+            // estimated duration anymore.
+            if (element.startTime != null) {
+                fixedPrecursor = element
+                break
             }
+            durationToPrecursor += (element.estimatedDuration(estimatedActivityDurations))
+            if (element == startHomeActivityDay) {
+                break
+            }
+
+
+        }
+
+
+
+
+//        val (fixedPrecursorE, durationToPrecursorE) = linkedActivity.backwardIteratorSequence().drop(1)
+//            .takeUntil { it == startHomeActivityDay }.foldUntil({ it.endTime != null }, Duration.ZERO) { acc, action ->
+//                acc + (action.estimatedDuration(estimatedActivityDurations))
+//            }
+
+
         // If a precursor is found, that start time is a better bound for the current element, if not use 0 as relative start time of the day
         val earliestStartTime = (fixedPrecursor?.endTime ?: durationDay.startOfDay) + durationToPrecursor
 
