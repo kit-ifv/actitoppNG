@@ -14,7 +14,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 
 
 private val firstTourStartUtility: ParameterStep10M.(MainDurationAlternative) -> Double = {
-    val durationOfActivities = it.dayPlan.durationOfActivities()
+    val durationOfActivities = UtilityConverter.convertToTwoHourBlock(it.dayPlan.durationOfActivities())
     val employmentCode = UtilityConverter.convertEmployment(it.person.employment)
     val tourActivityTypeCode = UtilityConverter.convertActivityType(it.tourPlan.mainActivity.activityType)
     base +
@@ -34,12 +34,13 @@ private val firstTourStartUtility: ParameterStep10M.(MainDurationAlternative) ->
             } +
             (it.tag_sa()) * tag_sa +
             (it.tag_so()) * tag_so +
-            when (durationOfActivities.inWholeHours) {
-                in 4..<6 -> dauer_akt_tag_4bis6std
-                in 6..<8 -> dauer_akt_tag_6bis8std
-                in 8..<10 -> dauer_akt_tag_8bis10std
-                in 10..<12 -> dauer_akt_tag_10bis12std
-                in 12..<14 -> dauer_akt_tag_12bis14std
+            when (durationOfActivities) {
+
+                2 -> dauer_akt_tag_4bis6std
+                3 -> dauer_akt_tag_6bis8std
+                4 -> dauer_akt_tag_8bis10std
+                5 -> dauer_akt_tag_10bis12std
+                6 -> dauer_akt_tag_12bis14std
 
                 else -> .0
             } +
