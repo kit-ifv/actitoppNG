@@ -70,7 +70,23 @@ object UtilityConverter {
      * 2h..3h59m -> 1
      */
     fun convertToTwoHourBlock(duration: Duration): Int {
-        return (duration.inWholeHours / 2L).toInt()
+        return (duration.inWholeHours.toInt() / 2)
+    }
+
+    /**
+     * Returns a n Int representing the 15 minute block the duration is belonging to:
+     *
+     * 0..14m59s -> 0
+     * 15..29m59s -> 1
+     *
+     */
+
+    fun convertToFifteenMinuteBlock(duration: Duration): Int {
+
+        require(duration != Duration.ZERO) {
+            "Cannot handle duration zero, because original Actitopp never caught that in the utility functions. "
+        }
+        return (duration.inWholeMinutes.toInt() / 15)
     }
 
 }

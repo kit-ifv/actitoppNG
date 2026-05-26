@@ -3,6 +3,7 @@ plugins {
     kotlin("plugin.serialization") version "2.2.0"
     id("maven-publish")
     id("org.jetbrains.dokka") version "1.9.10"
+    id("me.champeau.jmh") version "0.7.3"
 }
 
 group = "edu.kit.ifv.mobitopp"
@@ -40,6 +41,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.0")
     testImplementation(kotlin("test"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
+    jmh("org.openjdk.jmh:jmh-core:1.37")
+    jmh("org.openjdk.jmh:jmh-generator-annprocess:1.37")
 
 }
 
