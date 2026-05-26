@@ -110,14 +110,14 @@ private val standardUtilityFunction10O: ParameterStep10O.(MainDurationAlternativ
             } +
 
             (it.touristhaupttour()) * touristhaupttour +
-            when (previousDayTourEndHour.inWholeHours) {
-                12L -> endetourvorher_Std_12
-                13L -> endetourvorher_Std_13
-                14L -> endetourvorher_Std_14
-                15L -> endetourvorher_Std_15
-                16L -> endetourvorher_Std_16
-                17L -> endetourvorher_Std_17
-                18L -> endetourvorher_Std_18
+            when (previousDayTourEndHour.inWholeHours.toInt()) {
+                12 -> endetourvorher_Std_12
+                13 -> endetourvorher_Std_13
+                14 -> endetourvorher_Std_14
+                15 -> endetourvorher_Std_15
+                16 -> endetourvorher_Std_16
+                17 -> endetourvorher_Std_17
+                18 -> endetourvorher_Std_18
                 else -> .0
             }
 

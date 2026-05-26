@@ -71,85 +71,125 @@ private val minorFunction: ParameterStep8J.(MainDurationAlternative) -> Double =
 
 }
 private val standardUtilityFunction8D: ParameterStep8D.(MainDurationAlternative) -> Double = {
-//    val averageTimeOfActivityCode = UtilityConverter.convertToFifteenMinuteBlock(it.dayPlan.getBudget(it.activityType))
-
-
-    val averageTimeOfActivity = it.dayPlan.getBudget(it.activityType)
+    val averageTimeOfActivityCode = UtilityConverter.convertToFifteenMinuteBlock(it.dayPlan.getBudget(it.activityType))
+    val dayCode = UtilityConverter.convertWeekDay(it.dayPlan.durationDay.weekday)
+    val activityCode = UtilityConverter.convertActivityType(it.activityType)
+    val employmentCode = UtilityConverter.convertEmployment(it.person.employment)
     base +
 
-            when (averageTimeOfActivity.inWholeMinutes) {
-                in 1..<15 -> mittl_zeit_akt_1bis14min
-                in 15..<30 -> mittl_zeit_akt_15bis29min
-                in 30..<60 -> mittl_zeit_akt_30bis59min
-                in 60..<120 -> mittl_zeit_akt_60bis119min
-                in 120..<180 -> mittl_zeit_akt_120bis179min
-                in 180..<240 -> mittl_zeit_akt_180bis239min
+            when (averageTimeOfActivityCode) {
+
+                0 -> mittl_zeit_akt_1bis14min
+                1 -> mittl_zeit_akt_15bis29min
+                2, 3 -> mittl_zeit_akt_30bis59min
+                4, 5, 6, 7 -> mittl_zeit_akt_60bis119min
+                8, 9, 10, 11 -> mittl_zeit_akt_120bis179min
+                12, 13, 14, 15 -> mittl_zeit_akt_180bis239min
                 else -> .0
             } +
-            (it.tag_fr()) * tag_fr +
-            (it.tag_sa()) * tag_sa +
-            (it.tag_so()) * tag_so +
+
+            when (dayCode) {
+                5 -> tag_fr
+                6 -> tag_sa
+                7 -> tag_so
+                else -> .0
+            } +
             (it.anzaktwieanztagemitzweck()) * anzaktwieanztagemitzweck +
-            (it.aktzweck_work()) * aktzweck_work +
-            (it.aktzweck_education()) * aktzweck_education +
-            (it.aktzweck_shopping()) * aktzweck_shopping +
-            (it.aktzweck_transport()) * aktzweck_transport +
-            (it.wochenzbudget_zweck_kat1()) * wochenzbudget_zweck_kat1 +
-            (it.wochenzbudget_zweck_kat2()) * wochenzbudget_zweck_kat2 +
-            (it.wochenzbudget_zweck_kat3()) * wochenzbudget_zweck_kat3 +
-            (it.wochenzbudget_zweck_kat4()) * wochenzbudget_zweck_kat4 +
-            (it.wochenzbudget_zweck_kat5()) * wochenzbudget_zweck_kat5 +
-            (it.tourhat1akt()) * tourhat1akt +
-            (it.tourhat2akt()) * tourhat2akt +
-            (it.tourhat3akt()) * tourhat3akt +
+            when (activityCode) {
+                5 -> aktzweck_work
+                0 -> aktzweck_education
+                3 -> aktzweck_shopping
+                4 -> aktzweck_transport
+                else -> .0
+            } +
+            when (it.planTimeBudgets.getCategory(it.activityType).toInt()) {
+                1 -> wochenzbudget_zweck_kat1
+                2 -> wochenzbudget_zweck_kat2
+                3 -> wochenzbudget_zweck_kat3
+                4 -> wochenzbudget_zweck_kat4
+                5 -> wochenzbudget_zweck_kat5
+                else -> .0
+            } +
+            when (it.tourPlan.size) {
+                1 -> tourhat1akt
+                2 -> tourhat2akt
+                3 -> tourhat3akt
+                else -> .0
+            } +
             (it.taghat2akt()) * taghat2akt +
             (it.taghat3akt()) * taghat3akt +
             (it.letztetourdestages()) * letztetourdestages +
             (it.taghat2touren()) * taghat2touren +
-            (it.beruf_vollzeit()) * beruf_vollzeit +
-            (it.beruf_teilzeit()) * beruf_teilzeit +
-            (it.beruf_schueler_azubi()) * beruf_schueler_azubi +
+            when (employmentCode) {
+                0 -> beruf_vollzeit
+                1, 7, 8 -> beruf_teilzeit
+                3, 4, 9, 10, 11 -> beruf_schueler_azubi
+                else -> .0
+            } +
             (it.tourliegtvorhaupttour()) * tourliegtvorhaupttour +
             (it.tourliegtnachhaupttour()) * tourliegtnachhaupttour
 
 }
 private val standardUtilityFunction8B: ParameterStep8B.(MainDurationAlternative) -> Double = {
-    val averageTimeOfActivity = it.dayPlan.getBudget(it.activityType)
+    val averageTimeOfActivityCode = UtilityConverter.convertToOneHourBlock(it.dayPlan.getBudget(it.activityType))
+    val dayCode = UtilityConverter.convertWeekDay(it.dayPlan.durationDay.weekday)
+    val activityCode = UtilityConverter.convertActivityType(it.activityType)
+    val employmentCode = UtilityConverter.convertEmployment(it.person.employment)
     base +
-            when (averageTimeOfActivity.inWholeMinutes) {
-                in 60..<120 -> mittl_zeit_akt_60bis119min
-                in 120..<180 -> mittl_zeit_akt_120bis179min
-                in 180..<240 -> mittl_zeit_akt_180bis239min
-                in 240..<300 -> mittl_zeit_akt_240bis299min
-                in 300..<360 -> mittl_zeit_akt_300bis359min
-                in 360..<420 -> mittl_zeit_akt_360bis419min
-                in 420..<480 -> mittl_zeit_akt_420bis479min
+            when (averageTimeOfActivityCode) {
+                1 -> mittl_zeit_akt_60bis119min
+                2 -> mittl_zeit_akt_120bis179min
+                3 -> mittl_zeit_akt_180bis239min
+                4 -> mittl_zeit_akt_240bis299min
+                5 -> mittl_zeit_akt_300bis359min
+                6 -> mittl_zeit_akt_360bis419min
+                7 -> mittl_zeit_akt_420bis479min
                 else -> .0
             } +
-            (it.tag_fr()) * tag_fr +
-            (it.tag_sa()) * tag_sa +
-            (it.tag_so()) * tag_so +
+            when (dayCode) {
+                5 -> tag_fr
+                6 -> tag_sa
+                7 -> tag_so
+                else -> .0
+            } +
             (it.anzaktwieanztagemitzweck()) * anzaktwieanztagemitzweck +
-            (it.aktzweck_work()) * aktzweck_work +
-            (it.aktzweck_education()) * aktzweck_education +
-            (it.aktzweck_shopping()) * aktzweck_shopping +
-            (it.aktzweck_transport()) * aktzweck_transport +
-            (it.wochenzbudget_zweck_kat1()) * wochenzbudget_zweck_kat1 +
-            (it.wochenzbudget_zweck_kat2()) * wochenzbudget_zweck_kat2 +
-            (it.wochenzbudget_zweck_kat3()) * wochenzbudget_zweck_kat3 +
-            (it.wochenzbudget_zweck_kat4()) * wochenzbudget_zweck_kat4 +
-            (it.wochenzbudget_zweck_kat5()) * wochenzbudget_zweck_kat5 +
-            (it.tourhat1akt()) * tourhat1akt +
-            (it.tourhat2akt()) * tourhat2akt +
-            (it.tourhat3akt()) * tourhat3akt +
-            (it.taghat1akt()) * taghat1akt +
-            (it.taghat2akt()) * taghat2akt +
-            (it.taghat3akt()) * taghat3akt +
+            when (activityCode) {
+                5 -> aktzweck_work
+                0 -> aktzweck_education
+                3 -> aktzweck_shopping
+                4 -> aktzweck_transport
+                else -> .0
+            } +
+            when (it.planTimeBudgets.getCategory(it.activityType).toInt()) {
+                1 -> wochenzbudget_zweck_kat1
+                2 -> wochenzbudget_zweck_kat2
+                3 -> wochenzbudget_zweck_kat3
+                4 -> wochenzbudget_zweck_kat4
+                5 -> wochenzbudget_zweck_kat5
+                else -> .0
+            } +
+            when (it.tourPlan.size) {
+                1 -> tourhat1akt
+                2 -> tourhat2akt
+                3 -> tourhat3akt
+                else -> .0
+
+            } +
+
+            when (it.dayPlan.amountOfActivities) {
+                1 -> taghat1akt
+                2 -> taghat2akt
+                3 -> taghat3akt
+                else -> 0.0
+            } +
             (it.taghat1tour()) * taghat1tour +
             (it.taghat2touren()) * taghat2touren +
-            (it.beruf_vollzeit()) * beruf_vollzeit +
-            (it.beruf_teilzeit()) * beruf_teilzeit +
-            (it.beruf_schueler_azubi()) * beruf_schueler_azubi +
+            when (employmentCode) {
+                0 -> beruf_vollzeit
+                1, 7, 8 -> beruf_teilzeit
+                3, 4, 9, 10, 11 -> beruf_schueler_azubi
+                else -> .0
+            } +
             (it.tourliegtvorhaupttour()) * tourliegtvorhaupttour +
             (it.tourliegtnachhaupttour()) * tourliegtnachhaupttour
 }

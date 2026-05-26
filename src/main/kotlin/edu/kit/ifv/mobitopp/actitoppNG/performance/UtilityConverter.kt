@@ -89,4 +89,8 @@ object UtilityConverter {
         return (duration.inWholeMinutes.toInt() / 15)
     }
 
+    fun convertToOneHourBlock(duration: Duration): Int {
+        return duration.inWholeHours.toInt()
+    }
+
 }
