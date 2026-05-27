@@ -29,7 +29,9 @@ variables:
 
 default:
   image: amazoncorretto:25
-
+  script:
+    - java -version
+    - java -XshowSettings:system -version
 
 stages: # List of stages for jobs, and their order of execution
   - build
