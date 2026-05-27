@@ -1,8 +1,8 @@
 plugins {
-    kotlin("jvm") version "2.2.0"
-    kotlin("plugin.serialization") version "2.2.0"
+    kotlin("jvm") version "2.3.0"
+    kotlin("plugin.serialization") version "2.3.0"
     id("maven-publish")
-    id("org.jetbrains.dokka") version "1.9.10"
+    id("org.jetbrains.dokka") version "2.2.0"
     id("me.champeau.jmh") version "0.7.3"
 }
 
@@ -14,10 +14,10 @@ version = if (project.hasProperty("next-version")) {
 }
 
 tasks.wrapper {
-    gradleVersion = "6.3"
+    gradleVersion = "9.5.0"
 }
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(25)
     compilerOptions {
         freeCompilerArgs.add("-Xcontext-parameters")
     }
@@ -33,10 +33,9 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("edu.kit.ifv.mobitopp:kotlin-units:1.0.1")
+    implementation("edu.kit.ifv.mobitopp:kotlin-units:1.0.3")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
-    api("edu.kit.ifv.mobitopp:discrete-choice:0.2.0")
+    implementation("edu.kit.ifv.mobitopp:discrete-choice:0.2.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.0")
     testImplementation(kotlin("test"))
@@ -51,20 +50,26 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
-tasks.dokkaHtml {
-    outputDirectory.set(buildDir.resolve("dokka"))
-
-    dokkaSourceSets {
-        named("main") {
-            includes.from("src/main/kotlin/com/example/mypackage/package.md") // optional
-            perPackageOption {
-                matchingRegex.set("com\\.example\\.internal.*")
-                suppress.set(true) // Skip internal packages
-            }
+dokka {
+    moduleName.set("actiToppNG")
+    dokkaPublications.html {
+        suppressInheritedMembers.set(true)
+        failOnWarning.set(true)
+    }
+    dokkaSourceSets.main {
+        includes.from("README.md")
+        sourceLink {
+            localDirectory.set(file("src/main/kotlin"))
+            remoteUrl("https://example.com/src")
+            remoteLineSuffix.set("#L")
         }
     }
+    pluginsConfiguration.html {
+        customStyleSheets.from("styles.css")
+        customAssets.from("logo.png")
+        footerMessage.set("(c) IfV")
+    }
 }
-
 
 allprojects {
     apply(plugin = "maven-publish")
