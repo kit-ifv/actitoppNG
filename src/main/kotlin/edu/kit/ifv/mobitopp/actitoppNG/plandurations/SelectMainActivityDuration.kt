@@ -17,12 +17,22 @@ fun interface SelectMainActivityDuration {
  * In the legacy code the probability of a selected time increased, if the activity is using a standard duration, a proper
  * activity type: Work, Education. The original code had a hidden side effect that the first activity of a day and the
  * remaining major activities manipulated their own respective time-tables. IN a sense the selection "sticks around"
+ *
+ * Each time the Sticky Selector is built the tainted histograms are copied.
  */
 class StickySelector<P>(
     histogram: ActivityDurationHistograms<P>,
     private val useStandardDuration: StandardDuration,
 ) : SelectMainActivityDuration, SelectMajorActivityDuration {
-    private val taintedHistogramMap = ActivityType.OUTOFHOMEACTIVITY.associateWith { histogram.taint() }
+    val taintedHistogramMap: Map<ActivityType, TaintedActivityDurationHistograms<P>> = ActivityType.OUTOFHOMEACTIVITY.associateWith { histogram.taint() }
+
+    /**
+     * To avoid constant alloc/dealloc the sticky selector must be able to reset. Luckily the Tainted Histograms class
+     * provides a mapping between the taintable histograms and the clean original histograms. thus we can simply reset
+     * into that.
+     */
+    fun reset() = taintedHistogramMap.values.forEach { it.reset() }
+
     companion object {
         @JvmStatic val fixedTypes: EnumSet<ActivityType> = EnumSet.of(ActivityType.WORK, ActivityType.EDUCATION)
     }
@@ -76,3 +86,4 @@ class StickySelector<P>(
 
 
 }
+

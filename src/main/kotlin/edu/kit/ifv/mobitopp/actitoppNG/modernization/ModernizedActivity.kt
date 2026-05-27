@@ -147,9 +147,11 @@ class LinkedActivity(
     }
 
 
-    fun iterator(): Sequence<LinkedAction> {
+    fun iteratorSequence(): Sequence<LinkedAction> {
         return LinkedActionIterator(this).asSequence()
     }
+
+    fun iterator() = LinkedActionIterator(this)
 
     fun mutableIterator(): Sequence<MutableLinkedAction> {
         return MutableLinkedActionIterator(this).asSequence()
@@ -159,9 +161,11 @@ class LinkedActivity(
         return LinkedActivityIterator(this).asSequence()
     }
 
-    fun backwardIterator(): Sequence<LinkedAction> {
+    fun backwardIteratorSequence(): Sequence<LinkedAction> {
         return BackwardLinkedActionIterator(this).asSequence()
     }
+
+    fun backwardIterator() = BackwardLinkedActionIterator(this)
 
     override fun toString(): String {
         return "$activityType start=($startTime) duration=($duration)"

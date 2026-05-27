@@ -10,6 +10,8 @@ import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.strats.StandardImplemen
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.plan.MobilityPlan
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.plan.StandardCommuteDurations
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.*
+import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterCollectionStep8B
+import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterCollectionStep8D
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.FinalizedActivityPattern
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.HistogramPerActivity
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.*
@@ -29,6 +31,22 @@ fun interface MobilityPlanGeneration {
 class DefaultPlanGeneration(choiceModels: AllChoiceModels) : MobilityPlanGeneration {
     val structureGenerator = StandardStructureGeneration(choiceModels)
     val durationGenerator = StandardDurationAssignment(choiceModels)
+    val startTimeGenerator = StandardStartTimeAssignment()
+    context(rng: Random, models: AllChoiceModels)
+    override fun generate(person: Person, amountOfDays: Int): MobilityPlan {
+        val mobilityPlan = structureGenerator.generate(person, amountOfDays)
+        mobilityPlan.apply {
+            durationGenerator.assignDurations(this)
+            startTimeGenerator.assignStartTimes(this)
+        }
+        mobilityPlan.extrudeHomeActivities()
+        return mobilityPlan
+    }
+}
+
+class ReusablePlanGeneration(choiceModels: AllChoiceModels) : MobilityPlanGeneration {
+    val structureGenerator = StandardStructureGeneration(choiceModels)
+    val durationGenerator = ReusableDurationAssignment(choiceModels)
     val startTimeGenerator = StandardStartTimeAssignment()
     context(rng: Random, models: AllChoiceModels)
     override fun generate(person: Person, amountOfDays: Int): MobilityPlan {
@@ -79,11 +97,29 @@ fun interface MobilityPlanDurationAssignment {
 class StandardDurationAssignment(models: AllChoiceModels) : MobilityPlanDurationAssignment {
     private val util = UtilityFunctionAssignment(models)
     private val minorActivityAssignStrategy = AssignMinorActivityDuration(models)
+
+
     context(rng: Random, models: AllChoiceModels)
     override fun assignDurations(mobilityPlan: MobilityPlan) {
 
         mobilityPlan.assignFirstMainActivities(StickySelector( models.leadActivityDurationChoiceModel,util))
-        mobilityPlan.assignSecondaryMainActivities(StickySelector( models.majorActivityDurationChoiceModel, util))
+        mobilityPlan.assignSecondaryMainActivities(StickySelector( models.majorActivityDurationChoiceModel,util))
+        mobilityPlan.assignMinorActivities(minorActivityAssignStrategy)
+    }
+}
+
+class ReusableDurationAssignment(models: AllChoiceModels): MobilityPlanDurationAssignment {
+    private val util = UtilityFunctionAssignment(models)
+    private val minorActivityAssignStrategy = AssignMinorActivityDuration(models)
+
+    private val leadStickySelector = StickySelector( models.leadActivityDurationChoiceModel,util)
+    private val majorStickySelector = StickySelector( models.majorActivityDurationChoiceModel,util)
+    context(rng: Random, models: AllChoiceModels)
+    override fun assignDurations(mobilityPlan: MobilityPlan) {
+        leadStickySelector.reset()
+        majorStickySelector.reset()
+        mobilityPlan.assignFirstMainActivities(leadStickySelector)
+        mobilityPlan.assignSecondaryMainActivities(majorStickySelector)
         mobilityPlan.assignMinorActivities(minorActivityAssignStrategy)
     }
 }

@@ -107,7 +107,7 @@ class ActualMobilityPlan(
 
 
     override fun isConsistent(): Boolean {
-        return startHomeAnchor.iterator().all {
+        return startHomeAnchor.iteratorSequence().all {
             it.isConsistent()
         }
     }

@@ -55,7 +55,7 @@ class StandardCommuteDurations(private val standardTripDuration: Duration = 15.m
     }
 
 
-    private fun Distance.calculateCommuteDuration(functor: (Distance) -> Speed): Duration {
+    private inline fun Distance.calculateCommuteDuration(functor: (Distance) -> Speed): Duration {
         val speed = functor(this)
         val duration = this / speed
         return duration.coerceAtLeast(1.minutes).round(DurationUnit.MINUTES)

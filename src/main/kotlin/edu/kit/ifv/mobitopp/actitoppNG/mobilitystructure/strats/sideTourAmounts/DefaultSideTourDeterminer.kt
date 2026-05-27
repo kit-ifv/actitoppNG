@@ -38,6 +38,7 @@ abstract class DefaultSideTourDeterminer<P>(
     }
 
     abstract fun update(day: ModifiablePlannedTourAmounts, result: Int)
+
     private fun determineAvailableOptions(day: DayStructure, routine: WeekRoutine): Set<Int> {
         // If the main activity is staying home, there should not be the option to choose any other subtour
         if (day.isHomeDay()) return setOf(0)

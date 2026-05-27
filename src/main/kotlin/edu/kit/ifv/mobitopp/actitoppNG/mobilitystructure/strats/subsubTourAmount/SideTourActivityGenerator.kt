@@ -16,19 +16,6 @@ abstract class SideTourActivityGenerator<P>(
     context(rng: Random)
     override fun generateActivityAmount(input: SideTourActivityInput): Int {
 
-        val options = choiceModel.choices.toMutableSet()
-        options.removeIf { it < input.minimumAmountOfActivities }
-
-        val converter: (Int) -> TourAlternativeInt = {
-            TourAlternativeInt(
-
-                input.person,
-                input.routine,
-                input.currentDay,
-                input.tour,
-                input.amountOfActivitiesBeforeMainAct
-            )
-        }
         return context(
             TourAlternativeInt(
                 input.person,
@@ -38,7 +25,9 @@ abstract class SideTourActivityGenerator<P>(
                 input.amountOfActivitiesBeforeMainAct
             )
         ) {
-            choiceModel.select(options)
+            choiceModel.selectFiltered {
+                it >= input.minimumAmountOfActivities
+            }
         }
     }
 }

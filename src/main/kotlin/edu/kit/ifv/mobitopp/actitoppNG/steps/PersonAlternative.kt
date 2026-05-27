@@ -38,6 +38,7 @@ interface PersonAttributes {
     fun commuteIn10To20km(): Boolean
     fun commuteIn20To50km(): Boolean
     fun commuteOver50km(): Boolean
+    val employment: Employment
 }
 
 class PersonAttributesFromElement(val person: Person) : PersonAttributes {
@@ -68,6 +69,7 @@ class PersonAttributesFromElement(val person: Person) : PersonAttributes {
     override fun isStudentOrAzubi(): Boolean {
         return person.employment.isStudentOrAzubi()
     }
+    override val employment = person.employment
 }
 
 

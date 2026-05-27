@@ -2,7 +2,6 @@ package edu.kit.ifv.mobitopp.actitoppNG.plandurations
 
 
 import edu.kit.ifv.mobitopp.actitoppNG.Person
-import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
 import edu.kit.ifv.mobitopp.actitoppNG.enums.isParttime
@@ -75,21 +74,39 @@ open class ActivityDurationHistograms<P>(
             choiceModel.select().select(rng.nextDouble())
         }
     }
+
+    private val choiceModelSize by lazy {
+        choiceModel.choices.size
+    }
+
     context(rng: Random)
     fun selectHistogram(
         bounds: ClosedRange<Duration>,
         converter: MainDurationAlternative,
     ): ArrayHistogram? {
-        val options = histograms.filter { it.end >= bounds.start && it.start <= bounds.endInclusive }.toSet()
-        // It can happen that no histogram fits, because they are trimmed. The default behaviour of legacy actitopp is to return a random value.
-        if (options.isEmpty()) {
+        if(histograms.all {it.end >= bounds.start && it.start <= bounds.endInclusive  }) {
+            return selectAll(converter)
+        } else if (histograms.none{it.end >= bounds.start && it.start <= bounds.endInclusive}) {
             return null
+        } else {
+            val options = histograms.filter { it.end >= bounds.start && it.start <= bounds.endInclusive }.toSet()
+            return selectPrecise(converter, options)
         }
-
+    }
+    context(rng: Random)
+    private fun selectPrecise(converter: MainDurationAlternative, options: Set<ArrayHistogram>): ArrayHistogram? {
         return context(converter) {
             choiceModel.select(options)
         }
     }
+
+    context(rng: Random)
+    private fun selectAll(converter: MainDurationAlternative): ArrayHistogram? {
+        return context(converter) {
+            choiceModel.select()
+        }
+    }
+
     context(rng: Random)
     fun select(
         bounds: ClosedRange<Duration>,
@@ -111,13 +128,20 @@ open class ActivityDurationHistograms<P>(
     }
 
 }
-
-class TaintedActivityDurationHistograms<P>(
+// Every time this class is created, the histograms are copied for tainting. This may be too much copying.
+class TaintedActivityDurationHistograms<P> constructor(
     val original: ActivityDurationHistograms<P>,
 ) {
     val histograms = original.histograms
     val choiceModel = original.choiceModel
     private val taintedHistograms = histograms.associateWith { it.copy() }
+
+    fun reset()  {
+        taintedHistograms.forEach { (original, corruption) ->
+            corruption.cleanseByLoading(original)
+        }
+    }
+
 
     context(rng: Random)
     fun selectAndTaint(
@@ -393,21 +417,13 @@ open class PlanAlternative<P : Any>(
     fun anztourenvorhaupttour() = dayPlan.tourPlans.count { it.position == Position.BEFORE }
     fun anztourennachhaupttour() = dayPlan.tourPlans.count { it.position == Position.AFTER }
     fun endetourvorher_Std_12() = dayPlan.endOfPreviousTour(tourPlan) in 12.hours..<13.hours
-
     fun endetourvorher_Std_13() = dayPlan.endOfPreviousTour(tourPlan) in 13.hours..<14.hours
-
     fun endetourvorher_Std_14() = dayPlan.endOfPreviousTour(tourPlan) in 14.hours..<15.hours
-
     fun endetourvorher_Std_15() = dayPlan.endOfPreviousTour(tourPlan) in 15.hours..<16.hours
-
     fun endetourvorher_Std_16() = dayPlan.endOfPreviousTour(tourPlan) in 16.hours..<17.hours
-
     fun endetourvorher_Std_17() = dayPlan.endOfPreviousTour(tourPlan) in 17.hours..<18.hours
-
     fun endetourvorher_Std_18() = dayPlan.endOfPreviousTour(tourPlan) in 18.hours..<19.hours
-
     fun endetourvorher_Std_19() = dayPlan.endOfPreviousTour(tourPlan) in 19.hours..<20.hours
-
     fun endetourvorher_Std_20() = dayPlan.endOfPreviousTour(tourPlan) in 20.hours..<21.hours
 
     fun dauer_akt_in_tour_0bis2std() = tourPlan.activityDurations in 0.hours..<2.hours

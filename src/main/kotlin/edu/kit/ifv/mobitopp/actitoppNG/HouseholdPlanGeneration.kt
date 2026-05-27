@@ -17,12 +17,17 @@ class StandardHouseholdPlanGeneration(
     val models: AllChoiceModels = AllChoiceModels.DEFAULT,
     private val planGeneration: MobilityPlanGeneration = DefaultPlanGeneration(models)) :
     HouseholdPlanGeneration {
-
     override fun generateSchedules(household: Household): Map<Person, MobilityPlan> {
         return household.members.associateWith { member ->
             context(member.spawnRandomGenerator(), models) {
                 planGeneration.generate(member)
             }
+        }
+    }
+
+    companion object {
+        fun fromModels(models: AllChoiceModels, planGeneration: (AllChoiceModels) -> MobilityPlanGeneration): StandardHouseholdPlanGeneration {
+            return StandardHouseholdPlanGeneration(models, planGeneration(models))
         }
     }
 }

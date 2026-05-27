@@ -32,6 +32,20 @@ class ModifiableArrayHistogram(offset: Int = 0, probabilities: DoubleArray, cate
     categoryIndex
 ) {
     /**
+     * Load the original probabilities into this modifiable Array Histogram.
+     */
+    fun cleanseByLoading(original: ArrayHistogram) {
+        var cumulatedCounter = .0
+        for(i in original.probabilities.indices) {
+            val probability: Double = original.probabilities[i]
+            this.probabilities[i] = probability
+            this._cumulativeSum[i] = probability + cumulatedCounter
+            cumulatedCounter += probability
+
+        }
+    }
+
+    /**
      * Takes an absolute position
      */
     fun modify(position: Int) {
@@ -64,7 +78,7 @@ class ModifiableArrayHistogram(offset: Int = 0, probabilities: DoubleArray, cate
 @Serializable
 open class ArrayHistogram protected constructor(
     protected val offset: Int = 0,
-    protected val probabilities: DoubleArray = doubleArrayOf(0.0),
+    internal val probabilities: DoubleArray = doubleArrayOf(0.0), // Made internal for performance reasons.
     val categoryIndex: Category,
 ) : Comparable<Int> {
     constructor(offset: Int, values: Collection<Number>, categoryIndex: Category) : this(
@@ -78,7 +92,7 @@ open class ArrayHistogram protected constructor(
     protected val size = probabilities.size
 
     @Transient
-    private val _cumulativeSum: DoubleArray = DoubleArray(probabilities.size)
+    internal val _cumulativeSum: DoubleArray = DoubleArray(probabilities.size)
     val start = offset.minutes
     val end = (probabilities.size + offset - 1).minutes
 
@@ -263,9 +277,11 @@ open class ArrayHistogram protected constructor(
                 probabilities.contentEquals(other.probabilities)
     }
 
+    private val precomputedHashCode by lazy {probabilities.contentHashCode()}
+
     override fun hashCode(): Int {
         var result = offset
-        result = 31 * result + probabilities.contentHashCode()
+        result = 31 * result + precomputedHashCode
         result = 31 * result + categoryIndex.hashCode()
         return result
     }
