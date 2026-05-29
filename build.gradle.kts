@@ -44,6 +44,12 @@ tasks.test {
     useJUnitPlatform()
 }
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+
 if (checkProperty("doPublish")) {
     /* mobiTopp publishing process (see .gitlab-ci.yml)
         * Parameters such as "doPublish" must be passed in gradle command:
