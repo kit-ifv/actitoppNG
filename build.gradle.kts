@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "edu.kit.ifv.mobitopp"
-project.version = requireProperty("buildVersion")
+
 
 tasks.wrapper {
     gradleVersion = "9.5.0"
@@ -64,6 +64,7 @@ if (checkProperty("doPublish")) {
         *  - requires parameters: sonatypeUsername, sonatypePassword signing.keyId signing.password signing.secretKeyRingFile
         */
 
+    project.version = requireProperty("buildVersion")
     println("Setup publishing configuration for ${group}:${project.name}:${version}.")
 
     val githubURL: String = "github.com/kit-ifv/actitoppNG"
