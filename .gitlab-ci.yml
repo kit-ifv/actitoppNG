@@ -77,7 +77,7 @@ publish-job:
     - echo "New Build Version $NEW_BUILD_VERSION"
     - chmod 600 "$CI_PROJECT_DIR/.ci-secrets/secring.gpg"
     - |
-      ./gradlew publishToSonatype closeSonatypeStagingRepository -PbuildVersion=$NEW_BUILD_VERSION \
+      ./gradlew --no-daemon --no-configuration-cache publishToSonatype closeSonatypeStagingRepository -PbuildVersion=$NEW_BUILD_VERSION \
       -PdoPublish=true \
       -PisRelease=true \
       -PsonatypeUsername=$PUBLIC_REPO_USERNAME \
