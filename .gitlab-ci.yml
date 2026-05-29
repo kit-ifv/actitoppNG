@@ -11,7 +11,7 @@ default:
 stages: # List of stages for jobs, and their order of execution
   - build
   - test
-  - deploy
+  - publish
 
 
 build-job:
@@ -42,7 +42,7 @@ unit-test-job:
 #    - ./gradlew detekt
 
 deploy-job:
-  stage: deploy
+  stage: publish
   only:
     - master
   needs: [ "build-job", "unit-test-job" ]
