@@ -171,7 +171,7 @@ open class ArrayHistogram protected constructor(
 
         // We require the cumulative sum up to the current lower bound, which is stored in the field before the current index
         // If this field does not exist(because the index is 0) the cumulative sum before that element must be .0
-        val lowerCumulativeProbability = _cumulativeSum.getOrNull(lb - 1) ?: 0.0
+        val lowerCumulativeProbability = _cumulativeSum.getOrElse(lb - 1) {0.0}
 
         val upperCumulativeProbability = _cumulativeSum[ub]
         val selectionIndex = if (lowerCumulativeProbability == upperCumulativeProbability) {
