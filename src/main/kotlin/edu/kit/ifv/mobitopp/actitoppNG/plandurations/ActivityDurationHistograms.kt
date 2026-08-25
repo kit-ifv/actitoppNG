@@ -135,7 +135,7 @@ class TaintedActivityDurationHistograms<P> constructor(
 ) {
     val histograms = original.histograms
     val choiceModel = original.choiceModel
-    private val taintedHistograms = histograms.associateWith { CorruptorFactory.originalCorruption(it) }
+    private val taintedHistograms = histograms.associateWith { CorruptorFactory.newFancyCorruption(it) }
 
     fun reset()  {
         taintedHistograms.forEach { (original, corruption) ->
