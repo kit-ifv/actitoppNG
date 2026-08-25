@@ -432,8 +432,10 @@ open class PlanAlternative<P : Any>(
     fun dauer_akt_in_tour_6bis8std() = tourPlan.activityDurations in 6.hours..<8.hours
     fun dauer_akt_in_tour_8bis10std() = tourPlan.activityDurations in 8.hours..<10.hours
     fun dauer_akt_in_tour_10bis12std() = tourPlan.activityDurations in 10.hours..<12.hours
+
+    private val anzaktField by lazy {mobilityPlan.regularActivities[activityType] ?: false}
     fun anzaktwieanztagemitzweck(): Boolean {
-        return mobilityPlan.regularActivities[activityType] ?: false
+        return anzaktField
     }
 
     fun wochenzbudget_zweck_kat1(): Boolean {
