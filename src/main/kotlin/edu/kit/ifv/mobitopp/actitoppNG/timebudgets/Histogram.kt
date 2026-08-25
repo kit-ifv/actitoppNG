@@ -21,20 +21,23 @@ import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
+
 /**
  * Original actitopp modified the distribution, it could do so because for every person the histogram was reconstructed
  * from file. Since we would like to perform the parsing process only once, we need some form of modifcation protection
  * so that the read content remain the same.
  */
-class ModifiableArrayHistogram(offset: Int = 0, probabilities: DoubleArray, categoryIndex: Category) : ArrayHistogram(
+
+class ModifiableArrayHistogram(offset: Int = 0, probabilities: DoubleArray, categoryIndex: Category) :
+ArrayHistogram(
     offset,
     probabilities,
     categoryIndex
-) {
+), ModifiableHistogram {
     /**
      * Load the original probabilities into this modifiable Array Histogram.
      */
-    fun cleanseByLoading(original: ArrayHistogram) {
+    override fun cleanseByLoading(original: ArrayHistogram) {
         var cumulatedCounter = .0
         for(i in original.probabilities.indices) {
             val probability: Double = original.probabilities[i]
@@ -48,7 +51,7 @@ class ModifiableArrayHistogram(offset: Int = 0, probabilities: DoubleArray, cate
     /**
      * Takes an absolute position
      */
-    fun modify(position: Int) {
+    override fun modify(position: Int) {
         require(position in this) {
             "Cannot update a position that is not present in the histogram. $position  ${offset}..${offset + size - 1}"
         }
@@ -71,16 +74,54 @@ class ModifiableArrayHistogram(offset: Int = 0, probabilities: DoubleArray, cate
     }
 }
 
+
+interface ModifiableHistogram: Histogram {
+    fun modify(position: Int)
+    fun cleanseByLoading(original: ArrayHistogram)
+}
+interface Histogram {
+    val offset: Int
+    operator fun contains(position: Int): Boolean
+    fun intersects(bounds: ClosedRange<Duration>): Boolean
+    operator fun get(index: Int): Double
+
+    context(rng: Random)
+    fun select(bounds: ClosedRange<Duration>) = select(rng.nextDouble(), bounds)
+    fun select(randomNumber: Double, bounds: ClosedRange<Duration>) =
+        select(randomNumber, bounds.start, bounds.endInclusive)
+    context(rng: Random)
+    fun select(
+        lowerBoundInclusive: Duration? = null,
+        upperBoundInclusive: Duration? = null,
+    ) = select(rng.nextDouble(), lowerBoundInclusive, upperBoundInclusive)
+
+    fun select(
+        randomNumber: Double,
+        lowerBoundInclusive: Duration? = null,
+        upperBoundInclusive: Duration? = null,
+    ): Duration
+}
+
+object CorruptorFactory {
+    fun originalCorruption(original: ArrayHistogram): ModifiableHistogram {
+        return original.copy()
+    }
+
+    fun newFancyCorruption(original: ArrayHistogram): ModifiableHistogram {
+        return ChangeTrackingArrayHistogram(original)
+    }
+}
+
 /**
  * Using an array rather than a map allows quicker access and calculation. In particular because all histogram entries
  * in actiTopp are formulated over a range.
  */
 @Serializable
-open class ArrayHistogram protected constructor(
-    protected val offset: Int = 0,
+open class ArrayHistogram internal constructor(
+    override val offset: Int = 0,
     internal val probabilities: DoubleArray = doubleArrayOf(0.0), // Made internal for performance reasons.
     val categoryIndex: Category,
-) : Comparable<Int> {
+) : Comparable<Int>, Histogram {
     constructor(offset: Int, values: Collection<Number>, categoryIndex: Category) : this(
         offset,
         values.map { it.toDouble() / values.sumOf { it.toDouble() } }.toDoubleArray(),
@@ -111,7 +152,7 @@ open class ArrayHistogram protected constructor(
     fun probabilities() = probabilities.toList()
 
 
-    operator fun contains(position: Int): Boolean {
+    override operator fun contains(position: Int): Boolean {
         return position in offset..<offset + size
     }
 
@@ -119,7 +160,7 @@ open class ArrayHistogram protected constructor(
         return duration.inWholeMinutes.toInt() in this
     }
 
-    fun intersects(bounds: ClosedRange<Duration>): Boolean {
+    override fun intersects(bounds: ClosedRange<Duration>): Boolean {
         if (bounds.start > this.end) return false
         if (bounds.endInclusive < this.start) return false
         return true
@@ -142,7 +183,7 @@ open class ArrayHistogram protected constructor(
             )
     }
 
-    operator fun get(index: Int): Double {
+    override operator fun get(index: Int): Double {
         val relativeIndex = index - offset
         return if (relativeIndex in 0..<size) probabilities[relativeIndex] else 0.0.also {
             println("Cannot access probability for $index, since this histogram has only values for ${offset}..${offset + size - 1}")
@@ -154,7 +195,7 @@ open class ArrayHistogram protected constructor(
      * transformed using an affine translation to match the probability range of the cumulative sum of the elements within
      * the
      */
-    private fun selectInt(
+    protected open fun selectInt(
         randomNumber: Double,
         lowerBoundInclusive: Int? = null,
         upperBoundInclusive: Int? = null,
@@ -192,19 +233,19 @@ open class ArrayHistogram protected constructor(
         return (selectionIndex + offset).minutes
     }
     context(rng: Random)
-    fun select(bounds: ClosedRange<Duration>) = select(rng.nextDouble(), bounds)
-    fun select(randomNumber: Double, bounds: ClosedRange<Duration>) =
+    override fun select(bounds: ClosedRange<Duration>) = select(rng.nextDouble(), bounds)
+    override fun select(randomNumber: Double, bounds: ClosedRange<Duration>) =
         select(randomNumber, bounds.start, bounds.endInclusive)
     context(rng: Random)
-    fun select(
-        lowerBoundInclusive: Duration? = null,
-        upperBoundInclusive: Duration? = null,
+    override fun select(
+        lowerBoundInclusive: Duration?,
+        upperBoundInclusive: Duration?,
     ) = select(rng.nextDouble(), lowerBoundInclusive, upperBoundInclusive)
 
-    fun select(
+    override fun select(
         randomNumber: Double,
-        lowerBoundInclusive: Duration? = null,
-        upperBoundInclusive: Duration? = null,
+        lowerBoundInclusive: Duration?,
+        upperBoundInclusive: Duration?,
     ): Duration {
         val lb = lowerBoundInclusive?.ceilWholeMinutes
         val ub = upperBoundInclusive?.inWholeMinutes?.toInt()

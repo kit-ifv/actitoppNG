@@ -29,7 +29,7 @@ repositories {
 dependencies {
     implementation("edu.kit.ifv.mobitopp:kotlin-units:1.1.3")
     implementation("edu.kit.ifv.mobitopp:discrete-choice:1.2.2")
-
+    implementation("it.unimi.dsi:fastutil:8.5.19")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.0")

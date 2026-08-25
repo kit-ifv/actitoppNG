@@ -13,6 +13,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.modernization.plan.DayPlan
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.plan.MobilityPlan
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.plan.TourPlan
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
+import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.CorruptorFactory
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.TimeBudgets
 
 import edu.kit.ifv.mobitopp.actitoppNG.utils.Position
@@ -134,7 +135,7 @@ class TaintedActivityDurationHistograms<P> constructor(
 ) {
     val histograms = original.histograms
     val choiceModel = original.choiceModel
-    private val taintedHistograms = histograms.associateWith { it.copy() }
+    private val taintedHistograms = histograms.associateWith { CorruptorFactory.originalCorruption(it) }
 
     fun reset()  {
         taintedHistograms.forEach { (original, corruption) ->
