@@ -23,9 +23,9 @@ class BidirectionalIndexedValue<out T : Any>(
         if (other !is BidirectionalIndexedValue<*>) return false
         return (element == other.element)
     }
-
+    private val precomputedHashCode by lazy{ element.hashCode()}
     override fun hashCode(): Int {
-        return element.hashCode()
+        return precomputedHashCode
     }
 }
 

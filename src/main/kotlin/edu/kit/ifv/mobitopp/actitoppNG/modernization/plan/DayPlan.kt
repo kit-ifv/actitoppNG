@@ -2,6 +2,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.modernization.plan
 
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.PersonWithRoutine
+import edu.kit.ifv.mobitopp.actitoppNG.modernization.ArrayDurationLookup
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.DurationDay
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.LinkedAction
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.LinkedActivity
@@ -14,6 +15,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.utils.foldUntil
 import edu.kit.ifv.mobitopp.actitoppNG.utils.rem
 import edu.kit.ifv.mobitopp.actitoppNG.utils.sumOf
 import edu.kit.ifv.mobitopp.actitoppNG.utils.takeUntil
+import kotlin.div
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
@@ -43,8 +45,7 @@ interface DayPlan : List<LinkedActivity> {
     }
 
     fun endOfPreviousTour(tourPlan: TourPlan): Duration {
-        val endOfPrevious = tourPlan.first().previousActivity?.startTime ?: Duration.ZERO
-        return endOfPrevious % 1.days
+        return tourPlan.endOfTour()
 
     }
 
@@ -137,11 +138,13 @@ class MovingDayPlan(
 
     override val amountOfActivities: Int = activities.filter { it.activityType != ActivityType.HOME }.size
     val activityGroups = activities.filter { it.activityType != ActivityType.HOME }.groupBy { it.activityType }
-    val estimatedActivityDurations =
+    val estimatedActivityDurations = ArrayDurationLookup(
         activityGroups.mapValues { it.key.defaultActivityTime.minutes / activityGroups.getValue(it.key).size }
             .withDefault {
                 ActivityType.HOME.defaultActivityTime.minutes / amountOfActivities
             }
+    )
+
 
     // Amount of tours in plan, since amount of activities is handled above
     override val activityBudget: Map<ActivityType, Duration> = activities.groupBy { it.activityType }
