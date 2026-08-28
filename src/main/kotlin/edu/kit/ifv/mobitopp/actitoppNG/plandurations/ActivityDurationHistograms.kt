@@ -30,7 +30,39 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 
-interface HistogramSelector<P> : FixedChoiceModel<ArrayHistogram, MainDurationAlternative>
+interface HistogramSelector {
+
+    context(rng: Random)
+    fun chooseHistogramFromNeighbors(
+        duration: Duration,
+        bounds: ClosedRange<Duration>,
+        converter: MainDurationAlternative,
+    ): ArrayHistogram
+
+    context(rng: Random)
+    fun select(converter: MainDurationAlternative): Duration
+
+    context(rng: Random)
+    fun selectHistogram(
+        bounds: ClosedRange<Duration>,
+        converter: MainDurationAlternative,
+    ): ArrayHistogram?
+
+
+    context(rng: Random)
+    fun selectSingular(converter: MainDurationAlternative): ArrayHistogram
+    context(converter: MainDurationAlternative)
+    fun probabilitiesSingular():  Map<ArrayHistogram, Double>
+
+    context(rng: Random)
+    fun select(
+        bounds: ClosedRange<Duration>,
+        converter: MainDurationAlternative,
+    ): Duration
+
+    fun taint(): TaintedHistogramSelector
+}
+
 
 /**
  * Contains the histograms originally found in 8C. They are assigning the duration of the first main activity of
@@ -44,14 +76,14 @@ open class ActivityDurationHistograms(
 
         ((range.endInclusive - range.start) * rng.nextDouble() + range.start).inWholeMinutes.minutes
     },
-) {
+) : HistogramSelector{
 
     /**
      * Find the proper histogram, select between histogram and neighbors, where main histogram gets a 1.1 boost.
      * Select duration from selected histogram.
      */
     context(rng: Random)
-    fun chooseHistogramFromNeighbors(
+    override fun chooseHistogramFromNeighbors(
         duration: Duration,
         bounds: ClosedRange<Duration>,
         converter: MainDurationAlternative,
@@ -72,20 +104,20 @@ open class ActivityDurationHistograms(
 
     }
     context(rng: Random)
-    fun select(converter: MainDurationAlternative): Duration {
+    override fun select(converter: MainDurationAlternative): Duration {
         return context(converter) {
             choiceModel.select().select(rng.nextDouble())
         }
     }
 
     context(rng: Random)
-    fun selectSingular(converter: MainDurationAlternative): ArrayHistogram {
+    override fun selectSingular(converter: MainDurationAlternative): ArrayHistogram {
         return context(converter) {
             choiceModel.select()
         }
     }
     context(converter: MainDurationAlternative)
-    fun probabilitiesSingular() = choiceModel.probabilities()
+    override fun probabilitiesSingular() = choiceModel.probabilities()
 
 
     private val choiceModelSize by lazy {
@@ -93,7 +125,7 @@ open class ActivityDurationHistograms(
     }
 
     context(rng: Random)
-    fun selectHistogram(
+    override fun selectHistogram(
         bounds: ClosedRange<Duration>,
         converter: MainDurationAlternative,
     ): ArrayHistogram? {
@@ -121,7 +153,7 @@ open class ActivityDurationHistograms(
     }
 
     context(rng: Random)
-    fun select(
+    override fun select(
         bounds: ClosedRange<Duration>,
         converter: MainDurationAlternative,
     ): Duration {
@@ -136,20 +168,31 @@ open class ActivityDurationHistograms(
     /**
      * The legacy code defaces,modifies and otherwise corrupts the histograms for each person individually. Thus, we need a taintable copy.
      */
-    fun taint(): TaintedActivityDurationHistograms {
+    override fun taint(): TaintedActivityDurationHistograms {
         return TaintedActivityDurationHistograms(this)
     }
+
+}
+
+interface TaintedHistogramSelector: HistogramSelector {
+    fun reset()
+    context(rng: Random)
+    fun selectAndTaint(
+        bounds: ClosedRange<Duration>,
+        duration: Duration,
+        converter: MainDurationAlternative,
+    ): Duration
 
 }
 // Every time this class is created, the histograms are copied for tainting. This may be too much copying.
 class TaintedActivityDurationHistograms constructor(
     val original: ActivityDurationHistograms,
-) {
+): TaintedHistogramSelector, HistogramSelector by original {
     val histograms = original.histograms
     val choiceModel = original.choiceModel
-    private val taintedHistograms = histograms.associateWith { CorruptorFactory.originalCorruption(it) }
+    internal val taintedHistograms = histograms.associateWith { CorruptorFactory.originalCorruption(it) }
 
-    fun reset()  {
+    override fun reset()  {
         taintedHistograms.forEach { (original, corruption) ->
             corruption.cleanseByLoading(original)
         }
@@ -157,7 +200,7 @@ class TaintedActivityDurationHistograms constructor(
 
 
     context(rng: Random)
-    fun selectAndTaint(
+    override fun selectAndTaint(
         bounds: ClosedRange<Duration>,
         duration: Duration,
         converter: MainDurationAlternative,
@@ -172,7 +215,7 @@ class TaintedActivityDurationHistograms constructor(
         }
     }
     context(rng: Random)
-    fun select(
+    override fun select(
         bounds: ClosedRange<Duration>,
         converter: MainDurationAlternative,
     ): Duration {

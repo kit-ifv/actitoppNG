@@ -48,66 +48,7 @@ class SingularUtilityStructureBuilder<A, C, P, X>(
 }
 
 
-private val erererere: ParameterStep8D.(MainDurationAlternative) -> Double = {
-    val averageTimeOfActivityCode = UtilityConverter.convertToFifteenMinuteBlock(it.dayPlan.getBudget(it.activityType))
-    val dayCode = UtilityConverter.convertWeekDay(it.dayPlan.durationDay.weekday)
-    val activityCode = UtilityConverter.convertActivityType(it.activityType)
-    val employmentCode = UtilityConverter.convertEmployment(it.person.employment)
-    base +
 
-            when (averageTimeOfActivityCode) {
-
-                0 -> mittl_zeit_akt_1bis14min
-                1 -> mittl_zeit_akt_15bis29min
-                2, 3 -> mittl_zeit_akt_30bis59min
-                4, 5, 6, 7 -> mittl_zeit_akt_60bis119min
-                8, 9, 10, 11 -> mittl_zeit_akt_120bis179min
-                12, 13, 14, 15 -> mittl_zeit_akt_180bis239min
-                else -> .0
-            } +
-
-            when (dayCode) {
-                5 -> tag_fr
-                6 -> tag_sa
-                7 -> tag_so
-                else -> .0
-            } +
-            (it.anzaktwieanztagemitzweck()) * anzaktwieanztagemitzweck +
-            when (activityCode) {
-                5 -> aktzweck_work
-                0 -> aktzweck_education
-                3 -> aktzweck_shopping
-                4 -> aktzweck_transport
-                else -> .0
-            } +
-            when (it.planTimeBudgets.getCategory(it.activityType).toInt()) {
-                1 -> wochenzbudget_zweck_kat1
-                2 -> wochenzbudget_zweck_kat2
-                3 -> wochenzbudget_zweck_kat3
-                4 -> wochenzbudget_zweck_kat4
-                5 -> wochenzbudget_zweck_kat5
-                else -> .0
-            } +
-            when (it.tourPlan.size) {
-                1 -> tourhat1akt
-                2 -> tourhat2akt
-                3 -> tourhat3akt
-                else -> .0
-            } +
-            (it.taghat2akt()) * taghat2akt +
-            (it.taghat3akt()) * taghat3akt +
-            (it.letztetourdestages()) * letztetourdestages +
-            (it.taghat2touren()) * taghat2touren +
-            when (employmentCode) {
-                0 -> beruf_vollzeit
-                1, 7, 8 -> beruf_teilzeit
-                3, 4, 9, 10, 11 -> beruf_schueler_azubi
-                else -> .0
-            } +
-            (it.tourliegtvorhaupttour()) * tourliegtvorhaupttour +
-            (it.tourliegtnachhaupttour()) * tourliegtnachhaupttour
-
-}
 
 private data class DurationAlternativeEncoded(
     val averageTimeOfActivityCode: Int,

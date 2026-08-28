@@ -3,6 +3,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes
 import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.ActivityDurationHistograms
+import edu.kit.ifv.mobitopp.actitoppNG.plandurations.HistogramSelector
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.MainDurationAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import kotlin.random.Random
@@ -10,7 +11,7 @@ import kotlin.time.Duration
 
 
 class TourStartWithPreference(
-    private val startTimeHistograms: ActivityDurationHistograms,
+    private val startTimeHistograms: HistogramSelector,
     override val preferredTourStart: ArrayHistogram? = null,
     private val strategy: UsePreferredTourStart,
 
