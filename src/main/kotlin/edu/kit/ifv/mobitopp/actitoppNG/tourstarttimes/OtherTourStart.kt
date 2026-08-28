@@ -52,9 +52,9 @@ private val standardUtilityFunction10S: ParameterStep10S.(MainDurationAlternativ
 }
 
 
-class TourStartByHistogramsRelative<P>(
+class TourStartByHistogramsRelative(
 
-    private val startTimeHistograms: ActivityDurationHistograms<P>,
+    private val startTimeHistograms: ActivityDurationHistograms,
 ) :
     SelectTourStart {
     context(rng: Random)
@@ -66,7 +66,7 @@ class TourStartByHistogramsRelative<P>(
     }
 
     companion object {
-        fun standard(): TourStartByHistogramsRelative<ParameterCollectionStep10S> {
+        fun standard(): TourStartByHistogramsRelative {
             return TourStartByHistogramsRelative(OTHER_TOUR_HISTOGRAM)
         }
     }

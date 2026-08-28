@@ -57,16 +57,16 @@ data class AllChoiceModels(
     val tourAmountChoiceModel: FixedChoiceModel<Int, PersonAlternative>,
     val defaultWorkDayChoiceModel: FixedChoiceModel<Int, PersonAlternative>,
     // Tour start times
-    val firstTourHistogram: ActivityDurationHistograms<ParameterCollectionStep10M>,
-    val secondTourHistogram:  ActivityDurationHistograms<ParameterCollectionStep10O>,
+    val firstTourHistogram: ActivityDurationHistograms,
+    val secondTourHistogram:  ActivityDurationHistograms,
     val preferredTourStartChoiceModel:  FixedChoiceModel<ArrayHistogram, MainDurationAlternative>,
     // Time budget
     val histograms: HistogramPerActivity,
     // Plan generation
     val firstActivityUsesStandardDuration: FixedChoiceModel<Boolean, BooleanDecisionAlternative>,
-    val minorActivityDurationChoiceModel: ActivityDurationHistograms<ParameterCollectionStep8J>,
-    val majorActivityDurationChoiceModel:  ActivityDurationHistograms<ParameterCollectionStep8D>,
-    val leadActivityDurationChoiceModel:  ActivityDurationHistograms<ParameterCollectionStep8B>,
+    val minorActivityDurationChoiceModel: ActivityDurationHistograms,
+    val majorActivityDurationChoiceModel:  ActivityDurationHistograms,
+    val leadActivityDurationChoiceModel:  ActivityDurationHistograms,
     // mobilitystructure
     val mainActivityChoiceModel:  FixedChoiceModel<ActivityType, DayAlternative>,
     val precursorAmountChoiceModel:  FixedChoiceModel<Int, PreviousDayAlternative>,

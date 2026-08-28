@@ -22,7 +22,7 @@ fun interface SelectMinorActivityDuration {
 
 class AssignMinorActivityDuration(
     models: AllChoiceModels,
-    private val histogram: ActivityDurationHistograms<ParameterCollectionStep8J> = models.minorActivityDurationChoiceModel
+    private val histogram: ActivityDurationHistograms = models.minorActivityDurationChoiceModel
 ) : SelectMinorActivityDuration {
     context(rng: Random)
     override fun getDuration(input: MobilityPlanInputs): Duration {

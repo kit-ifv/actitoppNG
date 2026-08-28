@@ -38,6 +38,9 @@ val mainActivityChoiceModel get() =
 
 
 
+
+
+
 private val standardUtilityFunction: DayMainActivityParameters.( DayAlternative) -> Double = {
     val dayCode = UtilityConverter.convertWeekDay(it.dayOfWeek)
     val employmentCode = UtilityConverter.convertEmployment(it.employment)

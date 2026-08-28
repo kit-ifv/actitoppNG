@@ -9,8 +9,8 @@ import kotlin.random.Random
 import kotlin.time.Duration
 
 
-class TourStartWithPreference<P>(
-    private val startTimeHistograms: ActivityDurationHistograms<P>,
+class TourStartWithPreference(
+    private val startTimeHistograms: ActivityDurationHistograms,
     override val preferredTourStart: ArrayHistogram? = null,
     private val strategy: UsePreferredTourStart,
 

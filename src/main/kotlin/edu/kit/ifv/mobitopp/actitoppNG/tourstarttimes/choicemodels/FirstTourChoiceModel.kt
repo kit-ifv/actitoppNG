@@ -57,7 +57,7 @@ private val firstTourStartUtility: ParameterStep10M.(MainDurationAlternative) ->
 }
 
 context(params: PlanGenerationParameters)
-val FIRST_TOUR_HISTOGRAM: ActivityDurationHistograms<ParameterCollectionStep10M>
+val FIRST_TOUR_HISTOGRAM: ActivityDurationHistograms
     get() =
         params.firstTourHistogramParams.generateHistogram(
             ArrayHistogram.fromResource(

@@ -30,11 +30,13 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 
+interface HistogramSelector<P> : FixedChoiceModel<ArrayHistogram, MainDurationAlternative>
+
 /**
  * Contains the histograms originally found in 8C. They are assigning the duration of the first main activity of
  * a day, Henceforth referenced as "Lead activity"
  */
-open class ActivityDurationHistograms<P>(
+open class ActivityDurationHistograms(
     // TODO histograms could be a sorted Set, since they are supposed to cover respective ranges.
     open val histograms: List<ArrayHistogram>,
     open val choiceModel: FixedChoiceModel<ArrayHistogram, MainDurationAlternative>,
@@ -75,6 +77,16 @@ open class ActivityDurationHistograms<P>(
             choiceModel.select().select(rng.nextDouble())
         }
     }
+
+    context(rng: Random)
+    fun selectSingular(converter: MainDurationAlternative): ArrayHistogram {
+        return context(converter) {
+            choiceModel.select()
+        }
+    }
+    context(converter: MainDurationAlternative)
+    fun probabilitiesSingular() = choiceModel.probabilities()
+
 
     private val choiceModelSize by lazy {
         choiceModel.choices.size
@@ -124,18 +136,18 @@ open class ActivityDurationHistograms<P>(
     /**
      * The legacy code defaces,modifies and otherwise corrupts the histograms for each person individually. Thus, we need a taintable copy.
      */
-    fun taint(): TaintedActivityDurationHistograms<P> {
+    fun taint(): TaintedActivityDurationHistograms {
         return TaintedActivityDurationHistograms(this)
     }
 
 }
 // Every time this class is created, the histograms are copied for tainting. This may be too much copying.
-class TaintedActivityDurationHistograms<P> constructor(
-    val original: ActivityDurationHistograms<P>,
+class TaintedActivityDurationHistograms constructor(
+    val original: ActivityDurationHistograms,
 ) {
     val histograms = original.histograms
     val choiceModel = original.choiceModel
-    private val taintedHistograms = histograms.associateWith { CorruptorFactory.newFancyCorruption(it) }
+    private val taintedHistograms = histograms.associateWith { CorruptorFactory.originalCorruption(it) }
 
     fun reset()  {
         taintedHistograms.forEach { (original, corruption) ->
@@ -196,7 +208,7 @@ enum class Identifier(val id: String, val resourceName: String) {
 fun <P : List<T>, T> P.generateHistogram(
     histograms: List<ArrayHistogram>,
     utilityFunction: T.(MainDurationAlternative) -> Double,
-): ActivityDurationHistograms<P> {
+): ActivityDurationHistograms {
 
     val choiceModel = DiscreteStructure<ArrayHistogram, MainDurationAlternative, P> {
         loadFromList(histograms) { _, it ->

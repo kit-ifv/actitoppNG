@@ -1,9 +1,7 @@
 package edu.kit.ifv.discretechoice
 
 import edu.kit.ifv.discretechoice.extensions.loadOptionsMap
-import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DefaultSideTourPrecursorParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourPrecursorParameters
-import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourSuccessorSet
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.TourAlternativeInt
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.discretechoice.models.FixedChoiceModel
@@ -11,12 +9,12 @@ import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
 import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
 
 
-typealias UtilityFunction<C, P> = P.(C) -> Double
+typealias UtilityFunctionBad<C, P> = P.(C) -> Double
 class MultiChoiceModelBuilder<A, C, P>(
     private val name: String,
-    val utilityFunction: UtilityFunction<C, P>,
+    val utilityFunction: UtilityFunctionBad<C, P>,
 ) {
-    fun <X> build(parameters: X, lambda: DiscreteStructure<A, C, X>.(UtilityFunction<C, P>) -> Unit):
+    fun <X> build(parameters: X, lambda: DiscreteStructure<A, C, X>.(UtilityFunctionBad<C, P>) -> Unit):
             FixedChoiceModel<A, C> {
         val helper = BuilderHelper(utilityFunction)
         return DiscreteStructure(helper.build(lambda)).multinomialLogit(name).build(parameters)
@@ -26,9 +24,9 @@ class MultiChoiceModelBuilder<A, C, P>(
 
 }
 
-class BuilderHelper<C, P>(val utilityFunction: UtilityFunction<C, P>) {
+class BuilderHelper<C, P>(val utilityFunction: UtilityFunctionBad<C, P>) {
 
-    fun <A, X> build(lambda: DiscreteStructure<A, C, X>.(UtilityFunction<C, P>) -> Unit): DiscreteStructure<A, C, X>.()
+    fun <A, X> build(lambda: DiscreteStructure<A, C, X>.(UtilityFunctionBad<C, P>) -> Unit): DiscreteStructure<A, C, X>.()
     -> Unit {
         return {
             lambda(utilityFunction)

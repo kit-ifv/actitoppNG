@@ -70,6 +70,7 @@ private val minorFunction: ParameterStep8J.(MainDurationAlternative) -> Double =
             (it.tourliegtnachhaupttour()) * tourliegtnachhaupttour
 
 }
+
 private val standardUtilityFunction8D: ParameterStep8D.(MainDurationAlternative) -> Double = {
     val averageTimeOfActivityCode = UtilityConverter.convertToFifteenMinuteBlock(it.dayPlan.getBudget(it.activityType))
     val dayCode = UtilityConverter.convertWeekDay(it.dayPlan.durationDay.weekday)
