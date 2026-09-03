@@ -10,8 +10,11 @@ import kotlinx.serialization.json.Json
 import kotlin.io.path.Path
 import kotlin.io.path.writeText
 
-internal fun generatePlans(): List<HouseholdPlanOutput> {
-    val targets = randomHouseholds(50000)
+/**
+ * If you compare against previous runs, ensure they have the same number of households.
+ */
+internal fun generatePlans(numHouseHolds: Int = 10000): List<HouseholdPlanOutput> {
+    val targets = randomHouseholds(numHouseHolds)
     targets.forEach {
         it.generatePersons(5)
     }
@@ -31,7 +34,7 @@ internal fun generatePlans(): List<HouseholdPlanOutput> {
 /**
  * The json file to write generated mobility plans to.
  */
-internal val EXPORT_TEST_RUN_LOCATION = Path("src/test/resources/testRuns/ChoiceModelRework-snapshot-50k-households-2026-09-03.json")
+internal val EXPORT_TEST_RUN_LOCATION = Path("src/test/resources/testRuns/ChoiceModelRework-snapshot-10k-households-2026-09-03.json")
 
 /**
  * Generates households and writes them to `EXPORT_TEST_RUN_LOCATION`

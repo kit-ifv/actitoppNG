@@ -9,6 +9,7 @@ import kotlin.test.assertEquals
  * Test the current build against a previous build. The previous data is taken from the file at
  * `EXPORT_TEST_RUN_LOCATION`.
  * Use this for example for ensuring changes that should not change behavior do not change behavior.
+ * This compares the entire plan, not just the ids.
  */
 fun main() {
     val expected: List<HouseholdPlanOutput> = Json.decodeFromString(EXPORT_TEST_RUN_LOCATION.readText())
