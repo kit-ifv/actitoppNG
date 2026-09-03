@@ -37,7 +37,7 @@ suspend fun List<ActitoppPerson>.generateSchedulesReuse(): List<List<ModernizedA
 }
 
 fun main() {
-    val targets = randomHouseholds(500000).flatMap { it.generatePersons(5) }
+    val targets = randomHouseholds(50000).flatMap { it.generatePersons(5) }
     val duration = measureTime {
 
         val lastActivity = runBlocking {

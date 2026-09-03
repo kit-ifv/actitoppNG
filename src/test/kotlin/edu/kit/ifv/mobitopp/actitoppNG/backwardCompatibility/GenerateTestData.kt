@@ -13,7 +13,7 @@ import kotlin.io.path.Path
 import kotlin.io.path.writeText
 
 internal fun generatePlans(): List<HouseholdPlanOutput> {
-    val targets = randomHouseholds(1000)
+    val targets = randomHouseholds(50000)
     targets.forEach {
         it.generatePersons(5)
     }
@@ -33,7 +33,7 @@ internal fun generatePlans(): List<HouseholdPlanOutput> {
 /**
  * The json file to write generated mobility plans to.
  */
-internal val EXPORT_TEST_RUN_LOCATION = Path("src/test/resources/testRuns/exposeChoiceModelParams-snapshot-2026-05-20.json")
+internal val EXPORT_TEST_RUN_LOCATION = Path("src/test/resources/testRuns/ChoiceModelRework-snapshot-50k-households-2026-09-03.json")
 
 /**
  * Generates households and writes them to `EXPORT_TEST_RUN_LOCATION`
