@@ -5,6 +5,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.DurationDay
 import java.time.DayOfWeek
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
 
 /**
  * Many Utility functions run over the same fields with repeated boolean checks. This causes the
@@ -87,6 +88,24 @@ object UtilityConverter {
             "Cannot handle duration zero, because original Actitopp never caught that in the utility functions. "
         }
         return (duration.inWholeMinutes.toInt() / 15)
+    }
+
+    /**
+     * Returns an int representing the duration this block is in.
+     * -1 -> <1m
+     * 0 -> 1..14m59s
+     * 1 -> 15..29m59s
+     * 2 -> 30..59m59s
+     * 3 -> 60..119m
+     * 4 -> 120..179m
+     * 5 -> ... only 60 min steps after this.
+     */
+    fun convertToWeightedMinuteBlock(duration: Duration): Int {
+        if (duration < 1.minutes) return -1
+        return if (duration < 15.minutes) 0
+        else if (duration < 30.minutes) 1
+        else if (duration < 60.minutes) 2
+        else (duration.inWholeMinutes.toInt() / 60) + 2
     }
 
     fun convertToOneHourBlock(duration: Duration): Int {

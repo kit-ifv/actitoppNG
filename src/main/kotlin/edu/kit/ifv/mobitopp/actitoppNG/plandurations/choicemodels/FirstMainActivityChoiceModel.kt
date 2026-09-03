@@ -2,6 +2,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.plandurations.choicemodels
 
 
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
+import edu.kit.ifv.mobitopp.actitoppNG.performance.UtilityConverter
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.BooleanDecisionAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterCollectionStep8A
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParametersStep8A
@@ -14,7 +15,7 @@ val firstActivityUsesStandardDuration get() =
     DiscreteStructure<Boolean, BooleanDecisionAlternative, ParameterCollectionStep8A> {
         option(true) { 0.0 }
         option(false, parameters = { no }) {_, it ->
-
+            val averageTimeOfActivityCode = UtilityConverter.convertToWeightedMinuteBlock(it.dayPlan.getBudget(it.activityType))
             base +
                     (it.aktzweck_work()) * aktzweck_work +
                     (it.aktzweck_education()) * aktzweck_education +
@@ -28,16 +29,19 @@ val firstActivityUsesStandardDuration get() =
                     (it.taghat2touren()) * taghat2touren +
                     (it.tag_sa()) * tag_sa +
                     (it.tag_so()) * tag_so +
-                    (it.mittl_zeit_akt_1bis14min()) * mittl_zeit_akt_1bis14min +
-                    (it.mittl_zeit_akt_15bis29min()) * mittl_zeit_akt_15bis29min +
-                    (it.mittl_zeit_akt_30bis59min()) * mittl_zeit_akt_30bis59min +
-                    (it.mittl_zeit_akt_60bis119min()) * mittl_zeit_akt_60bis119min +
-                    (it.mittl_zeit_akt_120bis179min()) * mittl_zeit_akt_120bis179min +
-                    (it.mittl_zeit_akt_180bis239min()) * mittl_zeit_akt_180bis239min +
-                    (it.mittl_zeit_akt_240bis299min()) * mittl_zeit_akt_240bis299min +
-                    (it.mittl_zeit_akt_300bis359min()) * mittl_zeit_akt_300bis359min +
-                    (it.mittl_zeit_akt_360bis419min()) * mittl_zeit_akt_360bis419min +
-                    (it.mittl_zeit_akt_420bis479min()) * mittl_zeit_akt_420bis479min +
+                    when (averageTimeOfActivityCode) {
+                        0 -> mittl_zeit_akt_1bis14min
+                        1 -> mittl_zeit_akt_15bis29min
+                        2 -> mittl_zeit_akt_30bis59min
+                        3 -> mittl_zeit_akt_60bis119min
+                        4 -> mittl_zeit_akt_120bis179min
+                        5 -> mittl_zeit_akt_180bis239min
+                        6 -> mittl_zeit_akt_240bis299min
+                        7 -> mittl_zeit_akt_300bis359min
+                        8 -> mittl_zeit_akt_360bis419min
+                        9 -> mittl_zeit_akt_420bis479min
+                        else -> .0
+                    }
                     (it.tourhat1akt()) * tourhat1akt +
                     (it.tourhat2akt()) * tourhat2akt +
                     (it.tourhat3akt()) * tourhat3akt
