@@ -1,12 +1,10 @@
 package edu.kit.ifv.mobitopp.actitoppNG.backwardCompatibility
 
 import edu.kit.ifv.mobitopp.actitoppNG.AllChoiceModels
-import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.generatePersons
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.DefaultPlanGeneration
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.ModernizedActivity
 import edu.kit.ifv.mobitopp.actitoppNG.randomHouseholds
-
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlin.io.path.Path
