@@ -1,0 +1,2 @@
+src/test/resources/testRuns/ChoiceModelRework-snapshot-50k-households-2026-09-03.json filter=lfs diff=lfs merge=lfs -text
+src/test/resources/testRuns/ChoiceModelRework-snapshot-10k-households-2026-09-03.json filter=lfs diff=lfs merge=lfs -text
