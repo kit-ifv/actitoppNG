@@ -16,6 +16,7 @@ val firstActivityUsesStandardDuration get() =
         option(true) { 0.0 }
         option(false, parameters = { no }) {_, it ->
             val averageTimeOfActivityCode = UtilityConverter.convertToWeightedMinuteBlock(it.dayPlan.getBudget(it.activityType))
+            val numActivitiesTourplan = it.tourPlan.size
             base +
                     (it.aktzweck_work()) * aktzweck_work +
                     (it.aktzweck_education()) * aktzweck_education +
@@ -42,9 +43,12 @@ val firstActivityUsesStandardDuration get() =
                         9 -> mittl_zeit_akt_420bis479min
                         else -> .0
                     } +
-                    (it.tourhat1akt()) * tourhat1akt +
-                    (it.tourhat2akt()) * tourhat2akt +
-                    (it.tourhat3akt()) * tourhat3akt
+                    when (numActivitiesTourplan) {
+                        1 -> tourhat1akt
+                        2 -> tourhat2akt
+                        3 -> tourhat3akt
+                        else -> 0.0
+                    }
         }
 
     }.multinomialLogit("If first activity of the day should use a predetermined start time")
