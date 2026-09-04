@@ -6,9 +6,11 @@ import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourSuccessorParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourSuccessorSet
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.TourAlternativeInt
+import edu.kit.ifv.mobitopp.actitoppNG.performance.UtilityConverter
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
 import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
+import java.time.DayOfWeek
 
 context(params: PlanGenerationParameters)
 val step5BWithParams
@@ -32,8 +34,11 @@ private val standardUtilityFunction: SideTourSuccessorParameters.(TourAlternativ
             (it.numActivitiesBeforeMainActivityIs3()) * anzaktvorhauptaktist3 +
             (it.tourMainActivityIsWork()) * tourtyp_work +
             (it.tourMainActivityIsEducation()) * tourtyp_education +
-            (it.isSaturday()) * tag_sa +
-            (it.isSunday()) * tag_so +
+            when (it.dayOfWeek) {
+                DayOfWeek.SATURDAY -> tag_sa
+                DayOfWeek.SUNDAY -> tag_so
+                else -> 0.0
+            } +
             (it.isAged18To35()) * alter_18bis35 +
             (it.isAged36To50()) * alter_36bis50 +
             (it.isAged51To60()) * alter_51bis60 +
@@ -42,5 +47,4 @@ private val standardUtilityFunction: SideTourSuccessorParameters.(TourAlternativ
             (it.averageAmountOfActivitiesIs1()) * mean_1akt +
             (it.averageAmountOfActivitiesIs2()) * mean_2akt +
             (it.averageAmountOfActivitiesIs3()) * mean_3akt
-
 }
