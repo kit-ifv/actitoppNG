@@ -3,8 +3,11 @@ package edu.kit.ifv.mobitopp.actitoppNG.performance
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.DurationDay
+import edu.kit.ifv.mobitopp.actitoppNG.performance.UtilityConverter.convertToOneHourBlock
+import edu.kit.ifv.mobitopp.actitoppNG.performance.UtilityConverter.convertToWeightedMinuteBlock
 import java.time.DayOfWeek
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 /**
