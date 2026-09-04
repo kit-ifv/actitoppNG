@@ -2,11 +2,11 @@ package edu.kit.ifv.mobitopp.actitoppNG.plandurations.choicemodels
 
 
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
+import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
 import edu.kit.ifv.mobitopp.actitoppNG.performance.UtilityConverter
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.BooleanDecisionAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterCollectionStep8A
-import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParametersStep8A
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
 import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
@@ -21,8 +21,11 @@ val firstActivityUsesStandardDuration get() =
             val numActivitiesTourplan = it.tourPlan.size
             val dayPlanAmountActivities = it.dayPlan.amountOfActivities
             base +
-                    (it.aktzweck_work()) * aktzweck_work +
-                    (it.aktzweck_education()) * aktzweck_education +
+                    when (it.activityType) {
+                        ActivityType.WORK -> aktzweck_work
+                        ActivityType.EDUCATION -> aktzweck_education
+                        else -> 0.0
+                    } +
                     (it.anzaktwieanztagemitzweck()) * anzaktwieanztagemitzweck +
                     when (it.person.employment) {
                         Employment.FULLTIME -> beruf_vollzeit
