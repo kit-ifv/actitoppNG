@@ -41,7 +41,7 @@ val firstActivityUsesStandardDuration get() =
                         8 -> mittl_zeit_akt_360bis419min
                         9 -> mittl_zeit_akt_420bis479min
                         else -> .0
-                    }
+                    } +
                     (it.tourhat1akt()) * tourhat1akt +
                     (it.tourhat2akt()) * tourhat2akt +
                     (it.tourhat3akt()) * tourhat3akt
