@@ -2,6 +2,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.plandurations.choicemodels
 
 
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
+import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
 import edu.kit.ifv.mobitopp.actitoppNG.performance.UtilityConverter
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.BooleanDecisionAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterCollectionStep8A
@@ -9,6 +10,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParametersStep8A
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
 import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
+import java.time.DayOfWeek
 
 context(params: PlanGenerationParameters)
 val firstActivityUsesStandardDuration get() =
@@ -22,18 +24,27 @@ val firstActivityUsesStandardDuration get() =
                     (it.aktzweck_work()) * aktzweck_work +
                     (it.aktzweck_education()) * aktzweck_education +
                     (it.anzaktwieanztagemitzweck()) * anzaktwieanztagemitzweck +
-                    (it.beruf_vollzeit()) * beruf_vollzeit +
-                    (it.beruf_teilzeit()) * beruf_teilzeit +
+                    when (it.person.employment) {
+                        Employment.FULLTIME -> beruf_vollzeit
+                        Employment.PARTTIME, Employment.UNKNOWN_21, Employment.MARGINAL -> beruf_teilzeit
+                        else -> 0.0
+                    } +
                     when (dayPlanAmountActivities) {
                         1 -> taghat1akt
                         2 -> taghat2akt
                         3 -> taghat3akt
                         else -> 0.0
                     } +
-                    (it.taghat1tour()) * taghat1tour +
-                    (it.taghat2touren()) * taghat2touren +
-                    (it.tag_sa()) * tag_sa +
-                    (it.tag_so()) * tag_so +
+                    when (it.dayPlan.tourPlans.size) {
+                        1 -> taghat1tour
+                        2 -> taghat2touren
+                        else -> 0.0
+                    } +
+                    when (it.dayPlan.durationDay.weekday) {
+                        DayOfWeek.SATURDAY -> tag_sa
+                        DayOfWeek.SUNDAY -> tag_so
+                        else -> 0.0
+                    } +
                     when (averageTimeOfActivityCode) {
                         0 -> mittl_zeit_akt_1bis14min
                         1 -> mittl_zeit_akt_15bis29min
