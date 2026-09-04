@@ -17,15 +17,19 @@ val firstActivityUsesStandardDuration get() =
         option(false, parameters = { no }) {_, it ->
             val averageTimeOfActivityCode = UtilityConverter.convertToWeightedMinuteBlock(it.dayPlan.getBudget(it.activityType))
             val numActivitiesTourplan = it.tourPlan.size
+            val dayPlanAmountActivities = it.dayPlan.amountOfActivities
             base +
                     (it.aktzweck_work()) * aktzweck_work +
                     (it.aktzweck_education()) * aktzweck_education +
                     (it.anzaktwieanztagemitzweck()) * anzaktwieanztagemitzweck +
                     (it.beruf_vollzeit()) * beruf_vollzeit +
                     (it.beruf_teilzeit()) * beruf_teilzeit +
-                    (it.taghat1akt()) * taghat1akt +
-                    (it.taghat2akt()) * taghat2akt +
-                    (it.taghat3akt()) * taghat3akt +
+                    when (dayPlanAmountActivities) {
+                        1 -> taghat1akt
+                        2 -> taghat2akt
+                        3 -> taghat3akt
+                        else -> 0.0
+                    } +
                     (it.taghat1tour()) * taghat1tour +
                     (it.taghat2touren()) * taghat2touren +
                     (it.tag_sa()) * tag_sa +
