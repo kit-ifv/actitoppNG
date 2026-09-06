@@ -37,7 +37,6 @@ class BuilderHelper<C, P>(val utilityFunction: UtilityFunctionBad<C, P>) {
 
 private val standardUtilityFunction: SideTourPrecursorParameters.(TourAlternativeInt) -> Double = {
     base +
-
             (it.isBeforeMainTour()) * tourliegtvorhaupttour +
             (it.isAfterMainTour()) * tourliegtnachhaupttour +
             (it.tourMainActivityIsWork()) * tourtyp_work +

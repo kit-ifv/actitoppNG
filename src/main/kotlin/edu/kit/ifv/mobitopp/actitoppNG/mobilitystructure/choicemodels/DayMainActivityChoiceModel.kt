@@ -7,22 +7,26 @@ import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DayMainActiv
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DayMainActivitySet
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.DayAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.performance.UtilityConverter
-import edu.kit.ifv.mobitopp.actitoppNG.utils.times
+import edu.kit.ifv.mobitopp.actitoppNG.utils.D
+import edu.kit.ifv.mobitopp.discretechoice.models.ArrayBackedFixedChoiceModel
+import edu.kit.ifv.mobitopp.discretechoice.models.FixedChoiceModel
+import edu.kit.ifv.mobitopp.discretechoice.models.LambdaMapperChoiceModel
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
-import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
+import edu.kit.ifv.mobitopp.discretechoice.structure.UtilityEnumerationBuilder
+import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.EnumeratedDiscreteModelBuilder
 
 context(params: PlanGenerationParameters)
 val mainActivityChoiceModel get() =
-    DiscreteStructure<ActivityType, DayAlternative, DayMainActivitySet> {
+    DiscreteStructure<ActivityType, DayAlternativeEncoded, DayMainActivitySet> {
         option(ActivityType.WORK, parameters = { this[ActivityType.WORK]!! }, { _, it ->
-                (if (it.isEmployedAnywhere() && it.isStandardWorkingDay()) 1.3 else 1.0) * standardUtilityFunction(
+                (if (it.isEmployedAnywhere && it.isStandardWorkingDay) 1.3 else 1.0) * standardUtilityFunction(
                     this,
                     it
                 )
             }
         )
         option(ActivityType.EDUCATION, parameters = { this[ActivityType.EDUCATION]!! }, { _, it ->
-            (if (it.isStudentOrAzubi() && it.isStandardWorkingDay()) 1.3 else 1.0) * standardUtilityFunction(
+            (if (it.isStudentOrAzubi && it.isStandardWorkingDay) 1.3 else 1.0) * standardUtilityFunction(
                 this,
                 it
             )
@@ -34,19 +38,79 @@ val mainActivityChoiceModel get() =
             0.0
         }
 
-    }.multinomialLogit("Main activity type of the day").build(params.mainActivityChoiceModelParams)
+    }.multinomialLogitConverted<ActivityType, DayAlternative, DayAlternativeEncoded, DayMainActivitySet>("Main activity type of the day") { dayAlternative ->
+        DayAlternativeEncoded(
+            dayAlternative
+        )
+    }.build(params.mainActivityChoiceModelParams)
+
+fun <A, C, X, P> UtilityEnumerationBuilder<A, X, P>.multinomialLogitConverted(
+    name: String,
+    converter: (C) -> X,
+): EnumeratedDiscreteModelBuilder<A, C, P> = OptimizedArrayConversionBuilder(this, name, converter)
+
+class OptimizedArrayConversionBuilder<A, C, X, P>(
+    private val utilityBuilder: UtilityEnumerationBuilder<A, X, P>,
+    private val name: String,
+    val converter: (C) -> X,
+): EnumeratedDiscreteModelBuilder<A, C, P> {
+    override fun build(parameters: P): FixedChoiceModel<A, C> {
+        return utilityBuilder.optimizedMultinomialLogitConversion(name, parameters, converter)
+    }
+}
+
+fun <A, C, X, P> UtilityEnumerationBuilder<A, X, P>.optimizedMultinomialLogitConversion(
+    name: String,
+    parameters: P,
+    converter: (C) -> X,
+): FixedChoiceModel<A, C> {
+    val utilityEnumeration = this.build()
+    return LambdaMapperChoiceModel(
+        ArrayBackedFixedChoiceModel(utilityEnumeration, name = name, parameters = parameters),
+        converter
+    )
+}
+
+data class DayAlternativeEncoded(
+    val dayCode: Int,
+    val employmentCode: Int,
+    val amountOfYouthsInHousehold: Int,
+    val has5WorkDays: Double,
+    val has5EduDays: Double,
+    val amountWorkingDays: Int,
+    val amountEducationDays: Int,
+    val amountLeisureDays: Int,
+    val amountShoppingDays: Int,
+    val amountServiceDays: Int,
+    val amountImmobileDays: Int,
+    val isEmployedAnywhere: Boolean,
+    val isStandardWorkingDay: Boolean,
+    val isStudentOrAzubi: Boolean,
+) {
+    constructor(alternative: DayAlternative): this(
+        dayCode = UtilityConverter.convertWeekDay(alternative.dayOfWeek),
+        employmentCode = UtilityConverter.convertEmployment(alternative.employment),
+        amountOfYouthsInHousehold = alternative.amountOfYouthsInHousehold(),
+        has5WorkDays = alternative.has5WorkDays().D,
+        has5EduDays = alternative.has5EducationDays().D,
+        amountWorkingDays = alternative.amountOfWorkingDays(),
+        amountEducationDays = alternative.amountOfEducationDays(),
+        amountLeisureDays = alternative.amountOfLeisureDays(),
+        amountShoppingDays = alternative.amountOfShoppingDays(),
+        amountServiceDays = alternative.amountOfServiceDays(),
+        amountImmobileDays = alternative.amountOfImmobileDays(),
+        isEmployedAnywhere = alternative.isEmployedAnywhere(),
+        isStandardWorkingDay = alternative.isStandardWorkingDay(),
+        isStudentOrAzubi = alternative.isStudentOrAzubi(),
+    )
+}
 
 
 
 
-
-
-private val standardUtilityFunction: DayMainActivityParameters.( DayAlternative) -> Double = {
-    val dayCode = UtilityConverter.convertWeekDay(it.dayOfWeek)
-    val employmentCode = UtilityConverter.convertEmployment(it.employment)
+private val standardUtilityFunction: DayMainActivityParameters.(DayAlternativeEncoded) -> Double = {
     base +
-
-            when(employmentCode) {
+            when(it.employmentCode) {
                 0 -> employmentFullTime
                 1, 7, 8 -> employmentPartTime
                 2, 5 -> employmentNotEarning
@@ -54,12 +118,10 @@ private val standardUtilityFunction: DayMainActivityParameters.( DayAlternative)
                 4 -> employmentVocational
                 else -> .0
             } +
-
-            (it.amountOfYouthsInHousehold()) * amountOfYouths +
-            (it.has5WorkDays()) * has5WorkingDays +
-            (it.has5EducationDays()) * has5EducationDays +
-
-            when(dayCode) {
+            (it.amountOfYouthsInHousehold) * amountOfYouths +
+            (it.has5WorkDays) * has5WorkingDays +
+            (it.has5EduDays) * has5EducationDays +
+            when(it.dayCode) {
                 2 -> tuesday
                 3 -> wednesday
                 4 -> thursday
@@ -69,10 +131,10 @@ private val standardUtilityFunction: DayMainActivityParameters.( DayAlternative)
                 else -> .0
 
             } +
-            (it.amountOfWorkingDays()) * amountOfWorkdays +
-            (it.amountOfEducationDays()) * amountOfEducationDays +
-            (it.amountOfLeisureDays()) * amountOfLeisureDays +
-            (it.amountOfShoppingDays()) * amountOfShoppingDays +
-            (it.amountOfServiceDays()) * amountOfTransportDays +
-            (it.amountOfImmobileDays()) * amountOfImmobileDays
+            (it.amountWorkingDays) * amountOfWorkdays +
+            (it.amountEducationDays) * amountOfEducationDays +
+            (it.amountLeisureDays) * amountOfLeisureDays +
+            (it.amountShoppingDays) * amountOfShoppingDays +
+            (it.amountServiceDays) * amountOfTransportDays +
+            (it.amountImmobileDays) * amountOfImmobileDays
 }

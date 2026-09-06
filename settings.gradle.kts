@@ -5,3 +5,10 @@ pluginManagement {
 }
 
 rootProject.name = "actitoppNG"
+
+
+val dcmPath =  "../discretechoicemodelling"
+if (File(dcmPath).exists()) {
+    println("Include local build of discrete-choice")
+    includeBuild(dcmPath)
+}
