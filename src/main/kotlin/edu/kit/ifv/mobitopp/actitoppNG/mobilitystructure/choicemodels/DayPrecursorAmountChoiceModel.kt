@@ -8,32 +8,73 @@ import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.PrecursorTou
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.PreviousDayAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
-import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
+import java.time.DayOfWeek
 
 context(params: PlanGenerationParameters)
 val precursorAmountChoiceModel get() =
-    DiscreteStructure<Int, PreviousDayAlternative, PrecursorTourAmountSet> {
+    DiscreteStructure<Int, PreviousDayAlternativeEncodedRaw, PrecursorTourAmountSet> {
         option(0) { 0.0 }
         loadOptionsMap(1..5){ _, it -> standardUtilityFunction(this, it)}
-    }.multinomialLogit("Amount of precursor tours (tours before main tour) per day")
-        .build(params.precursorAmountChoiceModelParams)
+    }.multinomialLogitConverted<Int, PreviousDayAlternative, PreviousDayAlternativeEncodedRaw, PrecursorTourAmountSet>(
+        "Amount of precursor tours (tours before main tour) per day",
+        converter = { PreviousDayAlternativeEncodedRaw(it) }
+    ).build(params.precursorAmountChoiceModelParams)
 
-private val standardUtilityFunction: PrecursorTourAmountParameters.(PreviousDayAlternative) -> Double = {
+data class PreviousDayAlternativeEncodedRaw(
+    val isFulltimeEmployee: Boolean,
+    val dayMainActivityIsWork: Boolean,
+    val dayMainActivityIsEducation: Boolean,
+    val dayMainActivityIsShopping: Boolean,
+    val weekDay: DayOfWeek,
+    val isMale: Boolean,
+    val isAged10To17: Boolean,
+    val isAged26To35: Boolean,
+    val isAged36To50: Boolean,
+    val isAged51To60: Boolean,
+    val commuteIn0To5km: Boolean,
+    val averageAmountOfToursIs1: Boolean,
+    val averageAmountOfToursIs2: Boolean,
+    val previousDayHasNoBeforeTour: Boolean,
+    val previousDayHasOneBeforeTour: Boolean,
+) {
+    constructor(raw: PreviousDayAlternative) : this(
+        isFulltimeEmployee = raw.isFulltimeEmployee(),
+        dayMainActivityIsWork = raw.dayMainActivityIsWork(),
+        dayMainActivityIsEducation = raw.dayMainActivityIsEducation(),
+        dayMainActivityIsShopping = raw.dayMainActivityIsShopping(),
+        weekDay = raw.dayOfWeek,
+        isMale = raw.isMale(),
+        isAged10To17 = raw.isAged10To17(),
+        isAged26To35 = raw.isAged26To35(),
+        isAged36To50 = raw.isAged36To50(),
+        isAged51To60 = raw.isAged51To60(),
+        commuteIn0To5km = raw.commuteIn0To5km(),
+        averageAmountOfToursIs1 = raw.averageAmountOfToursIs1(),
+        averageAmountOfToursIs2 = raw.averageAmountOfToursIs2(),
+        previousDayHasNoBeforeTour = raw.previousDayHasNoBeforeTour(),
+        previousDayHasOneBeforeTour = raw.previousDayHasOneBeforeTour(),
+    )
+}
+
+private val standardUtilityFunction: PrecursorTourAmountParameters.(PreviousDayAlternativeEncodedRaw) -> Double = {
     base +
-            (it.isFulltimeEmployee()) * employmentFullTime +
-            (it.dayMainActivityIsWork()) * mainActivityIsWork +
-            (it.dayMainActivityIsEducation()) * mainActivityIsEducation +
-            (it.dayMainActivityIsShopping()) * mainActivityIsShopping +
-            (it.isSaturday()) * saturday +
-            (it.isSunday()) * sunday +
-            (it.isMale()) * male +
-            (it.isAged10To17()) * age10To17 +
-            (it.isAged26To35()) * aged26To35 +
-            (it.isAged36To50()) * aged36To50 +
-            (it.isAged51To60()) * aged51To60 +
-            (it.commuteIn0To5km()) * commuteIn0To5km +
-            (it.averageAmountOfToursIs1()) * averageAmountOfToursIs1 +
-            (it.averageAmountOfToursIs2()) * averageAmountOfToursIs2 +
-            (it.previousDayHasNoBeforeTour()) * previousDayHas0TourBeforeMainAct +
-            (it.previousDayHasOneBeforeTour()) * previousDayHas1TourBeforeMainAct
+            (it.isFulltimeEmployee) * employmentFullTime +
+            (it.dayMainActivityIsWork) * mainActivityIsWork +
+            (it.dayMainActivityIsEducation) * mainActivityIsEducation +
+            (it.dayMainActivityIsShopping) * mainActivityIsShopping +
+            when(it.weekDay) {
+                DayOfWeek.SATURDAY -> saturday
+                DayOfWeek.SUNDAY -> sunday
+                else -> 0.0
+            } +
+            (it.isMale) * male +
+            (it.isAged10To17) * age10To17 +
+            (it.isAged26To35) * aged26To35 +
+            (it.isAged36To50) * aged36To50 +
+            (it.isAged51To60) * aged51To60 +
+            (it.commuteIn0To5km) * commuteIn0To5km +
+            (it.averageAmountOfToursIs1) * averageAmountOfToursIs1 +
+            (it.averageAmountOfToursIs2) * averageAmountOfToursIs2 +
+            (it.previousDayHasNoBeforeTour) * previousDayHas0TourBeforeMainAct +
+            (it.previousDayHasOneBeforeTour) * previousDayHas1TourBeforeMainAct
 }
