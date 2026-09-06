@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitoppNG
 
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.ActivityAlternativeEncoded
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.PreviousDayAlternativeEncoded
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.mainActivityChoiceModel
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.precursorAmountChoiceModel
@@ -70,7 +71,7 @@ data class AllChoiceModels(
     val mainActivityChoiceModel:  FixedChoiceModel<ActivityType, DayAlternative>,
     val precursorAmountChoiceModel:  FixedChoiceModel<Int, PreviousDayAlternative>,
     val successorAmountChoiceModel: FixedChoiceModel<Int, PreviousDayAlternativeEncoded>,
-    val sideActivityChoiceModel:  FixedChoiceModel<ActivityType, ActivityAlternative>,
+    val sideActivityChoiceModel:  FixedChoiceModel<ActivityType, ActivityAlternativeEncoded>,
     val tourMainActivityChoiceModel:  FixedChoiceModel<ActivityType, TourAlternative>,
     val sideTourPrecursorActivityCountChoiceModel: FixedChoiceModel<Int, TourAlternativeInt>,
     val sideTourSuccessorActivityCountChoiceModel: FixedChoiceModel<Int, TourAlternativeInt>,
