@@ -2,6 +2,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.timebudgets.choicemodels
 
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isParttime
 import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudent
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.HistogramSelection
@@ -21,7 +22,7 @@ val workHistograms get() =
                     (it.amountOfEducationActivitiesInWeek()) * anzakt_woche_e +
                     when (it.employment) {
                         Employment.FULLTIME -> beruf_vollzeit
-                        Employment.PARTTIME -> beruf_teilzeit
+                        in isParttime -> beruf_teilzeit
                         Employment.VOCATIONAL -> beruf_azubi
                         in isStudent -> beruf_schueler
                         else -> 0.0

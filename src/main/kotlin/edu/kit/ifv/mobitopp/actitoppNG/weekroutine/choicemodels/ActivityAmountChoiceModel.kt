@@ -4,6 +4,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels
 import edu.kit.ifv.discretechoice.extensions.optionsIndexed
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isParttime
 import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudent
 import edu.kit.ifv.mobitopp.actitoppNG.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
@@ -23,7 +24,7 @@ val activityAmountChoiceModel get() = DiscreteStructure<Int, PersonAlternative, 
     optionsIndexed(2..6) {_, it ->
         base +
                 when (it.employment) {
-                    Employment.PARTTIME -> beruf_teilzeit
+                    in isParttime -> beruf_teilzeit
                     Employment.VOCATIONAL -> beruf_azubi
                     in isStudent -> beruf_schueler
                     else -> 0.0

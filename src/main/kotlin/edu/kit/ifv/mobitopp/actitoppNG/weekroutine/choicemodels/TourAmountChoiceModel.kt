@@ -3,6 +3,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels
 import edu.kit.ifv.discretechoice.extensions.optionsIndexed
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isParttime
 import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudent
 import edu.kit.ifv.mobitopp.actitoppNG.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
@@ -23,7 +24,7 @@ val tourAmountChoiceModel get() = DiscreteStructure<Int, PersonAlternative, Tour
         base +
                 when (it.employment) {
                     Employment.FULLTIME -> employmentFulltime
-                    Employment.PARTTIME -> employmentParttime
+                    in isParttime -> employmentParttime
                     in isStudent -> employmentStudent
                     else -> 0.0
                 } +
