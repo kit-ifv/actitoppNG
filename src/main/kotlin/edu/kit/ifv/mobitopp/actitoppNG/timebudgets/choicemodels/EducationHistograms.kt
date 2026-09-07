@@ -28,10 +28,13 @@ val educationHistograms get() =
                         Employment.VOCATIONAL -> beruf_azubi
                         else -> 0.0
                     } +
-                    (it.amountOfDaysWithEducationActivityIs2()) * tagemit_eakt_2 +
-                    (it.amountOfDaysWithEducationActivityIs3()) * tagemit_eakt_3 +
-                    (it.amountOfDaysWithEducationActivityIs4()) * tagemit_eakt_4 +
-                    (it.amountOfDaysWithEducationActivityIs5()) * tagemit_eakt_5
+                    when(it.amountOfDaysWithEducationActivity) {
+                        2 -> tagemit_eakt_2
+                        3 -> tagemit_eakt_3
+                        4 -> tagemit_eakt_4
+                        5 -> tagemit_eakt_5
+                        else -> 0.0
+                    }
         }
         option(histograms[3]) {
             0.0

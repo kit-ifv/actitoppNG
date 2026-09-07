@@ -35,12 +35,15 @@ val workHistograms get() =
                         in 51..60 -> alter_51bis60
                         else -> 0.0
                     } +
-                    (it.amountOfDaysWithWorkActivityIs1()) * tagemit_wakt_1 +
-                    (it.amountOfDaysWithWorkActivityIs2()) * tagemit_wakt_2 +
-                    (it.amountOfDaysWithWorkActivityIs3()) * tagemit_wakt_3 +
-                    (it.amountOfDaysWithWorkActivityIs4()) * tagemit_wakt_4 +
-                    (it.amountOfDaysWithWorkActivityIs5()) * tagemit_wakt_5 +
-                    (it.amountOfDaysWithWorkActivityIs6()) * tagemit_wakt_6
+                    when(it.amountOfDaysWithWorkActivity) {
+                        1 -> tagemit_wakt_1
+                        2 -> tagemit_wakt_2
+                        3 -> tagemit_wakt_3
+                        4 -> tagemit_wakt_4
+                        5 -> tagemit_wakt_5
+                        6 -> tagemit_wakt_6
+                        else -> 0.0
+                    }
         }
         option(histograms[6]) {
             0.0

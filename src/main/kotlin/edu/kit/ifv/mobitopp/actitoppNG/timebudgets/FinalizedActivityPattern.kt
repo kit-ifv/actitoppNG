@@ -64,28 +64,13 @@ interface FinalizedPatternAttributes {
     fun amountOfShoppingActivitiesInWeek(): Int
     fun amountOfTransportActivitiesInWeek(): Int
 
-    fun amountOfDaysWithWorkActivityIs1(): Boolean
-    fun amountOfDaysWithWorkActivityIs2(): Boolean
-    fun amountOfDaysWithWorkActivityIs3(): Boolean
-    fun amountOfDaysWithWorkActivityIs4(): Boolean
-    fun amountOfDaysWithWorkActivityIs5(): Boolean
-    fun amountOfDaysWithWorkActivityIs6(): Boolean
+    val amountOfDaysWithWorkActivity: Int
 
-    fun amountOfDaysWithLeisureActivityIs1(): Boolean
-    fun amountOfDaysWithLeisureActivityIs2(): Boolean
-    fun amountOfDaysWithLeisureActivityIs3(): Boolean
-    fun amountOfDaysWithLeisureActivityIs4(): Boolean
-    fun amountOfDaysWithLeisureActivityIs5(): Boolean
+    val amountOfDaysWithLeisureActivity: Int
 
-    fun amountOfDaysWithEducationActivityIs2(): Boolean
-    fun amountOfDaysWithEducationActivityIs3(): Boolean
-    fun amountOfDaysWithEducationActivityIs4(): Boolean
-    fun amountOfDaysWithEducationActivityIs5(): Boolean
+    val amountOfDaysWithEducationActivity: Int
 
-    fun amountOfDaysWithShoppingActivityIs1(): Boolean
-    fun amountOfDaysWithShoppingActivityIs2(): Boolean
-    fun amountOfDaysWithShoppingActivityIs3(): Boolean
-    fun amountOfDaysWithShoppingActivityIs4(): Boolean
+    val amountOfDaysWithShoppingActivity: Int
 
     fun amountOfDaysWithTransportActivityIs1(): Boolean
 }
@@ -102,30 +87,18 @@ class PatternAttributesByElement(val element: FinalizedActivityPattern) : Finali
     override fun amountOfLeisureActivitiesInWeek(): Int = element.leisureActivities
     override fun amountOfShoppingActivitiesInWeek(): Int = element.shoppingActivities
     override fun amountOfTransportActivitiesInWeek(): Int = element.transportActivities
-    override fun amountOfDaysWithWorkActivityIs1() = element.workDays == 1
-    override fun amountOfDaysWithWorkActivityIs2() = element.workDays == 2
-    override fun amountOfDaysWithWorkActivityIs3() = element.workDays == 3
-    override fun amountOfDaysWithWorkActivityIs4() = element.workDays == 4
-    override fun amountOfDaysWithWorkActivityIs5() = element.workDays == 5
-    override fun amountOfDaysWithWorkActivityIs6() = element.workDays == 6
 
-    override fun amountOfDaysWithEducationActivityIs2() = element.educationDays == 2
-    override fun amountOfDaysWithEducationActivityIs3() = element.educationDays == 3
-    override fun amountOfDaysWithEducationActivityIs4() = element.educationDays == 4
-    override fun amountOfDaysWithEducationActivityIs5() = element.educationDays == 5
+    override val amountOfDaysWithWorkActivity: Int
+        get() = element.workDays
 
-    override fun amountOfDaysWithLeisureActivityIs1() = element.leisureDays == 1
-    override fun amountOfDaysWithLeisureActivityIs2() = element.leisureDays == 2
-    override fun amountOfDaysWithLeisureActivityIs3() = element.leisureDays == 3
-    override fun amountOfDaysWithLeisureActivityIs4() = element.leisureDays == 4
-    override fun amountOfDaysWithLeisureActivityIs5() = element.leisureDays == 5
+    override val amountOfDaysWithEducationActivity: Int
+        get() = element.educationDays
 
-    override fun amountOfDaysWithShoppingActivityIs1() = element.shoppingDays == 1
-    override fun amountOfDaysWithShoppingActivityIs2() = element.shoppingDays == 2
-    override fun amountOfDaysWithShoppingActivityIs3() = element.shoppingDays == 3
-    override fun amountOfDaysWithShoppingActivityIs4() = element.shoppingDays == 4
+    override val amountOfDaysWithLeisureActivity: Int
+        get() = element.leisureDays
 
+    override val amountOfDaysWithShoppingActivity: Int
+        get() = element.shoppingDays
 
     override fun amountOfDaysWithTransportActivityIs1() = element.transportDays == 1
-
 }

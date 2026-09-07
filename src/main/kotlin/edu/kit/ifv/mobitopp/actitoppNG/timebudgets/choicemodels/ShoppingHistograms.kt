@@ -27,10 +27,13 @@ val shoppingHistograms get() =
                         in isStudent -> beruf_schueler
                         else -> 0.0
                     } +
-                    (it.amountOfDaysWithShoppingActivityIs1()) * tagemit_sakt_1 +
-                    (it.amountOfDaysWithShoppingActivityIs2()) * tagemit_sakt_2 +
-                    (it.amountOfDaysWithShoppingActivityIs3()) * tagemit_sakt_3 +
-                    (it.amountOfDaysWithShoppingActivityIs4()) * tagemit_sakt_4
+                    when(it.amountOfDaysWithShoppingActivity) {
+                        1 -> tagemit_sakt_1
+                        2 -> tagemit_sakt_2
+                        3 -> tagemit_sakt_3
+                        4 -> tagemit_sakt_4
+                        else -> 0.0
+                    }
         }
         option(l[2]) { 0.0 }
     }

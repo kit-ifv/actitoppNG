@@ -24,11 +24,14 @@ val leisureHistograms get() =
                         Employment.RETIRED -> beruf_rentner
                         else -> 0.0
                     } +
-                    (it.amountOfDaysWithLeisureActivityIs1()) * tagemit_lakt_1 +
-                    (it.amountOfDaysWithLeisureActivityIs2()) * tagemit_lakt_2 +
-                    (it.amountOfDaysWithLeisureActivityIs3()) * tagemit_lakt_3 +
-                    (it.amountOfDaysWithLeisureActivityIs4()) * tagemit_lakt_4 +
-                    (it.amountOfDaysWithLeisureActivityIs5()) * tagemit_lakt_5
+                    when(it.amountOfDaysWithLeisureActivity) {
+                        1 -> tagemit_lakt_1
+                        2 -> tagemit_lakt_2
+                        3 -> tagemit_lakt_3
+                        4 -> tagemit_lakt_4
+                        5 -> tagemit_lakt_5
+                        else  -> 0.0
+                    }
         }
         option(histograms[3]) {
             0.0
