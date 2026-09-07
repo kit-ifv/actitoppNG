@@ -16,9 +16,9 @@ val leisureHistograms get() =
     ) { histograms ->
         loadFromList(histograms - histograms[3]) {_, it ->
             base +
-                    (it.amountOfWorkActivitiesInWeek()) * anzakt_woche_w +
-                    (it.amountOfLeisureActivitiesInWeek()) * anzakt_woche_l +
-                    (it.amountOfShoppingActivitiesInWeek()) * anzakt_woche_s +
+                    (it.amountOfWorkActivitiesInWeek) * anzakt_woche_w +
+                    (it.amountOfLeisureActivitiesInWeek) * anzakt_woche_l +
+                    (it.amountOfShoppingActivitiesInWeek) * anzakt_woche_s +
                     (it.commuteIn0To5km()) * pendeln_0bis5km +
                     when(it.employment) {
                         Employment.RETIRED -> beruf_rentner

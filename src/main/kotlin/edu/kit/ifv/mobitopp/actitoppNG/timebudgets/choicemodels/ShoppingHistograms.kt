@@ -18,9 +18,9 @@ val shoppingHistograms get() =
     ) { l ->
         optionsIndexed(l[0], l[1], l[3], l[4]) { _, it ->
             base +
-                    (it.amountOfWorkActivitiesInWeek()) * anzakt_woche_w +
-                    (it.amountOfLeisureActivitiesInWeek()) * anzakt_woche_l +
-                    (it.amountOfShoppingActivitiesInWeek()) * anzakt_woche_s +
+                    (it.amountOfWorkActivitiesInWeek) * anzakt_woche_w +
+                    (it.amountOfLeisureActivitiesInWeek) * anzakt_woche_l +
+                    (it.amountOfShoppingActivitiesInWeek) * anzakt_woche_s +
                     when (it.employment) {
                         Employment.FULLTIME -> beruf_vollzeit
                         in isParttime -> beruf_teilzeit

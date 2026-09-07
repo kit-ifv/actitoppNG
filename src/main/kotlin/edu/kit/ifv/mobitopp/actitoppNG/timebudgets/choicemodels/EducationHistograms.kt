@@ -18,8 +18,8 @@ val educationHistograms get() =
 
 
             base +
-                    (it.amountOfWorkActivitiesInWeek()) * anzakt_woche_w +
-                    (it.amountOfEducationActivitiesInWeek()) * anzakt_woche_e +
+                    (it.amountOfWorkActivitiesInWeek) * anzakt_woche_w +
+                    (it.amountOfEducationActivitiesInWeek) * anzakt_woche_e +
                     when (it.age) {
                         in 10..17 -> alter_10bis17
                         else -> 0.0

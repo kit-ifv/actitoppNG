@@ -18,8 +18,8 @@ val workHistograms get() =
     ) { histograms ->
         loadFromList(histograms - histograms[6]) { _,it ->
             base +
-                    (it.amountOfWorkActivitiesInWeek()) * anzakt_woche_w +
-                    (it.amountOfEducationActivitiesInWeek()) * anzakt_woche_e +
+                    (it.amountOfWorkActivitiesInWeek) * anzakt_woche_w +
+                    (it.amountOfEducationActivitiesInWeek) * anzakt_woche_e +
                     when (it.employment) {
                         Employment.FULLTIME -> beruf_vollzeit
                         in isParttime -> beruf_teilzeit

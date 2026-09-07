@@ -58,11 +58,11 @@ data class FinalizedActivityPatternImpl(
 
 
 interface FinalizedPatternAttributes {
-    fun amountOfWorkActivitiesInWeek(): Int
-    fun amountOfEducationActivitiesInWeek(): Int
-    fun amountOfLeisureActivitiesInWeek(): Int
-    fun amountOfShoppingActivitiesInWeek(): Int
-    fun amountOfTransportActivitiesInWeek(): Int
+    val amountOfWorkActivitiesInWeek: Int
+    val amountOfEducationActivitiesInWeek: Int
+    val amountOfLeisureActivitiesInWeek: Int
+    val amountOfShoppingActivitiesInWeek: Int
+    val amountOfTransportActivitiesInWeek: Int
 
     val amountOfDaysWithWorkActivity: Int
 
@@ -72,21 +72,22 @@ interface FinalizedPatternAttributes {
 
     val amountOfDaysWithShoppingActivity: Int
 
-    fun amountOfDaysWithTransportActivityIs1(): Boolean
+    val amountOfDaysWithTransportActivityIs1: Boolean
 }
 
 class PatternAttributesByElement(val element: FinalizedActivityPattern) : FinalizedPatternAttributes {
-    override fun amountOfWorkActivitiesInWeek(): Int {
-        return element.workActivities
-    }
+    override val amountOfWorkActivitiesInWeek: Int
+        get() = element.workActivities
 
-    override fun amountOfEducationActivitiesInWeek(): Int {
-        return element.educationActivities
-    }
+    override val amountOfEducationActivitiesInWeek: Int
+        get() = element.educationActivities
 
-    override fun amountOfLeisureActivitiesInWeek(): Int = element.leisureActivities
-    override fun amountOfShoppingActivitiesInWeek(): Int = element.shoppingActivities
-    override fun amountOfTransportActivitiesInWeek(): Int = element.transportActivities
+    override val amountOfLeisureActivitiesInWeek: Int
+        get() = element.leisureActivities
+    override val amountOfShoppingActivitiesInWeek: Int
+        get() = element.shoppingActivities
+    override val amountOfTransportActivitiesInWeek: Int
+        get() = element.transportActivities
 
     override val amountOfDaysWithWorkActivity: Int
         get() = element.workDays
@@ -100,5 +101,5 @@ class PatternAttributesByElement(val element: FinalizedActivityPattern) : Finali
     override val amountOfDaysWithShoppingActivity: Int
         get() = element.shoppingDays
 
-    override fun amountOfDaysWithTransportActivityIs1() = element.transportDays == 1
+    override val amountOfDaysWithTransportActivityIs1 get() = element.transportDays == 1
 }

@@ -20,16 +20,16 @@ val transportHistograms get() = HistogramSelection.createChoiceModelFromResource
     }
     loadFromList(histograms - histograms[0]) { _, it->
         base +
-                (it.amountOfWorkActivitiesInWeek()) * anzakt_woche_w +
-                (it.amountOfShoppingActivitiesInWeek()) * anzakt_woche_s +
-                (it.amountOfTransportActivitiesInWeek()) * anzakt_woche_t +
+                (it.amountOfWorkActivitiesInWeek) * anzakt_woche_w +
+                (it.amountOfShoppingActivitiesInWeek) * anzakt_woche_s +
+                (it.amountOfTransportActivitiesInWeek) * anzakt_woche_t +
                 when (it.employment) {
                     Employment.FULLTIME -> beruf_vollzeit
                     in isParttime -> beruf_teilzeit
                     in isStudent -> beruf_schueler
                     else -> 0.0
                 } +
-                (it.amountOfDaysWithTransportActivityIs1()) * tagemit_takt_1
+                if(it.amountOfDaysWithTransportActivityIs1) tagemit_takt_1 else 0.0
     }
 
 }
