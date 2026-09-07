@@ -100,7 +100,7 @@ data class DayAlternativeEncoded(
         amountServiceDays = alternative.amountOfServiceDays(),
         amountImmobileDays = alternative.amountOfImmobileDays(),
         isEmployedAnywhere = alternative.isEmployedAnywhere(),
-        isStandardWorkingDay = alternative.isStandardWorkingDay(),
+        isStandardWorkingDay = alternative.isStandardWorkingDay,
         isStudentOrAzubi = alternative.isStudentOrAzubi(),
     )
 }

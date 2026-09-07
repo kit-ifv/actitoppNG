@@ -3,6 +3,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels
 
 import edu.kit.ifv.discretechoice.extensions.loadOptionsMap
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
+import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.PrecursorTourAmountParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.PrecursorTourAmountSet
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.PreviousDayAlternative
@@ -22,9 +23,7 @@ val precursorAmountChoiceModel get() =
 
 data class PreviousDayAlternativeEncodedRaw(
     val isFulltimeEmployee: Boolean,
-    val dayMainActivityIsWork: Boolean,
-    val dayMainActivityIsEducation: Boolean,
-    val dayMainActivityIsShopping: Boolean,
+    val dayMainActivity: ActivityType,
     val weekDay: DayOfWeek,
     val isMale: Boolean,
     val isAged10To17: Boolean,
@@ -39,9 +38,7 @@ data class PreviousDayAlternativeEncodedRaw(
 ) {
     constructor(raw: PreviousDayAlternative) : this(
         isFulltimeEmployee = raw.isFulltimeEmployee(),
-        dayMainActivityIsWork = raw.dayMainActivityIsWork(),
-        dayMainActivityIsEducation = raw.dayMainActivityIsEducation(),
-        dayMainActivityIsShopping = raw.dayMainActivityIsShopping(),
+        dayMainActivity = raw.dayMainActivity,
         weekDay = raw.dayOfWeek,
         isMale = raw.isMale(),
         isAged10To17 = raw.isAged10To17(),
@@ -59,9 +56,12 @@ data class PreviousDayAlternativeEncodedRaw(
 private val standardUtilityFunction: PrecursorTourAmountParameters.(PreviousDayAlternativeEncodedRaw) -> Double = {
     base +
             (it.isFulltimeEmployee) * employmentFullTime +
-            (it.dayMainActivityIsWork) * mainActivityIsWork +
-            (it.dayMainActivityIsEducation) * mainActivityIsEducation +
-            (it.dayMainActivityIsShopping) * mainActivityIsShopping +
+            when(it.dayMainActivity) {
+                ActivityType.WORK -> mainActivityIsWork
+                ActivityType.EDUCATION -> mainActivityIsEducation
+                ActivityType.SHOPPING -> mainActivityIsShopping
+                else -> 0.0
+            } +
             when(it.weekDay) {
                 DayOfWeek.SATURDAY -> saturday
                 DayOfWeek.SUNDAY -> sunday

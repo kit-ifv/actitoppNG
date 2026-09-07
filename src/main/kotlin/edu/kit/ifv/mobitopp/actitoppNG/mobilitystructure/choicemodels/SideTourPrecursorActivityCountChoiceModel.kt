@@ -8,6 +8,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.TourAlterna
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
 import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
+import java.time.DayOfWeek
 
 context(params: PlanGenerationParameters)
 val step5AWithParams
@@ -30,8 +31,11 @@ private val standardUtilityFunction: SideTourPrecursorParameters.(TourAlternativ
             (it.tourMainActivityIsEducation()) * tourtyp_education +
             (it.tourMainActivityIsShopping()) * tourtyp_shopping +
             (it.tourMainActivityIsTransport()) * tourtyp_transport +
-            (it.isSaturday()) * tag_sa +
-            (it.isSunday()) * tag_so +
+            when (it.dayOfWeek) {
+                DayOfWeek.SATURDAY -> tag_sa
+                DayOfWeek.SUNDAY -> tag_so
+                else -> 0.0
+            } +
             (it.isAged18To35()) * alter_18bis35 +
             (it.isAged36To50()) * alter_36bis50 +
             (it.isAged51To60()) * alter_51bis60 +
