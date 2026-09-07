@@ -19,7 +19,10 @@ val homeDaysChoiceModel get() =
             base +
                     (it.isNotEarningMoney()) * employmentNotEarning +
                     (it.isRetired()) * employmentRetired +
-                    if (it.age in 18..25) ageIn18To25 else 0.0 +
+                    when (it.age) {
+                        in 18..25 -> ageIn18To25
+                        else -> 0.0
+                    } +
                     it.amountOfYouthsInHousehold() * amountOfYouths +
                     (it.isMale()) * isMale +
                     it.amountOfWorkingDays() * amountOfWorkingDays +

@@ -21,7 +21,10 @@ val shoppingDaysChoiceModel get() = DiscreteStructure<Int, PersonAlternative, Sh
                 (it.isVocational()) * employmentVocational +
                 (it.areaTypeConurbation()) * areaTypeIsConurbation +
                 (it.areaTypeRural()) * areaTypeIsRural +
-                if (it.age in 10..17) ageIn10To17 else 0.0 +
+                when (it.age) {
+                    in 10..17 -> ageIn10To17
+                    else -> 0.0
+                } +
                 it.amountOfWorkingDays() * amountOfWorkingDays +
                 it.amountOfEducationDays() * amountOfEducationDays +
                 it.amountOfLeisureDays() * amountOfLeisureDays
