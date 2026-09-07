@@ -1,6 +1,8 @@
 package edu.kit.ifv.mobitopp.actitoppNG.timebudgets.choicemodels
 
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
+import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudent
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.HistogramSelection
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
@@ -20,9 +22,12 @@ val transportHistograms get() = HistogramSelection.createChoiceModelFromResource
                 (it.amountOfWorkActivitiesInWeek()) * anzakt_woche_w +
                 (it.amountOfShoppingActivitiesInWeek()) * anzakt_woche_s +
                 (it.amountOfTransportActivitiesInWeek()) * anzakt_woche_t +
-                (it.isFulltimeEmployee()) * beruf_vollzeit +
-                (it.isParttimeEmployee()) * beruf_teilzeit +
-                (it.isStudent()) * beruf_schueler +
+                when (it.employment) {
+                    Employment.FULLTIME -> beruf_vollzeit
+                    Employment.PARTTIME -> beruf_teilzeit
+                    in isStudent -> beruf_schueler
+                    else -> 0.0
+                } +
                 (it.amountOfDaysWithTransportActivityIs1()) * tagemit_takt_1
     }
 

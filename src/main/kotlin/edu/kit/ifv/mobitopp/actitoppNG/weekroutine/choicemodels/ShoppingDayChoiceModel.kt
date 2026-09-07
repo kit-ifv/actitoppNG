@@ -2,6 +2,9 @@ package edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels
 
 import edu.kit.ifv.discretechoice.extensions.loadOptionsMap
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
+import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isEarning
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudent
 import edu.kit.ifv.mobitopp.actitoppNG.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.ShoppingDaySet
@@ -16,9 +19,12 @@ context(params: PlanGenerationParameters)
 val shoppingDaysChoiceModel get() = DiscreteStructure<Int, PersonAlternative, ShoppingDaySet> {
     loadOptionsMap((1..7)) {_, it ->
         base +
-                (it.isEarningMoney()) * employmentIsEarning +
-                (it.isStudent()) * emplomentStudent +
-                (it.isVocational()) * employmentVocational +
+                when(it.employment) {
+                    Employment.VOCATIONAL -> employmentVocational
+                    in isEarning -> employmentIsEarning
+                    in isStudent -> emplomentStudent
+                    else -> 0.0
+                } +
                 (it.areaTypeConurbation()) * areaTypeIsConurbation +
                 (it.areaTypeRural()) * areaTypeIsRural +
                 when (it.age) {

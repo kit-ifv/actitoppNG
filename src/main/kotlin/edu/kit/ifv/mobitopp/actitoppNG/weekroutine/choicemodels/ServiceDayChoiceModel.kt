@@ -2,6 +2,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels
 
 import edu.kit.ifv.discretechoice.extensions.loadOptionsMap
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
+import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
 import edu.kit.ifv.mobitopp.actitoppNG.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.ServiceDaySet
@@ -16,8 +17,11 @@ context(params: PlanGenerationParameters)
 val serviceDaysChoiceModel get() = DiscreteStructure<Int, PersonAlternative, ServiceDaySet> {
     loadOptionsMap(1..7) {_, it ->
         base +
-                (it.isFulltimeEmployee()) * employmentIsFulltime +
-                (it.isParttimeEmployee()) * employmentIsParttime +
+                when (it.employment) {
+                    Employment.FULLTIME -> employmentIsFulltime
+                    Employment.PARTTIME -> employmentIsParttime
+                    else -> 0.0
+                } +
                 when (it.age) {
                     in 10..17 -> ageIn10to17
                     in 26..35 -> ageIn26to35

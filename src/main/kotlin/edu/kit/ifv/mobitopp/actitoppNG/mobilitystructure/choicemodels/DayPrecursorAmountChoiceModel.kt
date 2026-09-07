@@ -4,6 +4,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels
 import edu.kit.ifv.discretechoice.extensions.loadOptionsMap
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
+import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.PrecursorTourAmountParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.PrecursorTourAmountSet
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.PreviousDayAlternative
@@ -34,7 +35,7 @@ data class PreviousDayAlternativeEncodedRaw(
     val previousDayHasOneBeforeTour: Boolean,
 ) {
     constructor(raw: PreviousDayAlternative) : this(
-        isFulltimeEmployee = raw.isFulltimeEmployee(),
+        isFulltimeEmployee = raw.employment == Employment.FULLTIME,
         dayMainActivity = raw.dayMainActivity,
         weekDay = raw.dayOfWeek,
         isMale = raw.isMale(),

@@ -1,6 +1,7 @@
 package edu.kit.ifv.mobitopp.actitoppNG.timebudgets.choicemodels
 
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
+import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.HistogramSelection
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
@@ -23,7 +24,10 @@ val educationHistograms get() =
                         in 10..17 -> alter_10bis17
                         else -> 0.0
                     } +
-                    (it.isVocational()) * beruf_azubi +
+                    when (it.employment) {
+                        Employment.VOCATIONAL -> beruf_azubi
+                        else -> 0.0
+                    } +
                     (it.amountOfDaysWithEducationActivityIs2()) * tagemit_eakt_2 +
                     (it.amountOfDaysWithEducationActivityIs3()) * tagemit_eakt_3 +
                     (it.amountOfDaysWithEducationActivityIs4()) * tagemit_eakt_4 +

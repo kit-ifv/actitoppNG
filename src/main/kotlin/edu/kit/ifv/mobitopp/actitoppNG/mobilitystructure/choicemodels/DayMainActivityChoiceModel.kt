@@ -3,6 +3,9 @@ package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels
 import edu.kit.ifv.discretechoice.extensions.loadOptionsMap
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
+import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isEmployedAnywhere
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudentOrAzubi
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DayMainActivityParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.DayMainActivitySet
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.DayAlternative
@@ -19,14 +22,14 @@ context(params: PlanGenerationParameters)
 val mainActivityChoiceModel get() =
     DiscreteStructure<ActivityType, DayAlternativeEncoded, DayMainActivitySet> {
         option(ActivityType.WORK, parameters = { this[ActivityType.WORK]!! }, { _, it ->
-                (if (it.isEmployedAnywhere && it.isStandardWorkingDay) 1.3 else 1.0) * standardUtilityFunction(
+                (if (it.employment.isEmployedAnywhere() && it.isStandardWorkingDay) 1.3 else 1.0) * standardUtilityFunction(
                     this,
                     it
                 )
             }
         )
         option(ActivityType.EDUCATION, parameters = { this[ActivityType.EDUCATION]!! }, { _, it ->
-            (if (it.isStudentOrAzubi && it.isStandardWorkingDay) 1.3 else 1.0) * standardUtilityFunction(
+            (if (it.employment.isStudentOrAzubi() && it.isStandardWorkingDay) 1.3 else 1.0) * standardUtilityFunction(
                 this,
                 it
             )
@@ -74,6 +77,7 @@ fun <A, C, X, P> UtilityEnumerationBuilder<A, X, P>.optimizedMultinomialLogitCon
 data class DayAlternativeEncoded(
     val dayCode: Int,
     val employmentCode: Int,
+    val employment: Employment,
     val amountOfYouthsInHousehold: Int,
     val has5WorkDays: Double,
     val has5EduDays: Double,
@@ -83,13 +87,12 @@ data class DayAlternativeEncoded(
     val amountShoppingDays: Int,
     val amountServiceDays: Int,
     val amountImmobileDays: Int,
-    val isEmployedAnywhere: Boolean,
     val isStandardWorkingDay: Boolean,
-    val isStudentOrAzubi: Boolean,
 ) {
     constructor(alternative: DayAlternative): this(
         dayCode = UtilityConverter.convertWeekDay(alternative.dayOfWeek),
         employmentCode = UtilityConverter.convertEmployment(alternative.employment),
+        employment = alternative.employment,
         amountOfYouthsInHousehold = alternative.amountOfYouthsInHousehold(),
         has5WorkDays = alternative.has5WorkDays().D,
         has5EduDays = alternative.has5EducationDays().D,
@@ -99,9 +102,7 @@ data class DayAlternativeEncoded(
         amountShoppingDays = alternative.amountOfShoppingDays(),
         amountServiceDays = alternative.amountOfServiceDays(),
         amountImmobileDays = alternative.amountOfImmobileDays(),
-        isEmployedAnywhere = alternative.isEmployedAnywhere(),
         isStandardWorkingDay = alternative.isStandardWorkingDay,
-        isStudentOrAzubi = alternative.isStudentOrAzubi(),
     )
 }
 

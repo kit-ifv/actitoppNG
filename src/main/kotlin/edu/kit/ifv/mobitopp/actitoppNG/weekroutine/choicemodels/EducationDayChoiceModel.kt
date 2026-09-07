@@ -5,6 +5,9 @@ import edu.kit.ifv.discretechoice.extensions.loadOptionsMap
 import edu.kit.ifv.mobitopp.actitoppNG.steps.PersonAlternative
 
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
+import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isEarning
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudent
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.EducationDaySet
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
@@ -18,9 +21,12 @@ context(params: PlanGenerationParameters)
 val educationDaysChoiceModel get() = DiscreteStructure<Int, PersonAlternative, EducationDaySet> {
     loadOptionsMap(1..7) {_, it ->
         base +
-                (it.isEarningMoney()) * employmentIsEarning +
-                (it.isStudent()) * emplomentStudent +
-                (it.isVocational()) * employmentVocational +
+                when(it.employment) {
+                    Employment.VOCATIONAL -> employmentVocational
+                    in isStudent -> emplomentStudent
+                    in isEarning -> employmentIsEarning
+                    else -> 0.0
+                } +
                 when(it.age) {
                     in 10..17 -> ageIn10to17
                     in 18..25 -> ageIn18To25

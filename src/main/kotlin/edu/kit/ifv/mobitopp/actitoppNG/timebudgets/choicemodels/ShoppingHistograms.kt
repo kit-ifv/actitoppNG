@@ -2,6 +2,8 @@ package edu.kit.ifv.mobitopp.actitoppNG.timebudgets.choicemodels
 
 import edu.kit.ifv.discretechoice.extensions.optionsIndexed
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
+import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudent
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.HistogramSelection
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
@@ -18,9 +20,12 @@ val shoppingHistograms get() =
                     (it.amountOfWorkActivitiesInWeek()) * anzakt_woche_w +
                     (it.amountOfLeisureActivitiesInWeek()) * anzakt_woche_l +
                     (it.amountOfShoppingActivitiesInWeek()) * anzakt_woche_s +
-                    (it.isFulltimeEmployee()) * beruf_vollzeit +
-                    (it.isParttimeEmployee()) * beruf_teilzeit +
-                    (it.isStudent()) * beruf_schueler +
+                    when (it.employment) {
+                        Employment.FULLTIME -> beruf_vollzeit
+                        Employment.PARTTIME -> beruf_teilzeit
+                        in isStudent -> beruf_schueler
+                        else -> 0.0
+                    } +
                     (it.amountOfDaysWithShoppingActivityIs1()) * tagemit_sakt_1 +
                     (it.amountOfDaysWithShoppingActivityIs2()) * tagemit_sakt_2 +
                     (it.amountOfDaysWithShoppingActivityIs3()) * tagemit_sakt_3 +
