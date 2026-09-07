@@ -20,7 +20,10 @@ val leisureHistograms get() =
                     (it.amountOfLeisureActivitiesInWeek()) * anzakt_woche_l +
                     (it.amountOfShoppingActivitiesInWeek()) * anzakt_woche_s +
                     (it.commuteIn0To5km()) * pendeln_0bis5km +
-                    if(it.employment == Employment.RETIRED) beruf_rentner else 0.0 +
+                    when(it.employment) {
+                        Employment.RETIRED -> beruf_rentner
+                        else -> 0.0
+                    } +
                     (it.amountOfDaysWithLeisureActivityIs1()) * tagemit_lakt_1 +
                     (it.amountOfDaysWithLeisureActivityIs2()) * tagemit_lakt_2 +
                     (it.amountOfDaysWithLeisureActivityIs3()) * tagemit_lakt_3 +
