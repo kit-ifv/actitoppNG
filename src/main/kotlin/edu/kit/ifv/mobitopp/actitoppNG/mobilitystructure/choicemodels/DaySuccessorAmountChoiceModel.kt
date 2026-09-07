@@ -8,7 +8,6 @@ import edu.kit.ifv.mobitopp.actitoppNG.enums.isParttime
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SuccessorTourAmountParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SuccessorTourAmountSet
-import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.PreviousDayAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.PlannedTourAmounts
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
@@ -76,12 +75,12 @@ val successorAmountChoiceModel
         DiscreteStructure<Int, PreviousDayAlternativeEncoded, SuccessorTourAmountSet> {
             option(0) { 0.0 }
             loadOptionsMap(1..5) { _, it ->
-                standardUtilityFunction_(this, it)
+                standardUtilityFunction(this, it)
             }
         }.multinomialLogit("Amount of successor tours (tours after main tour)")
             .build(params.successorAmountChoiceModelParams)
 
-private val standardUtilityFunction_: SuccessorTourAmountParameters.(PreviousDayAlternativeEncoded) -> Double = {
+private val standardUtilityFunction: SuccessorTourAmountParameters.(PreviousDayAlternativeEncoded) -> Double = {
     base +
             it.isParttimeEmployee * employmentPartTime +
             when (it.dayMainActivityCode) {
@@ -124,31 +123,4 @@ private val standardUtilityFunction_: SuccessorTourAmountParameters.(PreviousDay
                 1.toByte() -> previousDayHas1TourAfterMainAct
                 else -> 0.0
             }
-}
-
-private val standardUtilityFunction: SuccessorTourAmountParameters.(PreviousDayAlternative) -> Double = {
-    base +
-            (it.isParttimeEmployee()) * employmentPartTime +
-            (it.dayMainActivityIsWork()) * mainActivityIsWork +
-            (it.dayMainActivityIsEducation()) * mainActivityIsEducation +
-            (it.dayMainActivityIsShopping()) * mainActivityIsShopping +
-            when (it.dayOfWeek) {
-                DayOfWeek.FRIDAY -> friday
-                DayOfWeek.SATURDAY -> saturday
-                DayOfWeek.SUNDAY -> sunday
-                else -> 0.0
-            } +
-            (it.isAged26To35()) * aged26To35 +
-            (it.isAged36To50()) * aged36To50 +
-            (it.isAged51To60()) * aged51To60 +
-            (it.areaTypeConurbation()) * areaTypeConurbation +
-            (it.areaTypeRural()) * areaTypeRural +
-            (it.amountOfPKW()) * amountOfPKW +
-            (it.amountOfBeforeTours()) * amountOfToursBeforeMainAct +
-            (it.commuteOver50km()) * commuteOver50km +
-            (it.commuteIn0To5km()) * commuteIn0To5km +
-            (it.averageAmountOfToursIs1()) * averageAmountOfToursIs1 +
-            (it.averageAmountOfToursIs2()) * averageAmountOfToursIs2 +
-            (it.previousDayHasNoAfterTour()) * previousDayHas0TourAfterMainAct +
-            (it.previousDayHasOneAfterTour()) * previousDayHas1TourAfterMainAct
 }
