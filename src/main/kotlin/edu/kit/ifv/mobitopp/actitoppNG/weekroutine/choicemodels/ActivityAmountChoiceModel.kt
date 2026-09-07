@@ -23,10 +23,13 @@ val activityAmountChoiceModel get() = DiscreteStructure<Int, PersonAlternative, 
                 (it.isParttimeEmployee()) * beruf_teilzeit +
                 (it.isStudent()) * beruf_schueler +
                 (it.isVocational()) * beruf_azubi +
-                (it.isAged26To35()) * alter_26bis35 +
-                (it.isAged36To50()) * alter_36bis50 +
-                (it.isAged51To60()) * alter_51bis60 +
-                (it.isAged61To70()) * alter_61bis70 +
+                when(it.age) {
+                    in 26..35 -> alter_26bis35
+                    in 36..50 -> alter_36bis50
+                    in 51..60 -> alter_51bis60
+                    in 61..70 -> alter_61bis70
+                    else -> 0.0
+                } +
                 (it.areaTypeRural()) * Raumtyp_mobitopp_rural +
                 (it.commuteOver50km()) * pendeln_ueber50km +
                 (it.commuteIn0To5km()) * pendeln_0bis5km +

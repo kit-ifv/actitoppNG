@@ -21,7 +21,7 @@ val leisureDaysChoiceModel get() = DiscreteStructure<Int, PersonAlternative, Lei
                 (it.isStudent()) * emplomentStudent +
                 (it.areaTypeRural()) * areaTypeIsRural +
                 (it.hasChildrenInHousehold()) * householdHasChildenBelowAge10 +
-                (it.isAged61To70()) * ageIn61To70 +
+                if (it.age in 61..70) ageIn61To70 else 0.0 +
                 it.amountOfWorkingDays() * amountOfWorkingDays
     }
     option(0) {

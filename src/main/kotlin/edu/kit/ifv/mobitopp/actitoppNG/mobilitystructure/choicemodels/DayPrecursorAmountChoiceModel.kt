@@ -26,10 +26,7 @@ data class PreviousDayAlternativeEncodedRaw(
     val dayMainActivity: ActivityType,
     val weekDay: DayOfWeek,
     val isMale: Boolean,
-    val isAged10To17: Boolean,
-    val isAged26To35: Boolean,
-    val isAged36To50: Boolean,
-    val isAged51To60: Boolean,
+    val age: Int,
     val commuteIn0To5km: Boolean,
     val averageAmountOfToursIs1: Boolean,
     val averageAmountOfToursIs2: Boolean,
@@ -41,10 +38,7 @@ data class PreviousDayAlternativeEncodedRaw(
         dayMainActivity = raw.dayMainActivity,
         weekDay = raw.dayOfWeek,
         isMale = raw.isMale(),
-        isAged10To17 = raw.isAged10To17(),
-        isAged26To35 = raw.isAged26To35(),
-        isAged36To50 = raw.isAged36To50(),
-        isAged51To60 = raw.isAged51To60(),
+        age = raw.age,
         commuteIn0To5km = raw.commuteIn0To5km(),
         averageAmountOfToursIs1 = raw.averageAmountOfToursIs1(),
         averageAmountOfToursIs2 = raw.averageAmountOfToursIs2(),
@@ -68,10 +62,13 @@ private val standardUtilityFunction: PrecursorTourAmountParameters.(PreviousDayA
                 else -> 0.0
             } +
             (it.isMale) * male +
-            (it.isAged10To17) * age10To17 +
-            (it.isAged26To35) * aged26To35 +
-            (it.isAged36To50) * aged36To50 +
-            (it.isAged51To60) * aged51To60 +
+            when(it.age) {
+                in 10..17 -> age10To17
+                in 26..35 -> aged26To35
+                in 36..50 -> aged36To50
+                in 51..60 -> aged51To60
+                else -> 0.0
+            } +
             (it.commuteIn0To5km) * commuteIn0To5km +
             (it.averageAmountOfToursIs1) * averageAmountOfToursIs1 +
             (it.averageAmountOfToursIs2) * averageAmountOfToursIs2 +

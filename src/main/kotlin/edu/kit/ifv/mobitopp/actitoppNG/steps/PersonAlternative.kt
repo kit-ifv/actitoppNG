@@ -25,13 +25,7 @@ interface PersonAttributes {
     fun isStudent(): Boolean
     fun isRetired(): Boolean
     fun isVocational(): Boolean
-    fun isAged10To17(): Boolean
-    fun isAged18To25(): Boolean
-    fun isAged26To35(): Boolean
-    fun isAged36To50(): Boolean
-    fun isAged51To60(): Boolean
-    fun isAged61To70(): Boolean
-    fun isAged18To35(): Boolean
+    val age: Int
     fun isMale(): Boolean
     fun commuteIn0To5km(): Boolean
     fun commuteIn5To10km(): Boolean
@@ -50,13 +44,7 @@ class PersonAttributesFromElement(val person: Person) : PersonAttributes {
     override fun isStudent() = person.employment.isStudent()
     override fun isRetired() = person.employment == Employment.RETIRED
     override fun isVocational() = person.employment == Employment.VOCATIONAL
-    override fun isAged10To17() = person.age in 10..17
-    override fun isAged18To25() = person.age in 18..25
-    override fun isAged26To35() = person.age in 26..35
-    override fun isAged36To50() = person.age in 36..50
-    override fun isAged51To60() = person.age in 51..60
-    override fun isAged61To70() = person.age in 61..70
-    override fun isAged18To35(): Boolean = person.age in 18..35
+    override val age = person.age
     override fun isMale() = person.gender == Gender.MALE
     override fun commuteIn0To5km() = person.maxCommute in 0.0..5.0
     override fun commuteIn5To10km() = person.maxCommute in 5.0..10.0

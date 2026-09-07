@@ -18,9 +18,12 @@ val serviceDaysChoiceModel get() = DiscreteStructure<Int, PersonAlternative, Ser
         base +
                 (it.isFulltimeEmployee()) * employmentIsFulltime +
                 (it.isParttimeEmployee()) * employmentIsParttime +
-                (it.isAged10To17()) * ageIn10to17 +
-                (it.isAged26To35()) * ageIn26to35 +
-                (it.isAged36To50()) * ageIn36to50 +
+                when (it.age) {
+                    in 10..17 -> ageIn10to17
+                    in 26..35 -> ageIn26to35
+                    in 36..50 -> ageIn36to50
+                    else -> 0.0
+                } +
                 (it.areaTypeConurbation()) * areaTypeIsConurbation +
                 (it.hasChildrenInHousehold()) * householdHasChildren +
                 (it.amountOfYouthsInHousehold()) * householdAmountYouths +

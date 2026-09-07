@@ -21,10 +21,13 @@ val educationDaysChoiceModel get() = DiscreteStructure<Int, PersonAlternative, E
                 (it.isEarningMoney()) * employmentIsEarning +
                 (it.isStudent()) * emplomentStudent +
                 (it.isVocational()) * employmentVocational +
-                (it.isAged10To17()) * ageIn10to17 +
-                (it.isAged18To25()) * ageIn18To25 +
-                (it.isAged26To35()) * ageIn26To35 +
-                (it.isAged36To50()) * ageIn36To50 +
+                when(it.age) {
+                    in 10..17 -> ageIn10to17
+                    in 18..25 -> ageIn18To25
+                    in 26..35 -> ageIn26To35
+                    in 36..50 -> ageIn36To50
+                    else -> 0.0
+                } +
                 it.amountOfWorkingDays() * amountOfWorkingDays
     }
     option(0) {

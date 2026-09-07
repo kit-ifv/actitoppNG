@@ -19,7 +19,10 @@ val educationHistograms get() =
             base +
                     (it.amountOfWorkActivitiesInWeek()) * anzakt_woche_w +
                     (it.amountOfEducationActivitiesInWeek()) * anzakt_woche_e +
-                    (it.isAged10To17()) * alter_10bis17 +
+                    when (it.age) {
+                        in 10..17 -> alter_10bis17
+                        else -> 0.0
+                    } +
                     (it.isVocational()) * beruf_azubi +
                     (it.amountOfDaysWithEducationActivityIs2()) * tagemit_eakt_2 +
                     (it.amountOfDaysWithEducationActivityIs3()) * tagemit_eakt_3 +

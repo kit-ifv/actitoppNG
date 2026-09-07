@@ -22,10 +22,13 @@ val tourAmountChoiceModel get() = DiscreteStructure<Int, PersonAlternative, Tour
                 (it.isFulltimeEmployee()) * employmentFulltime +
                 (it.isParttimeEmployee()) * employmentParttime +
                 (it.isStudent()) * employmentStudent +
-                (it.isAged26To35()) * ageIn26To35 +
-                (it.isAged36To50()) * ageIn36To50 +
-                (it.isAged51To60()) * ageIn51To60 +
-                (it.isAged61To70()) * ageIn61To70 +
+                when (it.age) {
+                    in 26..35 -> ageIn26To35
+                    in 36..50 -> ageIn36To50
+                    in 51..60 -> ageIn51To60
+                    in 61..70 -> ageIn61To70
+                    else -> 0.0
+                } +
                 (it.areaTypeConurbation()) * areaTypeConurbation +
                 (it.areaTypeRural()) * areaTypeRural +
                 (it.commuteOver50km()) * commuteOver50km +

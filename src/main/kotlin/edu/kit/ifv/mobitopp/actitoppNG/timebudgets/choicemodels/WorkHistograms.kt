@@ -22,10 +22,13 @@ val workHistograms get() =
                     (it.isStudent()) * beruf_schueler +
                     (it.isVocational()) * beruf_azubi +
                     (it.isMale()) * male +
-                    (it.isAged18To25()) * alter_18bis25 +
-                    (it.isAged26To35()) * alter_26bis35 +
-                    (it.isAged36To50()) * alter_36bis50 +
-                    (it.isAged51To60()) * alter_51bis60 +
+                    when (it.age) {
+                        in 18..25 -> alter_18bis25
+                        in 26..35 -> alter_26bis35
+                        in 36..50 -> alter_36bis50
+                        in 51..60 -> alter_51bis60
+                        else -> 0.0
+                    } +
                     (it.amountOfDaysWithWorkActivityIs1()) * tagemit_wakt_1 +
                     (it.amountOfDaysWithWorkActivityIs2()) * tagemit_wakt_2 +
                     (it.amountOfDaysWithWorkActivityIs3()) * tagemit_wakt_3 +

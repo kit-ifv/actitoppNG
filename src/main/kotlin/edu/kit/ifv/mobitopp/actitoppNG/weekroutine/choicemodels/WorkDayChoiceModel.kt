@@ -20,12 +20,15 @@ val defaultWorkDayChoiceModel get() = DiscreteStructure<Int, PersonAlternative, 
                 (it.isParttimeEmployee()) * employmentPartTime +
                 (it.isStudent()) * employmentStudent +
                 (it.isVocational()) * employmentVocational +
-                (it.isAged10To17()) * ageIn10to17 +
-                (it.isAged18To25()) * ageIn18To25 +
-                (it.isAged26To35()) * ageIn26To35 +
-                (it.isAged36To50()) * ageIn36To50 +
-                (it.isAged51To60()) * ageIn51to60 +
-                (it.isAged61To70()) * ageIn61to70 +
+                when (it.age) {
+                    in 10..17 -> ageIn10to17
+                    in 18..25 -> ageIn18To25
+                    in 26..35 -> ageIn26To35
+                    in 36..50 -> ageIn36To50
+                    in 51..60 -> ageIn51to60
+                    in 61..70 -> ageIn61to70
+                    else -> 0.0
+                } +
                 (it.areaTypeConurbation()) * areaTypeConurburation +
                 (it.areaTypeRural()) * areaTypeRural +
                 (it.hasChildrenInHousehold()) * householdHasChildenBelowAge10 +
