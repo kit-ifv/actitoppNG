@@ -280,9 +280,6 @@ open class PlanAlternative<P : Any>(
     val isLastTourOfDay: Boolean = input.isLastTourOfDay
     val activityType: ActivityType = activity.activityType
 
-    // TODO communicate clearly that this interval check is an open end range, because the legacy code doesnt communicate that
-    val dauer_akt_tag: Duration get() = dayPlan.durationOfActivities()
-
     fun anztagemit_tourennachht(): Int {
         // TODO this number is always fixed and should be precalculated in the mobility plan
         return mobilityPlan.dayPlans.count { it.tourPlans.last().position == Position.AFTER }
@@ -301,7 +298,6 @@ open class PlanAlternative<P : Any>(
 
     fun tour3destages() = tourPlan == dayPlan.tourPlans.getOrNull(2)
     fun isStudent() = person.employment.isStudent()
-    fun isVocational() = person.employment == Employment.VOCATIONAL
     fun isAged10to17() = person.age in 10..17
     fun haupttour_work() = dayPlan.mainActivityType() == ActivityType.WORK
     fun haupttour_education() = dayPlan.mainActivityType() == ActivityType.EDUCATION
@@ -470,15 +466,6 @@ open class PlanAlternative<P : Any>(
 
     fun anztourenvorhaupttour() = dayPlan.tourPlans.count { it.position == Position.BEFORE }
     fun anztourennachhaupttour() = dayPlan.tourPlans.count { it.position == Position.AFTER }
-    fun endetourvorher_Std_12() = dayPlan.endOfPreviousTour(tourPlan) in 12.hours..<13.hours
-    fun endetourvorher_Std_13() = dayPlan.endOfPreviousTour(tourPlan) in 13.hours..<14.hours
-    fun endetourvorher_Std_14() = dayPlan.endOfPreviousTour(tourPlan) in 14.hours..<15.hours
-    fun endetourvorher_Std_15() = dayPlan.endOfPreviousTour(tourPlan) in 15.hours..<16.hours
-    fun endetourvorher_Std_16() = dayPlan.endOfPreviousTour(tourPlan) in 16.hours..<17.hours
-    fun endetourvorher_Std_17() = dayPlan.endOfPreviousTour(tourPlan) in 17.hours..<18.hours
-    fun endetourvorher_Std_18() = dayPlan.endOfPreviousTour(tourPlan) in 18.hours..<19.hours
-    fun endetourvorher_Std_19() = dayPlan.endOfPreviousTour(tourPlan) in 19.hours..<20.hours
-    fun endetourvorher_Std_20() = dayPlan.endOfPreviousTour(tourPlan) in 20.hours..<21.hours
 
     fun dauer_akt_in_tour_0bis2std() = tourPlan.activityDurations in 0.hours..<2.hours
     fun dauer_akt_in_tour_2bis4std() = tourPlan.activityDurations in 2.hours..<4.hours
@@ -516,24 +503,8 @@ open class PlanAlternative<P : Any>(
         return tourPlan.size == 1
     }
 
-    fun tourhat3akt(): Boolean {
-        return tourPlan.size == 3
-    }
-
     fun letztetourdestages(): Boolean {
         return isLastTourOfDay
-    }
-
-    fun beruf_vollzeit(): Boolean {
-        return person.employment == Employment.FULLTIME
-    }
-
-    fun beruf_teilzeit(): Boolean {
-        return person.employment.isParttime()
-    }
-
-    fun beruf_schueler_azubi(): Boolean {
-        return person.employment.isStudentOrAzubi()
     }
 
     fun taghat1akt(): Boolean {

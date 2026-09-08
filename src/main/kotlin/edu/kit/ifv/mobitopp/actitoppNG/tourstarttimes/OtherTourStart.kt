@@ -1,5 +1,6 @@
 package edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes
 
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudent
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitoppNG.performance.UtilityConverter
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.ActivityDurationHistograms
@@ -47,7 +48,7 @@ private val standardUtilityFunction10S: ParameterStep10S.(MainDurationAlternativ
                 20 -> endetourvorher_Std_20
                 else -> .0
             } +
-            (it.isStudent()) * beruf_schueler
+            (it.person.employment.isStudent()) * beruf_schueler
 
 }
 
