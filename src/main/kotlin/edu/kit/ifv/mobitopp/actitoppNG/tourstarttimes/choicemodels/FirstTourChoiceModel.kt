@@ -50,8 +50,11 @@ private val firstTourStartUtility: ParameterStep10M.(MainDurationAlternativeEnco
                 2 -> taghat2touren
                 else -> 0.0
             } +
-            (it.original.haupttour_work()) * haupttour_work +
-            (it.original.haupttour_education()) * haupttour_education +
+            when(it.tourMainActivity) {
+                ActivityType.WORK -> haupttour_work
+                ActivityType.EDUCATION -> haupttour_education
+                else -> 0.0
+            } +
             (it.original.touristhaupttour()) * touristhaupttour
 
 
