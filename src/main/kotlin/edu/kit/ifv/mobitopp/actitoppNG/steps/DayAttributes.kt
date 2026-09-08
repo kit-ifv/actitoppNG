@@ -27,8 +27,7 @@ interface DayStructureAttributes : DayAttributes {
  * When the day is completely structured, we can determine the amount of tours.
  */
 interface FullyQualifiedDayStructureAttributes : DayStructureAttributes {
-    fun amountOfToursIs1(): Boolean
-    fun amountOfToursIs2(): Boolean
+    fun amountOfTours(): Int
 }
 
 fun interface PartialTourLayoutAttributes {
@@ -45,8 +44,7 @@ class DayAttributesFromStructure(private val element: DayStructure) : PartialTou
     override val dayMainActivity: ActivityType = element.mainActivityType()
 
     override fun amountOfBeforeTours(): Int = element.amountOfPrecursorElements()
-    override fun amountOfToursIs1(): Boolean = element.amountOfElements() == 1
-    override fun amountOfToursIs2(): Boolean = element.amountOfElements() == 2
+    override fun amountOfTours() = element.amountOfElements()
 }
 
 class DayAttributesFromWeekday(element: DayOfWeek) : DayAttributes {

@@ -43,8 +43,11 @@ private val standardUtilityFunction: SideTourPrecursorParameters.(TourAlternativ
                 AgeEncoder.isAged51To60 -> alter_51bis60
                 else -> 0.0
             } +
-            (it.amountOfToursIs1()) * taghat1tour +
-            (it.amountOfToursIs2()) * taghat2touren +
+            when(it.amountOfTours()) {
+                1 -> taghat1tour
+                2 -> taghat2touren
+                else -> 0.0
+            } +
             (it.averageAmountOfActivitiesIs1()) * mean_1akt +
             (it.averageAmountOfActivitiesIs2()) * mean_2akt +
             (it.averageAmountOfActivitiesIs3()) * mean_3akt
