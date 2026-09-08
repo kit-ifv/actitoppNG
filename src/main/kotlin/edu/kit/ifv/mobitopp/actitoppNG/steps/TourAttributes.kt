@@ -16,23 +16,12 @@ interface TourPositionAttributes {
 }
 
 interface ActivityAmountAttributes {
-    fun numActivitiesBeforeMainActivityIs1(): Boolean
-    fun numActivitiesBeforeMainActivityIs2(): Boolean
-    fun numActivitiesBeforeMainActivityIs3(): Boolean
+    val numActivitiesBeforeMainActivity: Int
 }
 
 class ActivityAmountByNumber(val element: Int) : ActivityAmountAttributes {
-    override fun numActivitiesBeforeMainActivityIs1(): Boolean {
-        return element == 1
-    }
-
-    override fun numActivitiesBeforeMainActivityIs2(): Boolean {
-        return element == 2
-    }
-
-    override fun numActivitiesBeforeMainActivityIs3(): Boolean {
-        return element == 3
-    }
+    override val numActivitiesBeforeMainActivity: Int
+        get() = element
 }
 
 interface TourAttributes : TourPositionAttributes {
@@ -124,17 +113,8 @@ class TourAttributesByStructAndNumbers(
         return indexedTour.position == Position.AFTER
     }
 
-    override fun numActivitiesBeforeMainActivityIs1(): Boolean {
-        return indexedTour.element.amountOfPrecursorElements() + precursorActivityCount == 1
-    }
-
-    override fun numActivitiesBeforeMainActivityIs2(): Boolean {
-        return indexedTour.element.amountOfPrecursorElements() + precursorActivityCount == 2
-    }
-
-    override fun numActivitiesBeforeMainActivityIs3(): Boolean {
-        return indexedTour.element.amountOfPrecursorElements() + precursorActivityCount == 3
-    }
+    override val numActivitiesBeforeMainActivity: Int
+        get() = indexedTour.element.amountOfPrecursorElements() + precursorActivityCount
 }
 
 class TourAttributesByIndexedStructure(private val indexedTour: BidirectionalIndexedValue<TourStructure>) :
@@ -176,17 +156,8 @@ class TourAttributesByIndexedStructure(private val indexedTour: BidirectionalInd
         return indexedTour.element.mainActivityType() == ActivityType.TRANSPORT
     }
 
-    override fun numActivitiesBeforeMainActivityIs1(): Boolean {
-        return indexedTour.element.amountOfPrecursorElements() == 1
-    }
-
-    override fun numActivitiesBeforeMainActivityIs2(): Boolean {
-        return indexedTour.element.amountOfPrecursorElements() == 2
-    }
-
-    override fun numActivitiesBeforeMainActivityIs3(): Boolean {
-        return indexedTour.element.amountOfPrecursorElements() == 3
-    }
+    override val numActivitiesBeforeMainActivity: Int
+        get() = indexedTour.element.amountOfPrecursorElements()
 
     override fun tourHas2Activities(): Boolean {
         return indexedTour.element.amountOfElements() == 2

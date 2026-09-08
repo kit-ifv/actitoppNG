@@ -29,9 +29,12 @@ private val standardUtilityFunction: SideTourSuccessorParameters.(TourAlternativ
     base +
             (it.isBeforeMainTour()) * tourliegtvorhaupttour +
             (it.isAfterMainTour()) * tourliegtnachhaupttour +
-            (it.numActivitiesBeforeMainActivityIs1()) * anzaktvorhauptaktist1 +
-            (it.numActivitiesBeforeMainActivityIs2()) * anzaktvorhauptaktist2 +
-            (it.numActivitiesBeforeMainActivityIs3()) * anzaktvorhauptaktist3 +
+            when(it.numActivitiesBeforeMainActivity) {
+                1 -> anzaktvorhauptaktist1
+                2 -> anzaktvorhauptaktist2
+                3 -> anzaktvorhauptaktist3
+                else -> 0.0
+            } +
             (it.tourMainActivityIsWork()) * tourtyp_work +
             (it.tourMainActivityIsEducation()) * tourtyp_education +
             when (it.dayOfWeek) {
