@@ -127,8 +127,11 @@ private val standardUtilityFunction8D: ParameterStep8D.(MainDurationAlternative)
                 3 -> tourhat3akt
                 else -> .0
             } +
-            (it.taghat2akt()) * taghat2akt +
-            (it.taghat3akt()) * taghat3akt +
+            when(it.dayPlanAmountOfActivities) {
+                2 -> taghat2akt
+                3 -> taghat3akt
+                else -> 0.0
+            } +
             (it.letztetourdestages()) * letztetourdestages +
             (it.taghat2touren()) * taghat2touren +
             when (employmentCode) {

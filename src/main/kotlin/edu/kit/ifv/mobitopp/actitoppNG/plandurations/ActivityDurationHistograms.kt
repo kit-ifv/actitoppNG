@@ -383,26 +383,6 @@ open class PlanAlternative<P : Any>(
         return activityType == ActivityType.TRANSPORT
     }
 
-    fun taghat2akt(): Boolean {
-        return dayPlan.amountOfActivities == 2
-    }
-
-    fun taghat3akt(): Boolean {
-        return dayPlan.amountOfActivities == 3
-    }
-
-    fun taghat4akt(): Boolean {
-        return dayPlan.amountOfActivities == 4
-    }
-
-    fun taghat5akt(): Boolean {
-        return dayPlan.amountOfActivities == 5
-    }
-
-    fun taghat6akt(): Boolean {
-        return dayPlan.amountOfActivities == 6
-    }
-
     fun tourtyp_work(): Boolean {
         return tourPlan.mainActivity.activityType == ActivityType.WORK
     }
@@ -507,9 +487,7 @@ open class PlanAlternative<P : Any>(
         return isLastTourOfDay
     }
 
-    fun taghat1akt(): Boolean {
-        return dayPlan.amountOfActivities == 1
-    }
+    val dayPlanAmountOfActivities: Int = dayPlan.amountOfActivities
 }
 
 class MainDurationAlternative(
