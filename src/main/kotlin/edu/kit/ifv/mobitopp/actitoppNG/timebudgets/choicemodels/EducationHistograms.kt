@@ -2,6 +2,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.timebudgets.choicemodels
 
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
+import edu.kit.ifv.mobitopp.actitoppNG.performance.AgeEncoder
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.HistogramSelection
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
@@ -20,8 +21,8 @@ val educationHistograms get() =
             base +
                     (it.amountOfWorkActivitiesInWeek) * anzakt_woche_w +
                     (it.amountOfEducationActivitiesInWeek) * anzakt_woche_e +
-                    when (it.age) {
-                        in 10..17 -> alter_10bis17
+                    when (it.ageCode) {
+                        AgeEncoder.isAged10To17 -> alter_10bis17
                         else -> 0.0
                     } +
                     when (it.employment) {

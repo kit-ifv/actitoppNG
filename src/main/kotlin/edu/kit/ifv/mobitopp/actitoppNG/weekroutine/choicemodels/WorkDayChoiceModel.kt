@@ -5,6 +5,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
 import edu.kit.ifv.mobitopp.actitoppNG.enums.isParttime
 import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudent
+import edu.kit.ifv.mobitopp.actitoppNG.performance.AgeEncoder
 import edu.kit.ifv.mobitopp.actitoppNG.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.WorkDaySet
@@ -26,13 +27,13 @@ val defaultWorkDayChoiceModel get() = DiscreteStructure<Int, PersonAlternative, 
                     Employment.VOCATIONAL -> employmentVocational
                     else -> 0.0
                 } +
-                when (it.age) {
-                    in 10..17 -> ageIn10to17
-                    in 18..25 -> ageIn18To25
-                    in 26..35 -> ageIn26To35
-                    in 36..50 -> ageIn36To50
-                    in 51..60 -> ageIn51to60
-                    in 61..70 -> ageIn61to70
+                when (it.ageCode) {
+                    AgeEncoder.isAged10To17 -> ageIn10to17
+                    AgeEncoder.isAged18To25-> ageIn18To25
+                    AgeEncoder.isAged26To35 -> ageIn26To35
+                    AgeEncoder.isAged36To50 -> ageIn36To50
+                    AgeEncoder.isAged51To60 -> ageIn51to60
+                    AgeEncoder.isAged61To70 -> ageIn61to70
                     else -> 0.0
                 } +
                 (it.areaTypeConurbation()) * areaTypeConurburation +

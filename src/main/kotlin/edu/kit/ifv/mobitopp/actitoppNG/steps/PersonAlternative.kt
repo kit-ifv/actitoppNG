@@ -3,12 +3,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.steps
 import edu.kit.ifv.mobitopp.actitoppNG.Person
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Gender
-import edu.kit.ifv.mobitopp.actitoppNG.enums.isEarning
-import edu.kit.ifv.mobitopp.actitoppNG.enums.isEmployedAnywhere
-import edu.kit.ifv.mobitopp.actitoppNG.enums.isNotEarning
-import edu.kit.ifv.mobitopp.actitoppNG.enums.isParttime
-import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudent
-import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudentOrAzubi
+import edu.kit.ifv.mobitopp.actitoppNG.performance.AgeEncoder
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.WeekRoutine
 
 /**
@@ -16,7 +11,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.WeekRoutine
  * code. Once the rewrite is complete most of these conditions could be inlined in the utility functions.
  */
 interface PersonAttributes {
-    val age: Int
+    val ageCode: Int
     fun isMale(): Boolean
     fun commuteIn0To5km(): Boolean
     fun commuteIn5To10km(): Boolean
@@ -27,7 +22,7 @@ interface PersonAttributes {
 }
 
 class PersonAttributesFromElement(val person: Person) : PersonAttributes {
-    override val age = person.age
+    override val ageCode: Int = AgeEncoder.encode(person.age)
     override fun isMale() = person.gender == Gender.MALE
     override fun commuteIn0To5km() = person.maxCommute in 0.0..5.0
     override fun commuteIn5To10km() = person.maxCommute in 5.0..10.0

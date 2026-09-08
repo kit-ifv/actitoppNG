@@ -3,11 +3,8 @@ package edu.kit.ifv.mobitopp.actitoppNG.performance
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.DurationDay
-import edu.kit.ifv.mobitopp.actitoppNG.performance.UtilityConverter.convertToOneHourBlock
-import edu.kit.ifv.mobitopp.actitoppNG.performance.UtilityConverter.convertToWeightedMinuteBlock
 import java.time.DayOfWeek
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 /**
@@ -114,5 +111,39 @@ object UtilityConverter {
     fun convertToOneHourBlock(duration: Duration): Int {
         return duration.inWholeHours.toInt()
     }
+}
 
+
+object AgeEncoder {
+    const val isAged1OrLess = -1
+    const val isAged10To17 = 0
+    const val isAged18To25 = 1
+    const val isAged26To35 = 2
+    const val isAged36To50 = 3
+    const val isAged51To60 = 4
+    const val isAged61To70 = 5
+    const val isAged71ToInfty = 6
+    /**
+     * Encodes Age the following way.
+     * -1 -> <10
+     * 0 -> 10 - 17
+     * 1 -> 18 - 25
+     * 2 -> 25 - 34
+     * 3 -> 35 - 50
+     * 4 -> 51 - 60
+     * 5 -> 61 - 70
+     * 6 -> >= 71
+     */
+    fun encode(age: Int): Int {
+        return when (age) {
+            in 10..17 -> isAged10To17
+            in 18..25 -> isAged18To25
+            in 26..35 -> isAged26To35
+            in 36..50 -> isAged36To50
+            in 51..60 -> isAged51To60
+            in 61..70 -> isAged61To70
+            in 71..Int.MAX_VALUE -> isAged71ToInfty
+            else -> isAged1OrLess
+        }
+    }
 }

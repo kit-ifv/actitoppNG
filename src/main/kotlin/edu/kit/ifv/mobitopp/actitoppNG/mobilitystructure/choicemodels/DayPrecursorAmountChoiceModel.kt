@@ -8,6 +8,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.PrecursorTourAmountParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.PrecursorTourAmountSet
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.PreviousDayAlternative
+import edu.kit.ifv.mobitopp.actitoppNG.performance.AgeEncoder
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
 import java.time.DayOfWeek
@@ -27,7 +28,7 @@ data class PreviousDayAlternativeEncodedRaw(
     val dayMainActivity: ActivityType,
     val weekDay: DayOfWeek,
     val isMale: Boolean,
-    val age: Int,
+    val ageCode: Int,
     val commuteIn0To5km: Boolean,
     val averageAmountOfToursIs1: Boolean,
     val averageAmountOfToursIs2: Boolean,
@@ -39,7 +40,7 @@ data class PreviousDayAlternativeEncodedRaw(
         dayMainActivity = raw.dayMainActivity,
         weekDay = raw.dayOfWeek,
         isMale = raw.isMale(),
-        age = raw.age,
+        ageCode = raw.ageCode,
         commuteIn0To5km = raw.commuteIn0To5km(),
         averageAmountOfToursIs1 = raw.averageAmountOfToursIs1(),
         averageAmountOfToursIs2 = raw.averageAmountOfToursIs2(),
@@ -63,11 +64,11 @@ private val standardUtilityFunction: PrecursorTourAmountParameters.(PreviousDayA
                 else -> 0.0
             } +
             (it.isMale) * male +
-            when(it.age) {
-                in 10..17 -> age10To17
-                in 26..35 -> aged26To35
-                in 36..50 -> aged36To50
-                in 51..60 -> aged51To60
+            when(it.ageCode) {
+                AgeEncoder.isAged10To17 -> age10To17
+                AgeEncoder.isAged26To35 -> aged26To35
+                AgeEncoder.isAged36To50 -> aged36To50
+                AgeEncoder.isAged51To60 -> aged51To60
                 else -> 0.0
             } +
             (it.commuteIn0To5km) * commuteIn0To5km +

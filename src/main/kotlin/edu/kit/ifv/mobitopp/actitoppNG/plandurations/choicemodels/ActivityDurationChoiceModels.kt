@@ -4,11 +4,8 @@ import edu.kit.ifv.discretechoice.extensions.SingularUtilityStructureBuilder
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.performance.UtilityConverter
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.ActivityDurationHistograms
-import edu.kit.ifv.mobitopp.actitoppNG.plandurations.HistogramSelector
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.MainDurationAlternative
-import edu.kit.ifv.mobitopp.actitoppNG.plandurations.TaintedActivityDurationHistograms
-import edu.kit.ifv.mobitopp.actitoppNG.plandurations.TaintedHistogramSelector
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.generateHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterStep8B
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterStep8D
@@ -17,8 +14,6 @@ import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParametersStep8D
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.utils.I
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
-import kotlin.random.Random
-import kotlin.time.Duration
 
 
 private val minorFunction: ParameterStep8J.(MainDurationAlternative) -> Double = {

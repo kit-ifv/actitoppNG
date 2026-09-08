@@ -6,6 +6,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
 import edu.kit.ifv.mobitopp.actitoppNG.enums.isParttime
 import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudent
+import edu.kit.ifv.mobitopp.actitoppNG.performance.AgeEncoder
 import edu.kit.ifv.mobitopp.actitoppNG.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.ActivityAmountSet
@@ -29,11 +30,11 @@ val activityAmountChoiceModel get() = DiscreteStructure<Int, PersonAlternative, 
                     in isStudent -> beruf_schueler
                     else -> 0.0
                 } +
-                when(it.age) {
-                    in 26..35 -> alter_26bis35
-                    in 36..50 -> alter_36bis50
-                    in 51..60 -> alter_51bis60
-                    in 61..70 -> alter_61bis70
+                when(it.ageCode) {
+                    AgeEncoder.isAged26To35 -> alter_26bis35
+                    AgeEncoder.isAged36To50 -> alter_36bis50
+                    AgeEncoder.isAged51To60 -> alter_51bis60
+                    AgeEncoder.isAged61To70 -> alter_61bis70
                     else -> 0.0
                 } +
                 (it.areaTypeRural()) * Raumtyp_mobitopp_rural +

@@ -8,6 +8,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
 import edu.kit.ifv.mobitopp.actitoppNG.enums.isEarning
 import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudent
+import edu.kit.ifv.mobitopp.actitoppNG.performance.AgeEncoder
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.EducationDaySet
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
@@ -27,11 +28,11 @@ val educationDaysChoiceModel get() = DiscreteStructure<Int, PersonAlternative, E
                     in isEarning -> employmentIsEarning
                     else -> 0.0
                 } +
-                when(it.age) {
-                    in 10..17 -> ageIn10to17
-                    in 18..25 -> ageIn18To25
-                    in 26..35 -> ageIn26To35
-                    in 36..50 -> ageIn36To50
+                when(it.ageCode) {
+                    AgeEncoder.isAged10To17 -> ageIn10to17
+                    AgeEncoder.isAged18To25 -> ageIn18To25
+                    AgeEncoder.isAged26To35-> ageIn26To35
+                    AgeEncoder.isAged36To50 -> ageIn36To50
                     else -> 0.0
                 } +
                 it.amountOfWorkingDays() * amountOfWorkingDays

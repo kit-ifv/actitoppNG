@@ -4,6 +4,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
 import edu.kit.ifv.mobitopp.actitoppNG.enums.isParttime
 import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudent
+import edu.kit.ifv.mobitopp.actitoppNG.performance.AgeEncoder
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.HistogramSelection
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
@@ -28,11 +29,11 @@ val workHistograms get() =
                         else -> 0.0
                     } +
                     (it.isMale()) * male +
-                    when (it.age) {
-                        in 18..25 -> alter_18bis25
-                        in 26..35 -> alter_26bis35
-                        in 36..50 -> alter_36bis50
-                        in 51..60 -> alter_51bis60
+                    when (it.ageCode) {
+                        AgeEncoder.isAged18To25 -> alter_18bis25
+                        AgeEncoder.isAged26To35 -> alter_26bis35
+                        AgeEncoder.isAged36To50 -> alter_36bis50
+                        AgeEncoder.isAged51To60 -> alter_51bis60
                         else -> 0.0
                     } +
                     when(it.amountOfDaysWithWorkActivity) {

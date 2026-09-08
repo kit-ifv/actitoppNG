@@ -5,6 +5,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourPrecursorParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourPrecursorSet
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.TourAlternativeInt
+import edu.kit.ifv.mobitopp.actitoppNG.performance.AgeEncoder
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
 import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
@@ -36,10 +37,10 @@ private val standardUtilityFunction: SideTourPrecursorParameters.(TourAlternativ
                 DayOfWeek.SUNDAY -> tag_so
                 else -> 0.0
             } +
-            when (it.age) {
-                in 18..35 -> alter_18bis35
-                in 36..50 -> alter_36bis50
-                in 51..60 -> alter_51bis60
+            when (it.ageCode) {
+                AgeEncoder.isAged18To25, AgeEncoder.isAged26To35 -> alter_18bis35
+                AgeEncoder.isAged36To50 -> alter_36bis50
+                AgeEncoder.isAged51To60 -> alter_51bis60
                 else -> 0.0
             } +
             (it.amountOfToursIs1()) * taghat1tour +
