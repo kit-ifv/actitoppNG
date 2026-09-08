@@ -40,7 +40,7 @@ private val standardUtilityFunction: SideTourSuccessorParameters.(TourAlternativ
                 else -> 0.0
             } +
             when(it.ageCode) {
-                AgeEncoder.isAged18To25 -> alter_18bis35
+                AgeEncoder.isAged18To25, AgeEncoder.isAged26To35 -> alter_18bis35
                 AgeEncoder.isAged36To50 -> alter_36bis50
                 AgeEncoder.isAged51To60 -> alter_51bis60
                 else -> 0.0
