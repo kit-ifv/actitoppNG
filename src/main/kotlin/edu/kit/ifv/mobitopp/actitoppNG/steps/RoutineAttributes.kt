@@ -16,8 +16,7 @@ interface RoutineAttributes {
     fun has5WorkDays(): Boolean
     fun has5EducationDays(): Boolean
 
-    fun averageAmountOfToursIs1(): Boolean
-    fun averageAmountOfToursIs2(): Boolean
+    val averageAmountOfTours: Int
 
     val averageAmountOfActivities: Int
 }
@@ -31,9 +30,6 @@ class RoutineAttributesFromElement(val element: WeekRoutine) : RoutineAttributes
     override val amountOfImmobileDays = element.amountOfImmobileDays
     override fun has5WorkDays() = element.amountOfWorkingDays == 5
     override fun has5EducationDays() = element.amountOfEducationDays == 5
-    override fun averageAmountOfToursIs1(): Boolean = element.averageAmountOfTours == 1
-
-    override fun averageAmountOfToursIs2(): Boolean = element.averageAmountOfTours == 2
-
+    override val averageAmountOfTours: Int = element.averageAmountOfTours
     override val averageAmountOfActivities: Int = element.averageAmountOfActivities
 }
