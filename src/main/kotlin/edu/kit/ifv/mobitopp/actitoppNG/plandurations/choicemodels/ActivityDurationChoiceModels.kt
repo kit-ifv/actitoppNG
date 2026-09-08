@@ -16,16 +16,24 @@ import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.utils.I
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 
+data class MinorFunctionEncodedCharacteristic(
+    val durationMainActCode: Int,
+    val averageTimeOfActivityCode: Int,
+    val numberOfActivities: Int,
+    val original: MainDurationAlternative
+) {
+    constructor(alternative: MainDurationAlternative) : this(
+        durationMainActCode= UtilityConverter.convertToTwoHourBlock(alternative.dayPlan.durationOfMainActivities)
+            .coerceAtMost(7),
+        averageTimeOfActivityCode= UtilityConverter.convertToFifteenMinuteBlock(alternative.dayPlan.getBudget(alternative.activityType)),
+        numberOfActivities= alternative.dayPlan.amountOfActivities,
+        original= alternative
+    )
+}
 
-private val minorFunction: ParameterStep8J.(MainDurationAlternative) -> Double = {
-
-//    val durationMainAct = it.dayPlan.durationOfMainActivities
-    val durationMainActCode = UtilityConverter.convertToTwoHourBlock(it.dayPlan.durationOfMainActivities)
-        .coerceAtMost(7)
-    val averageTimeOfActivityCode = UtilityConverter.convertToFifteenMinuteBlock(it.dayPlan.getBudget(it.activityType))
-    val numberOfActivities = it.dayPlan.amountOfActivities
+private val minorFunction: ParameterStep8J.(MinorFunctionEncodedCharacteristic) -> Double = {
     base +
-            when (durationMainActCode) {
+            when (it.durationMainActCode) {
                 2 -> dauer_hauptakt_tag_4bis6std
                 3 -> dauer_hauptakt_tag_6bis8std
                 4 -> dauer_hauptakt_tag_8bis10std
@@ -34,7 +42,7 @@ private val minorFunction: ParameterStep8J.(MainDurationAlternative) -> Double =
                 7 -> dauer_hauptakt_tag_ueber14std
                 else -> .0
             } +
-            when (averageTimeOfActivityCode) {
+            when (it.averageTimeOfActivityCode) {
                 0 -> mittl_zeit_akt_1bis14min
                 1 -> mittl_zeit_akt_15bis29min
                 2, 3 -> mittl_zeit_akt_30bis59min
@@ -42,15 +50,15 @@ private val minorFunction: ParameterStep8J.(MainDurationAlternative) -> Double =
                 else -> .0
 
             } +
-            (it.tag_so()) * tag_so +
-            when (it.activityType) {
+            (it.original.tag_so()) * tag_so +
+            when (it.original.activityType) {
                 ActivityType.WORK -> aktzweck_work
                 ActivityType.EDUCATION -> aktzweck_education
                 ActivityType.SHOPPING -> aktzweck_shopping
                 ActivityType.TRANSPORT -> aktzweck_transport
                 else -> 0.0
             } +
-            when (numberOfActivities) {
+            when (it.numberOfActivities) {
                 2 -> taghat2akt
                 3 -> taghat3akt
                 4 -> taghat4akt
@@ -58,19 +66,19 @@ private val minorFunction: ParameterStep8J.(MainDurationAlternative) -> Double =
                 6 -> taghat6akt
                 else -> .0
             } +
-            when (it.tourPlan.mainActivity.activityType) {
+            when (it.original.tourPlan.mainActivity.activityType) {
               ActivityType.WORK -> tourtyp_work
               ActivityType.EDUCATION -> tourtyp_education
               ActivityType.SHOPPING -> tourtyp_shopping
               ActivityType.TRANSPORT -> tourtyp_transport
                 else -> .0
             } +
-            (it.tourhat2akt()) * tourhat2akt +
-            (it.taghat1tour()) * taghat1tour +
-            (it.taghat2touren()) * taghat2touren +
-            (it.aktliegtvorhauptakt()) * aktliegtvorhauptakt +
-            (it.tourliegtvorhaupttour()) * tourliegtvorhaupttour +
-            (it.tourliegtnachhaupttour()) * tourliegtnachhaupttour
+            (it.original.tourhat2akt()) * tourhat2akt +
+            (it.original.taghat1tour()) * taghat1tour +
+            (it.original.taghat2touren()) * taghat2touren +
+            (it.original.aktliegtvorhauptakt()) * aktliegtvorhauptakt +
+            (it.original.tourliegtvorhaupttour()) * tourliegtvorhaupttour +
+            (it.original.tourliegtnachhaupttour()) * tourliegtnachhaupttour
 
 }
 
@@ -202,7 +210,7 @@ val MINOR
         ArrayHistogram.fromResource(
             identifier = Identifier.MINOR_ACTIVITY_DURATION
         ),
-        { it },
+        { MinorFunctionEncodedCharacteristic(it) },
         minorFunction,
     )
 

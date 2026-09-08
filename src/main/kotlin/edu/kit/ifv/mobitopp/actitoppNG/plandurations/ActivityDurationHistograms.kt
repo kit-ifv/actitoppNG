@@ -281,11 +281,7 @@ open class PlanAlternative<P : Any>(
     val activityType: ActivityType = activity.activityType
 
     // TODO communicate clearly that this interval check is an open end range, because the legacy code doesnt communicate that
-    fun dauer_akt_tag_4bis6std(): Boolean = dayPlan.durationOfActivities() in 4.hours..<6.hours
-    fun dauer_akt_tag_6bis8std(): Boolean = dayPlan.durationOfActivities() in 6.hours..<8.hours
-    fun dauer_akt_tag_8bis10std(): Boolean = dayPlan.durationOfActivities() in 8.hours..<10.hours
-    fun dauer_akt_tag_10bis12std(): Boolean = dayPlan.durationOfActivities() in 10.hours..<12.hours
-    fun dauer_akt_tag_12bis14std(): Boolean = dayPlan.durationOfActivities() in 12.hours..<14.hours
+    val dauer_akt_tag: Duration get() = dayPlan.durationOfActivities()
 
     fun anztagemit_tourennachht(): Int {
         // TODO this number is always fixed and should be precalculated in the mobility plan
