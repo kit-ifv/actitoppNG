@@ -56,12 +56,24 @@ private val standardUtilityFunction: SideTourMainActivityParameters.(TourAlterna
                 else -> 0.0
             } +
             (it.isBeforeMainTour) * beforeMainTour +
-            (it.amountOfWorkingDaysIs0()) * noWorkDays +
-            (it.amountOfEducationDaysIs0()) * noEducationDays +
-            (it.amountOfShoppingDaysIs0()) * noShoppingDays +
-            (it.amountOfServiceDaysIs0()) * noTransportDays +
-            (it.amountOfWorkingDaysIs1()) * oneWorkDay +
-            (it.amountOfEducationDaysIs1()) * oneEducationDay +
-            (it.amountOfShoppingDaysIs1()) * oneShoppingDay +
-            (it.amountOfServiceDaysIs1()) * oneTransportDay
+            when(it.amountOfWorkingDays) {
+                0 -> noWorkDays
+                1 -> oneWorkDay
+                else -> 0.0
+            } +
+            when(it.amountOfEducationDays) {
+                0 -> noEducationDays
+                1 -> oneEducationDay
+                else -> 0.0
+            } +
+            when(it.amountOfShoppingDays) {
+                0 -> noShoppingDays
+                1 -> oneShoppingDay
+                else -> 0.0
+            } +
+            when(it.amountOfServiceDays) {
+                0 -> noTransportDays
+                1 -> oneTransportDay
+                else -> 0.0
+            }
 }

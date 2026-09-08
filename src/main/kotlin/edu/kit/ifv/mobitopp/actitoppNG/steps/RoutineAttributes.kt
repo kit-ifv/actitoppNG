@@ -7,56 +7,33 @@ import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.WeekRoutine
  * actually implement is [RoutineAttributesFromElement]
  */
 interface RoutineAttributes {
-
-    fun amountOfWorkingDays(): Int
-    fun amountOfLeisureDays(): Int
-    fun amountOfEducationDays(): Int
-    fun amountOfShoppingDays(): Int
-    fun amountOfServiceDays(): Int
-    fun amountOfImmobileDays(): Int
+    val amountOfWorkingDays: Int
+    val amountOfLeisureDays: Int
+    val amountOfEducationDays: Int
+    val amountOfShoppingDays: Int
+    val amountOfServiceDays: Int
+    val amountOfImmobileDays: Int
     fun has5WorkDays(): Boolean
     fun has5EducationDays(): Boolean
 
     fun averageAmountOfToursIs1(): Boolean
     fun averageAmountOfToursIs2(): Boolean
-    fun amountOfWorkingDaysIs0(): Boolean
-    fun amountOfLeisureDaysIs0(): Boolean
-    fun amountOfEducationDaysIs0(): Boolean
-    fun amountOfShoppingDaysIs0(): Boolean
-    fun amountOfServiceDaysIs0(): Boolean
-
-    fun amountOfWorkingDaysIs1(): Boolean
-    fun amountOfLeisureDaysIs1(): Boolean
-    fun amountOfEducationDaysIs1(): Boolean
-    fun amountOfShoppingDaysIs1(): Boolean
-    fun amountOfServiceDaysIs1(): Boolean
 
     val averageAmountOfActivities: Int
 }
 
 class RoutineAttributesFromElement(val element: WeekRoutine) : RoutineAttributes {
-    override fun amountOfWorkingDays() = element.amountOfWorkingDays
-    override fun amountOfLeisureDays() = element.amountOfLeisureDays
-    override fun amountOfEducationDays() = element.amountOfEducationDays
-    override fun amountOfShoppingDays() = element.amountOfShoppingDays
-    override fun amountOfServiceDays() = element.amountOfServiceDays
-    override fun amountOfImmobileDays() = element.amountOfImmobileDays
+    override val amountOfWorkingDays = element.amountOfWorkingDays
+    override val amountOfLeisureDays = element.amountOfLeisureDays
+    override val amountOfEducationDays = element.amountOfEducationDays
+    override val amountOfShoppingDays = element.amountOfShoppingDays
+    override val amountOfServiceDays = element.amountOfServiceDays
+    override val amountOfImmobileDays = element.amountOfImmobileDays
     override fun has5WorkDays() = element.amountOfWorkingDays == 5
     override fun has5EducationDays() = element.amountOfEducationDays == 5
     override fun averageAmountOfToursIs1(): Boolean = element.averageAmountOfTours == 1
 
     override fun averageAmountOfToursIs2(): Boolean = element.averageAmountOfTours == 2
-
-    override fun amountOfWorkingDaysIs0(): Boolean = element.amountOfWorkingDays == 0
-    override fun amountOfLeisureDaysIs0(): Boolean = element.amountOfLeisureDays == 0
-    override fun amountOfEducationDaysIs0(): Boolean = element.amountOfEducationDays == 0
-    override fun amountOfShoppingDaysIs0(): Boolean = element.amountOfShoppingDays == 0
-    override fun amountOfServiceDaysIs0(): Boolean = element.amountOfServiceDays == 0
-    override fun amountOfWorkingDaysIs1(): Boolean = element.amountOfWorkingDays == 1
-    override fun amountOfLeisureDaysIs1(): Boolean = element.amountOfLeisureDays == 1
-    override fun amountOfEducationDaysIs1(): Boolean = element.amountOfEducationDays == 1
-    override fun amountOfShoppingDaysIs1(): Boolean = element.amountOfShoppingDays == 1
-    override fun amountOfServiceDaysIs1(): Boolean = element.amountOfServiceDays == 1
 
     override val averageAmountOfActivities: Int = element.averageAmountOfActivities
 }

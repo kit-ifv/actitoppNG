@@ -96,12 +96,12 @@ data class DayAlternativeEncoded(
         amountOfYouthsInHousehold = alternative.amountOfYouthsInHousehold(),
         has5WorkDays = alternative.has5WorkDays().D,
         has5EduDays = alternative.has5EducationDays().D,
-        amountWorkingDays = alternative.amountOfWorkingDays(),
-        amountEducationDays = alternative.amountOfEducationDays(),
-        amountLeisureDays = alternative.amountOfLeisureDays(),
-        amountShoppingDays = alternative.amountOfShoppingDays(),
-        amountServiceDays = alternative.amountOfServiceDays(),
-        amountImmobileDays = alternative.amountOfImmobileDays(),
+        amountWorkingDays = alternative.amountOfWorkingDays,
+        amountEducationDays = alternative.amountOfEducationDays,
+        amountLeisureDays = alternative.amountOfLeisureDays,
+        amountShoppingDays = alternative.amountOfShoppingDays,
+        amountServiceDays = alternative.amountOfServiceDays,
+        amountImmobileDays = alternative.amountOfImmobileDays,
         isStandardWorkingDay = alternative.isStandardWorkingDay,
     )
 }
