@@ -48,7 +48,10 @@ private val standardUtilityFunction: SideTourPrecursorParameters.(TourAlternativ
                 2 -> taghat2touren
                 else -> 0.0
             } +
-            (it.averageAmountOfActivitiesIs1()) * mean_1akt +
-            (it.averageAmountOfActivitiesIs2()) * mean_2akt +
-            (it.averageAmountOfActivitiesIs3()) * mean_3akt
+            when(it.averageAmountOfActivities) {
+                1 -> mean_1akt
+                2 -> mean_2akt
+                3 -> mean_3akt
+                else -> 0.0
+            }
 }
