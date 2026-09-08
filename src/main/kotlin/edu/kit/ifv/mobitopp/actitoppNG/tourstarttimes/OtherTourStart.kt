@@ -77,5 +77,6 @@ val OTHER_TOUR_HISTOGRAM = ParametersStep10S.generateHistogram(
     ArrayHistogram.fromResource(
         identifier = Identifier.OTHER_TOUR_START_TIME
     ),
+    { it },
     standardUtilityFunction10S
 )

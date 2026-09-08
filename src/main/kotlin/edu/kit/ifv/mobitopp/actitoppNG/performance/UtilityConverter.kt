@@ -52,19 +52,6 @@ object UtilityConverter {
     }
 
     /**
-     *    0 EDUCATION(340),
-     *    1 HOME(),
-     *    2 LEISURE(130),
-     *    3 SHOPPING(41),
-     *    4 TRANSPORT(15),
-     *    5 WORK(472);
-     *
-     */
-    fun convertActivityType(activityType: ActivityType): Int {
-        return activityType.ordinal
-    }
-
-    /**
      * Return an int representing which two hour block the duration is belonging to.
      *
      * 0..1h59m -> 0

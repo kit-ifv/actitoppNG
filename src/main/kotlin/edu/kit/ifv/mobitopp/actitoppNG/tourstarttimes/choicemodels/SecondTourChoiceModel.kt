@@ -131,5 +131,6 @@ val SECOND_TOUR_HISTOGRAM
 
             identifier = Identifier.SECOND_TOUR_START_TIME
         ),
+        { it },
         standardUtilityFunction10O
     )

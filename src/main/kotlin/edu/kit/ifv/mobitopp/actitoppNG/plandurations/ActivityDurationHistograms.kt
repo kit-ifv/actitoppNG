@@ -12,6 +12,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInput
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.plan.DayPlan
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.plan.MobilityPlan
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.plan.TourPlan
+import edu.kit.ifv.mobitopp.actitoppNG.performance.UtilityConverter
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.CorruptorFactory
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.TimeBudgets
@@ -248,14 +249,15 @@ enum class Identifier(val id: String, val resourceName: String) {
     }
 }
 
-fun <P : List<T>, T> P.generateHistogram(
+fun <P : List<T>, T, C> P.generateHistogram(
     histograms: List<ArrayHistogram>,
-    utilityFunction: T.(MainDurationAlternative) -> Double,
+    characteristicConverter: (MainDurationAlternative) -> C,
+    utilityFunction: T.(C) -> Double,
 ): ActivityDurationHistograms {
 
     val choiceModel = DiscreteStructure<ArrayHistogram, MainDurationAlternative, P> {
         loadFromList(histograms) { _, it ->
-            utilityFunction(this, it)
+            utilityFunction(this, characteristicConverter(it))
         }
     }.multinomialLogit("Histogram selection Choice model").build(this)
 
@@ -548,6 +550,20 @@ class MainDurationAlternative(
 ) : PlanAlternative<ArrayHistogram>(
     input
 )
+
+data class MainDurationAlternativeEncoded(
+    val durationOfActivities: Int,
+    val employmentCode: Int,
+    val tourActivity: ActivityType,
+    val original: MainDurationAlternative
+) {
+    constructor(alternative: MainDurationAlternative) : this(
+        durationOfActivities = UtilityConverter.convertToTwoHourBlock(alternative.dayPlan.durationOfActivities()),
+        employmentCode = UtilityConverter.convertEmployment(alternative.person.employment),
+        tourActivity= alternative.tourPlan.mainActivity.activityType,
+        original = alternative
+    )
+}
 
 open class BooleanDecisionAlternative(
     input: MobilityPlanInputs,

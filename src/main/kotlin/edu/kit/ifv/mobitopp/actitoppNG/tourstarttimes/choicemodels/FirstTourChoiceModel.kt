@@ -1,40 +1,35 @@
 package edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.choicemodels
 
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
-import edu.kit.ifv.mobitopp.actitoppNG.performance.UtilityConverter
+import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.ActivityDurationHistograms
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
-import edu.kit.ifv.mobitopp.actitoppNG.plandurations.MainDurationAlternative
+import edu.kit.ifv.mobitopp.actitoppNG.plandurations.MainDurationAlternativeEncoded
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.generateHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
-import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParameterCollectionStep10M
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParameterStep10M
-
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 
 
-private val firstTourStartUtility: ParameterStep10M.(MainDurationAlternative) -> Double = {
-    val durationOfActivities = UtilityConverter.convertToTwoHourBlock(it.dayPlan.durationOfActivities())
-    val employmentCode = UtilityConverter.convertEmployment(it.person.employment)
-    val tourActivityTypeCode = UtilityConverter.convertActivityType(it.tourPlan.mainActivity.activityType)
+private val firstTourStartUtility: ParameterStep10M.(MainDurationAlternativeEncoded) -> Double = {
     base +
-            when (employmentCode) {
+            when (it.employmentCode) {
                 0 -> beruf_vollzeit
                 1, 7, 8 -> beruf_teilzeit
                 3, 9, 10, 11 -> beruf_schueler
                 4 -> beruf_azubi
                 else -> .0
             } +
-            when (tourActivityTypeCode) {
-                5 -> tourtyp_work
-                0 -> tourtyp_education
-                3 -> tourtyp_shopping
-                4 -> tourtyp_transport
+            when (it.tourActivity) {
+                ActivityType.WORK -> tourtyp_work
+                ActivityType.EDUCATION -> tourtyp_education
+                ActivityType.SHOPPING -> tourtyp_shopping
+                ActivityType.TRANSPORT -> tourtyp_transport
                 else -> .0
             } +
-            (it.tag_sa()) * tag_sa +
-            (it.tag_so()) * tag_so +
-            when (durationOfActivities) {
+            (it.original.tag_sa()) * tag_sa +
+            (it.original.tag_so()) * tag_so +
+            when (it.durationOfActivities) {
 
                 2 -> dauer_akt_tag_4bis6std
                 3 -> dauer_akt_tag_6bis8std
@@ -44,14 +39,14 @@ private val firstTourStartUtility: ParameterStep10M.(MainDurationAlternative) ->
 
                 else -> .0
             } +
-            (it.taghat1akt()) * taghat1akt +
-            (it.taghat2akt()) * taghat2akt +
-            (it.taghat3akt()) * taghat3akt +
-            (it.taghat1tour()) * taghat1tour +
-            (it.taghat2touren()) * taghat2touren +
-            (it.haupttour_work()) * haupttour_work +
-            (it.haupttour_education()) * haupttour_education +
-            (it.touristhaupttour()) * touristhaupttour
+            (it.original.taghat1akt()) * taghat1akt +
+            (it.original.taghat2akt()) * taghat2akt +
+            (it.original.taghat3akt()) * taghat3akt +
+            (it.original.taghat1tour()) * taghat1tour +
+            (it.original.taghat2touren()) * taghat2touren +
+            (it.original.haupttour_work()) * haupttour_work +
+            (it.original.haupttour_education()) * haupttour_education +
+            (it.original.touristhaupttour()) * touristhaupttour
 
 
 }
@@ -63,5 +58,6 @@ val FIRST_TOUR_HISTOGRAM: ActivityDurationHistograms
             ArrayHistogram.fromResource(
                 identifier = Identifier.FIRST_TOUR_START_TIME
             ),
+            { MainDurationAlternativeEncoded(it) },
             firstTourStartUtility
         )
