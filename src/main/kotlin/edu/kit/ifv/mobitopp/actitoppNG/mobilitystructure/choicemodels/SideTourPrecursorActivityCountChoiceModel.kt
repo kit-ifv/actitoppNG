@@ -26,8 +26,8 @@ val step5AWithParams
 private val standardUtilityFunction: SideTourPrecursorParameters.(TourAlternativeInt) -> Double = {
     base +
 
-            (it.isBeforeMainTour()) * tourliegtvorhaupttour +
-            (it.isAfterMainTour()) * tourliegtnachhaupttour +
+            (it.isBeforeMainTour) * tourliegtvorhaupttour +
+            (it.isAfterMainTour) * tourliegtnachhaupttour +
             (it.tourMainActivityIsWork()) * tourtyp_work +
             (it.tourMainActivityIsEducation()) * tourtyp_education +
             (it.tourMainActivityIsShopping()) * tourtyp_shopping +

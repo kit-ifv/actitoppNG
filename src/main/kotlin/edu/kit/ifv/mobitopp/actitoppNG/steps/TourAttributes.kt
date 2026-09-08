@@ -7,12 +7,18 @@ import edu.kit.ifv.mobitopp.actitoppNG.utils.BidirectionalIndexedValue
 import edu.kit.ifv.mobitopp.actitoppNG.utils.Position
 
 interface TourPositionAttributes {
-    // These are all day attributes
-    fun isFirstTourOfDay(): Boolean
-    fun isSecondTourOfDay(): Boolean
-    fun isThirdTourOfDay(): Boolean
-    fun isBeforeMainTour(): Boolean
-    fun isAfterMainTour(): Boolean
+    /**
+     * 0 indexed so:
+     *
+     * 0 -> first tour of the day
+     *
+     * 1 -> second tour of the day
+     *
+     * 2 -> ...
+     */
+    val tourIndexOfDay: Int
+    val isBeforeMainTour: Boolean
+    val isAfterMainTour: Boolean
 }
 
 interface ActivityAmountAttributes {
@@ -25,7 +31,6 @@ class ActivityAmountByNumber(val element: Int) : ActivityAmountAttributes {
 }
 
 interface TourAttributes : TourPositionAttributes {
-
     fun tourMainActivityIsWork(): Boolean
     fun tourMainActivityIsEducation(): Boolean
     fun tourMainActivityIsShopping(): Boolean
@@ -35,25 +40,13 @@ interface TourAttributes : TourPositionAttributes {
 }
 
 class TourPositionAttributesByIndex(val absoluteIndex: Int, val position: Position) : TourPositionAttributes {
-    override fun isFirstTourOfDay(): Boolean {
-        return absoluteIndex == 0
-    }
+    override val tourIndexOfDay: Int
+        get() = absoluteIndex
 
-    override fun isSecondTourOfDay(): Boolean {
-        return absoluteIndex == 1
-    }
+    override val isBeforeMainTour: Boolean = position == Position.BEFORE
 
-    override fun isThirdTourOfDay(): Boolean {
-        return absoluteIndex == 2
-    }
+    override val isAfterMainTour: Boolean = position == Position.AFTER
 
-    override fun isBeforeMainTour(): Boolean {
-        return position == Position.BEFORE
-    }
-
-    override fun isAfterMainTour(): Boolean {
-        return position == Position.AFTER
-    }
 }
 
 class TourAttributesByStructAndNumbers(
@@ -81,25 +74,12 @@ class TourAttributesByStructAndNumbers(
     override val numTourActivities: Int
         get() = indexedTour.element.elements().size + precursorActivityCount + successorActivityCount
 
-    override fun isFirstTourOfDay(): Boolean {
-        return indexedTour.absoluteIndex == 0
-    }
+    override val tourIndexOfDay: Int
+        get() = indexedTour.absoluteIndex
 
-    override fun isSecondTourOfDay(): Boolean {
-        return indexedTour.absoluteIndex == 1
-    }
+    override val isBeforeMainTour: Boolean = indexedTour.position == Position.BEFORE
 
-    override fun isThirdTourOfDay(): Boolean {
-        return indexedTour.absoluteIndex == 2
-    }
-
-    override fun isBeforeMainTour(): Boolean {
-        return indexedTour.position == Position.BEFORE
-    }
-
-    override fun isAfterMainTour(): Boolean {
-        return indexedTour.position == Position.AFTER
-    }
+    override val isAfterMainTour: Boolean = indexedTour.position == Position.AFTER
 
     override val numActivitiesBeforeMainActivity: Int
         get() = indexedTour.element.amountOfPrecursorElements() + precursorActivityCount
@@ -108,25 +88,12 @@ class TourAttributesByStructAndNumbers(
 class TourAttributesByIndexedStructure(private val indexedTour: BidirectionalIndexedValue<TourStructure>) :
     TourAttributes, TourPositionAttributes, ActivityAmountAttributes {
 
-    override fun isFirstTourOfDay(): Boolean {
-        return indexedTour.absoluteIndex == 0
-    }
+    override val tourIndexOfDay: Int
+        get() = indexedTour.absoluteIndex
 
-    override fun isSecondTourOfDay(): Boolean {
-        return indexedTour.absoluteIndex == 1
-    }
+    override val isBeforeMainTour: Boolean = indexedTour.position == Position.BEFORE
 
-    override fun isThirdTourOfDay(): Boolean {
-        return indexedTour.absoluteIndex == 2
-    }
-
-    override fun isBeforeMainTour(): Boolean {
-        return indexedTour.position == Position.BEFORE
-    }
-
-    override fun isAfterMainTour(): Boolean {
-        return indexedTour.position == Position.AFTER
-    }
+    override val isAfterMainTour: Boolean = indexedTour.position == Position.AFTER
 
     override fun tourMainActivityIsWork(): Boolean {
         return indexedTour.element.mainActivityType() == ActivityType.WORK

@@ -27,8 +27,8 @@ val step5BWithParams
 
 private val standardUtilityFunction: SideTourSuccessorParameters.(TourAlternativeInt) -> Double = {
     base +
-            (it.isBeforeMainTour()) * tourliegtvorhaupttour +
-            (it.isAfterMainTour()) * tourliegtnachhaupttour +
+            (it.isBeforeMainTour) * tourliegtvorhaupttour +
+            (it.isAfterMainTour) * tourliegtnachhaupttour +
             when(it.numActivitiesBeforeMainActivity) {
                 1 -> anzaktvorhauptaktist1
                 2 -> anzaktvorhauptaktist2

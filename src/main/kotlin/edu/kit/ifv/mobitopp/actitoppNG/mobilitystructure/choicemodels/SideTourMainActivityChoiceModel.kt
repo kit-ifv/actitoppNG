@@ -49,10 +49,13 @@ private val standardUtilityFunction: SideTourMainActivityParameters.(TourAlterna
                 DayOfWeek.SUNDAY -> sunday
                 else -> 0.0
             } +
-            (it.isFirstTourOfDay()) * firstTourOfDay +
-            (it.isSecondTourOfDay()) * secondTourOfDay +
-            (it.isThirdTourOfDay()) * thirdTourOfDay +
-            (it.isBeforeMainTour()) * beforeMainTour +
+            when(it.tourIndexOfDay) {
+                0 -> firstTourOfDay
+                1 -> secondTourOfDay
+                2 -> thirdTourOfDay
+                else -> 0.0
+            } +
+            (it.isBeforeMainTour) * beforeMainTour +
             (it.amountOfWorkingDaysIs0()) * noWorkDays +
             (it.amountOfEducationDaysIs0()) * noEducationDays +
             (it.amountOfShoppingDaysIs0()) * noShoppingDays +
