@@ -45,8 +45,11 @@ private val firstTourStartUtility: ParameterStep10M.(MainDurationAlternativeEnco
                 3 -> taghat3akt
                 else -> 0.0
             } +
-            (it.original.taghat1tour()) * taghat1tour +
-            (it.original.taghat2touren()) * taghat2touren +
+            when(it.original.tag_anzahl_touren) {
+                1 -> taghat1tour
+                2 -> taghat2touren
+                else -> 0.0
+            } +
             (it.original.haupttour_work()) * haupttour_work +
             (it.original.haupttour_education()) * haupttour_education +
             (it.original.touristhaupttour()) * touristhaupttour

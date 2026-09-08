@@ -74,8 +74,11 @@ private val minorFunction: ParameterStep8J.(MinorFunctionEncodedCharacteristic) 
                 else -> .0
             } +
             (it.original.tourhat2akt()) * tourhat2akt +
-            (it.original.taghat1tour()) * taghat1tour +
-            (it.original.taghat2touren()) * taghat2touren +
+            when(it.original.tag_anzahl_touren) {
+                1 -> taghat1tour
+                2 -> taghat2touren
+                else -> 0.0
+            } +
             (it.original.aktliegtvorhauptakt()) * aktliegtvorhauptakt +
             (it.original.tourliegtvorhaupttour()) * tourliegtvorhaupttour +
             (it.original.tourliegtnachhaupttour()) * tourliegtnachhaupttour
@@ -133,7 +136,10 @@ private val standardUtilityFunction8D: ParameterStep8D.(MainDurationAlternative)
                 else -> 0.0
             } +
             (it.letztetourdestages()) * letztetourdestages +
-            (it.taghat2touren()) * taghat2touren +
+            when(it.tag_anzahl_touren) {
+                2 -> taghat2touren
+                else -> 0.0
+            } +
             when (employmentCode) {
                 0 -> beruf_vollzeit
                 1, 7, 8 -> beruf_teilzeit
@@ -195,8 +201,11 @@ private val standardUtilityFunction8B: ParameterStep8B.(MainDurationAlternative)
                 3 -> taghat3akt
                 else -> 0.0
             } +
-            (it.taghat1tour()) * taghat1tour +
-            (it.taghat2touren()) * taghat2touren +
+            when(it.tag_anzahl_touren) {
+                1 -> taghat1tour
+                2 -> taghat2touren
+                else -> 0.0
+            } +
             when (employmentCode) {
                 0 -> beruf_vollzeit
                 1, 7, 8 -> beruf_teilzeit
@@ -260,7 +269,7 @@ private data class DurationAlternativeEncoded(
                 tourPlanSize = it.tourPlan.size,
                 tagAmountAlternatives = it.dayPlan.amountOfActivities,
                 lastTourOfDayCode = it.letztetourdestages().I,
-                dayHasTwoToursCode = it.taghat2touren().I,
+                dayHasTwoToursCode = (it.tag_anzahl_touren == 2).I,
                 tourPositionCode = it.tourPlan.position.ordinal,
             )
         }

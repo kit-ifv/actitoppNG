@@ -403,17 +403,7 @@ open class PlanAlternative<P : Any>(
         return tourPlan.size == 2
     }
 
-    fun taghat1tour(): Boolean {
-        return dayPlan.tourPlans.size == 1
-    }
-
-    fun taghat2touren(): Boolean {
-        return dayPlan.tourPlans.size == 2
-    }
-
-    fun taghat3touren(): Boolean {
-        return dayPlan.tourPlans.size == 3
-    }
+    val tag_anzahl_touren: Int = dayPlan.tourPlans.size
 
     fun aktliegtvorhauptakt(): Boolean {
         return activity.position == Position.BEFORE
