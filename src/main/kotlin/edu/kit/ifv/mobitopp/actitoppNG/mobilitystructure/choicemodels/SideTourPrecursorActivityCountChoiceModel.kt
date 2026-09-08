@@ -2,6 +2,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels
 
 import edu.kit.ifv.discretechoice.extensions.loadOptionsMap
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
+import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourPrecursorParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourPrecursorSet
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.TourAlternativeInt
@@ -28,10 +29,13 @@ private val standardUtilityFunction: SideTourPrecursorParameters.(TourAlternativ
 
             (it.isBeforeMainTour) * tourliegtvorhaupttour +
             (it.isAfterMainTour) * tourliegtnachhaupttour +
-            (it.tourMainActivityIsWork()) * tourtyp_work +
-            (it.tourMainActivityIsEducation()) * tourtyp_education +
-            (it.tourMainActivityIsShopping()) * tourtyp_shopping +
-            (it.tourMainActivityIsTransport()) * tourtyp_transport +
+            when(it.tourMainActivityType) {
+                ActivityType.WORK -> tourtyp_work
+                ActivityType.EDUCATION -> tourtyp_education
+                ActivityType.SHOPPING -> tourtyp_shopping
+                ActivityType.TRANSPORT -> tourtyp_transport
+                else -> 0.0
+            } +
             when (it.dayOfWeek) {
                 DayOfWeek.SATURDAY -> tag_sa
                 DayOfWeek.SUNDAY -> tag_so

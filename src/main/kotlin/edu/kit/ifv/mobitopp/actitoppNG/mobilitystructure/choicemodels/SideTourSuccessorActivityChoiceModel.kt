@@ -3,6 +3,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels
 
 import edu.kit.ifv.discretechoice.extensions.loadOptionsMap
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
+import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourSuccessorParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourSuccessorSet
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.TourAlternativeInt
@@ -35,8 +36,11 @@ private val standardUtilityFunction: SideTourSuccessorParameters.(TourAlternativ
                 3 -> anzaktvorhauptaktist3
                 else -> 0.0
             } +
-            (it.tourMainActivityIsWork()) * tourtyp_work +
-            (it.tourMainActivityIsEducation()) * tourtyp_education +
+            when(it.tourMainActivityType) {
+                ActivityType.WORK -> tourtyp_work
+                ActivityType.EDUCATION -> tourtyp_education
+                else -> 0.0
+            } +
             when (it.dayOfWeek) {
                 DayOfWeek.SATURDAY -> tag_sa
                 DayOfWeek.SUNDAY -> tag_so
