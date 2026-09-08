@@ -3,7 +3,6 @@ package edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes
 
 import edu.kit.ifv.mobitopp.actitoppNG.AllChoiceModels
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
-import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudent
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.MainDurationAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram

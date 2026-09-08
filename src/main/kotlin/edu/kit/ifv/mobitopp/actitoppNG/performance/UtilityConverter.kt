@@ -1,6 +1,5 @@
 package edu.kit.ifv.mobitopp.actitoppNG.performance
 
-import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.DurationDay
 import java.time.DayOfWeek
@@ -21,10 +20,6 @@ import kotlin.time.Duration.Companion.minutes
  *
  */
 object UtilityConverter {
-    fun convertWeekDay(durationDay: DurationDay): Int {
-        return durationDay.weekday.value
-    }
-
     /**
      * Converts the dayofweek to the integer representation of value. Mo = 1, So = 7
      */

@@ -8,7 +8,6 @@ import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.MainDurationAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.generateHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
-import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParameterCollectionStep10S
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParameterStep10S
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParametersStep10S
 import edu.kit.ifv.mobitopp.actitoppNG.utils.minus

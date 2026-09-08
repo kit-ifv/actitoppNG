@@ -11,7 +11,6 @@ import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParameterStep10O
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.hours
 
 /**
  * Return an int representative of the duration 0..<2 hours 2..<4 and 4..<6. Do so to get a table jump

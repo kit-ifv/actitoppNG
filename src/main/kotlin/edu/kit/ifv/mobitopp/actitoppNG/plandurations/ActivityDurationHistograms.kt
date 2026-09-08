@@ -3,10 +3,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.plandurations
 
 import edu.kit.ifv.mobitopp.actitoppNG.Person
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
-import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
-import edu.kit.ifv.mobitopp.actitoppNG.enums.isParttime
 import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudent
-import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudentOrAzubi
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.Activity
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.plan.DayPlan
@@ -16,7 +13,6 @@ import edu.kit.ifv.mobitopp.actitoppNG.performance.UtilityConverter
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.CorruptorFactory
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.TimeBudgets
-
 import edu.kit.ifv.mobitopp.actitoppNG.utils.Position
 import edu.kit.ifv.mobitopp.actitoppNG.utils.indexOfSearch
 import edu.kit.ifv.mobitopp.actitoppNG.utils.sumOf
