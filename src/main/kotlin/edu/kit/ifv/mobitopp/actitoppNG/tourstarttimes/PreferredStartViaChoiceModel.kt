@@ -39,11 +39,14 @@ class PreferredStartViaChoiceModel() : UsePreferredTourStart {
                         (it.tourtyp_work()) * tourtyp_work +
                         (it.tag_sa()) * tag_sa +
                         (it.tag_so()) * tag_so +
-                        (it.dauer_akt_in_tour_2bis4std()) * dauer_akt_in_tour_2bis4std +
-                        (it.dauer_akt_in_tour_4bis6std()) * dauer_akt_in_tour_4bis6std +
-                        (it.dauer_akt_in_tour_6bis8std()) * dauer_akt_in_tour_6bis8std +
-                        (it.dauer_akt_in_tour_8bis10std()) * dauer_akt_in_tour_8bis10std +
-                        (it.dauer_akt_in_tour_10bis12std()) * dauer_akt_in_tour_10bis12std +
+                        when(it.dauer_akt_in_tour_blocked) {
+                            1 -> dauer_akt_in_tour_2bis4std
+                            2 -> dauer_akt_in_tour_4bis6std
+                            3 -> dauer_akt_in_tour_6bis8std
+                            4 -> dauer_akt_in_tour_8bis10std
+                            5 -> dauer_akt_in_tour_10bis12std
+                            else -> 0.0
+                        } +
                         (it.dauer_akt_vorht_tag_1bis120()) * dauer_akt_vorht_tag_1bis120 +
                         (it.std_start_T1_6_7_Uhr()) * std_start_T1_6_7_Uhr +
                         (it.std_start_T1_7_8_Uhr()) * std_start_T1_7_8_Uhr

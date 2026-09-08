@@ -463,12 +463,16 @@ open class PlanAlternative<P : Any>(
     fun anztourenvorhaupttour() = dayPlan.tourPlans.count { it.position == Position.BEFORE }
     fun anztourennachhaupttour() = dayPlan.tourPlans.count { it.position == Position.AFTER }
 
-    fun dauer_akt_in_tour_0bis2std() = tourPlan.activityDurations in 0.hours..<2.hours
-    fun dauer_akt_in_tour_2bis4std() = tourPlan.activityDurations in 2.hours..<4.hours
-    fun dauer_akt_in_tour_4bis6std() = tourPlan.activityDurations in 4.hours..<6.hours
-    fun dauer_akt_in_tour_6bis8std() = tourPlan.activityDurations in 6.hours..<8.hours
-    fun dauer_akt_in_tour_8bis10std() = tourPlan.activityDurations in 8.hours..<10.hours
-    fun dauer_akt_in_tour_10bis12std() = tourPlan.activityDurations in 10.hours..<12.hours
+    /**
+     * The tour plans activity durations encoded into two hour blocks.
+     *  ```
+     *  0 -> 0h..<2h
+     *  1 -> 2h..<4h
+     *  2 -> 4h..<6h
+     *  ...
+     *  ```
+     */
+    val dauer_akt_in_tour_blocked: Int get() = tourPlan.activityDurations.inWholeHours.toInt() / 2
 
     private val anzaktField by lazy {mobilityPlan.regularActivities[activityType] ?: false}
     fun anzaktwieanztagemitzweck(): Boolean {
