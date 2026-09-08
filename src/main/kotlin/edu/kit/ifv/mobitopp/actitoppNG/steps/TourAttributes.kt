@@ -31,10 +31,7 @@ interface TourAttributes : TourPositionAttributes {
     fun tourMainActivityIsShopping(): Boolean
     fun tourMainActivityIsTransport(): Boolean
 
-
-    fun tourHas2Activities(): Boolean
-    fun tourHas3Activities(): Boolean
-    fun tourHas4Activities(): Boolean
+    val numTourActivities: Int
 }
 
 class TourPositionAttributesByIndex(val absoluteIndex: Int, val position: Position) : TourPositionAttributes {
@@ -81,17 +78,8 @@ class TourAttributesByStructAndNumbers(
         return indexedTour.element.mainActivityType() == ActivityType.TRANSPORT
     }
 
-    override fun tourHas2Activities(): Boolean {
-        return indexedTour.element.elements().size + precursorActivityCount + successorActivityCount == 2
-    }
-
-    override fun tourHas3Activities(): Boolean {
-        return indexedTour.element.elements().size + precursorActivityCount + successorActivityCount == 3
-    }
-
-    override fun tourHas4Activities(): Boolean {
-        return indexedTour.element.elements().size + precursorActivityCount + successorActivityCount == 4
-    }
+    override val numTourActivities: Int
+        get() = indexedTour.element.elements().size + precursorActivityCount + successorActivityCount
 
     override fun isFirstTourOfDay(): Boolean {
         return indexedTour.absoluteIndex == 0
@@ -159,18 +147,8 @@ class TourAttributesByIndexedStructure(private val indexedTour: BidirectionalInd
     override val numActivitiesBeforeMainActivity: Int
         get() = indexedTour.element.amountOfPrecursorElements()
 
-    override fun tourHas2Activities(): Boolean {
-        return indexedTour.element.amountOfElements() == 2
-    }
-
-    override fun tourHas3Activities(): Boolean {
-        return indexedTour.element.amountOfElements() == 3
-    }
-
-    override fun tourHas4Activities(): Boolean {
-        return indexedTour.element.amountOfElements() == 4
-    }
-
+    override val numTourActivities: Int
+        get() = indexedTour.element.amountOfElements()
 }
 
 //class TourAttributesByElement(val element: HTour) : TourAttributes, TourPositionAttributes, ActivityAmountAttributes {
