@@ -43,7 +43,7 @@ fun main() {
         println("Note, that snapshots are (and should be) tracked with git lfs. If you did not initialize it" +
                 "on your machine, do so with `git lfs install` and pull the branch again. You can see that it worked" +
                 "by looking into the file. If the file contains some git related text and hashes, it is still the " +
-                "placeholder and you need to ensure git lfs is initialized propperly again. For windows you need to " +
+                "placeholder and you need to ensure git lfs is initialized properly again. For windows you need to " +
                 "install git lfs first. See [Windows Install](https://docs.github.com/en/repositories/working-with-files/managing-large-files/installing-git-large-file-storage?platform=windows) ")
         println("Error message: ${e.message}")
         return
