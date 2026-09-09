@@ -35,7 +35,7 @@ fun main() {
         println("The selected run has no snapshot file. Generate test data first with GenerateTestData.kt or check out " +
                 "the correct revision with the desired file.")
     }
-    var expected: List<HouseholdPlanOutput> = emptyList()
+    var expected: List<HouseholdPlanOutput>
     try {
         expected = Json.decodeFromString(SELECTED_RUN.path.readText())
     } catch (e: Exception) {

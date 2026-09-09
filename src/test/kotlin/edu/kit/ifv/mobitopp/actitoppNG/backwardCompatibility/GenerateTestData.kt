@@ -5,10 +5,6 @@ import edu.kit.ifv.mobitopp.actitoppNG.generatePersons
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.DefaultPlanGeneration
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.ModernizedActivity
 import edu.kit.ifv.mobitopp.actitoppNG.randomHouseholds
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.nio.file.Path
