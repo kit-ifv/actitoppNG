@@ -69,7 +69,7 @@ data class StandardUtilityFunction10OEncodedAlternative(
     val employmentCode: Int,
     val activitiesOfDay: Int,
     val numTours: Int,
-    val orignal: MainDurationAlternative,
+    val isMainTour: Boolean,
 ) {
     constructor(alternative: MainDurationAlternative): this(
         previousDayTourEndHour = alternative.dayPlan.endOfPreviousTour(alternative.tourPlan),
@@ -79,7 +79,7 @@ data class StandardUtilityFunction10OEncodedAlternative(
         employmentCode= deduceEmployment(alternative.person.employment),
         activitiesOfDay= alternative.dayPlan.amountOfActivities,
         numTours= alternative.dayPlan.tourPlans.size,
-        orignal= alternative,
+        isMainTour=alternative.touristhaupttour()
     )
 }
 
@@ -122,7 +122,7 @@ private val standardUtilityFunction10O: ParameterStep10O.(StandardUtilityFunctio
                 2 -> dauer_akt_in_tour_4bis6std
                 else -> .0
             } +
-            (it.orignal.touristhaupttour()) * touristhaupttour +
+            (it.isMainTour) * touristhaupttour +
             when (it.previousDayTourEndHour.inWholeHours.toInt()) {
                 12 -> endetourvorher_Std_12
                 13 -> endetourvorher_Std_13

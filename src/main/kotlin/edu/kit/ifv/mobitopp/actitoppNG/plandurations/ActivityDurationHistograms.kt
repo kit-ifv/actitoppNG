@@ -487,21 +487,7 @@ class MainDurationAlternative(
     input
 )
 
-data class MainDurationAlternativeEncoded(
-    val durationOfActivities: Int,
-    val employmentCode: Int,
-    val tourActivity: ActivityType,
-    val tourMainActivity: ActivityType,
-    val original: MainDurationAlternative
-) {
-    constructor(alternative: MainDurationAlternative) : this(
-        durationOfActivities = TimeBlockEncoder.convert(alternative.dayPlan.durationOfActivities()),
-        employmentCode = UtilityConverter.convertEmployment(alternative.person.employment),
-        tourActivity= alternative.tourPlan.mainActivity.activityType,
-        tourMainActivity = alternative.dayPlan.mainActivityType(),
-        original = alternative
-    )
-}
+
 
 open class BooleanDecisionAlternative(
     input: MobilityPlanInputs,

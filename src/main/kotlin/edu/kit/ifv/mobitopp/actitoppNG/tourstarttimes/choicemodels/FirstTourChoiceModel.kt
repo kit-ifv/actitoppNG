@@ -2,16 +2,39 @@ package edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.choicemodels
 
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
+import edu.kit.ifv.mobitopp.actitoppNG.performance.TimeBlockEncoder
+import edu.kit.ifv.mobitopp.actitoppNG.performance.UtilityConverter
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.ActivityDurationHistograms
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
-import edu.kit.ifv.mobitopp.actitoppNG.plandurations.MainDurationAlternativeEncoded
+import edu.kit.ifv.mobitopp.actitoppNG.plandurations.MainDurationAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.generateHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParameterStep10M
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 
+data class FirstTourStartCharacteristic(
+    val durationOfActivities: Int,
+    val employmentCode: Int,
+    val tourActivity: ActivityType,
+    val tourMainActivity: ActivityType,
+    val dayCode: Int,
+    val amountActivitiesToday: Int,
+    val amountToursToday: Int,
+    val tourIsMainTour: Boolean,
+) {
+    constructor(alternative: MainDurationAlternative) : this(
+        durationOfActivities = TimeBlockEncoder.convert(alternative.dayPlan.durationOfActivities()),
+        employmentCode = UtilityConverter.convertEmployment(alternative.person.employment),
+        tourActivity= alternative.tourPlan.mainActivity.activityType,
+        tourMainActivity = alternative.dayPlan.mainActivityType(),
+        dayCode = UtilityConverter.convertWeekDay(alternative.dayPlan.durationDay.weekday),
+        amountActivitiesToday = alternative.dayPlanAmountOfActivities,
+        amountToursToday = alternative.tag_anzahl_touren,
+        tourIsMainTour = alternative.touristhaupttour()
+    )
+}
 
-private val firstTourStartUtility: ParameterStep10M.(MainDurationAlternativeEncoded) -> Double = {
+private val firstTourStartUtility: ParameterStep10M.(FirstTourStartCharacteristic) -> Double = {
     base +
             when (it.employmentCode) {
                 0 -> beruf_vollzeit
@@ -27,8 +50,11 @@ private val firstTourStartUtility: ParameterStep10M.(MainDurationAlternativeEnco
                 ActivityType.TRANSPORT -> tourtyp_transport
                 else -> .0
             } +
-            (it.original.tag_sa()) * tag_sa +
-            (it.original.tag_so()) * tag_so +
+            when(it.dayCode) {
+                6 -> tag_sa
+                7 -> tag_so
+                else -> 0.0
+            } +
             when (it.durationOfActivities) {
 
                 2 -> dauer_akt_tag_4bis6std
@@ -39,13 +65,13 @@ private val firstTourStartUtility: ParameterStep10M.(MainDurationAlternativeEnco
 
                 else -> .0
             } +
-            when(it.original.dayPlanAmountOfActivities) {
+            when(it.amountActivitiesToday) {
                 1 -> taghat1akt
                 2 -> taghat2akt
                 3 -> taghat3akt
                 else -> 0.0
             } +
-            when(it.original.tag_anzahl_touren) {
+            when(it.amountToursToday) {
                 1 -> taghat1tour
                 2 -> taghat2touren
                 else -> 0.0
@@ -55,9 +81,7 @@ private val firstTourStartUtility: ParameterStep10M.(MainDurationAlternativeEnco
                 ActivityType.EDUCATION -> haupttour_education
                 else -> 0.0
             } +
-            (it.original.touristhaupttour()) * touristhaupttour
-
-
+            (it.tourIsMainTour) * touristhaupttour
 }
 
 context(params: PlanGenerationParameters)
@@ -67,6 +91,6 @@ val FIRST_TOUR_HISTOGRAM: ActivityDurationHistograms
             ArrayHistogram.fromResource(
                 identifier = Identifier.FIRST_TOUR_START_TIME
             ),
-            { MainDurationAlternativeEncoded(it) },
+            { FirstTourStartCharacteristic(it) },
             firstTourStartUtility
         )
