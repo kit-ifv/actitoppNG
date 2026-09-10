@@ -3,6 +3,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.performance
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
 import java.time.DayOfWeek
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 
 /**
@@ -43,16 +44,6 @@ object UtilityConverter {
      */
     fun convertEmployment(employment: Employment): Int {
         return employment.ordinal
-    }
-
-    /**
-     * Return an int representing which two hour block the duration is belonging to.
-     *
-     * 0..1h59m -> 0
-     * 2h..3h59m -> 1
-     */
-    fun convertToTwoHourBlock(duration: Duration): Int {
-        return (duration.inWholeHours.toInt() / 2)
     }
 
     /**
@@ -154,5 +145,41 @@ object KilometerEncoder {
                 else negativeDistance
             }
         }
+    }
+}
+
+/**
+ * Integer encoding for Time. Encodes it into 2h blocks
+ */
+@Suppress("unused")
+object TimeBlockEncoder {
+    const val NegativeHours = -1
+    const val In0to2Hours = 0
+    const val In2to4Hours = 1
+    const val In4to6Hours = 2
+    const val In6to8Hours = 3
+    const val In8to10Hours = 4
+    const val In10to12Hours = 5
+    const val In12to14Hours = 6
+    const val MoreThan14Hours = 7
+    /**
+     * Encodes durations in two hour blocks
+     * ```
+     * NegativeHours = -1
+     * 0to2Hours = 0
+     * 2to4Hours = 1
+     * 4to6Hours = 2
+     * 6to8Hours = 3
+     * 8to10Hours = 4
+     * 10to12Hours = 5
+     * 12to14Hours = 6
+     * MoreThan14Hours = 7
+     * ```
+     */
+    fun convert(duration: Duration): Int {
+        if (duration < 0.minutes) return -1
+        if (duration > 14.hours) return 7
+
+        return (duration.inWholeHours.toInt() / 2)
     }
 }

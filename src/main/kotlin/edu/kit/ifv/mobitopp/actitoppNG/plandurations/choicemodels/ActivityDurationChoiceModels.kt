@@ -3,6 +3,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.plandurations.choicemodels
 import edu.kit.ifv.discretechoice.extensions.SingularUtilityStructureBuilder
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
+import edu.kit.ifv.mobitopp.actitoppNG.performance.TimeBlockEncoder
 import edu.kit.ifv.mobitopp.actitoppNG.performance.UtilityConverter
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.ActivityDurationHistograms
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
@@ -23,7 +24,7 @@ data class MinorFunctionEncodedCharacteristic(
     val original: MainDurationAlternative
 ) {
     constructor(alternative: MainDurationAlternative) : this(
-        durationMainActCode= UtilityConverter.convertToTwoHourBlock(alternative.dayPlan.durationOfMainActivities)
+        durationMainActCode= TimeBlockEncoder.convert(alternative.dayPlan.durationOfMainActivities)
             .coerceAtMost(7),
         averageTimeOfActivityCode= UtilityConverter.convertToFifteenMinuteBlock(alternative.dayPlan.getBudget(alternative.activityType)),
         numberOfActivities= alternative.dayPlan.amountOfActivities,

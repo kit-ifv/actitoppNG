@@ -9,6 +9,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInput
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.plan.DayPlan
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.plan.MobilityPlan
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.plan.TourPlan
+import edu.kit.ifv.mobitopp.actitoppNG.performance.TimeBlockEncoder
 import edu.kit.ifv.mobitopp.actitoppNG.performance.UtilityConverter
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.CorruptorFactory
@@ -494,7 +495,7 @@ data class MainDurationAlternativeEncoded(
     val original: MainDurationAlternative
 ) {
     constructor(alternative: MainDurationAlternative) : this(
-        durationOfActivities = UtilityConverter.convertToTwoHourBlock(alternative.dayPlan.durationOfActivities()),
+        durationOfActivities = TimeBlockEncoder.convert(alternative.dayPlan.durationOfActivities()),
         employmentCode = UtilityConverter.convertEmployment(alternative.person.employment),
         tourActivity= alternative.tourPlan.mainActivity.activityType,
         tourMainActivity = alternative.dayPlan.mainActivityType(),
