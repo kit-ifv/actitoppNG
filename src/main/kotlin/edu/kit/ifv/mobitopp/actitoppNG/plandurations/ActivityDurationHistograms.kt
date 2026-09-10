@@ -9,8 +9,6 @@ import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInput
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.plan.DayPlan
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.plan.MobilityPlan
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.plan.TourPlan
-import edu.kit.ifv.mobitopp.actitoppNG.performance.TimeBlockEncoder
-import edu.kit.ifv.mobitopp.actitoppNG.performance.UtilityConverter
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.CorruptorFactory
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.TimeBudgets
