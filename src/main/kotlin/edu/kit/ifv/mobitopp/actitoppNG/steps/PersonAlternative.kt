@@ -4,6 +4,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.Person
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Gender
 import edu.kit.ifv.mobitopp.actitoppNG.performance.AgeEncoder
+import edu.kit.ifv.mobitopp.actitoppNG.performance.KilometerEncoder
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.WeekRoutine
 
 /**
@@ -13,22 +14,14 @@ import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.WeekRoutine
 interface PersonAttributes {
     val ageCode: Int
     fun isMale(): Boolean
-    fun commuteIn0To5km(): Boolean
-    fun commuteIn5To10km(): Boolean
-    fun commuteIn10To20km(): Boolean
-    fun commuteIn20To50km(): Boolean
-    fun commuteOver50km(): Boolean
+    val commuteDistanceCode: Int
     val employment: Employment
 }
 
 class PersonAttributesFromElement(val person: Person) : PersonAttributes {
     override val ageCode: Int = AgeEncoder.encode(person.age)
     override fun isMale() = person.gender == Gender.MALE
-    override fun commuteIn0To5km() = person.maxCommute in 0.0..5.0
-    override fun commuteIn5To10km() = person.maxCommute in 5.0..10.0
-    override fun commuteIn10To20km() = person.maxCommute in 10.0..20.0
-    override fun commuteIn20To50km() = person.maxCommute in 2.0..50.0
-    override fun commuteOver50km() = person.maxCommute > 50.0
+    override val commuteDistanceCode: Int = KilometerEncoder.convert(person.maxCommute)
     override val employment = person.employment
 }
 

@@ -1,7 +1,6 @@
 package edu.kit.ifv.mobitopp.actitoppNG.performance
 
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
-import edu.kit.ifv.mobitopp.actitoppNG.modernization.DurationDay
 import java.time.DayOfWeek
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
@@ -126,6 +125,34 @@ object AgeEncoder {
             in 61..70 -> isAged61To70
             in 71..Int.MAX_VALUE -> isAged71ToInfty
             else -> isAged1OrLess
+        }
+    }
+}
+
+/**
+ * Integer encoding for Commute Distances
+ */
+object KilometerEncoder {
+    const val negativeDistance = -1
+    const val In0To5km = 0
+    const val In5To10km = 1
+    const val In10To20km = 2
+    const val In20To50km = 3
+    const val Over50km = 4
+
+    /**
+     * Encodes commute distance
+     */
+    fun convert(distanceKilometers: Double): Int {
+        return when (distanceKilometers) {
+            in 0.0..5.0 -> In0To5km
+            in 5.0..10.0 -> In5To10km
+            in 10.0..20.0 -> In10To20km
+            in 2.0..50.0 -> In20To50km
+            else -> {
+                if(distanceKilometers > 50.0) Over50km
+                else negativeDistance
+            }
         }
     }
 }

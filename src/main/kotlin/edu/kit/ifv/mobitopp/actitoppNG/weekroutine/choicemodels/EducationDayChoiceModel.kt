@@ -2,14 +2,12 @@ package edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels
 
 
 import edu.kit.ifv.discretechoice.extensions.loadOptionsMap
-import edu.kit.ifv.mobitopp.actitoppNG.steps.PersonAlternative
-
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
 import edu.kit.ifv.mobitopp.actitoppNG.enums.isEarning
 import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudent
 import edu.kit.ifv.mobitopp.actitoppNG.performance.AgeEncoder
-import edu.kit.ifv.mobitopp.actitoppNG.utils.times
+import edu.kit.ifv.mobitopp.actitoppNG.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.EducationDaySet
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
 import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit

@@ -9,6 +9,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.PrecursorTou
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.PrecursorTourAmountSet
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.PreviousDayAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.performance.AgeEncoder
+import edu.kit.ifv.mobitopp.actitoppNG.performance.KilometerEncoder
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
 import java.time.DayOfWeek
@@ -40,7 +41,7 @@ data class PreviousDayAlternativeEncodedRaw(
         weekDay = raw.dayOfWeek,
         isMale = raw.isMale(),
         ageCode = raw.ageCode,
-        commuteIn0To5km = raw.commuteIn0To5km(),
+        commuteIn0To5km = raw.commuteDistanceCode == KilometerEncoder.In0To5km,
         averageAmountOfTours = raw.averageAmountOfTours,
         previousDayHasNoBeforeTour = raw.previousDayHasNoBeforeTour(),
         previousDayHasOneBeforeTour = raw.previousDayHasOneBeforeTour(),

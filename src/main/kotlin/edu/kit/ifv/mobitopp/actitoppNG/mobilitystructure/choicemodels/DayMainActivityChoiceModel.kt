@@ -93,7 +93,7 @@ data class DayAlternativeEncoded(
         dayCode = UtilityConverter.convertWeekDay(alternative.dayOfWeek),
         employmentCode = UtilityConverter.convertEmployment(alternative.employment),
         employment = alternative.employment,
-        amountOfYouthsInHousehold = alternative.amountOfYouthsInHousehold(),
+        amountOfYouthsInHousehold = alternative.amountOfYouthsInHousehold,
         has5WorkDays = alternative.has5WorkDays().D,
         has5EduDays = alternative.has5EducationDays().D,
         amountWorkingDays = alternative.amountOfWorkingDays,

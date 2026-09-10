@@ -29,7 +29,7 @@ val homeDaysChoiceModel get() =
                         AgeEncoder.isAged18To25 -> ageIn18To25
                         else -> 0.0
                     } +
-                    it.amountOfYouthsInHousehold() * amountOfYouths +
+                    it.amountOfYouthsInHousehold * amountOfYouths +
                     (it.isMale()) * isMale +
                     it.amountOfWorkingDays() * amountOfWorkingDays +
                     it.amountOfEducationDays() * amountOfEducationDays +

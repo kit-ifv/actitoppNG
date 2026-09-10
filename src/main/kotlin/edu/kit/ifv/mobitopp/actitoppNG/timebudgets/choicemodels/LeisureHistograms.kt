@@ -2,6 +2,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.timebudgets.choicemodels
 
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
+import edu.kit.ifv.mobitopp.actitoppNG.performance.KilometerEncoder
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.HistogramSelection
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
@@ -19,7 +20,9 @@ val leisureHistograms get() =
                     (it.amountOfWorkActivitiesInWeek) * anzakt_woche_w +
                     (it.amountOfLeisureActivitiesInWeek) * anzakt_woche_l +
                     (it.amountOfShoppingActivitiesInWeek) * anzakt_woche_s +
-                    (it.commuteIn0To5km()) * pendeln_0bis5km +
+                    if(it.commuteDistanceCode == KilometerEncoder.In0To5km ) {
+                        pendeln_0bis5km
+                    } else { 0.0 } +
                     when(it.employment) {
                         Employment.RETIRED -> beruf_rentner
                         else -> 0.0
@@ -30,14 +33,11 @@ val leisureHistograms get() =
                         3 -> tagemit_lakt_3
                         4 -> tagemit_lakt_4
                         5 -> tagemit_lakt_5
-                        else  -> 0.0
+                        else -> 0.0
                     }
         }
         option(histograms[3]) {
             0.0
         }
-
-
     }
-
 
