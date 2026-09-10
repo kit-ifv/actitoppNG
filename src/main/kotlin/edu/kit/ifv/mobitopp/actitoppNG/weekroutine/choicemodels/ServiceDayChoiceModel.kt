@@ -2,6 +2,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels
 
 import edu.kit.ifv.discretechoice.extensions.loadOptionsMap
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
+import edu.kit.ifv.mobitopp.actitoppNG.enums.AreaType
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
 import edu.kit.ifv.mobitopp.actitoppNG.enums.isParttime
 import edu.kit.ifv.mobitopp.actitoppNG.performance.AgeEncoder
@@ -30,9 +31,12 @@ val serviceDaysChoiceModel get() = DiscreteStructure<Int, PersonAlternative, Ser
                     AgeEncoder.isAged36To50-> ageIn36to50
                     else -> 0.0
                 } +
-                (it.areaTypeConurbation()) * areaTypeIsConurbation +
-                (it.hasChildrenInHousehold()) * householdHasChildren +
-                (it.amountOfYouthsInHousehold()) * householdAmountYouths +
+                when(it.areaType) {
+                    AreaType.CONURBATION -> areaTypeIsConurbation
+                    else -> 0.0
+                } +
+                (it.hasChildrenInHousehold) * householdHasChildren +
+                (it.amountOfYouthsInHousehold) * householdAmountYouths +
                 (it.isMale()) * isMale
 
     }

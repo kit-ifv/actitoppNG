@@ -2,6 +2,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels
 
 import edu.kit.ifv.discretechoice.extensions.loadOptionsMap
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
+import edu.kit.ifv.mobitopp.actitoppNG.enums.AreaType
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
 import edu.kit.ifv.mobitopp.actitoppNG.enums.isParttime
 import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudent
@@ -36,9 +37,12 @@ val defaultWorkDayChoiceModel get() = DiscreteStructure<Int, PersonAlternative, 
                     AgeEncoder.isAged61To70 -> ageIn61to70
                     else -> 0.0
                 } +
-                (it.areaTypeConurbation()) * areaTypeConurburation +
-                (it.areaTypeRural()) * areaTypeRural +
-                (it.hasChildrenInHousehold()) * householdHasChildenBelowAge10 +
+                when(it.areaType) {
+                    AreaType.CONURBATION -> areaTypeConurburation
+                    AreaType.RURAL -> areaTypeRural
+                    else -> 0.0
+                } +
+                (it.hasChildrenInHousehold) * householdHasChildenBelowAge10 +
                 (it.isMale()) * genderIsMale
     }
     option(0) {

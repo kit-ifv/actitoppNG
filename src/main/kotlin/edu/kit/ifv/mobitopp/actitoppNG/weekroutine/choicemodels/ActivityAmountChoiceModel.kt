@@ -3,10 +3,12 @@ package edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels
 
 import edu.kit.ifv.discretechoice.extensions.optionsIndexed
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
+import edu.kit.ifv.mobitopp.actitoppNG.enums.AreaType
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
 import edu.kit.ifv.mobitopp.actitoppNG.enums.isParttime
 import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudent
 import edu.kit.ifv.mobitopp.actitoppNG.performance.AgeEncoder
+import edu.kit.ifv.mobitopp.actitoppNG.performance.KilometerEncoder
 import edu.kit.ifv.mobitopp.actitoppNG.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.ActivityAmountSet
@@ -37,10 +39,16 @@ val activityAmountChoiceModel get() = DiscreteStructure<Int, PersonAlternative, 
                     AgeEncoder.isAged61To70 -> alter_61bis70
                     else -> 0.0
                 } +
-                (it.areaTypeRural()) * Raumtyp_mobitopp_rural +
-                (it.commuteOver50km()) * pendeln_ueber50km +
-                (it.commuteIn0To5km()) * pendeln_0bis5km +
-                (it.hasChildrenInHousehold()) * haushalthatkinderunter10
+                when(it.areaType) {
+                    AreaType.RURAL -> Raumtyp_mobitopp_rural
+                    else -> 0.0
+                } +
+                when(it.commuteDistanceCode) {
+                    KilometerEncoder.In0To5km -> pendeln_0bis5km
+                    KilometerEncoder.Over50km -> pendeln_ueber50km
+                    else -> 0.0
+                } +
+                (it.hasChildrenInHousehold) * haushalthatkinderunter10
     }
 }.multinomialLogit("Amount of Activities in Week Routine")
     .build(params.activityAmountParams)

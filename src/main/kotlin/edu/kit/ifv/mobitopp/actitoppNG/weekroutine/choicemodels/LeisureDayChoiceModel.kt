@@ -3,6 +3,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels
 
 import edu.kit.ifv.discretechoice.extensions.loadOptionsMap
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
+import edu.kit.ifv.mobitopp.actitoppNG.enums.AreaType
 import edu.kit.ifv.mobitopp.actitoppNG.enums.isEarning
 import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudent
 import edu.kit.ifv.mobitopp.actitoppNG.performance.AgeEncoder
@@ -25,8 +26,11 @@ val leisureDaysChoiceModel get() = DiscreteStructure<Int, PersonAlternative, Lei
                     in isStudent -> emplomentStudent
                     else -> 0.0
                 } +
-                (it.areaTypeRural()) * areaTypeIsRural +
-                (it.hasChildrenInHousehold()) * householdHasChildenBelowAge10 +
+                when(it.areaType) {
+                    AreaType.RURAL -> areaTypeIsRural
+                    else -> 0.0
+                } +
+                (it.hasChildrenInHousehold) * householdHasChildenBelowAge10 +
                 when (it.ageCode) {
                     AgeEncoder.isAged61To70 -> ageIn61To70
                     else -> 0.0
