@@ -16,8 +16,6 @@ val educationHistograms get() =
         name = "Histogram selection for education duration"
     ) { histograms ->
         loadFromList(histograms - histograms[3]) {_, it ->
-
-
             base +
                     (it.amountOfWorkActivitiesInWeek) * anzakt_woche_w +
                     (it.amountOfEducationActivitiesInWeek) * anzakt_woche_e +

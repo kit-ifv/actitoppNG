@@ -116,8 +116,8 @@ data class UtilityFunction8DParams(
     )
 }
 
-private val standardUtilityFunction8D: ParameterStep8D.(UtilityFunction8DParams) -> Double = {
-     base +
+fun ParameterStep8D.standardUtilityFunction8D(it: UtilityFunction8DParams): Double {
+     return base +
             when (it.averageTimeOfActivityCode) {
                 0 -> mittl_zeit_akt_1bis14min
                 1 -> mittl_zeit_akt_15bis29min
@@ -178,12 +178,35 @@ private val standardUtilityFunction8D: ParameterStep8D.(UtilityFunction8DParams)
              }
 }
 
-private val standardUtilityFunction8B: ParameterStep8B.(MainDurationAlternative) -> Double = {
-    val averageTimeOfActivityCode = UtilityConverter.convertToOneHourBlock(it.dayPlan.getBudget(it.activityType))
-    val dayCode = UtilityConverter.convertWeekDay(it.dayPlan.durationDay.weekday)
-    val employmentCode = UtilityConverter.convertEmployment(it.person.employment)
-    base +
-            when (averageTimeOfActivityCode) {
+data class StandardUtilityFunction8BParams(
+    val averageTimeOfActivityCode: Int,
+    val dayCode: Int,
+    val employmentCode: Int,
+    val anzaktwieanztagemitzweck: Int,
+    val activity: ActivityType,
+    val wochenzbudget_zweck_kategorie: Int,
+    val numActivitiesInTour: Int,
+    val numActivitiesInDayplan: Int,
+    val numToursToday: Int,
+    val positionToMainTour: Position,
+) {
+    constructor(alternative: MainDurationAlternative): this(
+        averageTimeOfActivityCode = UtilityConverter.convertToOneHourBlock(alternative.dayPlan.getBudget(alternative.activityType)),
+        dayCode = UtilityConverter.convertWeekDay(alternative.dayPlan.durationDay.weekday),
+        employmentCode = UtilityConverter.convertEmployment(alternative.person.employment),
+        anzaktwieanztagemitzweck= alternative.anzaktwieanztagemitzweck().I,
+        activity = alternative.activityType,
+        wochenzbudget_zweck_kategorie= alternative.planTimeBudgets.getCategory(alternative.activityType).toInt(),
+        numActivitiesInTour= alternative.tourPlan.size,
+        numActivitiesInDayplan= alternative.dayPlan.amountOfActivities,
+        numToursToday=  alternative.tag_anzahl_touren,
+        positionToMainTour= alternative.tourPlan.position,
+    )
+}
+
+private fun ParameterStep8B.standardUtilityFunction8B(it: StandardUtilityFunction8BParams): Double {
+    return base +
+            when (it.averageTimeOfActivityCode) {
                 1 -> mittl_zeit_akt_60bis119min
                 2 -> mittl_zeit_akt_120bis179min
                 3 -> mittl_zeit_akt_180bis239min
@@ -193,21 +216,21 @@ private val standardUtilityFunction8B: ParameterStep8B.(MainDurationAlternative)
                 7 -> mittl_zeit_akt_420bis479min
                 else -> .0
             } +
-            when (dayCode) {
+            when (it.dayCode) {
                 5 -> tag_fr
                 6 -> tag_sa
                 7 -> tag_so
                 else -> .0
             } +
-            (it.anzaktwieanztagemitzweck()) * anzaktwieanztagemitzweck +
-            when (it.activityType) {
+            (it.anzaktwieanztagemitzweck) * anzaktwieanztagemitzweck +
+            when (it.activity) {
                 ActivityType.WORK -> aktzweck_work
                 ActivityType.EDUCATION -> aktzweck_education
                 ActivityType.SHOPPING -> aktzweck_shopping
                 ActivityType.TRANSPORT -> aktzweck_transport
                 else -> .0
             } +
-            when (it.planTimeBudgets.getCategory(it.activityType).toInt()) {
+            when (it.wochenzbudget_zweck_kategorie) {
                 1 -> wochenzbudget_zweck_kat1
                 2 -> wochenzbudget_zweck_kat2
                 3 -> wochenzbudget_zweck_kat3
@@ -215,33 +238,35 @@ private val standardUtilityFunction8B: ParameterStep8B.(MainDurationAlternative)
                 5 -> wochenzbudget_zweck_kat5
                 else -> .0
             } +
-            when (it.tourPlan.size) {
+            when (it.numActivitiesInTour) {
                 1 -> tourhat1akt
                 2 -> tourhat2akt
                 3 -> tourhat3akt
                 else -> .0
 
             } +
-
-            when (it.dayPlan.amountOfActivities) {
+            when (it.numActivitiesInDayplan) {
                 1 -> taghat1akt
                 2 -> taghat2akt
                 3 -> taghat3akt
                 else -> 0.0
             } +
-            when(it.tag_anzahl_touren) {
+            when(it.numToursToday) {
                 1 -> taghat1tour
                 2 -> taghat2touren
                 else -> 0.0
             } +
-            when (employmentCode) {
+            when (it.employmentCode) {
                 0 -> beruf_vollzeit
                 1, 7, 8 -> beruf_teilzeit
                 3, 4, 9, 10, 11 -> beruf_schueler_azubi
                 else -> .0
             } +
-            (it.tourliegtvorhaupttour()) * tourliegtvorhaupttour +
-            (it.tourliegtnachhaupttour()) * tourliegtnachhaupttour
+            when(it.positionToMainTour) {
+                Position.BEFORE -> tourliegtvorhaupttour
+                Position.AFTER -> tourliegtnachhaupttour
+                else -> .0
+            }
 }
 
 context(params: PlanGenerationParameters)
@@ -261,7 +286,7 @@ val MAJOR
             identifier = Identifier.MAJOR_ACTIVITY_DURATION
         ),
         { UtilityFunction8DParams(it) },
-        standardUtilityFunction8D,
+        { params -> standardUtilityFunction8D(params) },
     )
 
 context(params: PlanGenerationParameters)
@@ -391,6 +416,6 @@ val LEAD
         ArrayHistogram.fromResource(
             identifier = Identifier.LEAD_ACTIVITY_DURATION
         ),
-        { it },
-        standardUtilityFunction8B,
+        { StandardUtilityFunction8BParams(it) },
+        {params -> standardUtilityFunction8B(params) },
     )
