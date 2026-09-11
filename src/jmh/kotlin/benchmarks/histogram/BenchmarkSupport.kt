@@ -54,10 +54,7 @@ internal data class DurationAlternativeEncoded(
                         alternative.dayPlan.durationDay.weekday
                     ),
 
-                activityCode =
-                    UtilityConverter.convertActivityType(
-                        alternative.activityType
-                    ),
+                activityCode = alternative.activityType.ordinal,
 
                 employmentCode =
                     UtilityConverter.convertEmployment(
@@ -82,7 +79,7 @@ internal data class DurationAlternativeEncoded(
                     alternative.letztetourdestages().I,
 
                 dayHasTwoToursCode =
-                    alternative.taghat2touren().I,
+                    (alternative.tag_anzahl_touren == 2).I,
 
                 tourPositionCode =
                     alternative.tourPlan.position.ordinal,

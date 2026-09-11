@@ -286,7 +286,7 @@ val MAJOR_NEW: ActivityDurationHistograms
             identifier = Identifier.MAJOR_ACTIVITY_DURATION
         )
         val build =
-            SingularUtilityStructureBuilder<ArrayHistogram, MainDurationAlternative, ParameterStep8D, DurationAlternativeEncoded>(
+            SingularUtilityStructureBuilder(
                 histograms.toSet(),
                 converter = DurationAlternativeEncoded::fromAlternative,
                 parameters = ParametersStep8D.toTypedArray()
@@ -353,8 +353,6 @@ val MAJOR_NEW: ActivityDurationHistograms
                                 else -> .0
                             }
                 }
-
-
             }.build()
 
         return ActivityDurationHistograms(histograms, build)
