@@ -97,7 +97,7 @@ data class AllChoiceModels(
                     histograms = HistogramPerActivity.DEFAULT,
                     firstActivityUsesStandardDuration = firstActivityUsesStandardDuration,
                     minorActivityDurationChoiceModel = MINOR,
-                    majorActivityDurationChoiceModel = MAJOR_NEW,
+                    majorActivityDurationChoiceModel = MAJOR,
                     leadActivityDurationChoiceModel = LEAD,
                     mainActivityChoiceModel = mainActivityChoiceModel,
                     precursorAmountChoiceModel = precursorAmountChoiceModel,
