@@ -102,8 +102,6 @@ data class ModernizedActivity(
     override val position: Position,
 ) : MutableActivity {
 
-
-
     override var duration: Duration? = null
         set(value) {
             require(value?.let { it > Duration.ZERO } ?: true) {

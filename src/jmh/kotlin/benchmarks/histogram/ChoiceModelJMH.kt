@@ -2,6 +2,7 @@ package benchmarks.histogram
 
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.choicemodels.MAJOR
+import edu.kit.ifv.mobitopp.actitoppNG.plandurations.choicemodels.MAJOR_NEW
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.annotations.BenchmarkMode
 import org.openjdk.jmh.annotations.Fork
@@ -61,6 +62,10 @@ open class SingularDurationSelectionBenchmark {
         MAJOR
     }
 
+    private val major_new = context(PlanGenerationParameters()) {
+        MAJOR_NEW
+    }
+
 
     @Setup(Level.Trial)
     fun setupTrial() {
@@ -107,6 +112,22 @@ open class SingularDurationSelectionBenchmark {
         ) {
             blackhole.consume(
                 major.selectSingular(
+                    fixture.alternative
+                )
+            )
+        }
+    }
+
+    @Benchmark
+    fun majorNEWSelectSingular(
+        blackhole: Blackhole,
+    ) {
+        context(
+            random,
+            fixture.alternative,
+        ) {
+            blackhole.consume(
+                major_new.selectSingular(
                     fixture.alternative
                 )
             )
