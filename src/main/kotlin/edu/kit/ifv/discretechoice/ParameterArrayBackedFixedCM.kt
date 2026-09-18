@@ -11,22 +11,25 @@ import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.UtilityAssignment
 import kotlin.random.Random
 
 /**
- * This badly named choice model uses the converter function to convert the complex object C into a simpler to handle
- * object X, which is only calculated once. Before each utility invocation would do its own calculation converter(c)
- * causing N converter calls which turns out to be inefficient. This class is a massive copy paste of ArrayBackedChoice
- * Model and these two can probably be fused together. Maybe extending ArrayBackedChoiceModel to provide a identity
- * converter function as default argument.
+ * The main feature this ChoiceModel has, is the fact that it does not use the same parameter set for every alternative.
+ * Instead it uses and array of parameters which map 1:1 to each alternative.
+ * Other than that it works just like [edu.kit.ifv.mobitopp.discretechoice.models.ArrayBackedFixedChoiceModel].
  */
-class InvariantArrayChoiceModel<A, in C, P, X>(
+class ParameterArrayBackedFixedCM<A, in C, P>(
     override val choices: Set<A>,
-    val utilityAssignment: UtilityAssignment<A, X, P>,
-    private val converter: (C) -> X,
+    val utilityAssignment: UtilityAssignment<A, C, P>,
     val distributionFunction: CumulateDistributionArray<Unit> = MultinomialLogitArray(),
     val selectionFunction: SelectionFunctionArray = WeightedSelection(),
     val parameters: Array<P>,
+    override val name: String,
 ): FixedChoiceModel<A, C> {
+    init {
+        require(choices.size == parameters.size) {"A ParameterArrayBackedFixedCM only supports parameter " +
+                "arrays of the same size as the number of choices. Each choice is gets one parameter, it is a 1:1 " +
+                "mapping. Currently there are ${choices.size} choices but ${parameters.size}"}
+    }
     private val alternatives: List<A> = choices.toList()
-    private val utilityFunctions: Array<UtilityFunction<A, X, P>> = alternatives.map {
+    private val utilityFunctions: Array<UtilityFunction<A, C, P>> = alternatives.map {
         utilityAssignment.getUtilityFunctionFor(it)!!
 
     }.toTypedArray()
@@ -57,9 +60,8 @@ class InvariantArrayChoiceModel<A, in C, P, X>(
 
     context(c: C, random: Random)
     override fun select(): A {
-        val convert = converter(c)
         val calculationArray = DoubleArray(choices.size) {
-            utilityFunctions[it].calculateUtility(alternatives[it], convert, parameters[it])
+            utilityFunctions[it].calculateUtility(alternatives[it], c, parameters[it])
         }
         return selectInternal(calculationArray) { choices }
     }
@@ -83,8 +85,6 @@ class InvariantArrayChoiceModel<A, in C, P, X>(
         }
     }
 
-
-
     context(c: C, random: Random)
     override fun selectInjected(
         choices: Set<A>,
@@ -101,22 +101,17 @@ class InvariantArrayChoiceModel<A, in C, P, X>(
     }
     private fun spawnUtilityArray(choices: Set<A>, c: C): DoubleArray {
         val calculationArray = DoubleArray(alternatives.size) {
-
             Double.NEGATIVE_INFINITY
         }
-        val convert = converter(c)
         choices.forEach {
             val idx = getIndex(it)
-            calculationArray[idx] = utilityFunctions[idx].calculateUtility(it, convert, parameters[idx])
+            calculationArray[idx] = utilityFunctions[idx].calculateUtility(it, c, parameters[idx])
         }
         return calculationArray
     }
     context(c: C)
     override fun utility(alternative: A): Double {
         val index: Int = getIndex(alternative)
-        return utilityFunctions[index].calculateUtility(alternative, converter(c), parameters[index])
+        return utilityFunctions[index].calculateUtility(alternative, c, parameters[index])
     }
-
-    override val name: String
-        get() = "Unnamed invariant array choice model TODO please move Name in class and builder"
 }

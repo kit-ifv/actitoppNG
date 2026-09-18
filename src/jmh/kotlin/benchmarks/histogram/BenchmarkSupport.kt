@@ -1,6 +1,6 @@
 package benchmarks.histogram
 
-import edu.kit.ifv.discretechoice.InvariantArrayChoiceModel
+import edu.kit.ifv.discretechoice.ParameterArrayBackedFixedCM
 import edu.kit.ifv.discretechoice.extensions.SingularUtilityStructureBuilder
 import edu.kit.ifv.mobitopp.actitoppNG.performance.UtilityConverter
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
@@ -93,7 +93,7 @@ internal data class DurationAlternativeEncoded(
  * Just makes the benchmark/profiling code less ridiculous to read.
  */
 internal typealias DurationInvariantChoiceModel =
-        InvariantArrayChoiceModel<
+        ParameterArrayBackedFixedCM<
                 ArrayHistogram,
                 MainDurationAlternative,
                 ParameterStep8D,
