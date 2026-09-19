@@ -277,16 +277,14 @@ open class PlanAlternative<P : Any>(
     val tourActivity: ActivityType = tourPlan.mainActivity.activityType
     val dayOfWeek: DayOfWeek = dayPlan.durationDay.weekday
 
-    fun anztagemit_tourennachht(): Int {
-        // TODO this number is always fixed and should be precalculated in the mobility plan
-        return mobilityPlan.dayPlans.count { it.tourPlans.last().position == Position.AFTER }
+    val anztagemit_tourennachht by lazy {
+        mobilityPlan.dayPlans.count { it.tourPlans.last().position == Position.AFTER }
     }
 
     fun householdHasYouths() = person.household.amountOfAllMinors() > 0
-    fun anztagemit_tourenvorht(): Int {
-        // TODO this number is also fixed once the mobility Plan is formulated.
-        return mobilityPlan.dayPlans.count { it.tourPlans.first().position == Position.BEFORE }
 
+    val  anztagemit_tourenvorht by lazy {
+        mobilityPlan.dayPlans.count { it.tourPlans.first().position == Position.BEFORE }
     }
 
     fun anztourenamtag(): Int {

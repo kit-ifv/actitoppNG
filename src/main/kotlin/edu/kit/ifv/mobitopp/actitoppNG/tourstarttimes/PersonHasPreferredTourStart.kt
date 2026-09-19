@@ -10,10 +10,8 @@ import edu.kit.ifv.mobitopp.actitoppNG.plandurations.MainDurationAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.choicemodels.FIRST_TOUR_HISTOGRAM
 import edu.kit.ifv.mobitopp.actitoppNG.utils.I
-import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
 import edu.kit.ifv.mobitopp.discretechoice.structure.loadFromList
-import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
 import kotlin.random.Random
 
 interface PersonPreferredTourStart {
@@ -32,8 +30,8 @@ data class StandardUtilityFunction9ACharacteristic(
         isStudent = alternative.isStudent().I,
         householdHasYouths= alternative.householdHasYouths().I,
         ageCode= AgeEncoder.encode(alternative.person.age),
-        anztagemit_tourenvorht= alternative.anztagemit_tourenvorht(),
-        anztagemit_tourennachht= alternative.anztagemit_tourennachht()
+        anztagemit_tourenvorht= alternative.anztagemit_tourenvorht,
+        anztagemit_tourennachht= alternative.anztagemit_tourennachht
     )
 }
 
