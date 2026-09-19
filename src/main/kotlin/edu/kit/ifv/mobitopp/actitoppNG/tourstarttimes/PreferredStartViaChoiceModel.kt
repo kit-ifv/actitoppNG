@@ -1,7 +1,5 @@
 package edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes
 
-
-import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.BooleanDecisionWithPreferenceCategory
@@ -11,6 +9,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParametersStep1
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
 import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
+import java.time.DayOfWeek
 import kotlin.random.Random
 
 /**
@@ -37,8 +36,11 @@ class PreferredStartViaChoiceModel() : UsePreferredTourStart {
                         (it.tourhat1akt()) * tourhat1akt +
                         (it.isAged10to17()) * alter_10bis17 +
                         (it.tourtyp_work()) * tourtyp_work +
-                        (it.tag_sa()) * tag_sa +
-                        (it.tag_so()) * tag_so +
+                        when(it.dayOfWeek) {
+                            DayOfWeek.SATURDAY -> tag_sa
+                            DayOfWeek.SUNDAY -> tag_so
+                            else -> 0.0
+                        } +
                         when(it.dauer_akt_in_tour_blocked) {
                             1 -> dauer_akt_in_tour_2bis4std
                             2 -> dauer_akt_in_tour_4bis6std

@@ -17,6 +17,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.utils.I
 import edu.kit.ifv.mobitopp.actitoppNG.utils.Position
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
+import java.time.DayOfWeek
 
 data class MinorFunctionEncodedCharacteristic(
     val durationMainActCode: Int,
@@ -52,7 +53,7 @@ private val minorFunction: ParameterStep8J.(MinorFunctionEncodedCharacteristic) 
                 else -> .0
 
             } +
-            (it.original.tag_so()) * tag_so +
+            (it.original.dayOfWeek == DayOfWeek.SUNDAY) * tag_so +
             when (it.original.activityType) {
                 ActivityType.WORK -> aktzweck_work
                 ActivityType.EDUCATION -> aktzweck_education
@@ -405,7 +406,7 @@ val MAJOR_NEW: ActivityDurationHistograms
                                 else -> .0
                             }
                 }
-            }.build()
+            }.build("MAJOR_NEW")
 
         return ActivityDurationHistograms(histograms, build)
     }

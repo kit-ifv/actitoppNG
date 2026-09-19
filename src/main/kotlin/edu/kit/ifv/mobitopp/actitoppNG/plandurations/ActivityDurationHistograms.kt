@@ -274,6 +274,7 @@ open class PlanAlternative<P : Any>(
     val person: Person = input.person
     val isLastTourOfDay: Boolean = input.isLastTourOfDay
     val activityType: ActivityType = activity.activityType
+    val dayOfWeek: DayOfWeek = dayPlan.durationDay.weekday
 
     fun anztagemit_tourennachht(): Int {
         // TODO this number is always fixed and should be precalculated in the mobility plan
@@ -299,71 +300,6 @@ open class PlanAlternative<P : Any>(
     fun touristhaupttour() = tourPlan.position == Position.MAIN
     fun dauer_hauptakt_tag_4bis6std(): Boolean {
         return dayPlan.durationOfMainActivities in 4.hours..<6.hours
-    }
-
-    fun dauer_hauptakt_tag_6bis8std(): Boolean {
-        return dayPlan.durationOfMainActivities in 6.hours..<8.hours
-    }
-
-    fun dauer_hauptakt_tag_8bis10std(): Boolean {
-        return dayPlan.durationOfMainActivities in 8.hours..<10.hours
-    }
-
-    fun dauer_hauptakt_tag_10bis12std(): Boolean {
-        return dayPlan.durationOfMainActivities in 10.hours..<12.hours
-    }
-
-    fun dauer_hauptakt_tag_12bis14std(): Boolean {
-        return dayPlan.durationOfMainActivities in 12.hours..<14.hours
-    }
-
-    fun dauer_hauptakt_tag_ueber14std(): Boolean {
-        return dayPlan.durationOfMainActivities >= 14.hours
-    }
-
-    fun mittl_zeit_akt_1bis14min(): Boolean {
-        return dayPlan.getBudget(activityType) in 1.minutes..<15.minutes
-    }
-
-    fun mittl_zeit_akt_15bis29min(): Boolean {
-        return dayPlan.getBudget(activityType) in 15.minutes..<30.minutes
-    }
-
-    fun mittl_zeit_akt_30bis59min(): Boolean {
-        return dayPlan.getBudget(activityType) in 30.minutes..<60.minutes
-    }
-
-    fun mittl_zeit_akt_60bis119min(): Boolean {
-        return dayPlan.getBudget(activityType) in 60.minutes..<120.minutes
-    }
-
-    fun mittl_zeit_akt_120bis179min(): Boolean {
-        return dayPlan.getBudget(activityType) in 120.minutes..<180.minutes
-    }
-
-    fun mittl_zeit_akt_180bis239min(): Boolean {
-        return dayPlan.getBudget(activityType) in 180.minutes..<240.minutes
-    }
-
-    fun mittl_zeit_akt_240bis299min(): Boolean {
-        return dayPlan.getBudget(activityType) in 240.minutes..<300.minutes
-    }
-
-    fun mittl_zeit_akt_300bis359min(): Boolean {
-        return dayPlan.getBudget(activityType) in 300.minutes..<360.minutes
-    }
-
-    fun mittl_zeit_akt_360bis419min(): Boolean {
-        return dayPlan.getBudget(activityType) in 360.minutes..<420.minutes
-    }
-
-    fun mittl_zeit_akt_420bis479min(): Boolean {
-        return dayPlan.getBudget(activityType) in 420.minutes..<480.minutes
-
-    }
-
-    fun tag_so(): Boolean {
-        return dayPlan.durationDay.weekday == DayOfWeek.SUNDAY
     }
 
     fun aktzweck_work(): Boolean {
@@ -414,14 +350,6 @@ open class PlanAlternative<P : Any>(
 
     fun tourliegtnachhaupttour(): Boolean {
         return tourPlan.position == Position.AFTER
-    }
-
-    fun tag_fr(): Boolean {
-        return dayPlan.durationDay.weekday == DayOfWeek.FRIDAY
-    }
-
-    fun tag_sa(): Boolean {
-        return dayPlan.durationDay.weekday == DayOfWeek.SATURDAY
     }
 
     fun dauer_akt_vorht_tag_1bis120(): Boolean {

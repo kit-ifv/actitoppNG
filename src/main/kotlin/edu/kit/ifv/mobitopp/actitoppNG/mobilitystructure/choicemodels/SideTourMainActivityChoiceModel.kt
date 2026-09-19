@@ -4,6 +4,9 @@ import edu.kit.ifv.discretechoice.extensions.loadOptionsMap
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isNotEarning
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isParttime
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudent
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourMainActivityParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.SideTourMainActivitySet
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.TourAlternative
@@ -30,9 +33,9 @@ private val standardUtilityFunction: SideTourMainActivityParameters.(TourAlterna
     base +
             when (it.employment) {
                 Employment.FULLTIME -> employmentFullTime
-                Employment.PARTTIME, Employment.UNKNOWN_21,  Employment.MARGINAL -> employmentPartTime
-                Employment.UNOCCUPIED,  Employment.HOUSEKEEPER -> employmentNotEarning
-                Employment.STUDENT, Employment.STUDENT_PRIMARY, Employment.STUDENT_SECONDARY, Employment.STUDENT_TERTIARY -> employmentStudent
+                in isParttime -> employmentPartTime
+                in isNotEarning -> employmentNotEarning
+                in isStudent -> employmentStudent
                 Employment.VOCATIONAL -> employmentVocational
                 else -> 0.0
             } +
