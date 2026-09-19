@@ -35,7 +35,10 @@ class PreferredStartViaChoiceModel() : UsePreferredTourStart {
                         (it.anztourennachhaupttour()) * anztourennachhaupttour +
                         (it.tourhat1akt()) * tourhat1akt +
                         (it.isAged10to17()) * alter_10bis17 +
-                        (it.tourtyp_work()) * tourtyp_work +
+                        when(it.tourActivity) {
+                            ActivityType.WORK -> tourtyp_work
+                            else -> 0.0
+                        } +
                         when(it.dayOfWeek) {
                             DayOfWeek.SATURDAY -> tag_sa
                             DayOfWeek.SUNDAY -> tag_so

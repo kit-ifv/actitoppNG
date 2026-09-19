@@ -274,6 +274,7 @@ open class PlanAlternative<P : Any>(
     val person: Person = input.person
     val isLastTourOfDay: Boolean = input.isLastTourOfDay
     val activityType: ActivityType = activity.activityType
+    val tourActivity: ActivityType = tourPlan.mainActivity.activityType
     val dayOfWeek: DayOfWeek = dayPlan.durationDay.weekday
 
     fun anztagemit_tourennachht(): Int {
@@ -295,8 +296,6 @@ open class PlanAlternative<P : Any>(
     fun tour3destages() = tourPlan == dayPlan.tourPlans.getOrNull(2)
     fun isStudent() = person.employment.isStudent()
     fun isAged10to17() = person.age in 10..17
-    fun haupttour_work() = dayPlan.mainActivityType() == ActivityType.WORK
-    fun haupttour_education() = dayPlan.mainActivityType() == ActivityType.EDUCATION
     fun touristhaupttour() = tourPlan.position == Position.MAIN
     fun dauer_hauptakt_tag_4bis6std(): Boolean {
         return dayPlan.durationOfMainActivities in 4.hours..<6.hours
@@ -318,39 +317,15 @@ open class PlanAlternative<P : Any>(
         return activityType == ActivityType.TRANSPORT
     }
 
-    fun tourtyp_work(): Boolean {
-        return tourPlan.mainActivity.activityType == ActivityType.WORK
-    }
-
-    fun tourtyp_education(): Boolean {
-        return tourPlan.mainActivity.activityType == ActivityType.EDUCATION
-    }
-
-    fun tourtyp_shopping(): Boolean {
-        return tourPlan.mainActivity.activityType == ActivityType.SHOPPING
-    }
-
-    fun tourtyp_transport(): Boolean {
-        return tourPlan.mainActivity.activityType == ActivityType.TRANSPORT
-    }
-
     fun tourhat2akt(): Boolean {
         return tourPlan.size == 2
     }
 
     val tag_anzahl_touren: Int = dayPlan.tourPlans.size
 
-    fun aktliegtvorhauptakt(): Boolean {
-        return activity.position == Position.BEFORE
-    }
+    val activityPositionToMainActivity = activity.position
 
-    fun tourliegtvorhaupttour(): Boolean {
-        return tourPlan.position == Position.BEFORE
-    }
-
-    fun tourliegtnachhaupttour(): Boolean {
-        return tourPlan.position == Position.AFTER
-    }
+    val tourPositionToMainTour = tourPlan.position
 
     fun dauer_akt_vorht_tag_1bis120(): Boolean {
         return dayPlan.tourPlans.filter { it.position == Position.BEFORE }

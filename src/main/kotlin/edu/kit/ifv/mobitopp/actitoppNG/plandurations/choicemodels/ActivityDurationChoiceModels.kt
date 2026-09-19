@@ -82,10 +82,15 @@ private val minorFunction: ParameterStep8J.(MinorFunctionEncodedCharacteristic) 
                 2 -> taghat2touren
                 else -> 0.0
             } +
-            (it.original.aktliegtvorhauptakt()) * aktliegtvorhauptakt +
-            (it.original.tourliegtvorhaupttour()) * tourliegtvorhaupttour +
-            (it.original.tourliegtnachhaupttour()) * tourliegtnachhaupttour
-
+            when(it.original.activityPositionToMainActivity) {
+                Position.BEFORE -> aktliegtvorhauptakt
+                else -> 0.0
+            } +
+            when(it.original.tourPositionToMainTour) {
+                Position.BEFORE -> tourliegtvorhaupttour
+                Position.AFTER -> tourliegtnachhaupttour
+                else -> 0.0
+            }
 }
 
 data class UtilityFunction8DParams(
