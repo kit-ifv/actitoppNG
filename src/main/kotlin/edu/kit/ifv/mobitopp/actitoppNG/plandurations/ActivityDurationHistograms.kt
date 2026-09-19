@@ -299,22 +299,6 @@ open class PlanAlternative<P : Any>(
         return dayPlan.durationOfMainActivities in 4.hours..<6.hours
     }
 
-    fun aktzweck_work(): Boolean {
-        return activityType == ActivityType.WORK
-    }
-
-    fun aktzweck_education(): Boolean {
-        return activityType == ActivityType.EDUCATION
-    }
-
-    fun aktzweck_shopping(): Boolean {
-        return activityType == ActivityType.SHOPPING
-    }
-
-    fun aktzweck_transport(): Boolean {
-        return activityType == ActivityType.TRANSPORT
-    }
-
     fun tourhat2akt(): Boolean {
         return tourPlan.size == 2
     }
