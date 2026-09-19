@@ -31,8 +31,8 @@ class PreferredStartViaChoiceModel() : UsePreferredTourStart {
             option(true) { 0.0 }
             option(false) {_, it ->
                 base +
-                        (it.anztourenvorhaupttour()) * anztourenvorhaupttour +
-                        (it.anztourennachhaupttour()) * anztourennachhaupttour +
+                        (it.anztourenvorhaupttour) * anztourenvorhaupttour +
+                        (it.anztourennachhaupttour) * anztourennachhaupttour +
                         (it.tourhat1akt()) * tourhat1akt +
                         (it.isAged10to17()) * alter_10bis17 +
                         when(it.tourActivity) {
@@ -53,8 +53,8 @@ class PreferredStartViaChoiceModel() : UsePreferredTourStart {
                             else -> 0.0
                         } +
                         (it.dauer_akt_vorht_tag_1bis120()) * dauer_akt_vorht_tag_1bis120 +
-                        (it.std_start_T1_6_7_Uhr()) * std_start_T1_6_7_Uhr +
-                        (it.std_start_T1_7_8_Uhr()) * std_start_T1_7_8_Uhr
+                        (it.std_start_T1_6_7_Uhr) * std_start_T1_6_7_Uhr +
+                        (it.std_start_T1_7_8_Uhr) * std_start_T1_7_8_Uhr
             }
         }.multinomialLogit("Whether the tour should use a previously determined tour start or not")
             .build(ParametersStep10A)

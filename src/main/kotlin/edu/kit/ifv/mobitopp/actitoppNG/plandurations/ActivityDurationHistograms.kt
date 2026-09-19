@@ -314,8 +314,13 @@ open class PlanAlternative<P : Any>(
             .sumOf { it.activityDurationsWithTrips } in 1.minutes..<120.minutes
     }
 
-    fun anztourenvorhaupttour() = dayPlan.tourPlans.count { it.position == Position.BEFORE }
-    fun anztourennachhaupttour() = dayPlan.tourPlans.count { it.position == Position.AFTER }
+    val anztourenvorhaupttour by lazy{
+        dayPlan.tourPlans.count { it.position == Position.BEFORE}
+    }
+
+    val anztourennachhaupttour by lazy {
+        dayPlan.tourPlans.count { it.position == Position.AFTER }
+    }
 
     /**
      * The tour plans activity durations encoded into two hour blocks.
@@ -385,12 +390,12 @@ class BooleanDecisionWithPreferenceCategory(
 ) : BooleanDecisionAlternative(
     input
 ) {
-    fun std_start_T1_6_7_Uhr(): Boolean {
-        return preferredHistogram.start in (6.hours - 15.minutes)..(6.hours + 15.minutes) // SOme buffer because the histograms could theroretically not have an entry precisely for 6 hours
+    val std_start_T1_6_7_Uhr by lazy {
+        preferredHistogram.start in (6.hours - 15.minutes)..(6.hours + 15.minutes) // SOme buffer because the histograms could theroretically not have an entry precisely for 6 hours
     }
 
-    fun std_start_T1_7_8_Uhr(): Boolean {
-        return preferredHistogram.start in (7.hours - 15.minutes)..(7.hours + 15.minutes) // SOme buffer
+    val std_start_T1_7_8_Uhr by lazy {
+        preferredHistogram.start in (7.hours - 15.minutes)..(7.hours + 15.minutes) // SOme buffer
     }
 }
 
