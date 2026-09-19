@@ -42,9 +42,8 @@ ArrayHistogram(
         for(i in original.probabilities.indices) {
             val probability: Double = original.probabilities[i]
             this.probabilities[i] = probability
-            this._cumulativeSum[i] = probability + cumulatedCounter
             cumulatedCounter += probability
-
+            this._cumulativeSum[i] = cumulatedCounter
         }
     }
 
@@ -61,8 +60,8 @@ ArrayHistogram(
         val updatedProbability = original + complementProbability / 3
         val updatedComplement = 1 - updatedProbability
         val scalingFactor = updatedComplement / complementProbability
-        probabilities.withIndex().forEach { (i, probability) ->
-            probabilities[i] = probability * scalingFactor
+        for(i in probabilities.indices) {
+            probabilities[i] = probabilities[i] * scalingFactor
         }
         probabilities[index] = updatedProbability
 
@@ -143,9 +142,9 @@ open class ArrayHistogram internal constructor(
 
     protected fun cumulate() {
         var counter = 0.0
-        probabilities.withIndex().forEach { (index, probability) ->
-            _cumulativeSum[index] = probability + counter
-            counter += probability
+        for (i in probabilities.indices) {
+            counter += probabilities[i]
+            _cumulativeSum[i] = counter
         }
     }
 
@@ -171,16 +170,16 @@ open class ArrayHistogram internal constructor(
      */
     fun copy(): ModifiableArrayHistogram = ModifiableArrayHistogram(offset, probabilities.clone(), categoryIndex)
     fun trim(): ArrayHistogram {
-        val trimmedStartIndex =
-            probabilities.withIndex().takeWhile { it.value == 0.0 }.lastOrNull()?.let { it.index + 1 } ?: 0
-        val trimmedEndIndex =
-            probabilities.withIndex().reversed().takeWhile { it.value == 0.0 }.lastOrNull()?.index ?: size
+        val first = probabilities.indexOfFirst { it != 0.0 }
+        val last = probabilities.indexOfLast { it != 0.0 }
+
+        val trimmedStartIndex = if(first == -1) 0 else first
+        val trimmedEndIndex = if(last == -1) size else last + 1
         return ArrayHistogram(
             offset = offset + trimmedStartIndex,
             probabilities = probabilities.copyOfRange(trimmedStartIndex, trimmedEndIndex),
             categoryIndex = categoryIndex,
-
-            )
+        )
     }
 
     override operator fun get(index: Int): Double {
@@ -297,7 +296,7 @@ open class ArrayHistogram internal constructor(
             return path.listDirectoryEntries("*${identifier.id}*").map { fromPath(it) }.sortedBy { it.categoryIndex }
         }
 
-        fun fromResource(resourcePath: String): List<ArrayHistogram> {
+        fun fromResource(resourcePath: String): ArrayList<ArrayHistogram> {
             val inputStream = ArrayHistogram::class.java.getResourceAsStream(resourcePath)
                 ?: throw NoSuchElementException("Resource of $resourcePath does not exist")
 
@@ -306,7 +305,7 @@ open class ArrayHistogram internal constructor(
             }
         }
 
-        fun fromResource(identifier: Identifier, prefix: String = "mop14_withpkwhh"): List<ArrayHistogram> {
+        fun fromResource(identifier: Identifier, prefix: String = "mop14_withpkwhh"): ArrayList<ArrayHistogram> {
             return fromResource("/$prefix/${identifier.resourcePath()}.json")
         }
     }

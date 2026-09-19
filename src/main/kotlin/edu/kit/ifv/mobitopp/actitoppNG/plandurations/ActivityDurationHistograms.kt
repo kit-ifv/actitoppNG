@@ -66,7 +66,7 @@ interface HistogramSelector {
  */
 open class ActivityDurationHistograms(
     // TODO histograms could be a sorted Set, since they are supposed to cover respective ranges.
-    open val histograms: List<ArrayHistogram>,
+    open val histograms: ArrayList<ArrayHistogram>,
     open val choiceModel: FixedChoiceModel<ArrayHistogram, MainDurationAlternative>,
     val emergencyBehaviour:  (ClosedRange<Duration>, Random) -> Duration = { range, rng ->
 
@@ -245,7 +245,7 @@ enum class Identifier(val id: String, val resourceName: String) {
 }
 
 fun <P : List<T>, T, C> P.generateHistogram(
-    histograms: List<ArrayHistogram>,
+    histograms: ArrayList<ArrayHistogram>,
     characteristicConverter: (MainDurationAlternative) -> C,
     utilityFunction: T.(C) -> Double,
 ): ActivityDurationHistograms {
