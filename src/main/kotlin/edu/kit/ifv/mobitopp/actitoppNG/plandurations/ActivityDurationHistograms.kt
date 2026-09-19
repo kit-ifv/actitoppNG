@@ -309,8 +309,8 @@ open class PlanAlternative<P : Any>(
 
     val tourPositionToMainTour = tourPlan.position
 
-    fun dauer_akt_vorht_tag_1bis120(): Boolean {
-        return dayPlan.tourPlans.filter { it.position == Position.BEFORE }
+    val dauer_akt_vorht_tag_1bis120 by lazy {
+        dayPlan.tourPlans.filter { it.position == Position.BEFORE }
             .sumOf { it.activityDurationsWithTrips } in 1.minutes..<120.minutes
     }
 

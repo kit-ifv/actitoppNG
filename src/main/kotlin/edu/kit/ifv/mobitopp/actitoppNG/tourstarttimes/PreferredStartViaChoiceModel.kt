@@ -52,7 +52,7 @@ class PreferredStartViaChoiceModel() : UsePreferredTourStart {
                             5 -> dauer_akt_in_tour_10bis12std
                             else -> 0.0
                         } +
-                        (it.dauer_akt_vorht_tag_1bis120()) * dauer_akt_vorht_tag_1bis120 +
+                        (it.dauer_akt_vorht_tag_1bis120) * dauer_akt_vorht_tag_1bis120 +
                         (it.std_start_T1_6_7_Uhr) * std_start_T1_6_7_Uhr +
                         (it.std_start_T1_7_8_Uhr) * std_start_T1_7_8_Uhr
             }
