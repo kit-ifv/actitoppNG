@@ -1,6 +1,5 @@
 package edu.kit.ifv.mobitopp.actitoppNG.timebudgets
 
-import edu.kit.ifv.mobitopp.actitoppNG.enums.Category
 import edu.kit.ifv.mobitopp.actitoppNG.utils.ceilWholeMinutes
 import edu.kit.ifv.mobitopp.actitoppNG.utils.indexBinarySearch
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList
@@ -28,21 +27,6 @@ class ChangeTrackingArrayHistogram(private val original: Histogram) : Modifiable
         }
         return original.select(lowerBoundInclusive, upperBoundInclusive)
     }
-//    override fun selectInt(randomNumber: Double, lowerBoundInclusive: Int?, upperBoundInclusive: Int?): Duration {
-//        val index = potentiallySelect(randomNumber)
-//        if (index != NO_PRESELECT && index < previouslySelectedIndices.size) {
-//            val element = previouslySelectedIndices[index]
-//
-//            if (
-//                (lowerBoundInclusive == null || element >= lowerBoundInclusive) &&
-//                (upperBoundInclusive == null || element <= upperBoundInclusive)
-//            ) {
-//                return (element + offset).minutes
-//            }
-//        }
-//
-//        return super.selectInt(randomNumber, lowerBoundInclusive, upperBoundInclusive)
-//    }
 
     override fun modify(position: Int) {
         previouslySelectedIndices.add(position - offset)
