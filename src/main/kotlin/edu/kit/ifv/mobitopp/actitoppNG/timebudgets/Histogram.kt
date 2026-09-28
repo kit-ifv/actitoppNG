@@ -134,7 +134,7 @@ open class ArrayHistogram internal constructor(
     @Transient
     internal val _cumulativeSum: DoubleArray = DoubleArray(probabilities.size)
     val start = offset.minutes
-    val end = (probabilities.size + offset - 1).minutes
+    val end = (size + offset - 1).minutes
 
     init {
         cumulate()
