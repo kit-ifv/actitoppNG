@@ -30,7 +30,7 @@ import kotlin.random.Random
     timeUnit = TimeUnit.SECONDS,
 )
 @Measurement(
-    iterations = 10,
+    iterations = 5,
     time = 1,
     timeUnit = TimeUnit.SECONDS,
 )
@@ -84,21 +84,6 @@ open class SingularDurationSelectionBenchmark {
     fun setupIteration() {
         random =
             Random(42)
-    }
-
-
-    @Benchmark
-    fun invariantArrayChoiceModel(
-        blackhole: Blackhole,
-    ) {
-        context(
-            random,
-            fixture.alternative,
-        ) {
-            blackhole.consume(
-                fixture.invariantModel.select()
-            )
-        }
     }
 
 

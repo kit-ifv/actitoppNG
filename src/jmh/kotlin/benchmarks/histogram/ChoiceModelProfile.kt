@@ -2,6 +2,7 @@ package benchmarks.histogram
 
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.choicemodels.MAJOR
+import edu.kit.ifv.mobitopp.actitoppNG.plandurations.choicemodels.MAJOR_NEW
 import kotlin.random.Random
 
 
@@ -27,17 +28,19 @@ private fun consumeForProfiler(
     return accumulator * 31 + hash
 }
 
-
+/**
+ * This is meant for profiling. Add "major" or "major_new" to the program run arguments in the run configuration to either test the new or old
+ * choicemodel.
+ */
 fun main(args: Array<String>) {
 
     val implementation =
-        args.firstOrNull()?.lowercase() ?: "build"
+        args.firstOrNull()?.lowercase() ?: "major"
 
     require(
-        implementation == "build" ||
-                implementation == "major"
+        implementation == "major" || implementation == "major_new"
     ) {
-        "Expected 'build' or 'major', got '$implementation'"
+        "Expected 'major' or 'major_new', got '$implementation'"
     }
 
     val fixture =
@@ -47,14 +50,16 @@ fun main(args: Array<String>) {
         MAJOR
     }
 
+    val majorNew = context(PlanGenerationParameters()) {
+        MAJOR_NEW
+    }
     var accumulator = 0
 
     /*
      * Warm up ONLY the implementation we're going to profile.
      */
     when (implementation) {
-
-        "build" -> {
+        "major_new" -> {
             context(
                 Random(42),
                 fixture.alternative,
@@ -62,13 +67,14 @@ fun main(args: Array<String>) {
                 repeat(WARMUP_REPETITIONS) {
                     accumulator =
                         consumeForProfiler(
-                            fixture.invariantModel.select(),
+                            majorNew.selectSingular(
+                                fixture.alternative
+                            ),
                             accumulator,
                         )
                 }
             }
         }
-
         "major" -> {
             context(
                 Random(42),
@@ -96,8 +102,7 @@ fun main(args: Array<String>) {
     accumulator = 0
 
     when (implementation) {
-
-        "build" -> {
+        "major_new" -> {
             context(
                 Random(42),
                 fixture.alternative,
@@ -105,7 +110,9 @@ fun main(args: Array<String>) {
                 repeat(PROFILE_REPETITIONS) {
                     accumulator =
                         consumeForProfiler(
-                            fixture.invariantModel.select(),
+                            majorNew.selectSingular(
+                                fixture.alternative
+                            ),
                             accumulator,
                         )
                 }
@@ -134,7 +141,9 @@ fun main(args: Array<String>) {
         profilerBlackhole xor accumulator
 
     println(
-        "implementation=$implementation, " +
+        "Used configuration=$implementation, " +
                 "blackhole=$profilerBlackhole"
     )
+    println("Ran $WARMUP_REPETITIONS warmup selections")
+    println("Ran $PROFILE_REPETITIONS actual selections")
 }

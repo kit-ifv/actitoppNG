@@ -10,6 +10,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParametersStep8D
 import edu.kit.ifv.mobitopp.actitoppNG.randomMobilityPlanInput
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.utils.I
+import edu.kit.ifv.mobitopp.discretechoice.models.LambdaMapperChoiceModel
 import edu.kit.ifv.mobitopp.discretechoice.models.UtilityFunction
 import kotlin.random.Random
 
@@ -93,12 +94,7 @@ internal data class DurationAlternativeEncoded(
  * Just makes the benchmark/profiling code less ridiculous to read.
  */
 internal typealias DurationInvariantChoiceModel =
-        ParameterArrayBackedFixedCM<
-                ArrayHistogram,
-                MainDurationAlternative,
-                ParameterStep8D,
-                DurationAlternativeEncoded,
-                >
+        LambdaMapperChoiceModel<ArrayHistogram, MainDurationAlternative, DurationAlternativeEncoded>
 
 
 /**
@@ -108,7 +104,6 @@ internal typealias DurationInvariantChoiceModel =
  * need to leak into this shared structure.
  */
 internal data class DurationSelectionFixture(
-    val invariantModel: DurationInvariantChoiceModel,
     val alternative: MainDurationAlternative,
 )
 
@@ -229,24 +224,6 @@ internal val durationUtilityFunction =
  * happen here rather than in either benchmark frontend.
  */
 internal fun createDurationSelectionFixture(seed: Int = 1234): DurationSelectionFixture {
-
-    val histograms = ArrayHistogram.fromResource(
-        identifier = Identifier.MAJOR_ACTIVITY_DURATION
-    )
-
-    val invariantModel =
-        SingularUtilityStructureBuilder<
-                ArrayHistogram,
-                MainDurationAlternative,
-                ParameterStep8D,
-                DurationAlternativeEncoded,
-                >(
-            originalOptions = histograms.toSet(),
-            converter = DurationAlternativeEncoded::fromAlternative,
-            parameters = ParametersStep8D.toTypedArray(),
-            utilityFunction = durationUtilityFunction,
-        ).build()
-
     val mobilityPlanInputs =
         randomMobilityPlanInput(Random(seed))
 
@@ -254,7 +231,6 @@ internal fun createDurationSelectionFixture(seed: Int = 1234): DurationSelection
         MainDurationAlternative(mobilityPlanInputs)
 
     return DurationSelectionFixture(
-        invariantModel = invariantModel,
         alternative = alternative,
     )
 }
