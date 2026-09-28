@@ -123,7 +123,7 @@ open class ArrayHistogram internal constructor(
 ) : Comparable<Int>, Histogram {
     constructor(offset: Int, values: Collection<Number>, categoryIndex: Category) : this(
         offset,
-        values.map { it.toDouble() / values.sumOf { it.toDouble() } }.toDoubleArray(),
+        normalize(values),
         categoryIndex,
     )
 
@@ -307,6 +307,17 @@ open class ArrayHistogram internal constructor(
 
         fun fromResource(identifier: Identifier, prefix: String = "mop14_withpkwhh"): ArrayList<ArrayHistogram> {
             return fromResource("/$prefix/${identifier.resourcePath()}.json")
+        }
+
+        /**
+         * Normalizes the given values so the result is a probability distribution.
+         * @param values a collection of numbers with values >= 0. With < 0 this breaks.
+         */
+        fun normalize(values: Collection<Number>): DoubleArray {
+            val total = values.sumOf { it.toDouble() }
+            val result = DoubleArray(values.size)
+            values.forEachIndexed { i, v -> result[i] = v.toDouble() / total }
+            return result
         }
     }
 
