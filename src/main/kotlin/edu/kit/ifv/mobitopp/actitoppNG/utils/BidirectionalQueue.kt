@@ -29,7 +29,12 @@ abstract class BidirectionalQueue<T : Any>(mainElement: T) : BidirectionalCollec
     override operator fun get(index: Int) = queue[index + offset]
 
     override fun indexedElements(): Collection<BidirectionalIndexedValue<T>> {
-        return queue.withIndex().map { (index, value) -> BidirectionalIndexedValue(index, offset, value) }
+        val res = ArrayList<BidirectionalIndexedValue<T>>(queue.size)
+        for (index in queue.indices) {
+            val element = queue[index]
+            res.add(BidirectionalIndexedValue(index, offset, element))
+        }
+        return res
     }
 
     override fun precursors(): Collection<T> {
