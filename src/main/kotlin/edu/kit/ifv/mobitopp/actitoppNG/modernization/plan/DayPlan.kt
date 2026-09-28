@@ -2,20 +2,11 @@ package edu.kit.ifv.mobitopp.actitoppNG.modernization.plan
 
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.PersonWithRoutine
-import edu.kit.ifv.mobitopp.actitoppNG.modernization.ArrayDurationLookup
-import edu.kit.ifv.mobitopp.actitoppNG.modernization.DurationDay
-import edu.kit.ifv.mobitopp.actitoppNG.modernization.LinkedAction
-import edu.kit.ifv.mobitopp.actitoppNG.modernization.LinkedActivity
-import edu.kit.ifv.mobitopp.actitoppNG.modernization.MutableTourStructure
-import edu.kit.ifv.mobitopp.actitoppNG.modernization.linkByHomeActivity
+import edu.kit.ifv.mobitopp.actitoppNG.modernization.*
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.TimeBudgets
 import edu.kit.ifv.mobitopp.actitoppNG.utils.BidirectionalIndexedValue
 import edu.kit.ifv.mobitopp.actitoppNG.utils.Position
-import edu.kit.ifv.mobitopp.actitoppNG.utils.foldUntil
-import edu.kit.ifv.mobitopp.actitoppNG.utils.rem
 import edu.kit.ifv.mobitopp.actitoppNG.utils.sumOf
-import edu.kit.ifv.mobitopp.actitoppNG.utils.takeUntil
-import kotlin.div
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
@@ -245,13 +236,18 @@ class MovingDayPlan(
         ): MovingDayPlan {
             return movingDayInput.run {
                 val tourPlans: List<TourPlan> = tourStructures.map { it.element.toPlan(personWithRoutine, it.position) }
-                val activities: List<LinkedActivity> = tourPlans.zipWithNext().flatMap { (tourA, tourB) ->
-                    tourA.linkByHomeActivity(tourB, personWithRoutine, tripDuration)
-                } + tourPlans.last()
+
+                val expected = tourPlans.fold(0) { t, e -> t + e.size}
+                val activities: List<LinkedActivity> = buildList(expected) {
+                    for (i in 0 until tourPlans.lastIndex) {
+                        addAll(tourPlans[i].linkByHomeActivity(tourPlans[i + 1], personWithRoutine, tripDuration))
+                    }
+                    addAll(tourPlans.last())
+                }
+
 
                 MovingDayPlan(activities, tourPlans, timeBudgets, durationDay)
             }
-
         }
     }
 }
