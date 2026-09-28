@@ -4,6 +4,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.plandurations
 import edu.kit.ifv.mobitopp.actitoppNG.Person
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudent
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.multinomialLogitConverted
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.Activity
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.plan.DayPlan
@@ -250,14 +251,13 @@ fun <P : List<T>, T, C> P.generateHistogram(
     utilityFunction: T.(C) -> Double,
 ): ActivityDurationHistograms {
 
-    val choiceModel = DiscreteStructure<ArrayHistogram, MainDurationAlternative, P> {
+    val choiceModel = DiscreteStructure<ArrayHistogram, C, P> {
         loadFromList(histograms) { _, it ->
-            utilityFunction(this, characteristicConverter(it))
+            utilityFunction(this,it)
         }
-    }.multinomialLogit("Histogram selection Choice model").build(this)
+    }.multinomialLogitConverted("Histogram selection Choice model", characteristicConverter).build(this)
 
     return ActivityDurationHistograms(histograms, choiceModel)
-
 }
 
 
