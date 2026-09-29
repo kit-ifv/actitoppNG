@@ -36,9 +36,9 @@ class ComparisonTainter(
         return compare(converter) {
             original.select(bounds,converter)
         }
-
-
     }
+
+
     private fun <T> compare(converter: MainDurationAlternative, lambda: () -> T): T {
         context(converter) {
             val originalProbs = original.probabilitiesSingular()
