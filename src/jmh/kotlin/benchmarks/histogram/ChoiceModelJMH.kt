@@ -30,7 +30,7 @@ import kotlin.random.Random
     timeUnit = TimeUnit.SECONDS,
 )
 @Measurement(
-    iterations = 5,
+    iterations = 7,
     time = 1,
     timeUnit = TimeUnit.SECONDS,
 )

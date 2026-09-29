@@ -59,14 +59,11 @@ open class OneHouseholdScheduleBenchmark {
 
     @Benchmark
     fun generateOneHouseholdRepeated(bh: Blackhole) {
-
         persons.forEach {
             context(params, models) {
                 bh.consume(executionContext.generate(it).finish())
             }
-
         }
-
     }
 }
 
