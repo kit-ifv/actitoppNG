@@ -3,8 +3,12 @@ package edu.kit.ifv.mobitopp.actitoppNG.plandurations.choicemodels
 import edu.kit.ifv.discretechoice.extensions.SingularUtilityStructureBuilder
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
+import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isParttime
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudentOrAzubi
 import edu.kit.ifv.mobitopp.actitoppNG.performance.TimeBlockEncoder
 import edu.kit.ifv.mobitopp.actitoppNG.performance.UtilityConverter
+import edu.kit.ifv.mobitopp.actitoppNG.performance.WeightedTimeConverter
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.ActivityDurationHistograms
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.MainDurationAlternative
@@ -28,7 +32,7 @@ data class MinorFunctionEncodedCharacteristic(
     constructor(alternative: MainDurationAlternative) : this(
         durationMainActCode= TimeBlockEncoder.convert(alternative.dayPlan.durationOfMainActivities)
             .coerceAtMost(7),
-        averageTimeOfActivityCode= UtilityConverter.convertToFifteenMinuteBlock(alternative.dayPlan.getBudget(alternative.activityType)),
+        averageTimeOfActivityCode= WeightedTimeConverter.convert(alternative.dayPlan.getBudget(alternative.activityType)),
         numberOfActivities= alternative.dayPlan.amountOfActivities,
         original= alternative
     )
@@ -46,10 +50,10 @@ private val minorFunction: ParameterStep8J.(MinorFunctionEncodedCharacteristic) 
                 else -> .0
             } +
             when (it.averageTimeOfActivityCode) {
-                0 -> mittl_zeit_akt_1bis14min
-                1 -> mittl_zeit_akt_15bis29min
-                2, 3 -> mittl_zeit_akt_30bis59min
-                4, 5, 6, 7 -> mittl_zeit_akt_60bis119min
+                WeightedTimeConverter.In1To14Minutes -> mittl_zeit_akt_1bis14min
+                WeightedTimeConverter.In15To29Minutes -> mittl_zeit_akt_15bis29min
+                WeightedTimeConverter.In30To59Minutes -> mittl_zeit_akt_30bis59min
+                WeightedTimeConverter.In60To119Minutes -> mittl_zeit_akt_60bis119min
                 else -> .0
 
             } +
@@ -107,7 +111,7 @@ data class UtilityFunction8DParams(
     val tourRelativeToMainTour: Position,
 ) {
     constructor(alternative: MainDurationAlternative) : this(
-        averageTimeOfActivityCode = UtilityConverter.convertToFifteenMinuteBlock(alternative.dayPlan
+        averageTimeOfActivityCode = WeightedTimeConverter.convert(alternative.dayPlan
             .getBudget(alternative.activityType)),
         dayCode = UtilityConverter.convertWeekDay(alternative.dayPlan.durationDay.weekday),
         employmentCode = UtilityConverter.convertEmployment(alternative.person.employment),
@@ -127,10 +131,10 @@ fun ParameterStep8D.standardUtilityFunction8D(it: UtilityFunction8DParams): Doub
             when (it.averageTimeOfActivityCode) {
                 0 -> mittl_zeit_akt_1bis14min
                 1 -> mittl_zeit_akt_15bis29min
-                2, 3 -> mittl_zeit_akt_30bis59min
-                4, 5, 6, 7 -> mittl_zeit_akt_60bis119min
-                8, 9, 10, 11 -> mittl_zeit_akt_120bis179min
-                12, 13, 14, 15 -> mittl_zeit_akt_180bis239min
+                2 -> mittl_zeit_akt_30bis59min
+                3 -> mittl_zeit_akt_60bis119min
+                4 -> mittl_zeit_akt_120bis179min
+                5 -> mittl_zeit_akt_180bis239min
                 else -> .0
             } +
             when (it.dayCode) {
@@ -314,7 +318,7 @@ private data class DurationAlternativeEncoded(
     companion object {
         fun fromAlternative(it: MainDurationAlternative): DurationAlternativeEncoded {
             return DurationAlternativeEncoded(
-                averageTimeOfActivityCode = UtilityConverter.convertToFifteenMinuteBlock(
+                averageTimeOfActivityCode = WeightedTimeConverter.convert(
                     it.dayPlan.getBudget(
                         it
                             .activityType
@@ -351,15 +355,13 @@ val MAJOR_NEW: ActivityDurationHistograms
             ) { a, it, p ->
                 p.run {
                     base +
-
                             when (it.averageTimeOfActivityCode) {
-
                                 0 -> mittl_zeit_akt_1bis14min
                                 1 -> mittl_zeit_akt_15bis29min
-                                2, 3 -> mittl_zeit_akt_30bis59min
-                                4, 5, 6, 7 -> mittl_zeit_akt_60bis119min
-                                8, 9, 10, 11 -> mittl_zeit_akt_120bis179min
-                                12, 13, 14, 15 -> mittl_zeit_akt_180bis239min
+                                2 -> mittl_zeit_akt_30bis59min
+                                3 -> mittl_zeit_akt_60bis119min
+                                4 -> mittl_zeit_akt_120bis179min
+                                5 -> mittl_zeit_akt_180bis239min
                                 else -> .0
                             } +
 

@@ -53,31 +53,11 @@ object UtilityConverter {
      * 15..29m59s -> 1
      *
      */
-
     fun convertToFifteenMinuteBlock(duration: Duration): Int {
-
         require(duration != Duration.ZERO) {
             "Cannot handle duration zero, because original Actitopp never caught that in the utility functions. "
         }
         return (duration.inWholeMinutes.toInt() / 15)
-    }
-
-    /**
-     * Returns an int representing the duration this block is in.
-     * -1 -> <1m
-     * 0 -> 1..14m59s
-     * 1 -> 15..29m59s
-     * 2 -> 30..59m59s
-     * 3 -> 60..119m
-     * 4 -> 120..179m
-     * 5 -> ... only 60 min steps after this.
-     */
-    fun convertToWeightedMinuteBlock(duration: Duration): Int {
-        if (duration < 1.minutes) return -1
-        return if (duration < 15.minutes) 0
-        else if (duration < 30.minutes) 1
-        else if (duration < 60.minutes) 2
-        else (duration.inWholeMinutes.toInt() / 60) + 2
     }
 
     fun convertToOneHourBlock(duration: Duration): Int {
@@ -182,4 +162,46 @@ object TimeBlockEncoder {
 
         return (duration.inWholeHours.toInt() / 2)
     }
+}
+
+/**
+ * Converts durations to integer codes representing time intervals.
+ * -1 -> <1m
+ * 0 -> 1..14m59s
+ * 1 -> 15..29m59s
+ * 2 -> 30..59m59s
+ * 3 -> 60..119m
+ * 4 -> 120..179m
+ * 5 -> ... only 60 min steps after this.
+ */
+object WeightedTimeConverter {
+    const val LessThan1Minute = -1
+    const val In1To14Minutes = 0
+    const val In15To29Minutes = 1
+    const val In30To59Minutes = 2
+    const val In60To119Minutes = 3
+    const val In120To179Minutes = 4
+    const val In180To239Minutes = 5
+    const val In240To299Minutes = 6
+    const val In300To359Minutes = 7
+    const val In360To419Minutes = 8
+    const val In420To479Minutes = 9
+
+    /**
+     * Returns an int representing the duration this block is in.
+     * -1 -> <1m
+     * 0 -> 1..14m59s
+     * 1 -> 15..29m59s
+     * 2 -> 30..59m59s
+     * 3 -> 60..119m
+     * 4 -> 120..179m
+     * 5 -> ... only 60 min steps after this.
+     */
+     fun convert(duration: Duration): Int {
+        if (duration < 1.minutes) return -1
+        return if (duration < 15.minutes) 0
+        else if (duration < 30.minutes) 1
+        else if (duration < 60.minutes) 2
+        else (duration.inWholeMinutes.toInt() / 60) + 2
+     }
 }

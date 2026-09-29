@@ -5,7 +5,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.multinomialLogitConverted
-import edu.kit.ifv.mobitopp.actitoppNG.performance.UtilityConverter
+import edu.kit.ifv.mobitopp.actitoppNG.performance.WeightedTimeConverter
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.BooleanDecisionAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterCollectionStep8A
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
@@ -21,7 +21,7 @@ data class FirstActivityParameters(
     val original:  BooleanDecisionAlternative,
 ) {
     constructor(params: BooleanDecisionAlternative) : this(
-        averageTimeOfActivityCode = UtilityConverter.convertToWeightedMinuteBlock(params.dayPlan.getBudget(params.activityType)),
+        averageTimeOfActivityCode = WeightedTimeConverter.convert(params.dayPlan.getBudget(params.activityType)),
         original = params,
     )
 }
@@ -60,16 +60,16 @@ val firstActivityUsesStandardDuration get() =
                         else -> 0.0
                     } +
                     when (it.averageTimeOfActivityCode) {
-                        0 -> mittl_zeit_akt_1bis14min
-                        1 -> mittl_zeit_akt_15bis29min
-                        2 -> mittl_zeit_akt_30bis59min
-                        3 -> mittl_zeit_akt_60bis119min
-                        4 -> mittl_zeit_akt_120bis179min
-                        5 -> mittl_zeit_akt_180bis239min
-                        6 -> mittl_zeit_akt_240bis299min
-                        7 -> mittl_zeit_akt_300bis359min
-                        8 -> mittl_zeit_akt_360bis419min
-                        9 -> mittl_zeit_akt_420bis479min
+                        WeightedTimeConverter.In1To14Minutes -> mittl_zeit_akt_1bis14min
+                        WeightedTimeConverter.In15To29Minutes -> mittl_zeit_akt_15bis29min
+                        WeightedTimeConverter.In30To59Minutes -> mittl_zeit_akt_30bis59min
+                        WeightedTimeConverter.In60To119Minutes -> mittl_zeit_akt_60bis119min
+                        WeightedTimeConverter.In120To179Minutes -> mittl_zeit_akt_120bis179min
+                        WeightedTimeConverter.In180To239Minutes-> mittl_zeit_akt_180bis239min
+                        WeightedTimeConverter.In240To299Minutes -> mittl_zeit_akt_240bis299min
+                        WeightedTimeConverter.In300To359Minutes -> mittl_zeit_akt_300bis359min
+                        WeightedTimeConverter.In360To419Minutes -> mittl_zeit_akt_360bis419min
+                        WeightedTimeConverter.In420To479Minutes -> mittl_zeit_akt_420bis479min
                         else -> .0
                     } +
                     when (it.original.tourPlan.size) {
