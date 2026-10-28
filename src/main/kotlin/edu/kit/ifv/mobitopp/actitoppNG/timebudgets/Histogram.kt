@@ -21,34 +21,36 @@ import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
+
 /**
  * Original actitopp modified the distribution, it could do so because for every person the histogram was reconstructed
  * from file. Since we would like to perform the parsing process only once, we need some form of modifcation protection
  * so that the read content remain the same.
  */
-class ModifiableArrayHistogram(offset: Int = 0, probabilities: DoubleArray, categoryIndex: Category) : ArrayHistogram(
+
+class ModifiableArrayHistogram(offset: Int = 0, probabilities: DoubleArray, categoryIndex: Category) :
+ArrayHistogram(
     offset,
     probabilities,
     categoryIndex
-) {
+), ModifiableHistogram {
     /**
      * Load the original probabilities into this modifiable Array Histogram.
      */
-    fun cleanseByLoading(original: ArrayHistogram) {
+    override fun cleanseByLoading(original: ArrayHistogram) {
         var cumulatedCounter = .0
         for(i in original.probabilities.indices) {
             val probability: Double = original.probabilities[i]
             this.probabilities[i] = probability
-            this._cumulativeSum[i] = probability + cumulatedCounter
             cumulatedCounter += probability
-
+            this._cumulativeSum[i] = cumulatedCounter
         }
     }
 
     /**
      * Takes an absolute position
      */
-    fun modify(position: Int) {
+    override fun modify(position: Int) {
         require(position in this) {
             "Cannot update a position that is not present in the histogram. $position  ${offset}..${offset + size - 1}"
         }
@@ -58,8 +60,8 @@ class ModifiableArrayHistogram(offset: Int = 0, probabilities: DoubleArray, cate
         val updatedProbability = original + complementProbability / 3
         val updatedComplement = 1 - updatedProbability
         val scalingFactor = updatedComplement / complementProbability
-        probabilities.withIndex().forEach { (i, probability) ->
-            probabilities[i] = probability * scalingFactor
+        for(i in probabilities.indices) {
+            probabilities[i] = probabilities[i] * scalingFactor
         }
         probabilities[index] = updatedProbability
 
@@ -71,19 +73,57 @@ class ModifiableArrayHistogram(offset: Int = 0, probabilities: DoubleArray, cate
     }
 }
 
+
+interface ModifiableHistogram: Histogram {
+    fun modify(position: Int)
+    fun cleanseByLoading(original: ArrayHistogram)
+}
+interface Histogram {
+    val offset: Int
+    operator fun contains(position: Int): Boolean
+    fun intersects(bounds: ClosedRange<Duration>): Boolean
+    operator fun get(index: Int): Double
+
+    context(rng: Random)
+    fun select(bounds: ClosedRange<Duration>) = select(rng.nextDouble(), bounds)
+    fun select(randomNumber: Double, bounds: ClosedRange<Duration>) =
+        select(randomNumber, bounds.start, bounds.endInclusive)
+    context(rng: Random)
+    fun select(
+        lowerBoundInclusive: Duration? = null,
+        upperBoundInclusive: Duration? = null,
+    ) = select(rng.nextDouble(), lowerBoundInclusive, upperBoundInclusive)
+
+    fun select(
+        randomNumber: Double,
+        lowerBoundInclusive: Duration? = null,
+        upperBoundInclusive: Duration? = null,
+    ): Duration
+}
+
+object CorruptorFactory {
+    fun originalCorruption(original: ArrayHistogram): ModifiableHistogram {
+        return original.copy()
+    }
+
+    fun newFancyCorruption(original: ArrayHistogram): ModifiableHistogram {
+        return ChangeTrackingArrayHistogram(original)
+    }
+}
+
 /**
  * Using an array rather than a map allows quicker access and calculation. In particular because all histogram entries
  * in actiTopp are formulated over a range.
  */
 @Serializable
-open class ArrayHistogram protected constructor(
-    protected val offset: Int = 0,
+open class ArrayHistogram internal constructor(
+    override val offset: Int = 0,
     internal val probabilities: DoubleArray = doubleArrayOf(0.0), // Made internal for performance reasons.
     val categoryIndex: Category,
-) : Comparable<Int> {
+) : Comparable<Int>, Histogram {
     constructor(offset: Int, values: Collection<Number>, categoryIndex: Category) : this(
         offset,
-        values.map { it.toDouble() / values.sumOf { it.toDouble() } }.toDoubleArray(),
+        normalize(values),
         categoryIndex,
     )
 
@@ -94,7 +134,7 @@ open class ArrayHistogram protected constructor(
     @Transient
     internal val _cumulativeSum: DoubleArray = DoubleArray(probabilities.size)
     val start = offset.minutes
-    val end = (probabilities.size + offset - 1).minutes
+    val end = (size + offset - 1).minutes
 
     init {
         cumulate()
@@ -102,16 +142,16 @@ open class ArrayHistogram protected constructor(
 
     protected fun cumulate() {
         var counter = 0.0
-        probabilities.withIndex().forEach { (index, probability) ->
-            _cumulativeSum[index] = probability + counter
-            counter += probability
+        for (i in probabilities.indices) {
+            counter += probabilities[i]
+            _cumulativeSum[i] = counter
         }
     }
 
     fun probabilities() = probabilities.toList()
 
 
-    operator fun contains(position: Int): Boolean {
+    override operator fun contains(position: Int): Boolean {
         return position in offset..<offset + size
     }
 
@@ -119,7 +159,7 @@ open class ArrayHistogram protected constructor(
         return duration.inWholeMinutes.toInt() in this
     }
 
-    fun intersects(bounds: ClosedRange<Duration>): Boolean {
+    override fun intersects(bounds: ClosedRange<Duration>): Boolean {
         if (bounds.start > this.end) return false
         if (bounds.endInclusive < this.start) return false
         return true
@@ -130,19 +170,19 @@ open class ArrayHistogram protected constructor(
      */
     fun copy(): ModifiableArrayHistogram = ModifiableArrayHistogram(offset, probabilities.clone(), categoryIndex)
     fun trim(): ArrayHistogram {
-        val trimmedStartIndex =
-            probabilities.withIndex().takeWhile { it.value == 0.0 }.lastOrNull()?.let { it.index + 1 } ?: 0
-        val trimmedEndIndex =
-            probabilities.withIndex().reversed().takeWhile { it.value == 0.0 }.lastOrNull()?.index ?: size
+        val first = probabilities.indexOfFirst { it != 0.0 }
+        val last = probabilities.indexOfLast { it != 0.0 }
+
+        val trimmedStartIndex = if(first == -1) 0 else first
+        val trimmedEndIndex = if(last == -1) size else last + 1
         return ArrayHistogram(
             offset = offset + trimmedStartIndex,
             probabilities = probabilities.copyOfRange(trimmedStartIndex, trimmedEndIndex),
             categoryIndex = categoryIndex,
-
-            )
+        )
     }
 
-    operator fun get(index: Int): Double {
+    override operator fun get(index: Int): Double {
         val relativeIndex = index - offset
         return if (relativeIndex in 0..<size) probabilities[relativeIndex] else 0.0.also {
             println("Cannot access probability for $index, since this histogram has only values for ${offset}..${offset + size - 1}")
@@ -154,7 +194,7 @@ open class ArrayHistogram protected constructor(
      * transformed using an affine translation to match the probability range of the cumulative sum of the elements within
      * the
      */
-    private fun selectInt(
+    protected open fun selectInt(
         randomNumber: Double,
         lowerBoundInclusive: Int? = null,
         upperBoundInclusive: Int? = null,
@@ -171,7 +211,7 @@ open class ArrayHistogram protected constructor(
 
         // We require the cumulative sum up to the current lower bound, which is stored in the field before the current index
         // If this field does not exist(because the index is 0) the cumulative sum before that element must be .0
-        val lowerCumulativeProbability = _cumulativeSum.getOrNull(lb - 1) ?: 0.0
+        val lowerCumulativeProbability = _cumulativeSum.getOrElse(lb - 1) {0.0}
 
         val upperCumulativeProbability = _cumulativeSum[ub]
         val selectionIndex = if (lowerCumulativeProbability == upperCumulativeProbability) {
@@ -192,19 +232,19 @@ open class ArrayHistogram protected constructor(
         return (selectionIndex + offset).minutes
     }
     context(rng: Random)
-    fun select(bounds: ClosedRange<Duration>) = select(rng.nextDouble(), bounds)
-    fun select(randomNumber: Double, bounds: ClosedRange<Duration>) =
+    override fun select(bounds: ClosedRange<Duration>) = select(rng.nextDouble(), bounds)
+    override fun select(randomNumber: Double, bounds: ClosedRange<Duration>) =
         select(randomNumber, bounds.start, bounds.endInclusive)
     context(rng: Random)
-    fun select(
-        lowerBoundInclusive: Duration? = null,
-        upperBoundInclusive: Duration? = null,
+    override fun select(
+        lowerBoundInclusive: Duration?,
+        upperBoundInclusive: Duration?,
     ) = select(rng.nextDouble(), lowerBoundInclusive, upperBoundInclusive)
 
-    fun select(
+    override fun select(
         randomNumber: Double,
-        lowerBoundInclusive: Duration? = null,
-        upperBoundInclusive: Duration? = null,
+        lowerBoundInclusive: Duration?,
+        upperBoundInclusive: Duration?,
     ): Duration {
         val lb = lowerBoundInclusive?.ceilWholeMinutes
         val ub = upperBoundInclusive?.inWholeMinutes?.toInt()
@@ -256,7 +296,7 @@ open class ArrayHistogram protected constructor(
             return path.listDirectoryEntries("*${identifier.id}*").map { fromPath(it) }.sortedBy { it.categoryIndex }
         }
 
-        fun fromResource(resourcePath: String): List<ArrayHistogram> {
+        fun fromResource(resourcePath: String): ArrayList<ArrayHistogram> {
             val inputStream = ArrayHistogram::class.java.getResourceAsStream(resourcePath)
                 ?: throw NoSuchElementException("Resource of $resourcePath does not exist")
 
@@ -265,8 +305,19 @@ open class ArrayHistogram protected constructor(
             }
         }
 
-        fun fromResource(identifier: Identifier, prefix: String = "mop14_withpkwhh"): List<ArrayHistogram> {
+        fun fromResource(identifier: Identifier, prefix: String = "mop14_withpkwhh"): ArrayList<ArrayHistogram> {
             return fromResource("/$prefix/${identifier.resourcePath()}.json")
+        }
+
+        /**
+         * Normalizes the given values so the result is a probability distribution.
+         * @param values a collection of numbers with values >= 0. With < 0 this breaks.
+         */
+        fun normalize(values: Collection<Number>): DoubleArray {
+            val total = values.sumOf { it.toDouble() }
+            val result = DoubleArray(values.size)
+            values.forEachIndexed { i, v -> result[i] = v.toDouble() / total }
+            return result
         }
     }
 

@@ -3,14 +3,15 @@ package edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes
 
 import edu.kit.ifv.mobitopp.actitoppNG.AllChoiceModels
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.multinomialLogitConverted
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInputs
+import edu.kit.ifv.mobitopp.actitoppNG.performance.AgeEncoder
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.MainDurationAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.choicemodels.FIRST_TOUR_HISTOGRAM
-import edu.kit.ifv.mobitopp.actitoppNG.utils.times
+import edu.kit.ifv.mobitopp.actitoppNG.utils.I
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
 import edu.kit.ifv.mobitopp.discretechoice.structure.loadFromList
-import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
 import kotlin.random.Random
 
 interface PersonPreferredTourStart {
@@ -18,13 +19,32 @@ interface PersonPreferredTourStart {
     fun determinePreferredTourStart(input: MobilityPlanInputs): ArrayHistogram
 }
 
-private val standardUtilityFunction9A: ParameterStep9A.(MainDurationAlternative) -> Double = {
+data class StandardUtilityFunction9ACharacteristic(
+    val isStudent: Int,
+    val householdHasYouths: Int,
+    val ageCode: Int,
+    val anztagemit_tourenvorht: Int,
+    val anztagemit_tourennachht: Int,
+) {
+    constructor(alternative: MainDurationAlternative): this(
+        isStudent = alternative.isStudent().I,
+        householdHasYouths= alternative.householdHasYouths().I,
+        ageCode= AgeEncoder.encode(alternative.person.age),
+        anztagemit_tourenvorht= alternative.anztagemit_tourenvorht,
+        anztagemit_tourennachht= alternative.anztagemit_tourennachht
+    )
+}
+
+private val standardUtilityFunction9A: ParameterStep9A.(StandardUtilityFunction9ACharacteristic) -> Double = {
     base +
-            (it.isStudent()) * beruf_schueler +
-            (it.householdHasYouths()) * haushalthatkinderunter18 +
-            (it.isAged10to17()) * alter_10bis17 +
-            (it.anztagemit_tourenvorht()) * anztagemit_tourenvorht +
-            (it.anztagemit_tourennachht()) * anztagemit_tourennachht
+            (it.isStudent) * beruf_schueler +
+            (it.householdHasYouths) * haushalthatkinderunter18 +
+            when(it.ageCode) {
+                AgeEncoder.isAged10To17 -> alter_10bis17
+                else -> 0.0
+            } +
+            (it.anztagemit_tourenvorht) * anztagemit_tourenvorht +
+            (it.anztagemit_tourennachht) * anztagemit_tourennachht
 
 }
 
@@ -220,7 +240,7 @@ data class ParameterStep9A(
 
 context(params: PlanGenerationParameters)
 val standardPreferredTourStartChoiceModel get() =
-    DiscreteStructure<ArrayHistogram, MainDurationAlternative, ParameterCollectionStep9A> {
+    DiscreteStructure<ArrayHistogram, StandardUtilityFunction9ACharacteristic, ParameterCollectionStep9A> {
 
         loadFromList(
             FIRST_TOUR_HISTOGRAM.histograms
@@ -228,7 +248,8 @@ val standardPreferredTourStartChoiceModel get() =
             standardUtilityFunction9A(this, it)
         }
 
-    }.multinomialLogit("Determine preferred histogram for the first tour of the day")
+    }.multinomialLogitConverted<ArrayHistogram, MainDurationAlternative, StandardUtilityFunction9ACharacteristic, ParameterCollectionStep9A>("Determine preferred histogram for the first tour of the day",
+        { StandardUtilityFunction9ACharacteristic(it)})
         .build(params.standardPreferredTourStart)
 
 class StandardPreferredTourStart: PersonPreferredTourStart {

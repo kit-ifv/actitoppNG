@@ -11,7 +11,6 @@ import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParameterStep10O
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.hours
 
 /**
  * Return an int representative of the duration 0..<2 hours 2..<4 and 4..<6. Do so to get a table jump
@@ -61,24 +60,39 @@ private fun deduceDay(durationDay: DurationDay): Int {
 private fun deduceEmployment(employment: Employment): Int {
     return employment.ordinal
 }
-private val standardUtilityFunction10O: ParameterStep10O.(MainDurationAlternative) -> Double = {
 
-    val previousDayTourEndHour = it.dayPlan.endOfPreviousTour(it.tourPlan)
-    val activityDurationInTourCode = deduceDurationInt(it.tourPlan.activityDurations)
-    val activityCode = deduceActivityTypeCode(it.activityType)
-    val dayCode = deduceDay(it.dayPlan.durationDay)
-    val employmentCode = deduceEmployment(it.person.employment)
-    val activitiesOfDay = it.dayPlan.amountOfActivities
-    val numTours = it.dayPlan.tourPlans.size
+data class StandardUtilityFunction10OEncodedAlternative(
+    val previousDayTourEndHour: Duration,
+    val activityDurationInTourCode: Int,
+    val activityCode: Int,
+    val dayCode: Int,
+    val employmentCode: Int,
+    val activitiesOfDay: Int,
+    val numTours: Int,
+    val isMainTour: Boolean,
+) {
+    constructor(alternative: MainDurationAlternative): this(
+        previousDayTourEndHour = alternative.dayPlan.endOfPreviousTour(alternative.tourPlan),
+        activityDurationInTourCode= deduceDurationInt(alternative.tourPlan.activityDurations),
+        activityCode=  deduceActivityTypeCode(alternative.activityType),
+        dayCode= deduceDay(alternative.dayPlan.durationDay),
+        employmentCode= deduceEmployment(alternative.person.employment),
+        activitiesOfDay= alternative.dayPlan.amountOfActivities,
+        numTours= alternative.dayPlan.tourPlans.size,
+        isMainTour=alternative.touristhaupttour()
+    )
+}
+
+private val standardUtilityFunction10O: ParameterStep10O.(StandardUtilityFunction10OEncodedAlternative) -> Double = {
     base +
-            when(employmentCode) {
+            when(it.employmentCode) {
                 0 -> beruf_vollzeit
                 1, 7 , 8 -> beruf_teilzeit
                 3, 9, 10, 11 -> beruf_schueler
                 4 -> beruf_azubi
                 else -> .0
             } +
-            when(activityCode) {
+            when(it.activityCode) {
                 0 -> tourtyp_education
                 3 -> tourtyp_shopping
                 4 -> tourtyp_transport
@@ -86,31 +100,30 @@ private val standardUtilityFunction10O: ParameterStep10O.(MainDurationAlternativ
                 else -> .0
 
             } +
-            when(dayCode) {
-                5 -> tag_fr
+            when(it.dayCode) {
+                5-> tag_fr
                 6 -> tag_sa
                 7 -> tag_so
                 else -> .0
             } +
-            when(activitiesOfDay) {
+            when(it.activitiesOfDay) {
                 2 -> taghat2akt
                 3 -> taghat3akt
                 else -> .0
             } +
-            when(numTours) {
+            when(it.numTours) {
                 2 -> taghat2touren
                 3 -> taghat3touren
                 else -> .0
             } +
-            when(activityDurationInTourCode) {
+            when(it.activityDurationInTourCode) {
                 0 -> dauer_akt_in_tour_0bis2std
                 1 -> dauer_akt_in_tour_2bis4std
                 2 -> dauer_akt_in_tour_4bis6std
                 else -> .0
             } +
-
-            (it.touristhaupttour()) * touristhaupttour +
-            when (previousDayTourEndHour.inWholeHours.toInt()) {
+            (it.isMainTour) * touristhaupttour +
+            when (it.previousDayTourEndHour.inWholeHours.toInt()) {
                 12 -> endetourvorher_Std_12
                 13 -> endetourvorher_Std_13
                 14 -> endetourvorher_Std_14
@@ -131,5 +144,6 @@ val SECOND_TOUR_HISTOGRAM
 
             identifier = Identifier.SECOND_TOUR_START_TIME
         ),
+        { StandardUtilityFunction10OEncodedAlternative(it) },
         standardUtilityFunction10O
     )

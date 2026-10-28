@@ -3,7 +3,10 @@ package edu.kit.ifv.mobitopp.actitoppNG.modernization
 import edu.kit.ifv.mobitopp.actitoppNG.AllChoiceModels
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.PersonWithRoutine
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.PreviousDayAlternativeEncoded
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.PrecursorTourAmountSet
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.PlannedTourMap
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.PreviousDayAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.strats.sideTourAmounts.DefaultSideTourDeterminer
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.strats.sideTourAmounts.GenerateSideToursFollowing
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.strats.sideTourAmounts.GenerateSideToursPreceeding
@@ -83,9 +86,9 @@ class TourAmountTracker(
         return generateTourAmounts(targets, generator)
     }
     context(rng: Random)
-    private fun <P> generateTourAmounts(
+    private fun <P, C> generateTourAmounts(
         targets: List<DayStructure>,
-        strategy: DefaultSideTourDeterminer<P>,
+        strategy: DefaultSideTourDeterminer<P, C>,
     ): List<Int> {
         return targets.map {
             val currentPlan = map.getModifiablePlannedTourAmounts(it)

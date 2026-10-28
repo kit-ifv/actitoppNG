@@ -32,6 +32,14 @@ The project is organized into the following main packages:
 
 To start using actiTopp, [ExampleActiTopp](https://github.com/ifv-mobitopp/actitopp/blob/master/src/main/java/edu/kit/ifv/mobitopp/actitopp/demo/ExampleActiTopp.java) shows how a person is created and how a week activity schedule can be generated or how multiple persons can be created using a CSVInputReader.
 
+### Development / Git LFS
+This project uses git lfs (Large File Storage), if you did not initialize git lfs on your development machine before, 
+git will clone the project but only pull placeholder files for the large files managed by git lfs. Currently, this only concerns files for 
+testing, but it might be used elsewhere in the future as well. So to work with this project you need to install git lfs 
+and initialized it by running `git lfs install` on your machine once (see 
+https://docs.github.com/en/repositories/working-with-files/managing-large-files/installing-git-large-file-storage?platform=windows 
+for windows). Once that is done, the normal git workflow applies.
+
 ## Input Variables
 
 The following input variables for actiTopp are expected in the following order and using the following coding:

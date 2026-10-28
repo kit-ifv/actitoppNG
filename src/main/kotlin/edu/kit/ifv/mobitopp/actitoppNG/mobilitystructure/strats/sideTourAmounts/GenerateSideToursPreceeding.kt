@@ -2,6 +2,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.strats.sideTourAmounts
 
 import edu.kit.ifv.mobitopp.actitoppNG.AllChoiceModels
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.PreviousDayAlternativeEncoded
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.precursorAmountChoiceModel
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.parameters.PrecursorTourAmountSet
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.PreviousDayAlternative
@@ -12,7 +13,7 @@ import edu.kit.ifv.mobitopp.discretechoice.models.FixedChoiceModel
 class GenerateSideToursPreceeding(
     models: AllChoiceModels,
     choiceModel: FixedChoiceModel<Int, PreviousDayAlternative> = models.precursorAmountChoiceModel
-) : DefaultSideTourDeterminer<PrecursorTourAmountSet>( choiceModel) {
+) : DefaultSideTourDeterminer<PrecursorTourAmountSet, PreviousDayAlternative>(choiceModel, ::createChoiceSituation) {
 
 
     override fun determineMinimumAmountOfTours(remainingNumberOfTours: Int): Int {

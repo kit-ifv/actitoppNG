@@ -13,35 +13,21 @@ import java.time.DayOfWeek
  * into actitopp. Now it may be no longer needed.
  */
 interface DayAttributes {
-    fun isMonday(): Boolean
-    fun isTuesday(): Boolean
-    fun isWednesday(): Boolean
-    fun isThursday(): Boolean
-    fun isFriday(): Boolean
-    fun isSaturday(): Boolean
-    fun isSunday(): Boolean
-
-    fun isStandardWorkingDay(): Boolean
+    val isStandardWorkingDay: Boolean
 
     // Introduced for performant lookups and not stepping through the interface.
     val dayOfWeek: DayOfWeek
-
 }
 
 interface DayStructureAttributes : DayAttributes {
-
-    fun dayMainActivityIsWork(): Boolean
-    fun dayMainActivityIsEducation(): Boolean
-    fun dayMainActivityIsShopping(): Boolean
-    fun dayMainActivityIsTransport(): Boolean
+    val dayMainActivity: ActivityType
 }
 
 /**
  * When the day is completely structured, we can determine the amount of tours.
  */
 interface FullyQualifiedDayStructureAttributes : DayStructureAttributes {
-    fun amountOfToursIs1(): Boolean
-    fun amountOfToursIs2(): Boolean
+    fun amountOfTours(): Int
 }
 
 fun interface PartialTourLayoutAttributes {
@@ -54,34 +40,14 @@ class DayAttributesFromStructure(private val element: DayStructure) : PartialTou
 
     override val dayOfWeek: DayOfWeek = element.weekday
 
-    override fun isMonday() = element.weekday == DayOfWeek.MONDAY
-    override fun isTuesday() = element.weekday == DayOfWeek.TUESDAY
-    override fun isWednesday() = element.weekday == DayOfWeek.WEDNESDAY
-    override fun isThursday() = element.weekday == DayOfWeek.THURSDAY
-    override fun isFriday() = element.weekday == DayOfWeek.FRIDAY
-    override fun isSaturday() = element.weekday == DayOfWeek.SATURDAY
-    override fun isSunday() = element.weekday == DayOfWeek.SUNDAY
-    override fun isStandardWorkingDay(): Boolean = element.weekday in DayOfWeek.MONDAY..DayOfWeek.FRIDAY
+    override val isStandardWorkingDay: Boolean = element.weekday in DayOfWeek.MONDAY..DayOfWeek.FRIDAY
+    override val dayMainActivity: ActivityType = element.mainActivityType()
+
     override fun amountOfBeforeTours(): Int = element.amountOfPrecursorElements()
-    override fun amountOfToursIs1(): Boolean = element.amountOfElements() == 1
-    override fun amountOfToursIs2(): Boolean = element.amountOfElements() == 2
-    override fun dayMainActivityIsWork(): Boolean = element.mainActivityType() == ActivityType.WORK
-    override fun dayMainActivityIsEducation(): Boolean = element.mainActivityType() == ActivityType.EDUCATION
-    override fun dayMainActivityIsShopping(): Boolean = element.mainActivityType() == ActivityType.SHOPPING
-    override fun dayMainActivityIsTransport(): Boolean = element.mainActivityType() == ActivityType.TRANSPORT
+    override fun amountOfTours() = element.amountOfElements()
 }
 
-class DayAttributesFromWeekday(private val element: DayOfWeek) : DayAttributes {
-
-    override fun isMonday(): Boolean = element == DayOfWeek.MONDAY
-    override fun isTuesday(): Boolean = element == DayOfWeek.TUESDAY
-    override fun isWednesday(): Boolean = element == DayOfWeek.WEDNESDAY
-    override fun isThursday(): Boolean = element == DayOfWeek.THURSDAY
-    override fun isFriday(): Boolean = element == DayOfWeek.FRIDAY
-    override fun isSaturday(): Boolean = element == DayOfWeek.SATURDAY
-    override fun isSunday(): Boolean = element == DayOfWeek.SUNDAY
-    override fun isStandardWorkingDay(): Boolean = element in DayOfWeek.MONDAY..DayOfWeek.FRIDAY
-
-
+class DayAttributesFromWeekday(element: DayOfWeek) : DayAttributes {
+    override val isStandardWorkingDay: Boolean = element in DayOfWeek.MONDAY..DayOfWeek.FRIDAY
     override val dayOfWeek: DayOfWeek = element
 }

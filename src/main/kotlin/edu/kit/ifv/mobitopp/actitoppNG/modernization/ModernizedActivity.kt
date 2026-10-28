@@ -4,6 +4,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.PersonWithRoutine
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.plan.DetermineTripDuration
 import edu.kit.ifv.mobitopp.actitoppNG.utils.Position
+import edu.kit.ifv.units.asMinutes
 import kotlinx.serialization.Serializable
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
@@ -31,11 +32,29 @@ interface MutableLinkedAction : MutableAction, LinkedAction {
     override val next: MutableLinkedAction?
 }
 
+fun interface DefaultDurationLookup {
+    operator fun get(activityType: ActivityType): Duration
+}
+class MapDurationLookup(private val map: Map<ActivityType, Duration>): DefaultDurationLookup {
+    override fun get(activityType: ActivityType): Duration {
+        return map.getValue(activityType)
+    }
+}
+
+class ArrayDurationLookup(private val durationArray: DoubleArray): DefaultDurationLookup {
+    constructor(durations: Collection<Duration>): this(durations.map { it.asMinutes }.toDoubleArray())
+
+    constructor(map: Map<ActivityType, Duration>): this(ActivityType.entries.map { map[it] ?: Duration.ZERO })
+    override fun get(activityType: ActivityType): Duration {
+        return durationArray[activityType.ordinal].minutes
+    }
+}
+
 interface LinkedAction : Action {
     val previous: LinkedAction?
     val next: LinkedAction?
 
-    fun estimatedDuration(defaultDuration: Map<ActivityType, Duration>): Duration
+    fun estimatedDuration(defaultDuration: DefaultDurationLookup): Duration
 
     fun isConsistent(): Boolean {
         if (inconsistent()) return false
@@ -83,8 +102,6 @@ data class ModernizedActivity(
     override val position: Position,
 ) : MutableActivity {
 
-
-
     override var duration: Duration? = null
         set(value) {
             require(value?.let { it > Duration.ZERO } ?: true) {
@@ -131,8 +148,8 @@ class LinkedActivity(
      * If the duration is not yet set, estimate the duration based on the amount of occurences of a given
      * activity during a day.
      */
-    override fun estimatedDuration(defaultDuration: Map<ActivityType, Duration>): Duration {
-        return duration ?: defaultDuration.getValue(activityType)
+    override fun estimatedDuration(defaultDuration: DefaultDurationLookup): Duration {
+        return duration ?: defaultDuration[activityType]
     }
 
     fun link(other: LinkedActivity, duration: Duration = 15.minutes) {
@@ -245,7 +262,7 @@ class ModernizedTrip(
     val nextActivity: LinkedActivity,
 ) : MutableLinkedAction {
 
-    override fun estimatedDuration(defaultDuration: Map<ActivityType, Duration>): Duration {
+    override fun estimatedDuration(defaultDuration: DefaultDurationLookup): Duration {
         return duration
     }
 

@@ -2,6 +2,7 @@ package edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.strats.sideTourAmounts
 
 import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.PersonWithRoutine
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.PreviousDayAlternativeEncoded
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.PreviousDayAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.DayStructure
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.ModifiablePlannedTourAmounts
@@ -11,29 +12,28 @@ import edu.kit.ifv.mobitopp.discretechoice.models.FixedChoiceModel
 import kotlin.math.max
 import kotlin.random.Random
 
-abstract class DefaultSideTourDeterminer<P>(
-    val choiceModel: FixedChoiceModel<Int, PreviousDayAlternative>,
+abstract class DefaultSideTourDeterminer<P, C>(
+    val choiceModel: FixedChoiceModel<Int, C>,
+    val characteristicProvider: (        dayTourPlan: PlannedTourAmounts,
+                                         previousTourPlan: PlannedTourAmounts?,
+                                         day: DayStructure,
+                                         personWithRoutine: PersonWithRoutine,) -> C
 ) : GenerateSideTours {
     context(rng: Random)
     override fun generate(precedingInput: PrecedingInput): Int {
 
         return precedingInput.run {
-
-
             val availableOptions = determineAvailableOptions(day, precedingInput.personInfo.routine)
             context(
-                createChoiceSituation(
-                    dayTourPlan = currentPlannedTourAmounts,
-                    previousTourPlan = previousPlannedTourAmounts,
-                    day = day,
-                    personWithRoutine = personInfo
+                characteristicProvider(
+                    currentPlannedTourAmounts,
+                    previousPlannedTourAmounts,
+                    day,
+                    personInfo
                 )
             ) {
                 choiceModel.select(availableOptions)
             }
-
-
-
         }
     }
 
@@ -66,12 +66,13 @@ abstract class DefaultSideTourDeterminer<P>(
     }
 
     abstract fun determineMinimumAmountOfTours(remainingNumberOfTours: Int): Int
-    open fun createChoiceSituation(
-        dayTourPlan: PlannedTourAmounts,
-        previousTourPlan: PlannedTourAmounts?,
-        day: DayStructure,
-        personWithRoutine: PersonWithRoutine,
-    ): PreviousDayAlternative {
-        return PreviousDayAlternative(day, previousTourPlan, personWithRoutine, dayTourPlan.precursorAmount)
-    }
+}
+
+fun createChoiceSituation(
+    dayTourPlan: PlannedTourAmounts,
+    previousTourPlan: PlannedTourAmounts?,
+    day: DayStructure,
+    personWithRoutine: PersonWithRoutine,
+): PreviousDayAlternative {
+    return PreviousDayAlternative(day, previousTourPlan, personWithRoutine, dayTourPlan.precursorAmount)
 }

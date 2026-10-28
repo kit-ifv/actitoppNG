@@ -20,11 +20,11 @@ fun interface SelectMainActivityDuration {
  *
  * Each time the Sticky Selector is built the tainted histograms are copied.
  */
-class StickySelector<P>(
-    histogram: ActivityDurationHistograms<P>,
+class StickySelector(
+    histogram: HistogramSelector,
     private val useStandardDuration: StandardDuration,
 ) : SelectMainActivityDuration, SelectMajorActivityDuration {
-    val taintedHistogramMap: Map<ActivityType, TaintedActivityDurationHistograms<P>> = ActivityType.OUTOFHOMEACTIVITY.associateWith { histogram.taint() }
+    val taintedHistogramMap: Map<ActivityType, TaintedHistogramSelector> = ActivityType.OUTOFHOMEACTIVITY.associateWith { histogram.taint() }
 
     /**
      * To avoid constant alloc/dealloc the sticky selector must be able to reset. Luckily the Tainted Histograms class

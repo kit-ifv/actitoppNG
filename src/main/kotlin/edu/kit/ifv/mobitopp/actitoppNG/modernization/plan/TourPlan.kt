@@ -6,9 +6,11 @@ import edu.kit.ifv.mobitopp.actitoppNG.modernization.ModernizedActivity
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.MutableTourStructure
 import edu.kit.ifv.mobitopp.actitoppNG.utils.Position
 import edu.kit.ifv.mobitopp.actitoppNG.utils.ceil
+import edu.kit.ifv.mobitopp.actitoppNG.utils.rem
 import edu.kit.ifv.mobitopp.actitoppNG.utils.takeUntil
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.ZERO
+import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.DurationUnit
 
@@ -53,6 +55,11 @@ class TourPlan private constructor(
                 it.startTime = it.previous?.endTime ?: throw NoSuchElementException("Should not be null")
             }
         }
+    }
+    // Lazy as to only calculate it once the tour is set in stone,
+    private val endOfTourField  by lazy{(first().previousActivity?.startTime ?: Duration.ZERO) % 1.days}
+    fun endOfTour(): Duration {
+        return endOfTourField
     }
 
     companion object {

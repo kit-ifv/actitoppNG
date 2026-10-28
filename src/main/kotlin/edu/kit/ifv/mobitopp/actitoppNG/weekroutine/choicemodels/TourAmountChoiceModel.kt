@@ -2,6 +2,12 @@ package edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels
 
 import edu.kit.ifv.discretechoice.extensions.optionsIndexed
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
+import edu.kit.ifv.mobitopp.actitoppNG.enums.AreaType
+import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isParttime
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudent
+import edu.kit.ifv.mobitopp.actitoppNG.performance.AgeEncoder
+import edu.kit.ifv.mobitopp.actitoppNG.performance.KilometerEncoder
 import edu.kit.ifv.mobitopp.actitoppNG.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.TourAmountSet
@@ -19,18 +25,30 @@ val tourAmountChoiceModel get() = DiscreteStructure<Int, PersonAlternative, Tour
     }
     optionsIndexed(2..4) { _, it ->
         base +
-                (it.isFulltimeEmployee()) * employmentFulltime +
-                (it.isParttimeEmployee()) * employmentParttime +
-                (it.isStudent()) * employmentStudent +
-                (it.isAged26To35()) * ageIn26To35 +
-                (it.isAged36To50()) * ageIn36To50 +
-                (it.isAged51To60()) * ageIn51To60 +
-                (it.isAged61To70()) * ageIn61To70 +
-                (it.areaTypeConurbation()) * areaTypeConurbation +
-                (it.areaTypeRural()) * areaTypeRural +
-                (it.commuteOver50km()) * commuteOver50km +
-                (it.commuteIn0To5km()) * commuteIn0To5Km +
-                (it.hasChildrenInHousehold()) * householdHasChildren +
+                when (it.employment) {
+                    Employment.FULLTIME -> employmentFulltime
+                    in isParttime -> employmentParttime
+                    in isStudent -> employmentStudent
+                    else -> 0.0
+                } +
+                when (it.ageCode) {
+                    AgeEncoder.isAged26To35 -> ageIn26To35
+                    AgeEncoder.isAged36To50-> ageIn36To50
+                    AgeEncoder.isAged51To60 -> ageIn51To60
+                    AgeEncoder.isAged61To70-> ageIn61To70
+                    else -> 0.0
+                } +
+                when(it.areaType) {
+                    AreaType.CONURBATION -> areaTypeConurbation
+                    AreaType.RURAL -> areaTypeRural
+                    else -> 0.0
+                } +
+                when(it.commuteDistanceCode) {
+                    KilometerEncoder.In0To5km -> commuteIn0To5Km
+                    KilometerEncoder.Over50km -> commuteOver50km
+                    else -> 0.0
+                } +
+                (it.hasChildrenInHousehold) * householdHasChildren +
                 (it.isMale()) * isMale
     }
 }.multinomialLogit("Average amount of tours per day in week routine ")

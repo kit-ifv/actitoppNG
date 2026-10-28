@@ -4,6 +4,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.AllChoiceModels
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.PersonWithRoutine
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.ActivityAlternativeEncoded
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.sideActivityChoiceModel
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.ActivityAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.utils.BidirectionalIndexedValue
@@ -29,7 +30,7 @@ interface AssignSecondaryActivityTypes {
 class TrackedSecondaryActivities(
     models: AllChoiceModels,
     private val mobilityStructure: MobilityStructure,
-    private val choiceModel: FixedChoiceModel<ActivityType, ActivityAlternative> = models.sideActivityChoiceModel
+    private val choiceModel: FixedChoiceModel<ActivityType, ActivityAlternativeEncoded> = models.sideActivityChoiceModel
 ) : AssignSecondaryActivityTypes {
     val personWithRoutine: PersonWithRoutine = mobilityStructure.weekRoutine
     context(rng: Random)
@@ -57,7 +58,7 @@ class TrackedSecondaryActivities(
                 )
 
                 context(
-                    ActivityAlternative(
+                    ActivityAlternativeEncoded(
                         personWithRoutine,
                         input.dayStructure,
                         input.tourStructure, position, input.plannedTourAmounts

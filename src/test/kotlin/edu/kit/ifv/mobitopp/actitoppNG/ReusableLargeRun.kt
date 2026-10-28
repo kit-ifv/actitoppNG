@@ -1,15 +1,14 @@
 package edu.kit.ifv.mobitopp.actitoppNG
 
-import edu.kit.ifv.mobitopp.actitoppNG.modernization.DefaultPlanGeneration
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.ModernizedActivity
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.ReusablePlanGeneration
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
 import kotlin.time.measureTime
+
 suspend fun List<ActitoppPerson>.generateSchedulesReuse(): List<List<ModernizedActivity>> = coroutineScope {
     val params = PlanGenerationParameters()
     val models = AllChoiceModels.create(params)
@@ -37,7 +36,7 @@ suspend fun List<ActitoppPerson>.generateSchedulesReuse(): List<List<ModernizedA
 }
 
 fun main() {
-    val targets = randomHouseholds(500000).flatMap { it.generatePersons(5) }
+    val targets = randomHouseholds(50000).flatMap { it.generatePersons(5) }
     val duration = measureTime {
 
         val lastActivity = runBlocking {

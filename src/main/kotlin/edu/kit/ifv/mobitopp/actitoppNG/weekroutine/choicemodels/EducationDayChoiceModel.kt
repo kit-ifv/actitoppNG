@@ -2,10 +2,12 @@ package edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels
 
 
 import edu.kit.ifv.discretechoice.extensions.loadOptionsMap
-import edu.kit.ifv.mobitopp.actitoppNG.steps.PersonAlternative
-
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
-import edu.kit.ifv.mobitopp.actitoppNG.utils.times
+import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isEarning
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudent
+import edu.kit.ifv.mobitopp.actitoppNG.performance.AgeEncoder
+import edu.kit.ifv.mobitopp.actitoppNG.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.EducationDaySet
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
 import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
@@ -18,13 +20,19 @@ context(params: PlanGenerationParameters)
 val educationDaysChoiceModel get() = DiscreteStructure<Int, PersonAlternative, EducationDaySet> {
     loadOptionsMap(1..7) {_, it ->
         base +
-                (it.isEarningMoney()) * employmentIsEarning +
-                (it.isStudent()) * emplomentStudent +
-                (it.isVocational()) * employmentVocational +
-                (it.isAged10To17()) * ageIn10to17 +
-                (it.isAged18To25()) * ageIn18To25 +
-                (it.isAged26To35()) * ageIn26To35 +
-                (it.isAged36To50()) * ageIn36To50 +
+                when(it.employment) {
+                    Employment.VOCATIONAL -> employmentVocational
+                    in isStudent -> emplomentStudent
+                    in isEarning -> employmentIsEarning
+                    else -> 0.0
+                } +
+                when(it.ageCode) {
+                    AgeEncoder.isAged10To17 -> ageIn10to17
+                    AgeEncoder.isAged18To25 -> ageIn18To25
+                    AgeEncoder.isAged26To35-> ageIn26To35
+                    AgeEncoder.isAged36To50 -> ageIn36To50
+                    else -> 0.0
+                } +
                 it.amountOfWorkingDays() * amountOfWorkingDays
     }
     option(0) {

@@ -3,6 +3,12 @@ package edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels
 
 import edu.kit.ifv.discretechoice.extensions.optionsIndexed
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
+import edu.kit.ifv.mobitopp.actitoppNG.enums.AreaType
+import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isParttime
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudent
+import edu.kit.ifv.mobitopp.actitoppNG.performance.AgeEncoder
+import edu.kit.ifv.mobitopp.actitoppNG.performance.KilometerEncoder
 import edu.kit.ifv.mobitopp.actitoppNG.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.ActivityAmountSet
@@ -20,17 +26,29 @@ val activityAmountChoiceModel get() = DiscreteStructure<Int, PersonAlternative, 
     }
     optionsIndexed(2..6) {_, it ->
         base +
-                (it.isParttimeEmployee()) * beruf_teilzeit +
-                (it.isStudent()) * beruf_schueler +
-                (it.isVocational()) * beruf_azubi +
-                (it.isAged26To35()) * alter_26bis35 +
-                (it.isAged36To50()) * alter_36bis50 +
-                (it.isAged51To60()) * alter_51bis60 +
-                (it.isAged61To70()) * alter_61bis70 +
-                (it.areaTypeRural()) * Raumtyp_mobitopp_rural +
-                (it.commuteOver50km()) * pendeln_ueber50km +
-                (it.commuteIn0To5km()) * pendeln_0bis5km +
-                (it.hasChildrenInHousehold()) * haushalthatkinderunter10
+                when (it.employment) {
+                    in isParttime -> beruf_teilzeit
+                    Employment.VOCATIONAL -> beruf_azubi
+                    in isStudent -> beruf_schueler
+                    else -> 0.0
+                } +
+                when(it.ageCode) {
+                    AgeEncoder.isAged26To35 -> alter_26bis35
+                    AgeEncoder.isAged36To50 -> alter_36bis50
+                    AgeEncoder.isAged51To60 -> alter_51bis60
+                    AgeEncoder.isAged61To70 -> alter_61bis70
+                    else -> 0.0
+                } +
+                when(it.areaType) {
+                    AreaType.RURAL -> Raumtyp_mobitopp_rural
+                    else -> 0.0
+                } +
+                when(it.commuteDistanceCode) {
+                    KilometerEncoder.In0To5km -> pendeln_0bis5km
+                    KilometerEncoder.Over50km -> pendeln_ueber50km
+                    else -> 0.0
+                } +
+                (it.hasChildrenInHousehold) * haushalthatkinderunter10
     }
 }.multinomialLogit("Amount of Activities in Week Routine")
     .build(params.activityAmountParams)

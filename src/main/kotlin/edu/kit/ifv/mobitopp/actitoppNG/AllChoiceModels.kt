@@ -1,6 +1,8 @@
 package edu.kit.ifv.mobitopp.actitoppNG
 
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.ActivityAlternativeEncoded
+import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.PreviousDayAlternativeEncoded
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.mainActivityChoiceModel
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.precursorAmountChoiceModel
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.choicemodels.sideActivityChoiceModel
@@ -15,21 +17,19 @@ import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.TourAlterna
 import edu.kit.ifv.mobitopp.actitoppNG.mobilitystructure.shenanigans.TourAlternativeInt
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.ActivityDurationHistograms
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.BooleanDecisionAlternative
+import edu.kit.ifv.mobitopp.actitoppNG.plandurations.HistogramSelector
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.MainDurationAlternative
+import edu.kit.ifv.mobitopp.actitoppNG.plandurations.choicemodels.COMPARE_MAJOR_VERSION
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.choicemodels.LEAD
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.choicemodels.MAJOR
+import edu.kit.ifv.mobitopp.actitoppNG.plandurations.choicemodels.MAJOR_NEW
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.choicemodels.MINOR
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.choicemodels.firstActivityUsesStandardDuration
-import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterCollectionStep8B
-import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterCollectionStep8D
-import edu.kit.ifv.mobitopp.actitoppNG.plandurations.parameters.ParameterCollectionStep8J
 import edu.kit.ifv.mobitopp.actitoppNG.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.ArrayHistogram
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.HistogramPerActivity
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.choicemodels.FIRST_TOUR_HISTOGRAM
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.choicemodels.SECOND_TOUR_HISTOGRAM
-import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParameterCollectionStep10M
-import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParameterCollectionStep10O
 import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.standardPreferredTourStartChoiceModel
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.activityAmountChoiceModel
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels.defaultWorkDayChoiceModel
@@ -57,21 +57,21 @@ data class AllChoiceModels(
     val tourAmountChoiceModel: FixedChoiceModel<Int, PersonAlternative>,
     val defaultWorkDayChoiceModel: FixedChoiceModel<Int, PersonAlternative>,
     // Tour start times
-    val firstTourHistogram: ActivityDurationHistograms<ParameterCollectionStep10M>,
-    val secondTourHistogram:  ActivityDurationHistograms<ParameterCollectionStep10O>,
+    val firstTourHistogram: HistogramSelector,
+    val secondTourHistogram:  HistogramSelector,
     val preferredTourStartChoiceModel:  FixedChoiceModel<ArrayHistogram, MainDurationAlternative>,
     // Time budget
     val histograms: HistogramPerActivity,
     // Plan generation
     val firstActivityUsesStandardDuration: FixedChoiceModel<Boolean, BooleanDecisionAlternative>,
-    val minorActivityDurationChoiceModel: ActivityDurationHistograms<ParameterCollectionStep8J>,
-    val majorActivityDurationChoiceModel:  ActivityDurationHistograms<ParameterCollectionStep8D>,
-    val leadActivityDurationChoiceModel:  ActivityDurationHistograms<ParameterCollectionStep8B>,
+    val minorActivityDurationChoiceModel: HistogramSelector,
+    val majorActivityDurationChoiceModel:  HistogramSelector,
+    val leadActivityDurationChoiceModel:  HistogramSelector,
     // mobilitystructure
     val mainActivityChoiceModel:  FixedChoiceModel<ActivityType, DayAlternative>,
     val precursorAmountChoiceModel:  FixedChoiceModel<Int, PreviousDayAlternative>,
-    val successorAmountChoiceModel: FixedChoiceModel<Int, PreviousDayAlternative>,
-    val sideActivityChoiceModel:  FixedChoiceModel<ActivityType, ActivityAlternative>,
+    val successorAmountChoiceModel: FixedChoiceModel<Int, PreviousDayAlternativeEncoded>,
+    val sideActivityChoiceModel:  FixedChoiceModel<ActivityType, ActivityAlternativeEncoded>,
     val tourMainActivityChoiceModel:  FixedChoiceModel<ActivityType, TourAlternative>,
     val sideTourPrecursorActivityCountChoiceModel: FixedChoiceModel<Int, TourAlternativeInt>,
     val sideTourSuccessorActivityCountChoiceModel: FixedChoiceModel<Int, TourAlternativeInt>,

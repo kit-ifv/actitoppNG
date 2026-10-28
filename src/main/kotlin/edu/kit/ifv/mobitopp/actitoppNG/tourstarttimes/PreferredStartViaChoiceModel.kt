@@ -1,7 +1,5 @@
 package edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes
 
-
-import edu.kit.ifv.mobitopp.actitoppNG.RNGHelper
 import edu.kit.ifv.mobitopp.actitoppNG.enums.ActivityType
 import edu.kit.ifv.mobitopp.actitoppNG.modernization.durations.MobilityPlanInputs
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.BooleanDecisionWithPreferenceCategory
@@ -11,6 +9,7 @@ import edu.kit.ifv.mobitopp.actitoppNG.tourstarttimes.parameters.ParametersStep1
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.discretechoice.structure.DiscreteStructure
 import edu.kit.ifv.mobitopp.discretechoice.utilityassignment.multinomialLogit
+import java.time.DayOfWeek
 import kotlin.random.Random
 
 /**
@@ -32,21 +31,30 @@ class PreferredStartViaChoiceModel() : UsePreferredTourStart {
             option(true) { 0.0 }
             option(false) {_, it ->
                 base +
-                        (it.anztourenvorhaupttour()) * anztourenvorhaupttour +
-                        (it.anztourennachhaupttour()) * anztourennachhaupttour +
+                        (it.anztourenvorhaupttour) * anztourenvorhaupttour +
+                        (it.anztourennachhaupttour) * anztourennachhaupttour +
                         (it.tourhat1akt()) * tourhat1akt +
                         (it.isAged10to17()) * alter_10bis17 +
-                        (it.tourtyp_work()) * tourtyp_work +
-                        (it.tag_sa()) * tag_sa +
-                        (it.tag_so()) * tag_so +
-                        (it.dauer_akt_in_tour_2bis4std()) * dauer_akt_in_tour_2bis4std +
-                        (it.dauer_akt_in_tour_4bis6std()) * dauer_akt_in_tour_4bis6std +
-                        (it.dauer_akt_in_tour_6bis8std()) * dauer_akt_in_tour_6bis8std +
-                        (it.dauer_akt_in_tour_8bis10std()) * dauer_akt_in_tour_8bis10std +
-                        (it.dauer_akt_in_tour_10bis12std()) * dauer_akt_in_tour_10bis12std +
-                        (it.dauer_akt_vorht_tag_1bis120()) * dauer_akt_vorht_tag_1bis120 +
-                        (it.std_start_T1_6_7_Uhr()) * std_start_T1_6_7_Uhr +
-                        (it.std_start_T1_7_8_Uhr()) * std_start_T1_7_8_Uhr
+                        when(it.tourActivity) {
+                            ActivityType.WORK -> tourtyp_work
+                            else -> 0.0
+                        } +
+                        when(it.dayOfWeek) {
+                            DayOfWeek.SATURDAY -> tag_sa
+                            DayOfWeek.SUNDAY -> tag_so
+                            else -> 0.0
+                        } +
+                        when(it.dauer_akt_in_tour_blocked) {
+                            1 -> dauer_akt_in_tour_2bis4std
+                            2 -> dauer_akt_in_tour_4bis6std
+                            3 -> dauer_akt_in_tour_6bis8std
+                            4 -> dauer_akt_in_tour_8bis10std
+                            5 -> dauer_akt_in_tour_10bis12std
+                            else -> 0.0
+                        } +
+                        (it.dauer_akt_vorht_tag_1bis120) * dauer_akt_vorht_tag_1bis120 +
+                        (it.std_start_T1_6_7_Uhr) * std_start_T1_6_7_Uhr +
+                        (it.std_start_T1_7_8_Uhr) * std_start_T1_7_8_Uhr
             }
         }.multinomialLogit("Whether the tour should use a previously determined tour start or not")
             .build(ParametersStep10A)

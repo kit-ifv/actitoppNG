@@ -2,6 +2,9 @@ package edu.kit.ifv.mobitopp.actitoppNG.timebudgets.choicemodels
 
 import edu.kit.ifv.discretechoice.extensions.optionsIndexed
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
+import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isParttime
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isStudent
 import edu.kit.ifv.mobitopp.actitoppNG.plandurations.Identifier
 import edu.kit.ifv.mobitopp.actitoppNG.timebudgets.HistogramSelection
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
@@ -15,16 +18,22 @@ val shoppingHistograms get() =
     ) { l ->
         optionsIndexed(l[0], l[1], l[3], l[4]) { _, it ->
             base +
-                    (it.amountOfWorkActivitiesInWeek()) * anzakt_woche_w +
-                    (it.amountOfLeisureActivitiesInWeek()) * anzakt_woche_l +
-                    (it.amountOfShoppingActivitiesInWeek()) * anzakt_woche_s +
-                    (it.isFulltimeEmployee()) * beruf_vollzeit +
-                    (it.isParttimeEmployee()) * beruf_teilzeit +
-                    (it.isStudent()) * beruf_schueler +
-                    (it.amountOfDaysWithShoppingActivityIs1()) * tagemit_sakt_1 +
-                    (it.amountOfDaysWithShoppingActivityIs2()) * tagemit_sakt_2 +
-                    (it.amountOfDaysWithShoppingActivityIs3()) * tagemit_sakt_3 +
-                    (it.amountOfDaysWithShoppingActivityIs4()) * tagemit_sakt_4
+                    (it.amountOfWorkActivitiesInWeek) * anzakt_woche_w +
+                    (it.amountOfLeisureActivitiesInWeek) * anzakt_woche_l +
+                    (it.amountOfShoppingActivitiesInWeek) * anzakt_woche_s +
+                    when (it.employment) {
+                        Employment.FULLTIME -> beruf_vollzeit
+                        in isParttime -> beruf_teilzeit
+                        in isStudent -> beruf_schueler
+                        else -> 0.0
+                    } +
+                    when(it.amountOfDaysWithShoppingActivity) {
+                        1 -> tagemit_sakt_1
+                        2 -> tagemit_sakt_2
+                        3 -> tagemit_sakt_3
+                        4 -> tagemit_sakt_4
+                        else -> 0.0
+                    }
         }
         option(l[2]) { 0.0 }
     }

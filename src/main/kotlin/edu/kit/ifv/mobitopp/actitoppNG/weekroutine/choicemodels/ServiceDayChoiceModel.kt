@@ -2,6 +2,10 @@ package edu.kit.ifv.mobitopp.actitoppNG.weekroutine.choicemodels
 
 import edu.kit.ifv.discretechoice.extensions.loadOptionsMap
 import edu.kit.ifv.mobitopp.actitoppNG.PlanGenerationParameters
+import edu.kit.ifv.mobitopp.actitoppNG.enums.AreaType
+import edu.kit.ifv.mobitopp.actitoppNG.enums.Employment
+import edu.kit.ifv.mobitopp.actitoppNG.enums.isParttime
+import edu.kit.ifv.mobitopp.actitoppNG.performance.AgeEncoder
 import edu.kit.ifv.mobitopp.actitoppNG.steps.PersonAlternative
 import edu.kit.ifv.mobitopp.actitoppNG.utils.times
 import edu.kit.ifv.mobitopp.actitoppNG.weekroutine.parameters.ServiceDaySet
@@ -16,14 +20,23 @@ context(params: PlanGenerationParameters)
 val serviceDaysChoiceModel get() = DiscreteStructure<Int, PersonAlternative, ServiceDaySet> {
     loadOptionsMap(1..7) {_, it ->
         base +
-                (it.isFulltimeEmployee()) * employmentIsFulltime +
-                (it.isParttimeEmployee()) * employmentIsParttime +
-                (it.isAged10To17()) * ageIn10to17 +
-                (it.isAged26To35()) * ageIn26to35 +
-                (it.isAged36To50()) * ageIn36to50 +
-                (it.areaTypeConurbation()) * areaTypeIsConurbation +
-                (it.hasChildrenInHousehold()) * householdHasChildren +
-                (it.amountOfYouthsInHousehold()) * householdAmountYouths +
+                when (it.employment) {
+                    Employment.FULLTIME -> employmentIsFulltime
+                    in isParttime -> employmentIsParttime
+                    else -> 0.0
+                } +
+                when (it.ageCode) {
+                    AgeEncoder.isAged10To17 -> ageIn10to17
+                    AgeEncoder.isAged26To35 -> ageIn26to35
+                    AgeEncoder.isAged36To50-> ageIn36to50
+                    else -> 0.0
+                } +
+                when(it.areaType) {
+                    AreaType.CONURBATION -> areaTypeIsConurbation
+                    else -> 0.0
+                } +
+                (it.hasChildrenInHousehold) * householdHasChildren +
+                (it.amountOfYouthsInHousehold) * householdAmountYouths +
                 (it.isMale()) * isMale
 
     }
